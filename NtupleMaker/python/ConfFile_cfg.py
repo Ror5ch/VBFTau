@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("Demo")
+#process = cms.Process(cms.InputTag("TriggerResults","","MYHLT"))
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -13,11 +14,15 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.demo = cms.EDAnalyzer('NtupleMaker'
-     , tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
-     , triggerResults = cms.untracked.InputTag('TriggerResults')
-     , triggerEvent = cms.untracked.InputTag('TriggerEvent')
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("histo.root"),
+    closeFileFast = cms.untracked.bool(True)
 )
 
+process.demo = cms.EDAnalyzer('NtupleMaker'
+     #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
+     , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
+     , triggerEvent = cms.untracked.InputTag('TriggerEvent')
+)
 
 process.p = cms.Path(process.demo)

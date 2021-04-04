@@ -15,6 +15,8 @@ process.source = cms.Source("PoolSource",
 
 process.demo = cms.EDAnalyzer('NtupleMaker'
      , tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
+     , triggerResults = cms.untracked.InputTag('TriggerResults')
+     , triggerEvent = cms.untracked.InputTag('TriggerEvent')
 )
 
 

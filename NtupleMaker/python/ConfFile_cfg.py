@@ -5,7 +5,7 @@ process = cms.Process("Demo")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -14,15 +14,16 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("histo.root"),
-    closeFileFast = cms.untracked.bool(True)
-)
-
 process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
      , triggerEvent = cms.untracked.InputTag('TriggerEvent')
 )
+
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("histo.root"),
+    closeFileFast = cms.untracked.bool(True)
+)
+
 
 process.p = cms.Path(process.demo)

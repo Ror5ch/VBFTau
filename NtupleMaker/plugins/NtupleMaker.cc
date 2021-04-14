@@ -82,10 +82,11 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
       std::vector<bool> * triggeredBranch_;
       bool triggered_;
+
       float pt_;
-      float eta_;
+      //float eta_;
       std::vector<float> * ptBranch1_;
-      std::vector<float> * etaBranch1_;
+      //std::vector<float> * etaBranch1_;
 };
 
 //
@@ -140,7 +141,6 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
-
     std::string firstTag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
     for (trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
         std::string filterTag = triggerEvent->filterTag(iFilter).encode();
@@ -150,14 +150,14 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 	    trigger::size_type objKey = objectKeys.at(iKey);
 	    const trigger::TriggerObject& triggerObj(triggerObjects[objKey]);
 	    pt_ = triggerObj.pt();
-	    eta_ = triggerObj.eta();
+	    //eta_ = triggerObj.eta();
 	    if (filterTag == firstTag && pt_ > 0){
 		ptBranch1_->push_back(pt_);
 		std::cout << std::endl << "pt: " <<  pt_ << std::endl;
 		//etaBranch1_->push_back(eta_);
 	    }
 	    else{
-		ptBranch1_->push_back(-9999.);
+		ptBranch1_->push_back(-9999);
 		//etaBranch1_->push_back(-9999.);
 	    }
 	}

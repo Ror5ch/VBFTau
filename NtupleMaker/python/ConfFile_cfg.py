@@ -12,12 +12,14 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_1_11_patch1/src/HLTrigger/Configuration/test/addedhltVBF.root'
     )
+    
 )
 
 process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
      , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
+     , needTriggers = cms.untracked.bool(True)
 )
 
 process.TFileService = cms.Service("TFileService",

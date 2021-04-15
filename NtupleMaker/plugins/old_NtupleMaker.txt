@@ -38,11 +38,12 @@
 
 #include "TTree.h"
 
-//added from other file for trigger names (?)
+// trigger include files
 #include "FWCore/Common/interface/TriggerNames.h"
-#include "DataFormats/HLTReco/interface/TriggerEvent.h" //might be old/deprecated, other script written in 2017
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 //
 // class declaration
 //
@@ -80,6 +81,9 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       // hlt
       edm::EDGetTokenT<edm::TriggerResults>   triggerResultToken_;
       edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
+
+      bool need_triggers;
+
       std::vector<bool> * triggeredBranch_;
       bool triggered_;
 
@@ -112,6 +116,7 @@ NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig):
     //tracksToken_(consumes<TrackCollection>(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))),
     triggerResultToken_(consumes<edm::TriggerResults>(iConfig.getUntrackedParameter<edm::InputTag>("triggerResults"))),
     triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent"))),
+    need_triggers(iConfig.getUntrackedParameter<bool>("needTriggers")),
 //"tracks" as a string isn't defined previously so I think it refers to the tracks variable defined in the config file,
 //accordingly, we define a trigger result variable 
 //remember to ask Kyungwook

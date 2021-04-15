@@ -84,9 +84,17 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       bool triggered_;
 
       float pt_;
-      //float eta_;
-      std::vector<float> * ptBranch1_;
-      //std::vector<float> * etaBranch1_;
+      float eta_;
+      float phi_;
+      std::vector<float> * ptT1_; //doing this for three different triggers
+      std::vector<float> * etaT1_;
+      std::vector<float> * phiT1_;
+      std::vector<float> * ptT2_;
+      std::vector<float> * etaT2_;
+      std::vector<float> * phiT2_;
+      std::vector<float> * ptT3_;
+      std::vector<float> * etaT3_;
+      std::vector<float> * phiT3_;
 };
 
 //
@@ -103,12 +111,22 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig):
     //tracksToken_(consumes<TrackCollection>(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))),
     triggerResultToken_(consumes<edm::TriggerResults>(iConfig.getUntrackedParameter<edm::InputTag>("triggerResults"))),
-    triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent")))
+    triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent"))),
 //"tracks" as a string isn't defined previously so I think it refers to the tracks variable defined in the config file,
 //accordingly, we define a trigger result variable 
 //remember to ask Kyungwook
+    triggeredBranch_{new std::vector<bool>()},
+    ptT1_{new std::vector<float>()},
+    etaT1_{new std::vector<float>()},
+    phiT1_{new std::vector<float>()},
+    ptT2_{new std::vector<float>()},
+    etaT2_{new std::vector<float>()},
+    phiT2_{new std::vector<float>()},
+    ptT3_{new std::vector<float>()},
+    etaT3_{new std::vector<float>()},
+    phiT3_{new std::vector<float>()}
 {
-    //now do what ever initialization is needed
+       //now do what ever initialization is needed
 }
 
 
@@ -141,7 +159,19 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
-    std::string firstTag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
+    std::string firstTag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
+    std::string secondTag = "hltMatchedVBFOnePFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
+    std::string thirdTag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
+
+    ptT1_->clear();
+    etaT1_->clear();
+    phiT1_->clear();
+    ptT2_->clear();
+    etaT2_->clear();
+    phiT2_->clear();
+    ptT3_->clear();
+    etaT3_->clear();
+    phiT3_->clear();
     for (trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
         std::string filterTag = triggerEvent->filterTag(iFilter).encode();
         trigger::Keys objectKeys = triggerEvent->filterKeys(iFilter);
@@ -150,15 +180,37 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 	    trigger::size_type objKey = objectKeys.at(iKey);
 	    const trigger::TriggerObject& triggerObj(triggerObjects[objKey]);
 	    pt_ = triggerObj.pt();
-	    //eta_ = triggerObj.eta();
+	    eta_ = triggerObj.eta();
+	    phi_ = triggerObj.phi();
 	    if (filterTag == firstTag && pt_ > 0){
-		ptBranch1_->push_back(pt_);
-		std::cout << std::endl << "pt: " <<  pt_ << std::endl;
-		//etaBranch1_->push_back(eta_);
+		ptT1_->push_back(pt_);
+		etaT1_->push_back(eta_);
+		phiT1_->push_back(phi_);
 	    }
 	    else{
-		ptBranch1_->push_back(-9999);
-		//etaBranch1_->push_back(-9999.);
+		ptT1_->push_back(-9999);
+		etaT1_->push_back(-9999);
+		phiT1_->push_back(-9999);
+	    }
+	    if (filterTag == secondTag && pt_ > 0){
+		ptT2_->push_back(pt_);
+		etaT2_->push_back(eta_);
+		phiT2_->push_back(phi_);
+	    }
+	    else{
+		ptT2_->push_back(-9999);
+		etaT2_->push_back(-9999);
+		phiT2_->push_back(-9999);
+	    }
+	    if (filterTag == thirdTag && pt_ > 0){
+		ptT3_->push_back(pt_);
+		etaT3_->push_back(eta_);
+		phiT3_->push_back(phi_);
+	    }
+	    else{
+		ptT3_->push_back(-9999);
+		etaT3_->push_back(-9999);
+		phiT3_->push_back(-9999);
 	    }
 	}
     }
@@ -193,7 +245,15 @@ void NtupleMaker::beginJob()
     //tree_->Branch("ntracks_", &ntracks_);
     //tree_->Branch("track_charge_", track_charge_, "track_charge_[ntracks_]/I");
     tree_->Branch("triggeredBranch_", &triggeredBranch_);
-    tree_->Branch("ptBranch1_", &ptBranch1_);
+    tree_->Branch("ptT1_", &ptT1_);
+    tree_->Branch("etaT1_", &etaT1_);
+    tree_->Branch("phiT1_", &phiT1_);
+    tree_->Branch("ptT2_", &ptT2_);
+    tree_->Branch("etaT2_", &etaT2_);
+    tree_->Branch("phiT2_", &phiT2_);
+    tree_->Branch("ptT3_", &ptT3_);
+    tree_->Branch("etaT3_", &etaT3_);
+    tree_->Branch("phiT3_", &phiT3_);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

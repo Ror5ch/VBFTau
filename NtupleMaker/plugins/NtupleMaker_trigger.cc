@@ -45,9 +45,10 @@ void NtupleMaker::branchesTriggers(TTree* tree){
 }
 
 void NtupleMaker::fillTriggers(const edm::Event& iEvent){
- 
+
+    //using namespace edm; 
     passTrigBranch.clear();
-   
+
     hltHpsDoublePFTau_pt.clear();
     hltHpsDoublePFTau_eta.clear();
     hltHpsDoublePFTau_phi.clear();
@@ -60,16 +61,12 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     edm::Handle<edm::TriggerResults> triggerResults;
     iEvent.getByToken(triggerResultToken_, triggerResults);
-
     edm::Handle<trigger::TriggerEvent> triggerEvent;
     iEvent.getByToken(triggerEventToken_, triggerEvent);
-
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
-    
-    std::string pathName="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta_2p1_v1";
-
+    std::string pathName="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
     passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathName));
     std::cout << "passTrig: " << passTrig_ << std::endl;
-    //passTrigBranch.push_back(passTrig_);
+    passTrigBranch.push_back(passTrig_);
 
 }

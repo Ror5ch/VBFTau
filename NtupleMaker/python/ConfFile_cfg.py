@@ -10,7 +10,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_1_11_patch1/src/HLTrigger/Configuration/test/addedhltVBF.root'
+        'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_1_11_patch1/src/HLTrigger/Configuration/test/raw_addedhltVBF.root'
     )
     
 )
@@ -20,6 +20,15 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
      , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
      , needTriggers = cms.untracked.bool(True)
+     , needTaus = cms.untracked.bool(False)
+     , needJets = cms.untracked.bool(False)
+     , development = cms.untracked.bool(False)
+     , doGenParticles = cms.untracked.bool(False)
+
+     , genParticleSrc = cms.untracked.InputTag("prunedGenParticles")
+     , VtxLabel = cms.untracked.InputTag("offlineSlimmedPrimaryVertices")
+     , rhoLabel = cms.untracked.InputTag("fixedGridRhoFastjetAll")
+     , tauSrc = cms.untracked.InputTag("slimmedTaus")
 )
 
 process.TFileService = cms.Service("TFileService",

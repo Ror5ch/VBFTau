@@ -221,14 +221,14 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
   if (!vtxHandle.isValid()) edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
-  
+/***  
   // Accessing the JEC uncertainties 
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
   es.get<JetCorrectionsRecord>().get("AK4PFchs",JetCorParColl); 
   JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
-
+***/
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
 
     if (iJet->pt() < 20) continue;
@@ -252,7 +252,7 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetHFEME_.push_back( iJet->HFEMEnergy());
       jetNConstituents_.push_back(iJet->numberOfDaughters());
     }
-
+/***
     if (fabs(iJet->eta()) < 5.2) {
       jecUnc->setJetEta(iJet->eta());
       jecUnc->setJetPt(iJet->pt()); // here you must use the CORRECTED jet pt
@@ -260,7 +260,7 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     } else {
       jetJECUnc_.push_back(-1.);
     }
-
+***/
     //jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));    
 
     //Searching for leading track and lepton
@@ -389,7 +389,7 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetGenJetPt_.push_back(jetGenJetPt);
       jetGenJetEta_.push_back(jetGenJetEta);
       jetGenJetPhi_.push_back(jetGenJetPhi);
-      
+/***      
       // access jet resolution             
       JME::JetParameters parameters;
       parameters.setJetPt(iJet->pt()).setJetEta(iJet->eta()).setRho(rho);
@@ -419,10 +419,10 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetP4Smear_  .push_back(jetP4Smear);
       jetP4SmearUp_.push_back(jetP4SmearUp);
       jetP4SmearDo_.push_back(jetP4SmearDo);      
+***/
     }
-    
     nJet_++;
   }
   
-  delete jecUnc;
+//  delete jecUnc;
 }

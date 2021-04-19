@@ -4,6 +4,17 @@
 
 NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
     need_triggers(iConfig.getUntrackedParameter<bool>("needTriggers")),
+    need_taus(iConfig.getUntrackedParameter<bool>("needTaus")),
+    need_jets(iConfig.getUntrackedParameter<bool>("needJets")),
+
+    development_(iConfig.getUntrackedParameter<bool>("development")),
+    doGenParticles_(iConfig.getUntrackedParameter<bool>("doGenParticles")),
+    genParticlesCollection_(consumes<vector<reco::GenParticle>>(iConfig.getUntrackedParameter<edm::InputTag>("genParticleSrc"))),
+    tauCollection_(consumes<vector<pat::Tau>>(iConfig.getUntrackedParameter<edm::InputTag>("tauSrc"))),
+    vtxLabel_(consumes<reco::VertexCollection>(iConfig.getUntrackedParameter<edm::InputTag>("VtxLabel"))),
+    rhoLabel_(consumes<double>(iConfig.getUntrackedParameter<edm::InputTag>("rhoLabel"))),
+    //jetsAK4Label_(consumes<edm::View<pat::Jet>>(iConfig.getUntrackedParameter<edm::InputTag>("ak4JetSrc"))),
+
     triggerResultToken_(consumes<edm::TriggerResults>(iConfig.getUntrackedParameter<edm::InputTag>("triggerResults"))),
     triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent")))
 {
@@ -12,6 +23,8 @@ NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
     tree_ = fs->make<TTree>("vbf", "vbf");
 
     if(need_triggers) branchesTriggers(tree_);
+    if(need_taus) branchesTaus(tree_);
+    if(need_jets) branchesJets(tree_);
 }
 
 NtupleMaker::~NtupleMaker(){
@@ -21,7 +34,16 @@ NtupleMaker::~NtupleMaker(){
 void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     //using namespace edm;
+    if(doGenParticles_){
+        jetResolution_   = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
+        jetResolutionSF_ = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
+        //AK8jetResolution_   = JME::JetResolution::get(es, "AK8PFchs_pt");
+        //AK8jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK8PFchs");
+    }
+
     if(need_triggers) fillTriggers(iEvent);
+    if(need_taus) fillTaus(iEvent);
+    if(need_jets) fillJets(iEvent, iSetup);
 
     tree_->Fill();
 }

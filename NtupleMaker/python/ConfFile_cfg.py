@@ -17,6 +17,15 @@ process.source = cms.Source("PoolSource",
     
 )
 
+updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
+import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                    updatedTauName = updatedTauName,
+                    toKeep = ["deepTau2017v2p1", #deepTau TauIDs
+                               ])
+tauIdEmbedder.runTauID()
+# Path and EndPath definitions
+
 process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
@@ -33,7 +42,7 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , genParticleSrc = cms.untracked.InputTag("prunedGenParticles")
      , VtxLabel = cms.untracked.InputTag("offlineSlimmedPrimaryVertices")
      , rhoLabel = cms.untracked.InputTag("fixedGridRhoFastjetAll")
-     , tauSrc = cms.untracked.InputTag("slimmedTaus")
+     , tauSrc = cms.untracked.InputTag("slimmedTausNewID")
      , ak4JetSrc = cms.untracked.InputTag("slimmedJets")
 )
 
@@ -43,4 +52,7 @@ process.TFileService = cms.Service("TFileService",
 )
 
 
-process.p = cms.Path(process.demo)
+process.p = cms.Path(
+	process.rerunMvaIsolationSequence *
+	getattr(process,updatedTauName) * process.demo
+)

@@ -13,7 +13,11 @@ float 	pt_;
 float 	eta_;
 float 	phi_;
 
-//full trigger is
+//full trigger name is
+//hltHpsPFTauTrack
+vector<float> 	hltHpsPFTauTrack_pt;
+vector<float> 	hltHpsPFTauTrack_eta;
+vector<float> 	hltHpsPFTauTrack_phi;
 //hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon
 vector<float>	hltHpsDoublePFTau_pt;
 vector<float>	hltHpsDoublePFTau_eta;
@@ -27,14 +31,13 @@ vector<float>	hltMatchedVBFTwo_pt;
 vector<float>	hltMatchedVBFTwo_eta;
 vector<float>	hltMatchedVBFTwo_phi;
 
-//PFTauCollection Branches
-vector<float> hltHpsPFTauProducer_pt;
-vector<float> hltHpsPFTauProducer_eta;
-vector<float> hltHpsPFTauProducer_phi;
-
 void NtupleMaker::branchesTriggers(TTree* tree){
 
     tree->Branch("passTrigBranch", &passTrigBranch);    
+
+    tree->Branch("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
+    tree->Branch("hltHpsPFTauTrack_eta", &hltHpsPFTauTrack_eta);
+    tree->Branch("hltHpsPFTauTrack_phi", &hltHpsPFTauTrack_phi);
 
     tree->Branch("hltHpsDoublePFTau_pt", &hltHpsDoublePFTau_pt);
     tree->Branch("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
@@ -47,10 +50,6 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltMatchedVBFTwo_pt", &hltMatchedVBFTwo_pt);
     tree->Branch("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
     tree->Branch("hltMatchedVBFTwo_phi", &hltMatchedVBFTwo_phi);
-
-    tree->Branch("hltHpsPFTauProducer_pt", &hltHpsPFTauProducer_pt);
-    tree->Branch("hltHpsPFTauProducer_eta", &hltHpsPFTauProducer_eta);
-    tree->Branch("hltHpsPFTauProducer_phi", &hltHpsPFTauProducer_phi);
 }
 
 void NtupleMaker::fillTriggers(const edm::Event& iEvent){
@@ -60,6 +59,9 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     // clearing vectors at the start of every event 
     passTrigBranch.clear();
 
+    hltHpsPFTauTrack_pt.clear();
+    hltHpsPFTauTrack_eta.clear();
+    hltHpsPFTauTrack_phi.clear();
     hltHpsDoublePFTau_pt.clear();
     hltHpsDoublePFTau_eta.clear();
     hltHpsDoublePFTau_phi.clear();
@@ -69,11 +71,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltMatchedVBFTwo_pt.clear();
     hltMatchedVBFTwo_eta.clear();
     hltMatchedVBFTwo_phi.clear();
-
-    hltHpsPFTauProducer_pt.clear();
-    hltHpsPFTauProducer_eta.clear();
-    hltHpsPFTauProducer_phi.clear();
-
+    
     // getting trigger results and saving to passTrigBranch
     edm::Handle<edm::TriggerResults> triggerResults;
     iEvent.getByToken(triggerResultToken_, triggerResults);
@@ -84,18 +82,9 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathName));
     passTrigBranch.push_back(passTrig_);
 
-    // filling PFTauCollection kinematic information
-    edm::Handle<vector<reco::PFTau>> PFTauHandle;
-    iEvent.getByToken(PFTauCollection_, PFTauHandle);
-
-    for(vector<reco::PFTau>::const_iterator iPFTau = PFTauHandle->begin(); iPFTau != PFTauHandle->end(); ++iPFTau) {
-	hltHpsPFTauProducer_pt.push_back(iPFTau->pt());
-	hltHpsPFTauProducer_eta.push_back(iPFTau->eta());
-	hltHpsPFTauProducer_phi.push_back(iPFTau->phi());
-    }
-
     // filling branches with triggerObjs information
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
+    std::string hltHpsPFTauTrack_Tag = "hltHpsPFTauTrack::MYHLT";
     std::string hltHpsDoublePFTau_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
     std::string hltMatchedVBFOne_Tag = "hltMatchedVBFOnePFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
     std::string hltMatchedVBFTwo_Tag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
@@ -110,6 +99,17 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	    pt_ = triggerObj.pt();
 	    eta_ = triggerObj.eta();
 	    phi_ = triggerObj.phi();
+	// fill hltHpsPFTauTrack branches if match
+	    if (filterTag == hltHpsPFTauTrack_Tag && pt_>0){
+		hltHpsPFTauTrack_pt.push_back(pt_);
+		hltHpsPFTauTrack_eta.push_back(eta_);
+		hltHpsPFTauTrack_phi.push_back(phi_);
+	    }
+	    else{
+		hltHpsPFTauTrack_pt.push_back(-99);
+		hltHpsPFTauTrack_eta.push_back(-99);
+		hltHpsPFTauTrack_phi.push_back(-99);
+	    }
 	// fill hltHpsDoublePFTau branches if match
 	    if (filterTag == hltHpsDoublePFTau_Tag && pt_>0){
 		hltHpsDoublePFTau_pt.push_back(pt_); 

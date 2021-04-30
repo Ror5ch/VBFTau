@@ -110,6 +110,7 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	bool doGenParticles_;
 	edm::EDGetTokenT<vector<reco::GenParticle> >     genParticlesCollection_;
 	edm::EDGetTokenT<vector<pat::Tau> >              tauCollection_; 
+        edm::EDGetTokenT<vector<reco::PFTau>>		 PFTauCollection_;
 	edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
 	edm::EDGetTokenT<double>                         rhoLabel_;
 	edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK4Label_;

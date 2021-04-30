@@ -27,6 +27,11 @@ vector<float>	hltMatchedVBFTwo_pt;
 vector<float>	hltMatchedVBFTwo_eta;
 vector<float>	hltMatchedVBFTwo_phi;
 
+//PFTauCollection Branches
+vector<float> hltHpsPFTauProducer_pt;
+vector<float> hltHpsPFTauProducer_eta;
+vector<float> hltHpsPFTauProducer_phi;
+
 void NtupleMaker::branchesTriggers(TTree* tree){
 
     tree->Branch("passTrigBranch", &passTrigBranch);    
@@ -42,6 +47,10 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltMatchedVBFTwo_pt", &hltMatchedVBFTwo_pt);
     tree->Branch("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
     tree->Branch("hltMatchedVBFTwo_phi", &hltMatchedVBFTwo_phi);
+
+    tree->Branch("hltHpsPFTauProducer_pt", &hltHpsPFTauProducer_pt);
+    tree->Branch("hltHpsPFTauProducer_eta", &hltHpsPFTauProducer_eta);
+    tree->Branch("hltHpsPFTauProducer_phi", &hltHpsPFTauProducer_phi);
 }
 
 void NtupleMaker::fillTriggers(const edm::Event& iEvent){
@@ -61,6 +70,10 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltMatchedVBFTwo_eta.clear();
     hltMatchedVBFTwo_phi.clear();
 
+    hltHpsPFTauProducer_pt.clear();
+    hltHpsPFTauProducer_eta.clear();
+    hltHpsPFTauProducer_phi.clear();
+
     // getting trigger results and saving to passTrigBranch
     edm::Handle<edm::TriggerResults> triggerResults;
     iEvent.getByToken(triggerResultToken_, triggerResults);
@@ -70,6 +83,16 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string pathName="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
     passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathName));
     passTrigBranch.push_back(passTrig_);
+
+    // filling PFTauCollection kinematic information
+    edm::Handle<vector<reco::PFTau>> PFTauHandle;
+    iEvent.getByToken(PFTauCollection_, PFTauHandle);
+
+    for(vector<reco::PFTau>::const_iterator iPFTau = PFTauHandle->begin(); iPFTau != PFTauHandle->end(); ++iPFTau) {
+	hltHpsPFTauProducer_pt.push_back(iPFTau->pt());
+	hltHpsPFTauProducer_eta.push_back(iPFTau->eta());
+	hltHpsPFTauProducer_phi.push_back(iPFTau->phi());
+    }
 
     // filling branches with triggerObjs information
     const trigger::size_type nFilters(triggerEvent->sizeFilters());

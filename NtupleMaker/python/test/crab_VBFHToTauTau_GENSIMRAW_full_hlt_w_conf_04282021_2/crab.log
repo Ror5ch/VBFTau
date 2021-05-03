@@ -1,0 +1,223 @@
+L1T INFO:  L1REPACK:uGT (intended for 2016 data) will unpack uGMT and CaloLaye2 outputs and re-emulate uGT
+DEBUG 2021-04-28 20:53:22.771 UTC: 	 CRAB Client version: v3.210323
+DEBUG 2021-04-28 20:53:22.772 UTC: 	 Running on: Linux cmslpc154.fnal.gov 3.10.0-1160.21.1.el7.x86_64 #1 SMP Tue Mar 16 08:00:44 CDT 2021 x86_64 x86_64 x86_64 GNU/Linux - Scientific Linux 7.9 (Nitrogen)
+DEBUG 2021-04-28 20:53:22.772 UTC: 	 Executing command: 'submit'
+DEBUG 2021-04-28 20:53:22.772 UTC: 	 Found CRAB cache file /uscms/home/ballmond/.crab3
+DEBUG 2021-04-28 20:53:22.775 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2021-04-28 20:53:22.792 UTC: 	 Checking credentials
+DEBUG 2021-04-28 20:53:22.792 UTC: 	 Found proxy file /uscms/home/ballmond/x509up_u56468
+DEBUG 2021-04-28 20:53:22.792 UTC: 	 Getting proxy life time left
+DEBUG 2021-04-28 20:53:22.897 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -timeleft
+ output : 535352
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:23.003 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -actimeleft
+ output : 535352
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:23.003 UTC: 	 Proxy valid for 148:42:32 hours
+DEBUG 2021-04-28 20:53:23.109 UTC: 	 Executing : 
+ command : env X509_USER_PROXY=/uscms/home/ballmond/x509up_u56468 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:23.756 UTC: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+DEBUG 2021-04-28 20:53:23.870 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -identity
+ output : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:23.877 UTC: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2021-04-28 20:53:23.877 UTC: 	 using 5df23e446efdcd8e332b5ed15ab77658d9de8094 as credential login name
+DEBUG 2021-04-28 20:53:24.784 UTC: 	 Executing : 
+ command : myproxy-info -l 5df23e446efdcd8e332b5ed15ab77658d9de8094 -s myproxy.cern.ch
+ output : username: 5df23e446efdcd8e332b5ed15ab77658d9de8094
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  timeleft: 575:31:11  (24.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:24.785 UTC: 	 Myproxy is valid: 2071871
+DEBUG 2021-04-28 20:53:24.785 UTC: 	 Retrieving username ...
+DEBUG 2021-04-28 20:53:24.785 UTC: 	 Retrieving username from CRIC...
+DEBUG 2021-04-28 20:53:26.165 UTC: 	 username is ballmond
+DEBUG 2021-04-28 20:53:26.172 UTC: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2021-04-28 20:53:26.172 UTC: 	 using ballmond_CRAB as credential login name
+DEBUG 2021-04-28 20:53:26.978 UTC: 	 Executing : 
+ command : myproxy-info -l ballmond_CRAB -s myproxy.cern.ch
+ output : username: ballmond_CRAB
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  timeleft: 575:31:21  (24.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:53:26.978 UTC: 	 Myproxy is valid: 2071881
+DEBUG 2021-04-28 20:53:26.979 UTC: 	 Result of myproxy credential check:
+  Credential exists on myproxy: username: 5df23e446efdcd8e332b5ed15ab77658d9de8094  - validity: 23 days, 23:31:11
+  Credential exists on myproxy: username: ballmond_CRAB  - validity: 23 days, 23:31:21
+DEBUG 2021-04-28 20:53:26.979 UTC: 	 Command use: submit
+DEBUG 2021-04-28 20:53:26.979 UTC: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7fdb6f6b0a90>]
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 CRABClient version: v3.210323
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 Instance is prod
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 Server base url is cmsweb.cern.ch
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 Command url /crabserver/prod/workflow
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 Started submission
+DEBUG 2021-04-28 20:53:27.616 UTC: 	 Working on /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 Loading required information from the environment
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 Found CMSSW_10_2_16_UL for slc7_amd64_gcc700 with base /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 Loading required information from the environment
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 Found CMSSW_10_2_16_UL for slc7_amd64_gcc700 with base /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 UNIQUE NAME: tarUUID 1dda46ba-e3d2-40d1-ae30-f6d4235ee93f 
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.workArea = 'test'
+config.General.requestName = 'VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2'
+config.section_('JobType')
+config.JobType.psetName = 'hlt_raw_Conf.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.maxMemoryMB = 4000
+config.section_('Data')
+config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
+config.Data.unitsPerJob = 1
+config.Data.ignoreLocality = True
+config.Data.inputDBS = 'global'
+config.Data.splitting = 'FileBased'
+config.Data.outLFNDirBase = '/store/user/ballmond'
+config.section_('Site')
+config.Site.whitelist = ['T2_US_*']
+config.Site.storageSite = 'T3_US_FNALLPC'
+config.section_('User')
+config.section_('Debug')
+
+DEBUG 2021-04-28 20:53:28.330 UTC: 	 self.config.JobType.psetName: hlt_raw_Conf.py
+INFO 2021-04-28 20:53:28.331 UTC: 	 Importing CMSSW configuration hlt_raw_Conf.py
+INFO 2021-04-28 20:53:29.819 UTC: 	 Finished importing CMSSW configuration hlt_raw_Conf.py
+DEBUG 2021-04-28 20:53:29.820 UTC: 	 Writing CMSSW configuration to /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/inputs/PSet.py
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 The following EDM output files will be collected: ['DQMIO.root']
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 The following TFile output files will be collected: []
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 The following user output files (not listed as PoolOuputModule or TFileService in the CMSSW PSet) will be collected: 
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 Loading required information from the environment
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 Found CMSSW_10_2_16_UL for slc7_amd64_gcc700 with base /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL
+DEBUG 2021-04-28 20:53:30.984 UTC: 	 Making tarball in /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/inputs/1dda46ba-e3d2-40d1-ae30-f6d4235ee93fdefault.tgz
+DEBUG 2021-04-28 20:53:30.988 UTC: 	 Checking directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/lib
+DEBUG 2021-04-28 20:53:30.988 UTC: 	 Adding directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/lib to tarball
+DEBUG 2021-04-28 20:53:32.293 UTC: 	 Checking directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/biglib
+DEBUG 2021-04-28 20:53:32.293 UTC: 	 Adding directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/biglib to tarball
+DEBUG 2021-04-28 20:53:32.295 UTC: 	 Checking directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/module
+DEBUG 2021-04-28 20:53:32.343 UTC: 	 Adding data directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/PhysicsTools/NanoAOD/interface to tarball
+DEBUG 2021-04-28 20:53:32.372 UTC: 	 Adding data directory /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/RecoTauTag/RecoTau/interface to tarball
+DEBUG 2021-04-28 20:53:32.831 UTC: 	 Uploading archive /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/inputs/1dda46ba-e3d2-40d1-ae30-f6d4235ee93fdefault.tgz (2.317383.1 MB) to the CRAB cache. Using URI https://cmsweb.cern.ch:8443/crabcache
+DEBUG 2021-04-28 20:53:36.326 UTC: 	 Loading required information from the environment
+DEBUG 2021-04-28 20:53:36.326 UTC: 	 Found CMSSW_10_2_16_UL for slc7_amd64_gcc700 with base /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL
+DEBUG 2021-04-28 20:53:36.326 UTC: 	 Making tarball in /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/inputs/debugFiles.tgz
+DEBUG 2021-04-28 20:53:36.419 UTC: 	 Uploading archive /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/inputs/debugFiles.tgz (50 KB) to the CRAB cache. Using URI https://cmsweb.cern.ch:8443/crabcache
+DEBUG 2021-04-28 20:53:37.299 UTC: 	 Result uploading input files: 11baaa86f7df64d1cd3144256242fee39e340d3fe85a7496559079c6277ad52b.tar.gz 
+INFO 2021-04-28 20:53:37.299 UTC: 	 Sending the request to the server at cmsweb.cern.ch
+DEBUG 2021-04-28 20:53:37.300 UTC: 	 Submitting {'maxjobruntime': 1250, 'extrajdl': [], 'ignorelocality': 1, 'savelogsflag': 0, 'useparent': 0, 'asyncdest': 'T3_US_FNALLPC', 'algoargs': 1, 'cachefilename': '11baaa86f7df64d1cd3144256242fee39e340d3fe85a7496559079c6277ad52b.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 4000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_10_2_16_UL', 'edmoutfiles': ['DQMIO.root'], 'userfiles': [], 'primarydataset': '', 'inputdata': '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW', 'lfn': '/store/user/ballmond', 'dryrun': 0, 'workflow': 'crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2', 'sitewhitelist': ['T2_US_*'], 'nonprodsw': 0, 'tfileoutfiles': [], 'oneEventMode': 0, 'debugfilename': '428385f502cb42504876eefaa87ba20646191f7e01005d1821230d822c75e424.tar.gz', 'cacheurl': u'https://cmsweb.cern.ch:8443/crabcache', 'saveoutput': 1, 'publication': 1, 'jobarch': 'slc7_amd64_gcc700', 'totalunits': 0, 'splitalgo': 'FileBased', 'ignoreglobalblacklist': 0, 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2021-04-28 20:53:37.300 UTC: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=1&savelogsflag=0&useparent=0&asyncdest=T3_US_FNALLPC&algoargs=1&cachefilename=11baaa86f7df64d1cd3144256242fee39e340d3fe85a7496559079c6277ad52b.tar.gz&numcores=1&generator=pythia&maxmemory=4000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_10_2_16_UL&primarydataset=&inputdata=%2FVBFHToTauTau_M125_13TeV_powheg_pythia8%2FRunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1%2FGEN-SIM-RAW&lfn=%2Fstore%2Fuser%2Fballmond&dryrun=0&workflow=crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2&nonprodsw=0&oneEventMode=0&debugfilename=428385f502cb42504876eefaa87ba20646191f7e01005d1821230d822c75e424.tar.gz&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%3A8443%2Fcrabcache&saveoutput=1&publication=1&jobarch=slc7_amd64_gcc700&totalunits=0&splitalgo=FileBased&ignoreglobalblacklist=0&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fglobal%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&sitewhitelist=T2_US_%2A&edmoutfiles=DQMIO.root
+DEBUG 2021-04-28 20:53:38.076 UTC: 	 Result: {u'result': [{u'RequestName': u'210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2'}]}
+INFO 2021-04-28 20:53:38.080 UTC: 	 Success: Your task has been delivered to the prod CRAB3 server.
+INFO 2021-04-28 20:53:38.080 UTC: 	 Task name: 210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+INFO 2021-04-28 20:53:38.080 UTC: 	 Project dir: test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+INFO 2021-04-28 20:53:38.080 UTC: 	 Please use ' crab status -d test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2 ' to check how the submission process proceeds.
+DEBUG 2021-04-28 20:53:38.080 UTC: 	 About to return
+DEBUG 2021-04-28 20:55:15.336 UTC: 	 CRAB Client version: v3.210323
+DEBUG 2021-04-28 20:55:15.337 UTC: 	 Running on: Linux cmslpc154.fnal.gov 3.10.0-1160.21.1.el7.x86_64 #1 SMP Tue Mar 16 08:00:44 CDT 2021 x86_64 x86_64 x86_64 GNU/Linux - Scientific Linux 7.9 (Nitrogen)
+DEBUG 2021-04-28 20:55:15.337 UTC: 	 Executing command: 'status'
+DEBUG 2021-04-28 20:55:15.337 UTC: 	 Found CRAB cache file /uscms/home/ballmond/.crab3
+DEBUG 2021-04-28 20:55:15.352 UTC: 	 Checking credentials
+DEBUG 2021-04-28 20:55:15.352 UTC: 	 Found proxy file /uscms/home/ballmond/x509up_u56468
+DEBUG 2021-04-28 20:55:15.352 UTC: 	 Getting proxy life time left
+DEBUG 2021-04-28 20:55:15.456 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -timeleft
+ output : 535239
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:55:15.562 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -actimeleft
+ output : 535239
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:55:15.562 UTC: 	 Proxy valid for 148:40:39 hours
+DEBUG 2021-04-28 20:55:16.158 UTC: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+DEBUG 2021-04-28 20:55:16.271 UTC: 	 Executing : 
+ command : voms-proxy-info -file /uscms/home/ballmond/x509up_u56468 -identity
+ output : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:55:16.278 UTC: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2021-04-28 20:55:16.278 UTC: 	 using 5df23e446efdcd8e332b5ed15ab77658d9de8094 as credential login name
+DEBUG 2021-04-28 20:55:17.186 UTC: 	 Executing : 
+ command : myproxy-info -l 5df23e446efdcd8e332b5ed15ab77658d9de8094 -s myproxy.cern.ch
+ output : username: 5df23e446efdcd8e332b5ed15ab77658d9de8094
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  timeleft: 575:29:18  (24.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:55:17.188 UTC: 	 Myproxy is valid: 2071758
+DEBUG 2021-04-28 20:55:17.188 UTC: 	 Retrieving username ...
+DEBUG 2021-04-28 20:55:17.188 UTC: 	 Retrieving username from CRIC...
+DEBUG 2021-04-28 20:55:18.546 UTC: 	 username is ballmond
+DEBUG 2021-04-28 20:55:18.552 UTC: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2021-04-28 20:55:18.552 UTC: 	 using ballmond_CRAB as credential login name
+DEBUG 2021-04-28 20:55:19.460 UTC: 	 Executing : 
+ command : myproxy-info -l ballmond_CRAB -s myproxy.cern.ch
+ output : username: ballmond_CRAB
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms0105.cern.ch|/DC=ch/DC=cern/OU=computers/CN=crab-(preprod|prod|dev)-tw(02|01).cern.ch|/DC=ch/DC=cern/OU=computers/CN=(ddi|ddidk|mytw).cern.ch|/DC=ch/DC=cern/OU=computers/CN=stefanov(m|m2).cern.ch
+  timeleft: 575:29:28  (24.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2021-04-28 20:55:19.460 UTC: 	 Myproxy is valid: 2071768
+DEBUG 2021-04-28 20:55:19.460 UTC: 	 Result of myproxy credential check:
+  Credential exists on myproxy: username: 5df23e446efdcd8e332b5ed15ab77658d9de8094  - validity: 23 days, 23:29:18
+  Credential exists on myproxy: username: ballmond_CRAB  - validity: 23 days, 23:29:28
+DEBUG 2021-04-28 20:55:19.461 UTC: 	 Command use: status
+DEBUG 2021-04-28 20:55:19.461 UTC: 	 Options use: ['-d', 'test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2']
+DEBUG 2021-04-28 20:55:20.041 UTC: 	 CRABClient version: v3.210323
+DEBUG 2021-04-28 20:55:20.041 UTC: 	 Instance is prod
+DEBUG 2021-04-28 20:55:20.042 UTC: 	 Server base url is cmsweb.cern.ch
+DEBUG 2021-04-28 20:55:20.042 UTC: 	 Command url /crabserver/prod/workflow
+DEBUG 2021-04-28 20:55:20.697 UTC: 	 Got information from server oracle database: {u'result': [u'210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2', u'None', u'None', u'SUBMITFAILED', u'SUBMIT', u'2021-04-28 20:53:38.016245', u'None', u'2021-04-28 20:54:18.277709', u'Problem handling 210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2 because of Could not find any schedd to submit to. Exception was raised: No CRAB schedds returned by collecor query. \'COLLECTOR_HOST\' parameter is \'cmsgwms-collector-global.cern.ch:9620,cmsgwms-collector-global.fnal.gov\'. Try later\n failure, traceback follows\nTraceback (most recent call last):\n  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/Handler.py", line 79, in executeAction\n    output = work.execute(nextinput, task=self._task, tempDir=self.tempDir)\n  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 262, in execute\n    schedd = self.pickAndSetSchedd(task)\n  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 237, in pickAndSetSchedd\n    schedd = loc.getSchedd(chooserFunction=self.config.TaskWorker.scheddPickerFunction)\n  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/HTCondorLocator.py", line 175, in getSchedd\n    raise Exception("Could not find any schedd to submit to. Exception was raised: %s\\n" % str(ex))\nException: Could not find any schedd to submit to. Exception was raised: No CRAB schedds returned by collecor query. \'COLLECTOR_HOST\' parameter is \'cmsgwms-collector-global.cern.ch:9620,cmsgwms-collector-global.fnal.gov\'. Try later\n\n', u'CMSSW_10_2_16_UL', u'slc7_amd64_gcc700', u'/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW', u'F', u'0', u"['T2_US_UCSD', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_US_MIT', 'T2_US_Caltech', 'T2_US_Purdue', 'T2_US_Nebraska', 'T2_US_Vanderbilt']", u'[]', u'FileBased', u"{'splitOnRun': False, 'halt_job_on_file_boundaries': False, 'files_per_job': 1, 'runs': [], 'lumis': []}", u'11baaa86f7df64d1cd3144256242fee39e340d3fe85a7496559079c6277ad52b.tar.gz', u'https://cmsweb.cern.ch:8443/crabcache', u'ballmond', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=ballmond/CN=847549/CN=Braden Allmond', u'cms', u'None', u'None', u'crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2-00000000000000000000000000000000', u'F', u'T3_US_FNALLPC', u'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'T', u'[]', u'[]', u"['DQMIO.root']", u'Analysis', u'pythia', u'None', u'{}', u'[]', u'F', u'crab-prod-tw01', u'[]', u'1250', u'1', u'4000', u'10', u'None', u"['Task requests 4000 MB of memory, but only 2500 MB are guaranteed to be available. Jobs may not find a site where to run and stay idle forever.']", u'None', u'None', u'[]', u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'cmsgwms-collector-global.cern.ch:9620,cmsgwms-collector-global.fnal.gov', u'None', u'F', u'[]', u'T', u'/store/user/ballmond', u'T', u'None', u'F', u'None', u'VBFHToTauTau_M125_13TeV_powheg_pythia8', u'None', u'428385f502cb42504876eefaa87ba20646191f7e01005d1821230d822c75e424.tar.gz', u'None', u'filetransfers', u'F', u'188.185.88.214', u'0.0', u'None'], u'desc': {u'columns': [u'tm_taskname', u'tm_activity', u'panda_jobset_id', u'tm_task_status', u'tm_task_command', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_nonvalid_input_dataset', u'tm_use_parent', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_publish_groupname', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_job_type', u'tm_generator', u'tm_events_per_lumi', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_task_warnings', u'tm_user_webdir', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_asourl', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_last_publication', u'tm_debug_files', u'clusterid', u'tm_asodb', u'tm_ignore_global_blacklist', u'tm_submitter_ip_addr', u'tm_totalunits', u'tm_ddm_reqid']}}
+INFO 2021-04-28 20:55:20.698 UTC: 	 CRAB project directory:		/uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+INFO 2021-04-28 20:55:20.698 UTC: 	 Task name:			210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+INFO 2021-04-28 20:55:20.698 UTC: 	 Grid scheduler - Task Worker:	N/A yet - crab-prod-tw01
+INFO 2021-04-28 20:55:20.698 UTC: 	 Status on the CRAB server:	SUBMITFAILED
+INFO 2021-04-28 20:55:20.698 UTC: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/210428_205337%3Aballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2
+INFO 2021-04-28 20:55:20.703 UTC: 	 Dashboard monitoring URL:	https://monit-grafana.cern.ch/d/cmsTMDetail/cms-task-monitoring-task-view?orgId=11&var-user=ballmond&var-task=210428_205337%3Aballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2&from=1619639618000&to=now
+WARNING 2021-04-28 20:55:20.703 UTC: 	 Warning:			Task requests 4000 MB of memory, but only 2500 MB are guaranteed to be available. Jobs may not find a site where to run and stay idle forever.
+ERROR 2021-04-28 20:55:20.703 UTC: 	 Failure message from server:	Problem handling 210428_205337:ballmond_crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2 because of Could not find any schedd to submit to. Exception was raised: No CRAB schedds returned by collecor query. 'COLLECTOR_HOST' parameter is 'cmsgwms-collector-global.cern.ch:9620,cmsgwms-collector-global.fnal.gov'. Try later
+				 failure, traceback follows
+				Traceback (most recent call last):
+				  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/Handler.py", line 79, in executeAction
+				    output = work.execute(nextinput, task=self._task, tempDir=self.tempDir)
+				  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 262, in execute
+				    schedd = self.pickAndSetSchedd(task)
+				  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/TaskWorker/Actions/DagmanSubmitter.py", line 237, in pickAndSetSchedd
+				    schedd = loc.getSchedd(chooserFunction=self.config.TaskWorker.scheddPickerFunction)
+				  File "/data/srv/TaskManager/v3.210318/slc7_amd64_gcc630/cms/crabtaskworker/v3.210318/lib/python2.7/site-packages/HTCondorLocator.py", line 175, in getSchedd
+				    raise Exception("Could not find any schedd to submit to. Exception was raised: %s\n" % str(ex))
+				Exception: Could not find any schedd to submit to. Exception was raised: No CRAB schedds returned by collecor query. 'COLLECTOR_HOST' parameter is 'cmsgwms-collector-global.cern.ch:9620,cmsgwms-collector-global.fnal.gov'. Try later
+				
+				
+DEBUG 2021-04-28 20:55:20.703 UTC: 	 The task has not been submitted to the Grid scheduler yet. Not printing job information.
+INFO 2021-04-28 20:55:20.706 UTC: 	 Log file is /uscms_data/d3/ballmond/test-dir/CMSSW_10_2_16_UL/src/VBFTau/NtupleMaker/python/test/crab_VBFHToTauTau_GENSIMRAW_full_hlt_w_conf_04282021_2/crab.log

@@ -13777,10 +13777,21 @@ conf_process.demo = cms.EDAnalyzer('NtupleMaker'
      , ak4JetSrc = cms.untracked.InputTag("slimmedJets")
 )
 
-#conf_process.TFileService = cms.Service("TFileService",
-#    fileName = cms.string("histo.root"),
-#    closeFileFast = cms.untracked.bool(True)
-#)
+conf_process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("histo.root"),
+    closeFileFast = cms.untracked.bool(True)
+)
+
+conf_process.output_file = cms.OutputModule( "PoolOutputModule",
+    fileName = cms.untracked.string( "histo.root" ),
+    fastCloning = cms.untracked.bool( False ),
+    dataset = cms.untracked.PSet(
+    filterName = cms.untracked.string( "" ),
+    dataTier = cms.untracked.string( "RAW" )
+)
+)
+
+conf_process.output = cms.EndPath(conf_process.output_file)
 
 
 conf_process.conf_process = cms.Path(
@@ -13795,7 +13806,7 @@ conf_process.conf_process, process.HLTAnalyzerEndpath ))
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root',
+        'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -13814,9 +13825,9 @@ process.maxEvents = cms.untracked.PSet(
 # enable TrigReport, TimeReport and MultiThreading
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( True ),
-    numberOfThreads = cms.untracked.uint32( 4 ),
+    #numberOfThreads = cms.untracked.uint32( 4 ),
     numberOfStreams = cms.untracked.uint32( 0 ),
-    sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
+    #sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
 )
 
 # override the GlobalTag, connection string and pfnPrefix

@@ -13726,36 +13726,25 @@ process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1 = cms.Path( proce
 process.HLTriggerFinalPath = cms.Path( process.hltGtStage2Digis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW + process.hltBoolFalse )
 process.HLTAnalyzerEndpath = cms.EndPath( process.hltGtStage2Digis + process.hltPreHLTAnalyzerEndpath + process.hltL1TGlobalSummary + process.hltTrigReport )
 
-import FWCore.ParameterSet.Config as cms
-
-conf_process = cms.Process("Demo")
-#conf_process = cms.Process(cms.InputTag("TriggerResults","","MYHLT"))
-
-conf_process.load("FWCore.MessageService.MessageLogger_cfi")
-
-conf_process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-
-conf_process.source = cms.Source("PoolSource",
-    # replace 'myfile.root' with the source file you want to use
+process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_2_16_UL/src/HLTrigger/Configuration/test/addedhltVBF_raw.root'
-    
-	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/00000/1ACE0760-BF84-3F47-A601-29022E50122E.root'
-	'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root'
+        'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root',
+    ),
+    inputCommands = cms.untracked.vstring(
+        'keep *'
     )
-    
 )
 
 updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
-tauIdEmbedder = tauIdConfig.TauIDEmbedder(conf_process, cms, debug = False,
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = ["deepTau2017v2p1", #deepTau TauIDs
                                ])
 tauIdEmbedder.runTauID()
 # Path and EndPath definitions
 
-conf_process.demo = cms.EDAnalyzer('NtupleMaker'
+process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
      , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
@@ -13777,41 +13766,18 @@ conf_process.demo = cms.EDAnalyzer('NtupleMaker'
      , ak4JetSrc = cms.untracked.InputTag("slimmedJets")
 )
 
-conf_process.TFileService = cms.Service("TFileService",
+process.TFileService = cms.Service("TFileService",
     fileName = cms.string("histo.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 
-conf_process.output_file = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "histo.root" ),
-    fastCloning = cms.untracked.bool( False ),
-    dataset = cms.untracked.PSet(
-    filterName = cms.untracked.string( "" ),
-    dataTier = cms.untracked.string( "RAW" )
-)
-)
+#process.demoPath = cms.Path(
+#	process.demo
+#)
 
-conf_process.output = cms.EndPath(conf_process.output_file)
+#process.HLTSchedule.associate(process.demoPath)
 
-
-conf_process.conf_process = cms.Path(
-        #conf_process.rerunMvaIsolationSequence *
-        #getattr(conf_process,updatedTauName) *
-        conf_process.demo
-)
-
-process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, 
-conf_process.conf_process, process.HLTAnalyzerEndpath ))
-
-
-process.source = cms.Source( "PoolSource",
-    fileNames = cms.untracked.vstring(
-        'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root',
-    ),
-    inputCommands = cms.untracked.vstring(
-        'keep *'
-    )
-)
+process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, cms.Path(process.demo)))
 
 # run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
 from HLTrigger.Configuration.CustomConfigs import L1REPACK

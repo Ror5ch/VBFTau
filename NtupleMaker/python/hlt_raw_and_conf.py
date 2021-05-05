@@ -13771,13 +13771,13 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
-#process.demoPath = cms.Path(
-#	process.demo
-#)
+process.demoPath = cms.EndPath(
+	process.demo
+)
 
 #process.HLTSchedule.associate(process.demoPath)
 
-process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, cms.Path(process.demo)))
+process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath))
 
 # run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
 from HLTrigger.Configuration.CustomConfigs import L1REPACK

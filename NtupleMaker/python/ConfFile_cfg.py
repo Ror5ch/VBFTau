@@ -11,9 +11,9 @@ conf_process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 conf_process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_2_16_UL/src/HLTrigger/Configuration/test/addedhltVBF_raw.root'
+        #'file:/afs/cern.ch/user/b/ballmond/private/CMSSW_10_2_16_UL/src/HLTrigger/Configuration/test/addedhltVBF_raw.root'
 
-	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root'
+	'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root'
     
 	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/00000/1ACE0760-BF84-3F47-A601-29022E50122E.root'
     )

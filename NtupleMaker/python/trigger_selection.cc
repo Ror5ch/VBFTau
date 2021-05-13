@@ -21,6 +21,8 @@
 
 #include "trigger_tree.h"
 
+// example running ./trigger_selection.exe /hdfs/store/user/ballmond/merged_trigger_05092020/merged.root ./output.root
+
 int main(int argc, char** argv)	{
     //myMap1 = new map<std::string, TH1F*>(); // i think this is for generalized naming/name fixing of different files
     //////////////////////////////////////
@@ -39,16 +41,27 @@ int main(int argc, char** argv)	{
     // Open input file and make new output file
     TTree *outTree = new TTree("outTree", "outTree");
     outTree->SetDirectory(0);
-    int VBFTwoTriggerEta;
+    float VBFTwoTriggerEta;
+    int vecSize;
     outTree->Branch("VBFTwoTriggerEta", &VBFTwoTriggerEta);
 
     // Event Loop
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
-	VBFTwoTriggerEta = inTree->hltMatchedVBFTwo_eta;
-	if (fabs(VBFTwoTriggerEta) > 2.1) continue;
-	outTree->Fill();
+	vecSize = inTree->hltMatchedVBFTwo_eta->size(); 
+	if (vecSize == 0) continue; 
+	else{
+	    for (int iVecEntry = 0; iVecEntry < vecSize; iVecEntry++) {
+		VBFTwoTriggerEta = inTree->hltMatchedVBFTwo_eta->at(iVecEntry);
+		//std::cout << VBFTwoTriggerEta << std::endl;
+		if (fabs(VBFTwoTriggerEta) > 2.1) continue;
+		outTree->Fill();
+	    }
+	}
+	//std::cout << VBFTwoTriggerEta << std::endl;
+	//if (fabs(VBFTwoTriggerEta) > 2.1) continue;
+	//outTree->Fill();
 
     } // end event loop
 

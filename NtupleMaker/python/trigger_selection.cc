@@ -33,15 +33,12 @@ int main(int argc, char** argv)	{
     std::string inName = in;
     std::string outName = out;
     TFile *fIn = TFile::Open(inName.c_str());
-    //fIn->SetDirectory(0);
     TTree* treePtr = (TTree*) fIn->Get("demo/vbf");
     trigger_tree* inTree = new trigger_tree (treePtr);
 
     // Open input file and make new output file
-    //TTree *inTree = (TTree*)fIn->Get("demo/vbf");
     TTree *outTree = new TTree("outTree", "outTree");
-    //outTree->SetDirectory(0);
-    //here's where you'd make a header file for that input file i think...
+    outTree->SetDirectory(0);
     int VBFTwoTriggerEta;
     outTree->Branch("VBFTwoTriggerEta", &VBFTwoTriggerEta);
 
@@ -49,7 +46,6 @@ int main(int argc, char** argv)	{
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
-        //inTree->GetBranch("hltMatchedVBFTwo_eta");
 	VBFTwoTriggerEta = inTree->hltMatchedVBFTwo_eta;
 	if (fabs(VBFTwoTriggerEta) > 2.1) continue;
 	outTree->Fill();

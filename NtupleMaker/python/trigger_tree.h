@@ -4,15 +4,21 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <vector>
 
 class trigger_tree {
 public :
     TTree	*fChain;
     Int_t	fCurrent;
 
-    Float_t	hltMatchedVBFTwo_eta;
+    std::vector<float>* hltHpsDoublePFTau_pt = nullptr;
+    std::vector<float>* hltHpsDoublePFTau_eta = nullptr;
+    std::vector<float>* hltMatchedVBFOne_pt = nullptr;
+    std::vector<float>* hltMatchedVBFOne_eta = nullptr;
+    std::vector<float>*	hltMatchedVBFTwo_pt = nullptr;
+    std::vector<float>* hltMatchedVBFTwo_eta = nullptr;
 
-    TBranch	*b_hltMatchedVBFTwo_eta;
+    //TBranch	*b_hltMatchedVBFTwo_eta;
 
     trigger_tree(TTree *tree=0);
     virtual ~trigger_tree();
@@ -53,7 +59,12 @@ void trigger_tree::Init(TTree *tree)
     if (!tree) return;
     fChain = tree;
     fCurrent = -1;
-    fChain->SetBranchAddress("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta, &b_hltMatchedVBFTwo_eta);
+    fChain->SetBranchAddress("hltHpsDoublePFTau_pt", &hltHpsDoublePFTau_pt);
+    fChain->SetBranchAddress("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
+    fChain->SetBranchAddress("hltMatchedVBFOne_pt", &hltMatchedVBFOne_pt);
+    fChain->SetBranchAddress("hltMatchedVBFOne_eta", &hltMatchedVBFOne_eta);
+    fChain->SetBranchAddress("hltMatchedVBFTwo_pt", &hltMatchedVBFTwo_pt);
+    fChain->SetBranchAddress("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
 }
 
 #endif

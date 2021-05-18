@@ -143,8 +143,8 @@ int main(int argc, char** argv)	{
 	jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
 	jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
 	//mjj = (pow(j1_energy,2)-pow(j1_p,2))+(pow(j2_energy,2)-pow(j2_p,2)); 
-	mjj = jet1.M2() + jet2.M2();
-	//if (mjj < 700) continue;
+	mjj = (jet1 + jet2).M();
+	if (mjj < 700) continue;
 	outTree->Fill();
 
     } // end event loop

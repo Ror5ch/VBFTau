@@ -47,15 +47,17 @@ int main(int argc, char** argv)	{
     float j2_pt;
     float j1_eta;
     float j2_eta;
+    float j1_phi;
+    float j2_phi;
     float t1_pt;
     float t2_pt;
     float VBFOneTriggerPt;
     float VBFOneTriggerEta;
     float mjj;
     float j1_energy;
-    float j1_p;
+    //float j1_p;
     float j2_energy;
-    float j2_p;
+    //float j2_p;
     //float VBFOneTriggerPhi;
     //float VBFOneTriggerEnergy;
     float VBFTwoTriggerPt;
@@ -110,6 +112,8 @@ int main(int argc, char** argv)	{
 	     }
 	     j1_eta = inTree->hltMatchedVBFOne_eta->at(j1_loc);
 	     j2_eta = inTree->hltMatchedVBFOne_eta->at(j2_loc);
+	     j1_phi = inTree->hltMatchedVBFOne_phi->at(j1_loc);
+	     j2_phi = inTree->hltMatchedVBFOne_phi->at(j2_loc);
 	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
 	     j2_energy = inTree->hltMatchedVBFOne_energy->at(j2_loc);
 	}
@@ -124,6 +128,8 @@ int main(int argc, char** argv)	{
 	     }
 	     j1_eta = inTree->hltMatchedVBFOne_eta->at(j1_loc);
 	     j2_eta = inTree->hltMatchedVBFTwo_eta->at(j2_loc);
+	     j1_phi = inTree->hltMatchedVBFOne_phi->at(j1_loc);
+	     j2_phi = inTree->hltMatchedVBFTwo_phi->at(j2_loc);
 	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
 	     j2_energy = inTree->hltMatchedVBFTwo_energy->at(j2_loc);
 	}
@@ -131,11 +137,14 @@ int main(int argc, char** argv)	{
 	if (j1_pt < 120) continue;
 	if (j2_pt < 45) continue;
 
-	j1_p = j1_pt*cosh(j1_eta);
-	j2_p = j2_pt*cosh(j2_eta);
-
-	mjj = (pow(j1_energy,2)-pow(j1_p,2))+(pow(j2_energy,2)-pow(j2_p,2)); 
-
+	//j1_p = j1_pt*cosh(j1_eta);
+	//j2_p = j2_pt*cosh(j2_eta);
+	TLorentzVector jet1, jet2;
+	jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
+	jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
+	//mjj = (pow(j1_energy,2)-pow(j1_p,2))+(pow(j2_energy,2)-pow(j2_p,2)); 
+	mjj = jet1.M2() + jet2.M2();
+	//if (mjj < 700) continue;
 	outTree->Fill();
 
     } // end event loop

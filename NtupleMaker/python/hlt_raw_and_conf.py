@@ -13754,8 +13754,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(False)
-     , needJets = cms.untracked.bool(False)
+     , needTaus = cms.untracked.bool(True)
+     , needJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 

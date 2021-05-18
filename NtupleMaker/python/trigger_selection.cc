@@ -51,6 +51,11 @@ int main(int argc, char** argv)	{
     float t2_pt;
     float VBFOneTriggerPt;
     float VBFOneTriggerEta;
+    float mjj;
+    float j1_energy;
+    float j1_p;
+    float j2_energy;
+    float j2_p;
     //float VBFOneTriggerPhi;
     //float VBFOneTriggerEnergy;
     float VBFTwoTriggerPt;
@@ -70,6 +75,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("j2_eta", &j2_eta);
     outTree->Branch("t1_pt", &t1_pt);
     outTree->Branch("t2_pt", &t2_pt);
+    outTree->Branch("mjj", &mjj);
 
     // Event Loop
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
@@ -104,6 +110,8 @@ int main(int argc, char** argv)	{
 	     }
 	     j1_eta = inTree->hltMatchedVBFOne_eta->at(j1_loc);
 	     j2_eta = inTree->hltMatchedVBFOne_eta->at(j2_loc);
+	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
+	     j2_energy = inTree->hltMatchedVBFOne_energy->at(j2_loc);
 	}
 	if (vecSizeVBFOne == 1){// if there's 1 jet with pt > 115, make it the leading one. Subleading is in prior filter.
 	     j1_pt = inTree->hltMatchedVBFOne_pt->at(0);
@@ -116,10 +124,18 @@ int main(int argc, char** argv)	{
 	     }
 	     j1_eta = inTree->hltMatchedVBFOne_eta->at(j1_loc);
 	     j2_eta = inTree->hltMatchedVBFTwo_eta->at(j2_loc);
+	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
+	     j2_energy = inTree->hltMatchedVBFTwo_energy->at(j2_loc);
 	}
 	if (fabs(j1_eta) > 2.1 || fabs(j2_eta) > 2.1) continue;
 	if (j1_pt < 120) continue;
 	if (j2_pt < 45) continue;
+
+	j1_p = j1_pt*cosh(j1_eta);
+	j2_p = j2_pt*cosh(j2_eta);
+
+	mjj = (pow(j1_energy,2)-pow(j1_p,2))+(pow(j2_energy,2)-pow(j2_p,2)); 
+
 	outTree->Fill();
 
     } // end event loop

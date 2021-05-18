@@ -15,8 +15,10 @@ public :
     std::vector<float>* hltHpsDoublePFTau_eta = nullptr;
     std::vector<float>* hltMatchedVBFOne_pt = nullptr;
     std::vector<float>* hltMatchedVBFOne_eta = nullptr;
+    std::vector<float>* hltMatchedVBFOne_energy = nullptr;
     std::vector<float>*	hltMatchedVBFTwo_pt = nullptr;
     std::vector<float>* hltMatchedVBFTwo_eta = nullptr;
+    std::vector<float>* hltMatchedVBFTwo_energy = nullptr;
 
     //TBranch	*b_hltMatchedVBFTwo_eta;
 
@@ -63,8 +65,10 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
     fChain->SetBranchAddress("hltMatchedVBFOne_pt", &hltMatchedVBFOne_pt);
     fChain->SetBranchAddress("hltMatchedVBFOne_eta", &hltMatchedVBFOne_eta);
+    fChain->SetBranchAddress("hltMatchedVBFOne_energy", &hltMatchedVBFOne_energy);
     fChain->SetBranchAddress("hltMatchedVBFTwo_pt", &hltMatchedVBFTwo_pt);
     fChain->SetBranchAddress("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
+    fChain->SetBranchAddress("hltMatchedVBFTwo_energy", &hltMatchedVBFTwo_energy);
 }
 
 #endif

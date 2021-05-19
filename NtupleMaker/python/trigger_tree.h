@@ -13,6 +13,8 @@ public :
 
     std::vector<float>* hltHpsDoublePFTau_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTau_eta = nullptr;
+    std::vector<float>* hltHpsDoublePFTau_phi = nullptr;
+    std::vector<float>* hltHpsDoublePFTau_energy = nullptr;
     std::vector<float>* hltMatchedVBFOne_pt = nullptr;
     std::vector<float>* hltMatchedVBFOne_eta = nullptr;
     std::vector<float>* hltMatchedVBFOne_phi = nullptr;
@@ -22,7 +24,15 @@ public :
     std::vector<float>* hltMatchedVBFTwo_phi = nullptr;
     std::vector<float>* hltMatchedVBFTwo_energy = nullptr;
 
-    //TBranch	*b_hltMatchedVBFTwo_eta;
+    std::vector<float>* jetPt = nullptr;
+    std::vector<float>* jetEta = nullptr;
+    std::vector<float>* jetPhi = nullptr;
+    std::vector<float>* jetEn = nullptr;
+    std::vector<float>* tauPt = nullptr;
+    std::vector<float>* tauEta = nullptr;
+    std::vector<float>* tauPhi = nullptr;
+    std::vector<float>* tauEnergy = nullptr;
+    int 	nTau;
 
     trigger_tree(TTree *tree=0);
     virtual ~trigger_tree();
@@ -65,6 +75,8 @@ void trigger_tree::Init(TTree *tree)
     fCurrent = -1;
     fChain->SetBranchAddress("hltHpsDoublePFTau_pt", &hltHpsDoublePFTau_pt);
     fChain->SetBranchAddress("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
+    fChain->SetBranchAddress("hltHpsDoublePFTau_phi", &hltHpsDoublePFTau_phi);
+    fChain->SetBranchAddress("hltHpsDoublePFTau_energy", &hltHpsDoublePFTau_energy);
     fChain->SetBranchAddress("hltMatchedVBFOne_pt", &hltMatchedVBFOne_pt);
     fChain->SetBranchAddress("hltMatchedVBFOne_eta", &hltMatchedVBFOne_eta);
     fChain->SetBranchAddress("hltMatchedVBFOne_phi", &hltMatchedVBFOne_phi);
@@ -73,6 +85,16 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
     fChain->SetBranchAddress("hltMatchedVBFTwo_phi", &hltMatchedVBFTwo_phi);
     fChain->SetBranchAddress("hltMatchedVBFTwo_energy", &hltMatchedVBFTwo_energy);
+
+    fChain->SetBranchAddress("jetPt", &jetPt);
+    fChain->SetBranchAddress("jetEta", &jetEta);
+    fChain->SetBranchAddress("jetPhi", &jetPhi);
+    fChain->SetBranchAddress("jetEn", &jetEn);
+    fChain->SetBranchAddress("tauPt", &tauPt);
+    fChain->SetBranchAddress("tauEta", &tauEta);
+    fChain->SetBranchAddress("tauPhi", &tauPhi);
+    fChain->SetBranchAddress("tauEnergy", &tauEnergy);
+    fChain->SetBranchAddress("nTau", &nTau);
 }
 
 #endif

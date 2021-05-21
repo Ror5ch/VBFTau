@@ -58,7 +58,7 @@ conf_process.TFileService = cms.Service("TFileService",
 
 
 conf_process.conf_process = cms.Path(
-	#conf_process.rerunMvaIsolationSequence *
-	#getattr(conf_process,updatedTauName) * 
+	conf_process.rerunMvaIsolationSequence *
+	getattr(conf_process,updatedTauName) * 
 	conf_process.demo
 )

@@ -13772,6 +13772,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
+	process.rerunMvaIsolationSequence *
+	getattr(process,updatedTauName) *
 	process.demo
 )
 

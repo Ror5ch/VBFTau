@@ -101,18 +101,24 @@ int main(int argc, char** argv)	{
     outTree->Branch("t2_pt", &t2_pt);
     outTree->Branch("mjj", &mjj);
 
+    TH1F *h_cutflow = new TH1F("","",7,0,7);
+
     // Event Loop
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 
+	// baseline selection
+	h_cutflow->Fill(0.0,1.0);
+
 	vecSizeHpsTau = inTree->hltHpsDoublePFTau_pt->size();
 	vecSizeVBFOne = inTree->hltMatchedVBFOne_pt->size();
 	vecSizeVBFTwo = inTree->hltMatchedVBFTwo_pt->size(); 
 
-	if (inTree->nTau != 0) std::cout << inTree->nTau << std::endl;
 	// if there aren't two taus, skip the event
 	if (vecSizeHpsTau != 2) continue;
+	h_cutflow->Fill(1.0,1.0);
+	
 	t1_pt = inTree->hltHpsDoublePFTau_pt->at(0);
 	t2_pt = inTree->hltHpsDoublePFTau_pt->at(1);
 	t1_loc = 0;
@@ -138,10 +144,12 @@ int main(int argc, char** argv)	{
 
 	// old trig req.: t1_pt > 25 && t2_pt > 25 && j1_pt > 120 && j2_pt > 45 && mjj > 700
 	if (t1_pt < 25 || t2_pt < 25) continue;
+	h_cutflow->Fill(2.0,1.0);
 
 	// if last filter is empty or second to last filter doesn't have 2 jets, skip event
 	if (vecSizeVBFOne == 0 || vecSizeVBFTwo != 2) continue;
-	
+	h_cutflow->Fill(3.0,1.0);	
+
 	// if there are 2 jets with pt > 115, make the greater pt jet j1_pt
 	if (vecSizeVBFOne == 2){
 	     j1_pt = inTree->hltMatchedVBFOne_pt->at(0);
@@ -180,9 +188,11 @@ int main(int argc, char** argv)	{
 	}
 	//exclude events with too high eta (should do this for tau also?)	
 	if (fabs(j1_eta) > 2.1 || fabs(j2_eta) > 2.1) continue;
+	h_cutflow->Fill(4.0,1.0);
 
 	// kinematic reqs of old trigger
 	if (j1_pt < 120 || j2_pt < 45) continue;
+	h_cutflow->Fill(5.0,1.0);
 
 	// calculate mjj, use TLorentzVector to use built in M() function from root
 	TLorentzVector jet1, jet2;
@@ -192,6 +202,7 @@ int main(int argc, char** argv)	{
 	mjj = (jet1 + jet2).M();
 	
 	if (mjj < 700) continue;
+	h_cutflow->Fill(6.0,1.0);
 
 	//now try to match to MiniAOD object
 
@@ -245,6 +256,8 @@ int main(int argc, char** argv)	{
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");
     fOut->cd();
+    h_cutflow->SetName("Cutflow");
+    h_cutflow->Write();
     outTree->Write();
     fOut->Close();
     return 0;

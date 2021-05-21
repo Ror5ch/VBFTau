@@ -14,6 +14,7 @@ float 	eta_;
 float 	phi_;
 float 	energy_;
 
+// vars associated w old trigger and filters
 //full trigger name is
 //hltHpsPFTauTrack
 vector<float> 	hltHpsPFTauTrack_pt;
@@ -35,6 +36,25 @@ vector<float>	hltMatchedVBFTwo_pt;
 vector<float>	hltMatchedVBFTwo_eta;
 vector<float>	hltMatchedVBFTwo_phi;
 vector<float>	hltMatchedVBFTwo_energy;
+
+// vars associated w new trigger and filters
+// full trigger name is
+//hltHpsDoubleTightIsoAgainstMuonMatch (this filter checks L1-HLT matched taus > 50 GeV)
+vector<float> hltHpsDoubleAgainstMuon_pt;
+vector<float> hltHpsDoubleAgainstMuon_eta;
+vector<float> hltHpsDoubleAgainstMuon_phi;
+vector<float> hltHpsDoubleAgainstMuon_energy;
+//hltMatchedNewVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
+vector<float> hltMatchedNewVBFTwo_pt;
+vector<float> hltMatchedNewVBFTwo_eta;
+vector<float> hltMatchedNewVBFTwo_phi;
+vector<float> hltMatchedNewVBFTwo_energy;
+
+//the taus/jets are the same objects and therefore have the same information,
+//no matter if it's stored by the new or the old trigger
+//The difference is the new trigger ends its filter without cutting off 115pt Jets,
+//and it has a separate matching branch for taus (or a tau) at 50GeV
+//Everything else is the same/shared btwn (HpsTauTracks for example)
 
 void NtupleMaker::branchesTriggers(TTree* tree){
 
@@ -59,6 +79,16 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
     tree->Branch("hltMatchedVBFTwo_phi", &hltMatchedVBFTwo_phi);
     tree->Branch("hltMatchedVBFTwo_energy", &hltMatchedVBFTwo_energy);
+
+    tree->Branch("hltMatchedNewVBFTwo_pt", &hltMatchedNewVBFTwo_pt);
+    tree->Branch("hltMatchedNewVBFTwo_eta", &hltMatchedNewVBFTwo_eta);
+    tree->Branch("hltMatchedNewVBFTwo_phi", &hltMatchedNewVBFTwo_phi);
+    tree->Branch("hltMatchedNewVBFTwo_energy", &hltMatchedNewVBFTwo_energy);
+
+    tree->Branch("hltHpsDoubleAgainstMuon_pt", &hltHpsDoubleAgainstMuon_pt);
+    tree->Branch("hltHpsDoubleAgainstMuon_eta", &hltHpsDoubleAgainstMuon_eta);
+    tree->Branch("hltHpsDoubleAgainstMuon_phi", &hltHpsDoubleAgainstMuon_phi);
+    tree->Branch("hltHpsDoubleAgainstMuon_energy", &hltHpsDoubleAgainstMuon_energy);
 }
 
 void NtupleMaker::fillTriggers(const edm::Event& iEvent){
@@ -84,6 +114,15 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltMatchedVBFTwo_eta.clear();
     hltMatchedVBFTwo_phi.clear();
     hltMatchedVBFTwo_energy.clear();
+
+    hltMatchedNewVBFTwo_pt.clear();
+    hltMatchedNewVBFTwo_eta.clear();
+    hltMatchedNewVBFTwo_phi.clear();
+    hltMatchedNewVBFTwo_energy.clear();
+    hltHpsDoubleAgainstMuon_pt.clear();
+    hltHpsDoubleAgainstMuon_eta.clear();
+    hltHpsDoubleAgainstMuon_phi.clear();
+    hltHpsDoubleAgainstMuon_energy.clear();
     
     // getting trigger results and saving to passTrigBranch
     edm::Handle<edm::TriggerResults> triggerResults;
@@ -101,6 +140,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string hltHpsDoublePFTau_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
     std::string hltMatchedVBFOne_Tag = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
     std::string hltMatchedVBFTwo_Tag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
+    std::string hltMatchedNewVBFTwo_Tag = "hltMatchedNewVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
+    std::string hltHpsDoubleAgainstMuon_Tag = "hltHpsDoubleTightIsoAgainstMuonMatch::MYHLT";
 
     for(trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
 	std::string filterTag = triggerEvent->filterTag(iFilter).encode();
@@ -141,6 +182,20 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
                 hltMatchedVBFTwo_phi.push_back(phi_);
 		hltMatchedVBFTwo_energy.push_back(energy_);
             }
+	// fill hltMatchedVBFNewTwo branches if match
+	    if (filterTag == hltMatchedNewVBFTwo_Tag && pt_>0){
+		hltMatchedNewVBFTwo_pt.push_back(pt_);
+ 		hltMatchedNewVBFTwo_eta.push_back(eta_);
+		hltMatchedNewVBFTwo_phi.push_back(phi_);
+		hltMatchedNewVBFTwo_energy.push_back(energy_);
+	    }
+	// fill hltHpsDoubleAgainstMuon branches if match
+	    if (filterTag == hltHpsDoubleAgainstMuon_Tag && pt_>0){
+		hltHpsDoubleAgainstMuon_pt.push_back(pt_);
+		hltHpsDoubleAgainstMuon_eta.push_back(eta_);
+		hltHpsDoubleAgainstMuon_phi.push_back(phi_);
+		hltHpsDoubleAgainstMuon_energy.push_back(energy_);
+	    }
 	} // end loop over trigger object keys
     } // end loop over nfilters
 } // end function

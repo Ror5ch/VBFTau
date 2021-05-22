@@ -87,19 +87,29 @@ int main(int argc, char** argv)	{
     float t2_phi_A;
     float t2_energy_A;
 
-    float dRj1 = 999;
-    float dRj2 = 999;
-    float dRt1 = 999;
-    float dRt2 = 999;
+    float dRj1;
+    float dRj2;
+    float dRt1;
+    float dRt2;
     //might need more tau variables?
  
     outTree->Branch("j1_pt", &j1_pt);
     outTree->Branch("j2_pt", &j2_pt);
     outTree->Branch("j1_eta", &j1_eta);
     outTree->Branch("j2_eta", &j2_eta);
+    outTree->Branch("j1_phi", &j1_phi);
+    outTree->Branch("j2_phi", &j2_phi);
     outTree->Branch("t1_pt", &t1_pt);
     outTree->Branch("t2_pt", &t2_pt);
+    outTree->Branch("t1_eta", &t1_eta);
+    outTree->Branch("t2_eta", &t2_eta);
+    outTree->Branch("t1_phi", &t1_phi);
+    outTree->Branch("t2_phi", &t2_phi);
     outTree->Branch("mjj", &mjj);
+    outTree->Branch("dRj1", &dRj1);
+    outTree->Branch("dRj2", &dRj2);
+    outTree->Branch("dRt1", &dRt1);
+    outTree->Branch("dRt2", &dRt2);
 
     TH1F *h_cutflow = new TH1F("","",7,0,7);
 
@@ -108,8 +118,13 @@ int main(int argc, char** argv)	{
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 
+	dRj1 = 999; //do something better, initializing like this can lead to errors
+	dRj2 = 999; //maybe make a list of all dR for all pairs and select minim dR event
+	dRt1 = 999;
+	dRt2 = 999;
+
 	// baseline selection
-	h_cutflow->Fill(0.0,1.0);
+	h_cutflow->Fill(0.0,0.0);
 
 	vecSizeHpsTau = inTree->hltHpsDoublePFTau_pt->size();
 	vecSizeVBFOne = inTree->hltMatchedVBFOne_pt->size();
@@ -131,7 +146,7 @@ int main(int argc, char** argv)	{
 	     t2_loc = 0;
 	}
 	t1_eta = inTree->hltHpsDoublePFTau_eta->at(t1_loc);
-	t1_phi = inTree->hltHpsDoublePFTau_phi->at(0);
+	t1_phi = inTree->hltHpsDoublePFTau_phi->at(t1_loc);
 	t1_energy = inTree->hltHpsDoublePFTau_energy->at(t1_loc);
 	t2_eta = inTree->hltHpsDoublePFTau_eta->at(t2_loc);
 	t2_phi = inTree->hltHpsDoublePFTau_phi->at(t2_loc);
@@ -189,12 +204,12 @@ int main(int argc, char** argv)	{
 	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
 	     j2_energy = inTree->hltMatchedVBFTwo_energy->at(j2_loc);
 	}
-	//exclude events with too high eta (should do this for tau also?)	
-	if (fabs(j1_eta) > 4.7 || fabs(j2_eta) > 4.7) continue;
-	h_cutflow->Fill(5.0,1.0);
-
 	// kinematic reqs of old trigger
 	if (j1_pt < 120 || j2_pt < 45) continue;
+	h_cutflow->Fill(5.0,1.0);
+
+	//exclude events with too high eta (this cut does very little)	
+	if (fabs(j1_eta) > 4.7 || fabs(j2_eta) > 4.7) continue;
 	h_cutflow->Fill(6.0,1.0);
 
 	// calculate mjj, use TLorentzVector to use built in M() function from root
@@ -248,10 +263,19 @@ int main(int argc, char** argv)	{
 		tau1_A.SetPtEtaPhiE(t1_pt_A,t1_eta_A,t1_phi_A,t1_energy_A);
 		dRt1 = tau1_A.DeltaR(tau1);
 	     }
+	     if (dRt2 > 0.5){
+		t2_pt_A = inTree->tauPt->at(iEntryVecAODTau);
+		t2_eta_A = inTree->tauEta->at(iEntryVecAODTau);
+		t2_phi_A = inTree->tauPhi->at(iEntryVecAODTau);
+		t2_energy_A = inTree->tauEnergy->at(iEntryVecAODTau);
+		tau2_A.SetPtEtaPhiE(t2_pt_A,t2_eta_A,t2_phi_A,t2_energy_A);
+		dRt2 = tau2_A.DeltaR(tau2);
+	     }
 	     //std::cout << "AOD t1 t1: " << t1_pt_A << ' ' << t2_pt_A << std::endl;
 	     //std::cout << dRt1 << std::endl;
 	}
 	//if (t1_pt != 0 && t2_pt != 0) std::cout << "t1_pt t2_pt: " << t1_pt << ' ' << t2_pt << std::endl;
+
 	outTree->Fill();
 
     } // end event loop

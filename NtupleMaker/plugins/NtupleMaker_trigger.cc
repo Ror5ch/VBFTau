@@ -7,7 +7,9 @@
 using namespace std; // I think best practice is to include <vector> explicitly at the top of the file
 
 bool passTrig_;
+bool passNewTrig_;
 vector<bool> passTrigBranch;
+vector<bool> passNewTrigBranch;
 
 float 	pt_;
 float 	eta_;
@@ -59,6 +61,7 @@ vector<float> hltMatchedNewVBFTwo_energy;
 void NtupleMaker::branchesTriggers(TTree* tree){
 
     tree->Branch("passTrigBranch", &passTrigBranch);    
+    tree->Branch("passNewTrigBranch", &passNewTrigBranch);
 
     tree->Branch("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
     tree->Branch("hltHpsPFTauTrack_eta", &hltHpsPFTauTrack_eta);
@@ -96,7 +99,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     using namespace edm;
 
     // clearing vectors at the start of every event 
-    passTrigBranch.clear();
+    passTrigBranch.clear(); 
+    passNewTrigBranch.clear();
 
     hltHpsPFTauTrack_pt.clear();
     hltHpsPFTauTrack_eta.clear();
@@ -130,9 +134,12 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     edm::Handle<trigger::TriggerEvent> triggerEvent;
     iEvent.getByToken(triggerEventToken_, triggerEvent);
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
-    std::string pathName="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
-    passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathName));
+    std::string pathNameTrig="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    std::string pathNameNewTrig="HLT_newVBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameTrig));
+    passNewTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrig));
     passTrigBranch.push_back(passTrig_);
+    passNewTrigBranch.push_back(passNewTrig_);
 
     // filling branches with triggerObjs information
     const trigger::size_type nFilters(triggerEvent->sizeFilters());

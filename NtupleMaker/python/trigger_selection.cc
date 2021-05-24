@@ -86,13 +86,20 @@ int main(int argc, char** argv)	{
     float t2_eta_A;
     float t2_phi_A;
     float t2_energy_A;
+    float mjj_A;
 
     float dRj1;
     float dRj2;
     float dRt1;
     float dRt2;
-    //might need more tau variables?
- 
+
+    int passSel;
+    int passTrig;
+    int passNewTrig;
+    int passSelAndTrig;
+    int passSelAndNewTrig;
+    int matched;
+
     outTree->Branch("j1_pt", &j1_pt);
     outTree->Branch("j2_pt", &j2_pt);
     outTree->Branch("j1_eta", &j1_eta);
@@ -106,10 +113,32 @@ int main(int argc, char** argv)	{
     outTree->Branch("t1_phi", &t1_phi);
     outTree->Branch("t2_phi", &t2_phi);
     outTree->Branch("mjj", &mjj);
+
+    outTree->Branch("j1_pt_A", &j1_pt_A);
+    outTree->Branch("j2_pt_A", &j2_pt_A);
+    outTree->Branch("j1_eta_A", &j1_eta_A);
+    outTree->Branch("j2_eta_A", &j2_eta_A);
+    outTree->Branch("j1_phi_A", &j1_phi_A);
+    outTree->Branch("j2_phi_A", &j2_phi_A);
+    outTree->Branch("t1_pt_A", &t1_pt_A);
+    outTree->Branch("t2_pt_A", &t2_pt_A);
+    outTree->Branch("t1_eta_A", &t1_eta_A);
+    outTree->Branch("t2_eta_A", &t2_eta_A);
+    outTree->Branch("t1_phi_A", &t1_phi_A);
+    outTree->Branch("t2_phi_A", &t2_phi_A);
+    outTree->Branch("mjj_A", &mjj_A);
+
     outTree->Branch("dRj1", &dRj1);
     outTree->Branch("dRj2", &dRj2);
     outTree->Branch("dRt1", &dRt1);
     outTree->Branch("dRt2", &dRt2);
+
+    outTree->Branch("passSel", &passSel);
+    outTree->Branch("passTrig", &passTrig);
+    outTree->Branch("passNewTrig", &passNewTrig);
+    outTree->Branch("passSelAndTrig", &passSelAndTrig);
+    outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
+    outTree->Branch("matched", &matched);
 
     TH1F *h_cutflow = new TH1F("","",7,0,7);
 
@@ -117,12 +146,83 @@ int main(int argc, char** argv)	{
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
-
 	dRj1 = 999; //do something better, initializing like this can lead to errors
 	dRj2 = 999; //maybe make a list of all dR for all pairs and select minim dR event
 	dRt1 = 999;
 	dRt2 = 999;
 
+	passSel = 0;
+	passTrig = 0;
+	passSelAndTrig = 0;
+	matched = 0;
+/***
+	vecSizeAODJet = inTree->jetPt->size();
+	TLorentzVector jet1_A, jet2_A;
+	for (int iEntryVecAODJet = 0; iEntryVecAODJet < vecSizeAODJet; iEntryVecAODJet++){
+	     j1_pt_A = inTree->jetPt->at(iEntryVecAODJet);
+	     j1_eta_A = inTree->jetEta->at(iEntryVecAODJet);
+	     j1_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
+	     j1_energy_A = inTree->jetEn->at(iEntryVecAODJet);
+		//jet1_A.SetPtEtaPhiE(j1_pt_A,j1_eta_A,j1_phi_A,j1_energy_A);
+		//dRj1 = jet1_A.DeltaR(jet1);
+		/***
+	     if (dRj2 > 0.5){
+		j2_pt_A = inTree->jetPt->at(iEntryVecAODJet);
+	     	j2_eta_A = inTree->jetEta->at(iEntryVecAODJet);
+	     	j2_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
+	     	j2_energy_A = inTree->jetEn->at(iEntryVecAODJet);
+		jet2_A.SetPtEtaPhiE(j2_pt_A,j2_eta_A,j2_phi_A,j2_energy_A);
+		dRj2 = jet2_A.DeltaR(jet2);
+	     }
+	}***/
+
+	//tau selection:
+	//2 taus
+	//pt > 25 for both
+	//fabs(eta) < 2.1 for both
+	vecSizeAODTau = inTree->tauPt->size();
+	if (vecSizeAODTau <= 1) continue;
+	t1_pt_A = inTree->tauPt->front();
+	t2_pt_A = inTree->tauPt->at(1);
+	if (t1_pt_A < 25 || t2_pt_A < 25) continue;
+	t1_eta_A = inTree->tauEta->front();
+	t2_eta_A = inTree->tauEta->at(1);
+	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
+	//jet selection:
+	//2 jets
+	//leading pt > 120, subleading > 45
+	//fabs(eta) < 4.7 for both
+	vecSizeAODJet = inTree->jetPt->size();
+	if (vecSizeAODJet <= 1) continue;
+	j1_pt_A = inTree->jetPt->front();
+	j2_pt_A = inTree->jetPt->at(1);
+	if (j1_pt_A < 120 || j2_pt_A < 45) continue;
+	j1_eta_A = inTree->jetEta->front();
+	j2_eta_A = inTree->jetEta->at(1);
+	if (fabs(j1_eta_A) > 4.7 || fabs(j2_eta_A) > 4.7) continue;
+
+	//if an event passes all selection, save its info in a TLorentzVector
+	TLorentzVector tau1_A, tau2_A;
+	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, inTree->tauPhi->front(), inTree->tauEnergy->front());
+	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, inTree->tauPhi->at(1), inTree->tauEnergy->at(1));
+	TLorentzVector jet1_A, jet2_A;
+	jet1_A.SetPtEtaPhiE(j1_pt_A, j1_eta_A, inTree->jetPhi->front(), inTree->jetEn->front());
+	jet2_A.SetPtEtaPhiE(j2_pt_A, j2_eta_A, inTree->jetPhi->at(1), inTree->jetEn->front());
+	
+	//final cut on mjj
+	mjj_A = (jet1_A + jet2_A).M();
+	if (mjj_A < 700) continue;
+
+	passSel = 1;
+
+	passTrig = inTree->passTrigBranch->front();
+	passNewTrig = inTree->passNewTrigBranch->front();
+
+	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
+	if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+	
+	outTree->Fill();
+/***
 	// baseline selection
 	h_cutflow->Fill(0.0,0.0);
 
@@ -132,7 +232,7 @@ int main(int argc, char** argv)	{
 
 	// if there aren't two taus, skip the event
 	if (vecSizeHpsTau != 2) continue;
-	h_cutflow->Fill(1.0,1.0);
+	//h_cutflow->Fill(1.0,1.0);
 	
 	t1_pt = inTree->hltHpsDoublePFTau_pt->at(0);
 	t2_pt = inTree->hltHpsDoublePFTau_pt->at(1);
@@ -156,17 +256,9 @@ int main(int argc, char** argv)	{
 	tau1.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);
 	tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
 
-
-	// old trig req.: t1_pt > 25 && t2_pt > 25 && j1_pt > 120 && j2_pt > 45 && mjj > 700
-	if (t1_pt < 25 || t2_pt < 25) continue;
-	h_cutflow->Fill(2.0,1.0);
-
-	if (fabs(t1_eta) > 2.1 || fabs(t2_eta) > 2.1) continue;
-	h_cutflow->Fill(3.0,1.0);
-
 	// if last filter is empty or second to last filter doesn't have 2 jets, skip event
 	if (vecSizeVBFOne == 0 || vecSizeVBFTwo != 2) continue;
-	h_cutflow->Fill(4.0,1.0);	
+	//h_cutflow->Fill(4.0,1.0);	
 
 	// if there are 2 jets with pt > 115, make the greater pt jet j1_pt
 	if (vecSizeVBFOne == 2){
@@ -204,6 +296,14 @@ int main(int argc, char** argv)	{
 	     j1_energy = inTree->hltMatchedVBFOne_energy->at(j1_loc);
 	     j2_energy = inTree->hltMatchedVBFTwo_energy->at(j2_loc);
 	}
+
+	// old trig req.: t1_pt > 25 && t2_pt > 25 && j1_pt > 120 && j2_pt > 45 && mjj > 700
+	if (t1_pt < 25 || t2_pt < 25) continue;
+	h_cutflow->Fill(2.0,1.0);
+
+	if (fabs(t1_eta) > 2.1 || fabs(t2_eta) > 2.1) continue;
+	h_cutflow->Fill(3.0,1.0);
+
 	// kinematic reqs of old trigger
 	if (j1_pt < 120 || j2_pt < 45) continue;
 	h_cutflow->Fill(5.0,1.0);
@@ -212,72 +312,21 @@ int main(int argc, char** argv)	{
 	if (fabs(j1_eta) > 4.7 || fabs(j2_eta) > 4.7) continue;
 	h_cutflow->Fill(6.0,1.0);
 
-	// calculate mjj, use TLorentzVector to use built in M() function from root
-	TLorentzVector jet1, jet2;
-	jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
-	jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
-	
 	mjj = (jet1 + jet2).M();
 	
 	if (mjj < 700) continue;
 	h_cutflow->Fill(7.0,1.0);
 
+	// calculate mjj, use TLorentzVector to use built in M() function from root
+	TLorentzVector jet1, jet2;
+	jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
+	jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
+	
 	//now try to match to MiniAOD object
 
-	vecSizeAODJet = inTree->jetPt->size();
-	//std::cout << "nJetsAOD: " << vecSizeAODJet << std::endl;
-	TLorentzVector jet1_A, jet2_A;
-	for (int iEntryVecAODJet = 0; iEntryVecAODJet < vecSizeAODJet; iEntryVecAODJet++){
-	     if (dRj1 > 0.5){
-	     	j1_pt_A = inTree->jetPt->at(iEntryVecAODJet);
-	     	j1_eta_A = inTree->jetEta->at(iEntryVecAODJet);
-	     	j1_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
-	     	j1_energy_A = inTree->jetEn->at(iEntryVecAODJet);
-		jet1_A.SetPtEtaPhiE(j1_pt_A,j1_eta_A,j1_phi_A,j1_energy_A);
-		dRj1 = jet1_A.DeltaR(jet1);
-	     }
-	     if (dRj2 > 0.5){
-		j2_pt_A = inTree->jetPt->at(iEntryVecAODJet);
-	     	j2_eta_A = inTree->jetEta->at(iEntryVecAODJet);
-	     	j2_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
-	     	j2_energy_A = inTree->jetEn->at(iEntryVecAODJet);
-		jet2_A.SetPtEtaPhiE(j2_pt_A,j2_eta_A,j2_phi_A,j2_energy_A);
-		dRj2 = jet2_A.DeltaR(jet2);
-	     }
-	     //std::cout << "AOD j1 j2: " << j1_pt_A << ' ' << j2_pt_A << std::endl; 
-	     //std::cout << dR1 << ' ' << dR2 << std::endl;
-	}
-	//if (j1_pt != 0 && j2_pt != 0) std::cout << "j1_pt: " << j1_pt << ' ' << "j2_pt: " << j2_pt << std::endl;
-	
-	vecSizeAODTau = inTree->tauPt->size();
-	//std::cout << "nTausAOD: " << vecSizeAODTau << std::endl;
-	vecSizeAODTau = inTree->nTau;
-	//std::cout << "nTau: " << vecSizeAODTau <<std::endl;
-	TLorentzVector tau1_A, tau2_A;
-	for (int iEntryVecAODTau = 0; iEntryVecAODTau < vecSizeAODTau; iEntryVecAODTau++){
-	     if (dRt1 > 0.5){
-		t1_pt_A = inTree->tauPt->at(iEntryVecAODTau);
-		t1_eta_A = inTree->tauEta->at(iEntryVecAODTau);
-		t1_phi_A = inTree->tauPhi->at(iEntryVecAODTau);
-		t1_energy_A = inTree->tauEnergy->at(iEntryVecAODTau);
-		tau1_A.SetPtEtaPhiE(t1_pt_A,t1_eta_A,t1_phi_A,t1_energy_A);
-		dRt1 = tau1_A.DeltaR(tau1);
-	     }
-	     if (dRt2 > 0.5){
-		t2_pt_A = inTree->tauPt->at(iEntryVecAODTau);
-		t2_eta_A = inTree->tauEta->at(iEntryVecAODTau);
-		t2_phi_A = inTree->tauPhi->at(iEntryVecAODTau);
-		t2_energy_A = inTree->tauEnergy->at(iEntryVecAODTau);
-		tau2_A.SetPtEtaPhiE(t2_pt_A,t2_eta_A,t2_phi_A,t2_energy_A);
-		dRt2 = tau2_A.DeltaR(tau2);
-	     }
-	     //std::cout << "AOD t1 t1: " << t1_pt_A << ' ' << t2_pt_A << std::endl;
-	     //std::cout << dRt1 << std::endl;
-	}
-	//if (t1_pt != 0 && t2_pt != 0) std::cout << "t1_pt t2_pt: " << t1_pt << ' ' << t2_pt << std::endl;
 
 	outTree->Fill();
-
+***/
     } // end event loop
 
     std::string outputFileName = outName;

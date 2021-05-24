@@ -11,6 +11,9 @@ public :
     TTree	*fChain;
     Int_t	fCurrent;
 
+    std::vector<bool>* passTrigBranch = nullptr;
+    std::vector<bool>* passNewTrigBranch = nullptr;
+
     std::vector<float>* hltHpsDoublePFTau_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTau_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTau_phi = nullptr;
@@ -73,6 +76,10 @@ void trigger_tree::Init(TTree *tree)
     if (!tree) return;
     fChain = tree;
     fCurrent = -1;
+
+    fChain->SetBranchAddress("passTrigBranch", &passTrigBranch);
+    fChain->SetBranchAddress("passNewTrigBranch", &passNewTrigBranch);
+
     fChain->SetBranchAddress("hltHpsDoublePFTau_pt", &hltHpsDoublePFTau_pt);
     fChain->SetBranchAddress("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
     fChain->SetBranchAddress("hltHpsDoublePFTau_phi", &hltHpsDoublePFTau_phi);

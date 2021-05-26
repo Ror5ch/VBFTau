@@ -88,6 +88,9 @@ int main(int argc, char** argv)	{
     float t2_energy_A;
     float mjj_A;
 
+    float j3_pt_A;
+    float j4_pt_A;
+
     float dRj1;
     float dRj2;
     float dRt1;
@@ -128,6 +131,9 @@ int main(int argc, char** argv)	{
     outTree->Branch("t2_phi_A", &t2_phi_A);
     outTree->Branch("mjj_A", &mjj_A);
 
+    outTree->Branch("j3_pt_A", &j3_pt_A);
+    outTree->Branch("j4_pt_A", &j4_pt_A);
+
     outTree->Branch("dRj1", &dRj1);
     outTree->Branch("dRj2", &dRj2);
     outTree->Branch("dRt1", &dRt1);
@@ -140,7 +146,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
 
-    TH1F *h_cutflow = new TH1F("","",7,0,7);
+    TH1F *h_cutflow = new TH1F("","",8,0,8);
 
     // Event Loop
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
@@ -155,51 +161,52 @@ int main(int argc, char** argv)	{
 	passTrig = 0;
 	passSelAndTrig = 0;
 	matched = 0;
-/***
-	vecSizeAODJet = inTree->jetPt->size();
-	TLorentzVector jet1_A, jet2_A;
-	for (int iEntryVecAODJet = 0; iEntryVecAODJet < vecSizeAODJet; iEntryVecAODJet++){
-	     j1_pt_A = inTree->jetPt->at(iEntryVecAODJet);
-	     j1_eta_A = inTree->jetEta->at(iEntryVecAODJet);
-	     j1_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
-	     j1_energy_A = inTree->jetEn->at(iEntryVecAODJet);
-		//jet1_A.SetPtEtaPhiE(j1_pt_A,j1_eta_A,j1_phi_A,j1_energy_A);
-		//dRj1 = jet1_A.DeltaR(jet1);
-		/***
-	     if (dRj2 > 0.5){
-		j2_pt_A = inTree->jetPt->at(iEntryVecAODJet);
-	     	j2_eta_A = inTree->jetEta->at(iEntryVecAODJet);
-	     	j2_phi_A = inTree->jetPhi->at(iEntryVecAODJet);
-	     	j2_energy_A = inTree->jetEn->at(iEntryVecAODJet);
-		jet2_A.SetPtEtaPhiE(j2_pt_A,j2_eta_A,j2_phi_A,j2_energy_A);
-		dRj2 = jet2_A.DeltaR(jet2);
-	     }
-	}***/
 
 	//tau selection:
 	//2 taus
 	//pt > 25 for both
 	//fabs(eta) < 2.1 for both
+	
+	//fill cutflow before any selection
+	h_cutflow->Fill(0.0,1.0);
+
 	vecSizeAODTau = inTree->tauPt->size();
 	if (vecSizeAODTau <= 1) continue;
+
+	h_cutflow->Fill(1.0,1.0);
+
 	t1_pt_A = inTree->tauPt->front();
 	t2_pt_A = inTree->tauPt->at(1);
 	if (t1_pt_A < 25 || t2_pt_A < 25) continue;
+
+	h_cutflow->Fill(2.0,1.0);
+
 	t1_eta_A = inTree->tauEta->front();
 	t2_eta_A = inTree->tauEta->at(1);
 	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
+
+	h_cutflow->Fill(3.0,1.0);
+
 	//jet selection:
 	//2 jets
 	//leading pt > 120, subleading > 45
 	//fabs(eta) < 4.7 for both
 	vecSizeAODJet = inTree->jetPt->size();
 	if (vecSizeAODJet <= 1) continue;
+
+	h_cutflow->Fill(4.0,1.0);
+
 	j1_pt_A = inTree->jetPt->front();
 	j2_pt_A = inTree->jetPt->at(1);
 	if (j1_pt_A < 120 || j2_pt_A < 45) continue;
+
+	h_cutflow->Fill(5.0,1.0);
+
 	j1_eta_A = inTree->jetEta->front();
 	j2_eta_A = inTree->jetEta->at(1);
 	if (fabs(j1_eta_A) > 4.7 || fabs(j2_eta_A) > 4.7) continue;
+
+	h_cutflow->Fill(6.0,1.0);
 
 	//if an event passes all selection, save its info in a TLorentzVector
 	TLorentzVector tau1_A, tau2_A;
@@ -213,26 +220,29 @@ int main(int argc, char** argv)	{
 	mjj_A = (jet1_A + jet2_A).M();
 	if (mjj_A < 700) continue;
 
+	h_cutflow->Fill(7.0,1.0);
+
+	//filling additional jets to see how soft they are
+	if (vecSizeAODJet > 2) j3_pt_A = inTree->jetPt->at(2);
+	if (vecSizeAODJet > 3) j4_pt_A = inTree->jetPt->at(3);
+
+	//if an event passes selection, check to see if it passed the trigger as well
 	passSel = 1;
 
 	passTrig = inTree->passTrigBranch->front();
-	passNewTrig = inTree->passNewTrigBranch->front();
+	//passNewTrig = inTree->passNewTrigBranch->front(); //uncomment when new trigger dataset is available
 
 	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
-	if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+	//if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
 	
 	outTree->Fill();
 /***
-	// baseline selection
-	h_cutflow->Fill(0.0,0.0);
-
 	vecSizeHpsTau = inTree->hltHpsDoublePFTau_pt->size();
 	vecSizeVBFOne = inTree->hltMatchedVBFOne_pt->size();
 	vecSizeVBFTwo = inTree->hltMatchedVBFTwo_pt->size(); 
 
 	// if there aren't two taus, skip the event
 	if (vecSizeHpsTau != 2) continue;
-	//h_cutflow->Fill(1.0,1.0);
 	
 	t1_pt = inTree->hltHpsDoublePFTau_pt->at(0);
 	t2_pt = inTree->hltHpsDoublePFTau_pt->at(1);
@@ -258,7 +268,6 @@ int main(int argc, char** argv)	{
 
 	// if last filter is empty or second to last filter doesn't have 2 jets, skip event
 	if (vecSizeVBFOne == 0 || vecSizeVBFTwo != 2) continue;
-	//h_cutflow->Fill(4.0,1.0);	
 
 	// if there are 2 jets with pt > 115, make the greater pt jet j1_pt
 	if (vecSizeVBFOne == 2){
@@ -297,27 +306,6 @@ int main(int argc, char** argv)	{
 	     j2_energy = inTree->hltMatchedVBFTwo_energy->at(j2_loc);
 	}
 
-	// old trig req.: t1_pt > 25 && t2_pt > 25 && j1_pt > 120 && j2_pt > 45 && mjj > 700
-	if (t1_pt < 25 || t2_pt < 25) continue;
-	h_cutflow->Fill(2.0,1.0);
-
-	if (fabs(t1_eta) > 2.1 || fabs(t2_eta) > 2.1) continue;
-	h_cutflow->Fill(3.0,1.0);
-
-	// kinematic reqs of old trigger
-	if (j1_pt < 120 || j2_pt < 45) continue;
-	h_cutflow->Fill(5.0,1.0);
-
-	//exclude events with too high eta (this cut does very little)	
-	if (fabs(j1_eta) > 4.7 || fabs(j2_eta) > 4.7) continue;
-	h_cutflow->Fill(6.0,1.0);
-
-	mjj = (jet1 + jet2).M();
-	
-	if (mjj < 700) continue;
-	h_cutflow->Fill(7.0,1.0);
-
-	// calculate mjj, use TLorentzVector to use built in M() function from root
 	TLorentzVector jet1, jet2;
 	jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
 	jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);

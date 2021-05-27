@@ -150,9 +150,11 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
 
-    TH1F *h_cutflow = new TH1F("","",9,0,9);
+    TH1F *h_cutflow = new TH1F("","",10,0,10);
 
     // Event Loop
+    // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
+    //for (int iEntry = 0; iEntry < 2001; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
@@ -191,13 +193,13 @@ int main(int argc, char** argv)	{
 	t2_eta_A = inTree->tauEta->at(1);
 	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
 
+	h_cutflow->Fill(3.0,1.0);
+
 	TLorentzVector tau1_A, tau2_A;
 	t1_phi_A = inTree->tauPhi->at(0);
 	t2_phi_A = inTree->tauPhi->at(1);
 	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, t1_phi_A, inTree->tauEnergy->at(0));
 	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, inTree->tauEnergy->at(1));
-
-	h_cutflow->Fill(3.0,1.0);
 
 	//jet selection:
 	//2 jets
@@ -208,14 +210,16 @@ int main(int argc, char** argv)	{
 	
 	h_cutflow->Fill(4.0,1.0);
 
-	if (inTree->jetPt->at(0) < 120) continue;
-	if (inTree->jetPt->at(1) < 45) continue;
+	//I put these cuts together for the leading jet because
+	//the subleading jet(s) are also (essentially) together due to the way
+	//I've constructed my for loops and cutflows.
+	if (inTree->jetPt->at(0) < 120 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
 	h_cutflow->Fill(5.0,1.0);
 
-	if (fabs(inTree->jetEta->at(0)) > 4.7 || fabs(inTree->jetEta->at(1) > 4.7)) continue;
+	//if (fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
-	h_cutflow->Fill(6.0,1.0);
+	//h_cutflow->Fill(6.0,1.0);
 
 	//put all the jets that passed cuts up to here into a vector of jetCandidates
 	//from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
@@ -225,12 +229,15 @@ int main(int argc, char** argv)	{
 	    //aren't filled into the jet candidates.
 	    if (inTree->jetPt->at(iJet) < 45) continue;
 	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
-	    TLorentzVector jetCand1;
-	    jetCand1.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
-	    jetCandidates.push_back(jetCand1);
+	    TLorentzVector jetCand;
+	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
+	    //if a jetCandidate looks like it could be a tau, don't store it
+	    //std::cout << tau1_A.DeltaR(jetCand) << ' ' << tau2_A.DeltaR(jetCand) << std::endl;
+	    if (tau1_A.DeltaR(jetCand) < 0.5 || tau2_A.DeltaR(jetCand) < 0.5) continue;
+	    jetCandidates.push_back(jetCand);
 	}
-
-	//if I need to remove taus from the jets, this is where I should do that.
+	
+	h_cutflow->Fill(7.0,1.0);
 
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
@@ -238,39 +245,42 @@ int main(int argc, char** argv)	{
 
 		// makes sure one jet has pt > 120 and the other has pt > 45
 		if ((jetCandidates.at(iCand).Pt()>120 && jetCandidates.at(jCand).Pt()>45) || \
-		    (jetCandidates.at(iCand).Pt()>45 && jetCandidates.at(jCand).Pt()>120)) continue;
-		//if ((jetCandidates.at(iCand).Pt() + jetCandidates.at(jCand).Pt()) < 165) continue;
+		    (jetCandidates.at(iCand).Pt()>45 && jetCandidates.at(jCand).Pt()>120)){
 
-		mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
-		if (mjjCandidatePair < 700) continue;
+		    mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
+		    if (mjjCandidatePair < 700) continue;
 
-		jetCandsLocs.push_back(std::make_pair(iCand,jCand));
-	    }
-	}
-	h_cutflow->Fill(7.0,1.0); //prev 2 for loops serv as the mjj cut
-	//here should I define j1_pt_A and other kinematic variables? if I don't, 
-	//those branches are never filled. If I define them after matching, then some
-	//events could be excluding, making our efficiency value inaccurate..
+		    jetCandsLocs.push_back(std::make_pair(iCand,jCand));
+		}//end if statement on jet pair pt
+	    }//end inner for loop
+	}//end for loop
+
+	h_cutflow->Fill(8.0,1.0); //prev 2 for loops serv as the mjj cut
+
+	//jet branches below aren't necessarily the jet that gets matched to hlt object!!!
 	
 	// if there isn't a viable dijet system, skip the event
-	if (jetCandidates.size() < 2) continue;
+	if (jetCandsLocs.size() < 1) continue;
 	
-	h_cutflow->Fill(8.0,1.0);
+	h_cutflow->Fill(9.0,1.0);
 
-	j1_pt_A = jetCandidates.at(0).Pt();
-	j1_eta_A = jetCandidates.at(0).Eta();
-	j1_phi_A = jetCandidates.at(0).Phi();
-	j1_energy_A = jetCandidates.at(0).Energy();
-	j2_pt_A = jetCandidates.at(1).Pt();
-	j2_eta_A = jetCandidates.at(1).Eta();
-	j2_phi_A = jetCandidates.at(1).Phi();
-	j2_energy_A = jetCandidates.at(1).Energy();
-	mjj_A = (jetCandidates.at(0) + jetCandidates.at(1)).M();
-	
+	std::pair<int,int> frontPair = jetCandsLocs.front();
+	j1_pt_A = jetCandidates.at(frontPair.first).Pt();
+	j1_eta_A = jetCandidates.at(frontPair.first).Eta();
+	j1_phi_A = jetCandidates.at(frontPair.first).Phi();
+	j1_energy_A = jetCandidates.at(frontPair.first).Energy();
+	j2_pt_A = jetCandidates.at(frontPair.second).Pt();
+	j2_eta_A = jetCandidates.at(frontPair.second).Eta();
+	j2_phi_A = jetCandidates.at(frontPair.second).Phi();
+	j2_energy_A = jetCandidates.at(frontPair.second).Energy();
 
-	passSel = 1; //any event that makes it here has passed AOD selection
-		//next is to check if the event passed the trigger AND if it can be matched to AOD
+	mjj_A = (jetCandidates.at(frontPair.first) + jetCandidates.at(frontPair.second)).M();
+
+	passSel = 1; 
+	//any event that makes it here has passed AOD selection
+	//next is to check if the event passed the trigger AND if it can be matched to AOD
 	
+	// get number of objects in end tau and jet trigger filters
 	vecSizeHpsTau = inTree->hltHpsDoublePFTau_pt->size();
 	vecSizeVBFOne = inTree->hltMatchedVBFOne_pt->size();
 	vecSizeVBFTwo = inTree->hltMatchedVBFTwo_pt->size(); 
@@ -304,6 +314,8 @@ int main(int argc, char** argv)	{
 	    dRt1 = tau1.DeltaR(tau1_A);
 	    dRt2 = tau2.DeltaR(tau2_A);
 	}
+
+	if (dRt1 > 50 || dRt2 > 50) continue; // will change later, this is just here to remove erroneous values
 
 	// fill trigger info for jets if its available
 	// if there are 2 jets, make the greater pt jet j1_pt
@@ -354,10 +366,11 @@ int main(int argc, char** argv)	{
 	//now try to match to MiniAOD object if the event passed the trigger
 
 	passTrig = inTree->passTrigBranch->at(0);
-	//passNewTrig = inTree->passNewTrigBranch->front(); //uncomment when new trigger dataset is available
+	passNewTrig = inTree->passNewTrigBranch->at(0);
 	//should I have a seperate script for the new trigger?
+	//yes, new trigger has different AOD selection
 
-	//if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
+	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
 	//if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
 	
 	if (passTrig){
@@ -382,7 +395,9 @@ int main(int argc, char** argv)	{
 	    }//end if, checks if vectors containing possible dRs are non-zero 	
 	}//end if, sets dRj1 and 2
 
-
+	//if all the dRs are less than 0.5, then we've matched AOD to reco
+	//don't coninue because we don't want to lose objects that didn't match but still passed selection
+	if (dRj1 < 0.5 && dRj2 < 0.5 && dRt1 < 0.5 && dRt2 < 0.5) matched = 1;
 
 	outTree->Fill();
     } // end event loop

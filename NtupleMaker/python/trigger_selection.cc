@@ -150,7 +150,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
 
-    TH1F *h_cutflow = new TH1F("","",10,0,10);
+    TH1F *h_cutflow = new TH1F("","",8,0,8);
 
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
@@ -217,10 +217,6 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(5.0,1.0);
 
-	//if (fabs(inTree->jetEta->at(0)) > 4.7) continue;
-
-	//h_cutflow->Fill(6.0,1.0);
-
 	//put all the jets that passed cuts up to here into a vector of jetCandidates
 	//from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
@@ -236,8 +232,13 @@ int main(int argc, char** argv)	{
 	    if (tau1_A.DeltaR(jetCand) < 0.5 || tau2_A.DeltaR(jetCand) < 0.5) continue;
 	    jetCandidates.push_back(jetCand);
 	}
-	
-	h_cutflow->Fill(7.0,1.0);
+
+	//continues inside for loops don't skip the events, so you need to check the size of
+	//the container you skipped adding events to and then impose a condition on that instead
+	//before filling the cutflow	
+	if (jetCandidates.size() < 2) continue;
+
+	h_cutflow->Fill(6.0,1.0);
 
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
@@ -255,14 +256,12 @@ int main(int argc, char** argv)	{
 	    }//end inner for loop
 	}//end for loop
 
-	h_cutflow->Fill(8.0,1.0); //prev 2 for loops serv as the mjj cut
-
-	//jet branches below aren't necessarily the jet that gets matched to hlt object!!!
-	
 	// if there isn't a viable dijet system, skip the event
 	if (jetCandsLocs.size() < 1) continue;
-	
-	h_cutflow->Fill(9.0,1.0);
+
+	h_cutflow->Fill(7.0,1.0); //prev 2 for loops serv as the mjj cut
+
+	//jet branches below aren't necessarily the jet that gets matched to hlt object!!!
 
 	std::pair<int,int> frontPair = jetCandsLocs.front();
 	j1_pt_A = jetCandidates.at(frontPair.first).Pt();

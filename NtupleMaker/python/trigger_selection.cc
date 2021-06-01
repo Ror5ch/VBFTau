@@ -42,6 +42,8 @@ int main(int argc, char** argv)	{
     // Open input file and make new output file, also declare necessary variables
     TTree *outTree = new TTree("outTree", "outTree");
     outTree->SetDirectory(0);
+
+    // hlt vars
     int j1_loc; //jet1 location, either position 0 or 1 in the vector of jets
     int j2_loc; //other intermediate variables
     int t1_loc;
@@ -58,6 +60,8 @@ int main(int argc, char** argv)	{
     float j2_eta;
     float j2_phi;
     float j2_energy;
+    float mjj;
+
     float t1_pt;
     float t1_eta;
     float t1_phi;
@@ -66,8 +70,8 @@ int main(int argc, char** argv)	{
     float t2_eta;
     float t2_phi;
     float t2_energy;
-    float mjj;
-    
+   
+    //AOD vars 
     int vecSizeAODJet;
     int vecSizeAODTau;
 
@@ -79,6 +83,8 @@ int main(int argc, char** argv)	{
     float j2_eta_A;
     float j2_phi_A;
     float j2_energy_A;
+    float mjj_A;
+
     float t1_pt_A;
     float t1_eta_A;
     float t1_phi_A;
@@ -87,62 +93,70 @@ int main(int argc, char** argv)	{
     float t2_eta_A;
     float t2_phi_A;
     float t2_energy_A;
-    float mjj_A;
 
+    int deepTauVSjet;
+    int deepTauVSmu;
+    int deepTauVSele;
+
+    // vars for matching
     float dRj1;
     float dRj2;
     float dRt1;
     float dRt2;
 
+    std::vector<TLorentzVector> jetCandidates;
+    float mjjCandidatePair;
+    std::vector<std::pair<int,int>> jetCandsLocs; //jet candidate locations
+    std::vector<float> dRj1_vec; //container for dR of AOD and HLT j1
+    std::vector<float> dRj2_vec;
+    std::vector<float> dRjSum;
+
+    // flag vars
     int passSel;
     int passTrig;
     int passNewTrig;
     int passSelAndTrig;
     int passSelAndNewTrig;
     int matched;
-
-    std::vector<TLorentzVector> jetCandidates;
-    float mjjCandidatePair;
-
-    std::vector<std::pair<int,int>> jetCandsLocs; //jet candidate locations
-
-    std::vector<float> dRj1_vec;
-    std::vector<float> dRj2_vec;
-    std::vector<float> dRjSum;
-
+    
+    // filled data branches
+    // hlt vars
     outTree->Branch("j1_pt", &j1_pt);
     outTree->Branch("j2_pt", &j2_pt);
     outTree->Branch("j1_eta", &j1_eta);
     outTree->Branch("j2_eta", &j2_eta);
     outTree->Branch("j1_phi", &j1_phi);
     outTree->Branch("j2_phi", &j2_phi);
+    outTree->Branch("mjj", &mjj);
     outTree->Branch("t1_pt", &t1_pt);
     outTree->Branch("t2_pt", &t2_pt);
     outTree->Branch("t1_eta", &t1_eta);
     outTree->Branch("t2_eta", &t2_eta);
     outTree->Branch("t1_phi", &t1_phi);
     outTree->Branch("t2_phi", &t2_phi);
-    outTree->Branch("mjj", &mjj);
-
+    // AOD vars
     outTree->Branch("j1_pt_A", &j1_pt_A);
     outTree->Branch("j2_pt_A", &j2_pt_A);
     outTree->Branch("j1_eta_A", &j1_eta_A);
     outTree->Branch("j2_eta_A", &j2_eta_A);
     outTree->Branch("j1_phi_A", &j1_phi_A);
     outTree->Branch("j2_phi_A", &j2_phi_A);
+    outTree->Branch("mjj_A", &mjj_A);
     outTree->Branch("t1_pt_A", &t1_pt_A);
     outTree->Branch("t2_pt_A", &t2_pt_A);
     outTree->Branch("t1_eta_A", &t1_eta_A);
     outTree->Branch("t2_eta_A", &t2_eta_A);
     outTree->Branch("t1_phi_A", &t1_phi_A);
     outTree->Branch("t2_phi_A", &t2_phi_A);
-    outTree->Branch("mjj_A", &mjj_A);
-
+    outTree->Branch("deepTauVSjet", &deepTauVSjet);
+    outTree->Branch("deepTauVSmu", &deepTauVSmu);
+    outTree->Branch("deepTauVSele", &deepTauVSele);
+    // matched vars
     outTree->Branch("dRj1", &dRj1);
     outTree->Branch("dRj2", &dRj2);
     outTree->Branch("dRt1", &dRt1);
     outTree->Branch("dRt2", &dRt2);
-
+    // flag vars
     outTree->Branch("passSel", &passSel);
     outTree->Branch("passTrig", &passTrig);
     outTree->Branch("passNewTrig", &passNewTrig);
@@ -150,10 +164,14 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
 
-    TH1F *h_cutflow = new TH1F("","",8,0,8);
+    TH1F *h_cutflow = new TH1F("","",9,0,9);
 
+    //ad hoc testing vars
+    //answering how many nonleading jet objects are matched btwn hlt and AOD
+    //it's on the order of 0.1%
     int overonecounter = 0;
     int overoneaftermatchingcounter = 0;
+
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
     //for (int iEntry = 0; iEntry < 2001; iEntry++) {
@@ -161,8 +179,8 @@ int main(int argc, char** argv)	{
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
-	passSel = 0; //ints standing in as booleans
-	passTrig = 0;//to tell if an event passed selection, trigger, etc.
+	passSel = 0;  //ints standing in as booleans for these flag variables
+	passTrig = 0; //to tell if an event passed selection, trigger, etc.
 	passSelAndTrig = 0;
 	matched = 0;
 
@@ -181,21 +199,31 @@ int main(int argc, char** argv)	{
 	h_cutflow->Fill(0.0,1.0);
 
 	vecSizeAODTau = inTree->tauPt->size();
+       
 	if (vecSizeAODTau <= 1) continue;
 
 	h_cutflow->Fill(1.0,1.0);
+
+	deepTauVSjet = inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(1) > 0.5;
+	deepTauVSmu = inTree->tauByTightDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByTightDeepTau2017v2p1VSmu->at(1) > 0.5;
+        deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
+
+	// using same jet and electron working points as Doyeong's skimmer, in fact, using same code syntax as Doeyong
+	if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
+
+	h_cutflow->Fill(2.0,1.0);
 
 	t1_pt_A = inTree->tauPt->at(0);
 	t2_pt_A = inTree->tauPt->at(1);
 	if (t1_pt_A < 25 || t2_pt_A < 25) continue;
 
-	h_cutflow->Fill(2.0,1.0);
+	h_cutflow->Fill(3.0,1.0);
 
 	t1_eta_A = inTree->tauEta->at(0);
 	t2_eta_A = inTree->tauEta->at(1);
 	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
 
-	h_cutflow->Fill(3.0,1.0);
+	h_cutflow->Fill(4.0,1.0);
 
 	TLorentzVector tau1_A, tau2_A;
 	t1_phi_A = inTree->tauPhi->at(0);
@@ -210,14 +238,14 @@ int main(int argc, char** argv)	{
 	vecSizeAODJet = inTree->jetPt->size();
 	if (vecSizeAODJet <= 1) continue;
 	
-	h_cutflow->Fill(4.0,1.0);
+	h_cutflow->Fill(5.0,1.0);
 
 	//I put these cuts together for the leading jet because
 	//the subleading jet(s) are also (essentially) together due to the way
 	//I've constructed my for loops and cutflows.
 	if (inTree->jetPt->at(0) < 120 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
-	h_cutflow->Fill(5.0,1.0);
+	h_cutflow->Fill(6.0,1.0);
 
 	//put all the jets that passed cuts up to here into a vector of jetCandidates
 	//from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
@@ -240,7 +268,7 @@ int main(int argc, char** argv)	{
 	//before filling the cutflow	
 	if (jetCandidates.size() < 2) continue;
 
-	h_cutflow->Fill(6.0,1.0);
+	h_cutflow->Fill(7.0,1.0);
 
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
@@ -262,7 +290,7 @@ int main(int argc, char** argv)	{
 	if (jetCandsLocs.size() < 1) continue;
         if (jetCandsLocs.size() > 1) overonecounter += 1;
 
-	h_cutflow->Fill(7.0,1.0); //prev 2 for loops serv as the mjj cut
+	h_cutflow->Fill(8.0,1.0); //prev 2 for loops serv as the mjj cut
 
 	//jet branches below aren't necessarily the jet that gets matched to hlt object!!!
 

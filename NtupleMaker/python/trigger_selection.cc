@@ -43,6 +43,36 @@ int main(int argc, char** argv)	{
     TTree *outTree = new TTree("outTree", "outTree");
     outTree->SetDirectory(0);
 
+    // vars for AOD selection, which change depending on the trigger studied
+    float t1_pt_cut;
+    float t2_pt_cut;
+    float j1_pt_cut;
+    float j2_pt_cut;
+    float mjj_cut;
+    std::string whichTrigger = *(argv + 3);
+    std::string oldTrigString = "old";
+    std::string newTrigString = "new";
+    if (whichTrigger.find(oldTrigString) == std::string::npos && whichTrigger.find(newTrigString) == std::string::npos) {
+	std::cout << "specify whether this is the new trigger or the old trigger with \"old\" or \"new\" as the 3rd argument" << std::endl;
+	return 0; //prevents rest of code from running
+    }
+    if ( whichTrigger.find(oldTrigString) != std::string::npos){
+	t1_pt_cut = 25;
+	t2_pt_cut = 25;
+	j1_pt_cut = 120;
+	j2_pt_cut = 45;
+	mjj_cut = 700;
+    }
+    if ( whichTrigger.find(newTrigString) != std::string::npos){
+	t1_pt_cut = 55;
+	t2_pt_cut = 25;
+	j1_pt_cut = 45;
+	j2_pt_cut = 45;
+	mjj_cut = 550;
+    }
+
+    std::cout << mjj_cut << std::endl;	 
+
     // hlt vars
     int j1_loc; //jet1 location, either position 0 or 1 in the vector of jets
     int j2_loc; //other intermediate variables

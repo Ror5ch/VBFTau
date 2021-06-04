@@ -169,8 +169,8 @@ int main(int argc, char** argv)	{
     //ad hoc testing vars
     //answering how many nonleading jet objects are matched btwn hlt and AOD
     //it's on the order of 0.1%
-    int overonecounter = 0;
-    int overoneaftermatchingcounter = 0;
+    int overOneCounter = 0;
+    int overOneAfterMatchingCounter = 0;
 
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
@@ -181,7 +181,9 @@ int main(int argc, char** argv)	{
 	
 	passSel = 0;  //ints standing in as booleans for these flag variables
 	passTrig = 0; //to tell if an event passed selection, trigger, etc.
+	passNewTrig = 0;
 	passSelAndTrig = 0;
+	passSelAndNewTrig = 0;
 	matched = 0;
 
 	jetCandidates.clear(); //all for matching jets later
@@ -190,9 +192,13 @@ int main(int argc, char** argv)	{
 	dRj2_vec.clear();
 	dRjSum.clear();
 
-	//tau selection:
+	//tau selection for old trigger:
 	//2 taus
 	//pt > 25 for both
+	//fabs(eta) < 2.1 for both
+	//		for new trigger:
+	//2 taus
+	//1 pt > 55, other pt > 20
 	//fabs(eta) < 2.1 for both
 	
 	//fill cutflow before any selection
@@ -210,7 +216,7 @@ int main(int argc, char** argv)	{
 	deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
         deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
 
-	// using same jet and electron working points as Doyeong's skimmer, in fact, using same code syntax as Doeyong
+	// using same code syntax as Doeyong
 	if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
 
 	h_cutflow->Fill(2.0,1.0);
@@ -233,10 +239,15 @@ int main(int argc, char** argv)	{
 	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, t1_phi_A, inTree->tauEnergy->at(0));
 	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, inTree->tauEnergy->at(1));
 
-	//jet selection:
+	//jet selection for old trigger:
 	//2 jets
 	//leading pt > 120, subleading > 45
 	//fabs(eta) < 4.7 for both
+	//		for new trigger:
+	//2 jets
+	//both pt > 45
+	//fabs(eta) < 4.7 for both
+	
 	vecSizeAODJet = inTree->jetPt->size();
 	if (vecSizeAODJet <= 1) continue;
 	
@@ -272,6 +283,8 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(7.0,1.0);
 
+	//mjj cut off for old trigger is 700
+	//	      for new trigger is 550
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
 		if (iCand >= jCand) continue;
@@ -290,7 +303,7 @@ int main(int argc, char** argv)	{
 
 	// if there isn't a viable dijet system, skip the event
 	if (jetCandsLocs.size() < 1) continue;
-        if (jetCandsLocs.size() > 1) overonecounter += 1;
+        if (jetCandsLocs.size() > 1) overOneCounter += 1;
 
 	h_cutflow->Fill(8.0,1.0); //prev 2 for loops serv as the mjj cut
 
@@ -399,11 +412,10 @@ int main(int argc, char** argv)	{
 
 	passTrig = inTree->passTrigBranch->at(0);
 	passNewTrig = inTree->passNewTrigBranch->at(0);
-	//should I have a seperate script for the new trigger?
-	//yes, new trigger has different AOD selection
 
 	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
-	//if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+	if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+
 	int savedindex = -1;	
 	if (passTrig){
 	    
@@ -431,12 +443,12 @@ int main(int argc, char** argv)	{
 	//if all the dRs are less than 0.5, then we've matched AOD to reco
 	//don't use continue because we don't want to lose objects that didn't match but still passed selection
 	if (dRj1 < 0.5 && dRj2 < 0.5 && dRt1 < 0.5 && dRt2 < 0.5) matched = 1;
-	if (savedindex > 0) overoneaftermatchingcounter += 1;
+	if (savedindex > 0) overOneAfterMatchingCounter += 1;
 	outTree->Fill();
     } // end event loop
 
-    std::cout << overonecounter <<std::endl;
-    std::cout << overoneaftermatchingcounter << std::endl;
+    std::cout << overOneCounter <<std::endl;
+    std::cout << overOneAfterMatchingCounter << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

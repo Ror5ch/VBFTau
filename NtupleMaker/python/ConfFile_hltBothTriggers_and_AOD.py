@@ -14811,8 +14811,8 @@ process.HLTAnalyzerEndpath = cms.EndPath( process.hltGtStage2Digis + process.hlt
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
         #'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root',
-	#'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/2850E817-202D-E811-8588-FA163E7C479F.root',
-	'./2850E817-202D-E811-8588-FA163E7C479F.root',
+	'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/2850E817-202D-E811-8588-FA163E7C479F.root',
+	#'./2850E817-202D-E811-8588-FA163E7C479F.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'

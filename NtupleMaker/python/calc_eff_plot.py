@@ -10,15 +10,15 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option('--input', '-i', action='store',
-		default='merged_updated_output.root', dest='inputFile',
+		default='output_oldTrigFull.root', dest='inputFile',
 		help='input root file folder'
 		)
 parser.add_option('--var', '-v', action='store',
 		default="t1_pt_A", dest='variable',
-		help='whatcha wanna plot dood'
+		help='eff as a func of this variable'
 		)
 parser.add_option('--bin', '-b', action='store',
-		default="50,0,300", dest='binning',
+		default="20,0,400", dest='binning',
 		help='binning'
 		)
 parser.add_option('--outputdir', '-o', action='store',
@@ -43,19 +43,19 @@ def main():
     f.cd()
 
     # from the input file, make a histogram of a variable, give it a specific binning and selection
-    tree.Draw(var + ">>" + var + "_passTrig" + '(' + bins + ')', "passTrig>0")
+    tree.Draw(var + ">>" + var + "_passSelAndNewTrig" + '(' + bins + ')', "passNewTrig>0 && passSel > 0")
     tree.Draw(var + ">>" + var + "_passSel"  + '(' + bins + ')', "passSel>0")
 
     # get the new histograms
-    passTrigHistName = var+"_passTrig"
+    passBothHistName = var+"_passSelAndNewTrig"
     passSelHistName  = var+"_passSel"
-    trigHist = f.Get(passTrigHistName)
+    bothHist = f.Get(passBothHistName)
     selHist  = f.Get(passSelHistName)
     
-    print(trigHist.Integral())
+    print(bothHist.Integral())
 
-    effHist = trigHist.Clone()
-    effHist.Add(selHist,1.0)
+    effHist = bothHist.Clone()
+    #effHist.Add(selHist,1.0)
     effHist.Divide(selHist)
 
        

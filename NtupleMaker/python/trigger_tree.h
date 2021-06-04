@@ -38,6 +38,8 @@ public :
 
     std::vector<float>* tauByVVVLooseDeepTau2017v2p1VSe = nullptr;
     std::vector<float>* tauByTightDeepTau2017v2p1VSmu = nullptr;
+    std::vector<float>* tauByVLooseDeepTau2017v2p1VSmu = nullptr;
+    std::vector<float>* tauByMediumDeepTau2017v2p1VSjet = nullptr;
     std::vector<float>* tauByVVVLooseDeepTau2017v2p1VSjet = nullptr;
 
     //int 	nTau;
@@ -109,7 +111,9 @@ void trigger_tree::Init(TTree *tree)
     //fChain->SetBranchAddress("nTau", &nTau);
     fChain->SetBranchAddress("tauByVVVLooseDeepTau2017v2p1VSe", &tauByVVVLooseDeepTau2017v2p1VSe);
     fChain->SetBranchAddress("tauByTightDeepTau2017v2p1VSmu", &tauByTightDeepTau2017v2p1VSmu);
+    fChain->SetBranchAddress("tauByVLooseDeepTau2017v2p1VSmu", &tauByVLooseDeepTau2017v2p1VSmu);
     fChain->SetBranchAddress("tauByVVVLooseDeepTau2017v2p1VSjet", &tauByVVVLooseDeepTau2017v2p1VSjet);
+    fChain->SetBranchAddress("tauByMediumDeepTau2017v2p1VSjet", &tauByMediumDeepTau2017v2p1VSjet);
 }
 
 #endif

@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_HLT_and_AOD_05292021'
+    config.General.requestName = 'VBFHToTauTau_HLT_and_AOD_06032021'
     config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
     config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'

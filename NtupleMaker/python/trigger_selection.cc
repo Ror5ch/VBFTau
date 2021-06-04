@@ -97,6 +97,7 @@ int main(int argc, char** argv)	{
     int deepTauVSjet;
     int deepTauVSmu;
     int deepTauVSele;
+    int jetID;
 
     // vars for matching
     float dRj1;
@@ -164,7 +165,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
 
-    TH1F *h_cutflow = new TH1F("","",9,0,9);
+    TH1F *h_cutflow = new TH1F("","",10,0,10);
 
     //ad hoc testing vars
     //answering how many nonleading jet objects are matched btwn hlt and AOD
@@ -174,8 +175,8 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 2001; iEntry++) {
-    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    for (int iEntry = 0; iEntry < 10001; iEntry++) {
+    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
@@ -253,12 +254,19 @@ int main(int argc, char** argv)	{
 	
 	h_cutflow->Fill(5.0,1.0);
 
+	//jetID is 2 if it passes loose, and 6 if it passes loose and tight
+	//so, if both jets pass both, your ID value should be 12 if added together
+	jetID = inTree->jetID->at(0) + inTree->jetID->at(1);
+        if (jetID != 12) continue;
+
+	h_cutflow->Fill(6.0,1.0);
+
 	//I put these cuts together for the leading jet because
 	//the subleading jet(s) are also (essentially) together due to the way
 	//I've constructed my for loops and cutflows.
 	if (inTree->jetPt->at(0) < 120 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
-	h_cutflow->Fill(6.0,1.0);
+	h_cutflow->Fill(7.0,1.0);
 
 	//put all the jets that passed cuts up to here into a vector of jetCandidates
 	//from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
@@ -281,7 +289,7 @@ int main(int argc, char** argv)	{
 	//before filling the cutflow	
 	if (jetCandidates.size() < 2) continue;
 
-	h_cutflow->Fill(7.0,1.0);
+	h_cutflow->Fill(8.0,1.0);
 
 	//mjj cut off for old trigger is 700
 	//	      for new trigger is 550
@@ -305,7 +313,7 @@ int main(int argc, char** argv)	{
 	if (jetCandsLocs.size() < 1) continue;
         if (jetCandsLocs.size() > 1) overOneCounter += 1;
 
-	h_cutflow->Fill(8.0,1.0); //prev 2 for loops serv as the mjj cut
+	h_cutflow->Fill(9.0,1.0); //prev 2 for loops serv as the mjj cut
 
 	//jet branches below aren't necessarily the jet that gets matched to hlt object!!!
 

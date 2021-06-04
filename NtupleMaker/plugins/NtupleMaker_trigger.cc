@@ -134,8 +134,9 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     edm::Handle<trigger::TriggerEvent> triggerEvent;
     iEvent.getByToken(triggerEventToken_, triggerEvent);
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
+
     std::string pathNameTrig="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
-    std::string pathNameNewTrig="HLT_newVBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    std::string pathNameNewTrig="HLT_NewVBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
     passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameTrig));
     passNewTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrig));
     passTrigBranch.push_back(passTrig_);

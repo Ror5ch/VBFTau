@@ -180,8 +180,8 @@ int main(int argc, char** argv)	{
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
 	passSel = 0;  //ints standing in as booleans for these flag variables
-	passTrig = 0; //to tell if an event passed selection, trigger, etc.
-	passSelAndTrig = 0;
+	passNewTrig = 0; //to tell if an event passed selection, trigger, etc.
+	passSelAndNewTrig = 0;
 	matched = 0;
 
 	jetCandidates.clear(); //all for matching jets later
@@ -192,7 +192,7 @@ int main(int argc, char** argv)	{
 
 	//tau selection:
 	//2 taus
-	//pt > 25 for both
+	//leading tau pt > 55, subleading > 25
 	//fabs(eta) < 2.1 for both
 	
 	//fill cutflow before any selection
@@ -204,8 +204,8 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(1.0,1.0);
 
-	//deepTauVSjet = inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(1) > 0.5;
 	deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
+	//deepTauVSjet = inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(1) > 0.5;
 	//deepTauVSmu = inTree->tauByTightDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByTightDeepTau2017v2p1VSmu->at(1) > 0.5;
 	deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
         deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
@@ -217,15 +217,19 @@ int main(int argc, char** argv)	{
 
 	t1_pt_A = inTree->tauPt->at(0);
 	t2_pt_A = inTree->tauPt->at(1);
-	if (t1_pt_A < 25 || t2_pt_A < 25) continue;
-
+	if (t1_pt_A < 55 ) continue;
+       
 	h_cutflow->Fill(3.0,1.0);
+
+        if (t2_pt_A < 25) continue;
+
+	h_cutflow->Fill(4.0,1.0);
 
 	t1_eta_A = inTree->tauEta->at(0);
 	t2_eta_A = inTree->tauEta->at(1);
 	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
 
-	h_cutflow->Fill(4.0,1.0);
+	h_cutflow->Fill(5.0,1.0);
 
 	TLorentzVector tau1_A, tau2_A;
 	t1_phi_A = inTree->tauPhi->at(0);
@@ -235,19 +239,19 @@ int main(int argc, char** argv)	{
 
 	//jet selection:
 	//2 jets
-	//leading pt > 120, subleading > 45
+	//leading pt > 45, subleading > 45
 	//fabs(eta) < 4.7 for both
 	vecSizeAODJet = inTree->jetPt->size();
 	if (vecSizeAODJet <= 1) continue;
 	
-	h_cutflow->Fill(5.0,1.0);
-
-	//I put these cuts together for the leading jet because
-	//the subleading jet(s) are also (essentially) together due to the way
-	//I've constructed my for loops and cutflows.
-	if (inTree->jetPt->at(0) < 120 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
-
 	h_cutflow->Fill(6.0,1.0);
+
+	////I put these cuts together for the leading jet because
+	////the subleading jet(s) are also (essentially) together due to the way
+	////I've constructed my for loops and cutflows.
+	//if (inTree->jetPt->at(0) < 40 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
+
+	//h_cutflow->Fill(7.0,1.0);
 
 	//put all the jets that passed cuts up to here into a vector of jetCandidates
 	//from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
@@ -277,11 +281,11 @@ int main(int argc, char** argv)	{
 		if (iCand >= jCand) continue;
 
 		// makes sure one jet has pt > 120 and the other has pt > 45
-		if ((jetCandidates.at(iCand).Pt()>120 && jetCandidates.at(jCand).Pt()>45) || \
-		    (jetCandidates.at(iCand).Pt()>45 && jetCandidates.at(jCand).Pt()>120)){
-
+		//if ((jetCandidates.at(iCand).Pt()>120 && jetCandidates.at(jCand).Pt()>45) || \
+		//    (jetCandidates.at(iCand).Pt()>45 && jetCandidates.at(jCand).Pt()>120)){
+		if (jetCandidates.at(iCand).Pt() > 40 && jetCandidates.at(jCand).Pt() > 40){
 		    mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
-		    if (mjjCandidatePair < 700) continue;
+		    if (mjjCandidatePair < 550) continue;
 
 		    jetCandsLocs.push_back(std::make_pair(iCand,jCand));
 		}//end if statement on jet pair pt
@@ -397,13 +401,11 @@ int main(int argc, char** argv)	{
 
 	//now try to match to MiniAOD object if the event passed the trigger
 
-	passTrig = inTree->passTrigBranch->at(0);
+	//passTrig = inTree->passTrigBranch->at(0);
 	passNewTrig = inTree->passNewTrigBranch->at(0);
-	//should I have a seperate script for the new trigger?
-	//yes, new trigger has different AOD selection
 
-	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
-	//if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+	if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+
 	int savedindex = -1;	
 	if (passTrig){
 	    

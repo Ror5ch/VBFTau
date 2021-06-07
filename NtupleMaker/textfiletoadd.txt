@@ -1,0 +1,13 @@
+did you update the whitelist in your crab.py file?
+use T3_US_FNALLPC sites, that's where your runs are physically stored on disk
+
+did you add the L1-HLT correction?
+
+in the same directory as VBFTau
+git cms-addpkg L1Trigger/L1TGlobal
+cp CorrWithOverlapRemovalCondition.cc  L1Trigger/L1TGlobal/src
+scram b -j 8
+
+have you compiled your plugins since changing them?
+cd ../plugins
+scram b -j 8

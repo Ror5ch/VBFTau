@@ -62,6 +62,7 @@ int main(int argc, char** argv)	{
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
 	mjj_cut = 700;
+	std::cout << "trigger: " << oldTrigString << std::endl;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
 	t1_pt_cut = 55;
@@ -69,9 +70,8 @@ int main(int argc, char** argv)	{
 	j1_pt_cut = 45;
 	j2_pt_cut = 45;
 	mjj_cut = 550;
+	std::cout << "trigger: " << newTrigString << std::endl;
     }
-
-    std::cout << mjj_cut << std::endl;	 
 
     // hlt vars
     int j1_loc; //jet1 location, either position 0 or 1 in the vector of jets
@@ -205,7 +205,7 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 10001; iEntry++) {
+    for (int iEntry = 0; iEntry < 100001; iEntry++) {
     //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
@@ -254,7 +254,8 @@ int main(int argc, char** argv)	{
 
 	t1_pt_A = inTree->tauPt->at(0);
 	t2_pt_A = inTree->tauPt->at(1);
-	if (t1_pt_A < 25 || t2_pt_A < 25) continue;
+	if (t1_pt_A < t1_pt_cut) continue;
+        if (t2_pt_A < t2_pt_cut) continue;
 
 	h_cutflow->Fill(3.0,1.0);
 
@@ -294,7 +295,7 @@ int main(int argc, char** argv)	{
 	//I put these cuts together for the leading jet because
 	//the subleading jet(s) are also (essentially) together due to the way
 	//I've constructed my for loops and cutflows.
-	if (inTree->jetPt->at(0) < 120 || fabs(inTree->jetEta->at(0)) > 4.7) continue;
+	if (inTree->jetPt->at(0) < j1_pt_cut || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
 	h_cutflow->Fill(7.0,1.0);
 
@@ -304,7 +305,7 @@ int main(int argc, char** argv)	{
 	    //cuts above only applied to first and second jet in list
 	    //these cuts make it so that a list of 11 jets, of which some have pt < 45,
 	    //aren't filled into the jet candidates.
-	    if (inTree->jetPt->at(iJet) < 45) continue;
+	    if (inTree->jetPt->at(iJet) < j2_pt_cut) continue;
 	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
 	    TLorentzVector jetCand;
 	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
@@ -327,12 +328,13 @@ int main(int argc, char** argv)	{
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
 		if (iCand >= jCand) continue;
 
-		// makes sure one jet has pt > 120 and the other has pt > 45
-		if ((jetCandidates.at(iCand).Pt()>120 && jetCandidates.at(jCand).Pt()>45) || \
-		    (jetCandidates.at(iCand).Pt()>45 && jetCandidates.at(jCand).Pt()>120)){
+		// makes sure one jet has pt > 120 and the other has pt > 45 if it's the old trigger
+		// harmless if it's the new trigger
+		if ((jetCandidates.at(iCand).Pt()>j1_pt_cut && jetCandidates.at(jCand).Pt()>j2_pt_cut) || \
+		    (jetCandidates.at(iCand).Pt()>j2_pt_cut && jetCandidates.at(jCand).Pt()>j1_pt_cut)){
 
 		    mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
-		    if (mjjCandidatePair < 700) continue;
+		    if (mjjCandidatePair < mjj_cut) continue;
 
 		    jetCandsLocs.push_back(std::make_pair(iCand,jCand));
 		}//end if statement on jet pair pt

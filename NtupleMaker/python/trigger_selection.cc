@@ -52,6 +52,7 @@ int main(int argc, char** argv)	{
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
     std::string newTrigString = "new";
+    int triggerFlag = 2;
     if (whichTrigger.find(oldTrigString) == std::string::npos && whichTrigger.find(newTrigString) == std::string::npos) {
 	std::cout << "specify whether this is the new trigger or the old trigger with \"old\" or \"new\" as the 3rd argument" << std::endl;
 	return 0; //prevents rest of code from running
@@ -63,6 +64,8 @@ int main(int argc, char** argv)	{
 	j2_pt_cut = 45;
 	mjj_cut = 700;
 	std::cout << "trigger: " << oldTrigString << std::endl;
+	triggerFlag = 0;
+	std::cout << triggerFlag << std::endl;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
 	t1_pt_cut = 55;
@@ -71,6 +74,8 @@ int main(int argc, char** argv)	{
 	j2_pt_cut = 45;
 	mjj_cut = 550;
 	std::cout << "trigger: " << newTrigString << std::endl;
+	triggerFlag = 1;
+	std::cout << triggerFlag << std::endl;
     }
 
     // hlt vars
@@ -149,6 +154,8 @@ int main(int argc, char** argv)	{
     int passSelAndTrig;
     int passSelAndNewTrig;
     int matched;
+    int passSelTrigAndMatched;
+    int passSelNewTrigAndMatched;
     
     // filled data branches
     // hlt vars
@@ -194,6 +201,8 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelAndTrig", &passSelAndTrig);
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
     outTree->Branch("matched", &matched);
+    outTree->Branch("passSelTrigAndMatched", &passSelTrigAndMatched);
+    outTree->Branch("passSelNewTrigAndMatched", &passSelNewTrigAndMatched);
 
     TH1F *h_cutflow = new TH1F("","",10,0,10);
 
@@ -205,8 +214,8 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 100001; iEntry++) {
-    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    //for (int iEntry = 0; iEntry < 100001; iEntry++) {
+    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
@@ -216,6 +225,8 @@ int main(int argc, char** argv)	{
 	passSelAndTrig = 0;
 	passSelAndNewTrig = 0;
 	matched = 0;
+	passSelTrigAndMatched = 0;
+	passSelNewTrigAndMatched = 0;
 
 	jetCandidates.clear(); //all for matching jets later
 	jetCandsLocs.clear();
@@ -453,8 +464,8 @@ int main(int argc, char** argv)	{
 	passTrig = inTree->passTrigBranch->at(0);
 	passNewTrig = inTree->passNewTrigBranch->at(0);
 
-	if (passSel == 1 && passTrig == 1) passSelAndTrig = 1;
-	if (passSel == 1 && passNewTrig == 1) passSelAndNewTrig = 1;
+	if (passSel == 1 && passTrig == 1 && triggerFlag == 0) passSelAndTrig = 1; //triggerFlag = 0 indicates old trigger is used
+	if (passSel == 1 && passNewTrig == 1 && triggerFlag == 1) passSelAndNewTrig = 1;
 
 	int savedindex = -1;	
 	if (passTrig){
@@ -483,6 +494,8 @@ int main(int argc, char** argv)	{
 	//if all the dRs are less than 0.5, then we've matched AOD to reco
 	//don't use continue because we don't want to lose objects that didn't match but still passed selection
 	if (dRj1 < 0.5 && dRj2 < 0.5 && dRt1 < 0.5 && dRt2 < 0.5) matched = 1;
+	if (matched && passSelAndTrig) passSelTrigAndMatched = 1;
+	if (matched && passSelAndNewTrig) passSelNewTrigAndMatched = 1;
 	if (savedindex > 0) overOneAfterMatchingCounter += 1;
 	outTree->Fill();
     } // end event loop

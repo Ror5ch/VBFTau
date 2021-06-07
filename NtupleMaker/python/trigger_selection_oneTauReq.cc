@@ -58,20 +58,20 @@ int main(int argc, char** argv)	{
 	return 0; //prevents rest of code from running
     }
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;
-	t2_pt_cut = 25;
-	j1_pt_cut = 120;
-	j2_pt_cut = 45;
-	mjj_cut = 700;
+	t1_pt_cut = 20; //25; HLT cutoffs, AOD cutoffs commented out
+	t2_pt_cut = 20; //25;
+	j1_pt_cut = 115; //120;
+	j2_pt_cut = 40; //45;
+	mjj_cut = 650; //700;
 	std::cout << "trigger: " << oldTrigString << std::endl;
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 55;
-	t2_pt_cut = 25;
-	j1_pt_cut = 45;
-	j2_pt_cut = 45;
-	mjj_cut = 550;
+	t1_pt_cut = 50; //55;
+	t2_pt_cut = 20; //25;
+	j1_pt_cut = 40; //45;
+	j2_pt_cut = 40; //45;
+	mjj_cut = 500; //550;
 	std::cout << "trigger: " << newTrigString << std::endl;
 	triggerFlag = 1;
     }
@@ -151,15 +151,9 @@ int main(int argc, char** argv)	{
     int passNewTrig;
     int passSelAndTrig;
     int passSelAndNewTrig;
-    int matchedTaus;
-    int matchedJets;
-    int matchedBoth;
-    int passSelTrigAndMatchedTaus;
-    int passSelTrigAndMatchedJets;
-    int passSelTrigAndMatchedBoth;
-    int passSelNewTrigAndMatchedTaus;
-    int passSelNewTrigAndMatchedJets;
-    int passSelNewTrigAndMatchedBoth;
+    int matched;
+    int passSelTrigAndMatched;
+    int passSelNewTrigAndMatched;
     
     // filled data branches
     // hlt vars
@@ -204,15 +198,9 @@ int main(int argc, char** argv)	{
     outTree->Branch("passNewTrig", &passNewTrig);
     outTree->Branch("passSelAndTrig", &passSelAndTrig);
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
-    outTree->Branch("matchedTaus", &matchedTaus);
-    outTree->Branch("matchedJets", &matchedJets);
-    outTree->Branch("matchedBoth", &matchedBoth);
-    outTree->Branch("passSelTrigAndMatchedTaus", &passSelTrigAndMatchedTaus);
-    outTree->Branch("passSelTrigAndMatchedJets", &passSelTrigAndMatchedJets);
-    outTree->Branch("passSelTrigAndMatchedBoth", &passSelTrigAndMatchedBoth);
-    outTree->Branch("passSelNewTrigAndMatchedTaus", &passSelNewTrigAndMatchedTaus);
-    outTree->Branch("passSelNewTrigAndMatchedJets", &passSelNewTrigAndMatchedJets);
-    outTree->Branch("passSelNewTrigAndMatchedBoth", &passSelNewTrigAndMatchedBoth);
+    outTree->Branch("matched", &matched);
+    outTree->Branch("passSelTrigAndMatched", &passSelTrigAndMatched);
+    outTree->Branch("passSelNewTrigAndMatched", &passSelNewTrigAndMatched);
 
     TH1F *h_cutflow = new TH1F("","",10,0,10);
 
@@ -234,15 +222,9 @@ int main(int argc, char** argv)	{
 	passNewTrig = 0;
 	passSelAndTrig = 0;
 	passSelAndNewTrig = 0;
-	matchedTaus = 0;
-	matchedJets = 0;
-	matchedBoth = 0;
-	passSelTrigAndMatchedTaus = 0;
-	passSelTrigAndMatchedJets = 0;
-	passSelTrigAndMatchedBoth = 0;
-	passSelNewTrigAndMatchedTaus = 0;
-	passSelNewTrigAndMatchedJets = 0;
-	passSelNewTrigAndMatchedBoth = 0;
+	matched = 0;
+	passSelTrigAndMatched = 0;
+	passSelNewTrigAndMatched = 0;
 
 	jetCandidates.clear(); //all for matching jets later
 	jetCandsLocs.clear();
@@ -264,39 +246,40 @@ int main(int argc, char** argv)	{
 
 	vecSizeAODTau = inTree->tauPt->size();
        
-	if (vecSizeAODTau <= 1) continue;
+	if (vecSizeAODTau < 1) continue;
 
-	h_cutflow->Fill(1.0,1.0);
+	//h_cutflow->Fill(1.0,1.0);
 
 	//deepTauVSjet = inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(1) > 0.5;
-	deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
+	//deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
 	//deepTauVSmu = inTree->tauByTightDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByTightDeepTau2017v2p1VSmu->at(1) > 0.5;
-	deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
-        deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
+	//deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
+        //deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
 
 	// using same code syntax as Doeyong
-	if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
+	//if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
 
 	h_cutflow->Fill(2.0,1.0);
 
 	t1_pt_A = inTree->tauPt->at(0);
-	t2_pt_A = inTree->tauPt->at(1);
+	//t2_pt_A = inTree->tauPt->at(1);
 	if (t1_pt_A < t1_pt_cut) continue;
-        if (t2_pt_A < t2_pt_cut) continue;
+        //if (t2_pt_A < t2_pt_cut) continue;
 
 	h_cutflow->Fill(3.0,1.0);
 
 	t1_eta_A = inTree->tauEta->at(0);
-	t2_eta_A = inTree->tauEta->at(1);
-	if (fabs(t1_eta_A) > 2.1 || fabs(t2_eta_A) > 2.1) continue;
+	//t2_eta_A = inTree->tauEta->at(1);
+	if (fabs(t1_eta_A) > 2.1) continue;
+	//if (fabs(t2_eta_A) > 2.1) continue;
 
 	h_cutflow->Fill(4.0,1.0);
 
-	TLorentzVector tau1_A, tau2_A;
+	TLorentzVector tau1_A;//, tau2_A;
 	t1_phi_A = inTree->tauPhi->at(0);
-	t2_phi_A = inTree->tauPhi->at(1);
+	//t2_phi_A = inTree->tauPhi->at(1);
 	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, t1_phi_A, inTree->tauEnergy->at(0));
-	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, inTree->tauEnergy->at(1));
+	//tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, inTree->tauEnergy->at(1));
 
 	//jet selection for old trigger:
 	//2 jets
@@ -338,7 +321,7 @@ int main(int argc, char** argv)	{
 	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
 	    //if a jetCandidate looks like it could be a tau, don't store it
 	    //std::cout << tau1_A.DeltaR(jetCand) << ' ' << tau2_A.DeltaR(jetCand) << std::endl;
-	    if (tau1_A.DeltaR(jetCand) < 0.5 || tau2_A.DeltaR(jetCand) < 0.5) continue;
+	    if (tau1_A.DeltaR(jetCand) < 0.5) continue; // || tau2_A.DeltaR(jetCand) < 0.5) continue;
 	    jetCandidates.push_back(jetCand);
 	}
 
@@ -419,15 +402,15 @@ int main(int argc, char** argv)	{
 	    t2_phi = inTree->hltHpsDoublePFTau_phi->at(t2_loc);
 	    t2_energy = inTree->hltHpsDoublePFTau_energy->at(t2_loc);
 
-	    TLorentzVector tau1, tau2; //cut on tau dR immediately after here or later? when do we cut on dR?
+	    TLorentzVector tau1;//, tau2; //cut on tau dR immediately after here or later? when do we cut on dR?
 	    tau1.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);
-	    tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
+	    //tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
 	   
 	    dRt1 = tau1.DeltaR(tau1_A);
-	    dRt2 = tau2.DeltaR(tau2_A);
+	    //dRt2 = tau2.DeltaR(tau2_A);
 	}
 
-	if (dRt1 > 50 || dRt2 > 50) continue; // will change later, this is just here to remove erroneous values
+	if (dRt1 > 50) continue;// || dRt2 > 50) continue; // will change later, this is just here to remove erroneous values
 
 	// fill trigger info for jets if its available
 	// if there are 2 jets, make the greater pt jet j1_pt
@@ -509,16 +492,9 @@ int main(int argc, char** argv)	{
 
 	//if all the dRs are less than 0.5, then we've matched AOD to reco
 	//don't use continue because we don't want to lose objects that didn't match but still passed selection
-	if (dRt1 < 0.5 && dRt2 < 0.5) matchedTaus = 1;
-	if (dRj1 < 0.5 && dRj2 < 0.5) matchedJets = 1;
-	if (matchedTaus && matchedJets) matchedBoth = 1;
-	//if (dRj1 < 0.5 && dRj2 < 0.5 && dRt1 < 0.5 && dRt2 < 0.5) matched = 1;
-	if (matchedTaus && passSelAndTrig) passSelTrigAndMatchedTaus = 1;
-	if (matchedJets && passSelAndTrig) passSelTrigAndMatchedJets = 1;
-	if (matchedBoth && passSelAndTrig) passSelTrigAndMatchedBoth = 1;
-	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
-	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
-	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
+	if (dRj1 < 0.5 && dRj2 < 0.5 && dRt1 < 0.5) matched = 1; // && dRt2 < 0.5) matched = 1;
+	if (matched && passSelAndTrig) passSelTrigAndMatched = 1;
+	if (matched && passSelAndNewTrig) passSelNewTrigAndMatched = 1;
 	if (savedindex > 0) overOneAfterMatchingCounter += 1;
 	outTree->Fill();
     } // end event loop

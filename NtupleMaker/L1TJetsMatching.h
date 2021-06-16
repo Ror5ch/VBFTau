@@ -78,6 +78,9 @@ class L1TJetsMatching: public edm::global::EDProducer<> {
         unsigned int i1 = 0;
         unsigned int i2 = 0;
         double mjj = 0;
+	bool passedMJJ = true;
+	bool passedOne = true;
+	bool passedTwo = true;
         if (pfMatchedJets.size()>1){
             for (unsigned int i = 0; i < pfMatchedJets.size()-1; i++){
                 
@@ -90,8 +93,12 @@ class L1TJetsMatching: public edm::global::EDProducer<> {
                     const double mjj_test = (myJet1.p4()+myJet2.p4()).M();
                     
                     if (mjj_test > mjj){
+			if (passedMJJ){
+			    passedMJJ=false;
+			    std::cout << "at least one MATCHED dijet pair (passing mjj)" << std::endl;
+			}
                         
-                        mjj =mjj_test;
+                        mjj = mjj_test;
                         i1 = i;
                         i2 = j;
                     }
@@ -103,7 +110,10 @@ class L1TJetsMatching: public edm::global::EDProducer<> {
             
             if ((mjj > Mjj) && (myJet1.pt() >= pt1) && (myJet2.pt() > pt2) )
             {
-		std::cout << "PASSED case 1 " << std::endl;
+		if(passedOne){
+		    passedOne=false;
+		    std::cout << "PASSED case 1 " << std::endl;
+		}
                 output.first.push_back(myJet1);
                 output.first.push_back(myJet2);
                 
@@ -113,7 +123,10 @@ class L1TJetsMatching: public edm::global::EDProducer<> {
             {
                 const T &  myJetTest = (pfMatchedJets)[0];
                 if (myJetTest.pt()>pt3){
-		    std::cout << "PASSED case 2 " << std::endl;
+		    if(passedTwo){
+			passedTwo=false;
+		    	std::cout << "PASSED case 2 " << std::endl;
+		    }
                     output.second.push_back(myJet1);
                     output.second.push_back(myJet2);
                     output.second.push_back(myJetTest);

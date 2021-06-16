@@ -31,6 +31,7 @@ void PFJetsTauOverlapRemoval::produce(edm::StreamID iSId, edm::Event& iEvent, co
   tauJets->getObjects(trigger::TriggerTau,taus);
 
   if(PFJets->size() > 1){
+    bool oneMatched=true;
     for(unsigned int iJet = 0; iJet < PFJets->size(); iJet++){  
       bool isMatched = false;  
       const reco::PFJet &  myPFJet = (*PFJets)[iJet];
@@ -45,7 +46,10 @@ void PFJetsTauOverlapRemoval::produce(edm::StreamID iSId, edm::Event& iEvent, co
 	//std::cout << "myTau.phi() " << taus[iTau]->phi() << std::endl;
 	//std::cout << "myTau.energy() " << taus[iTau]->energy() << std::endl;
         if(reco::deltaR2(taus[iTau]->p4(), myPFJet.p4()) < matchingR2_){
-	  std::cout << "MATCHED in overlap" << std::endl;
+	  if(oneMatched){
+	    oneMatched=false;
+	    std::cout << "MATCHED in overlap" << std::endl;
+	  }
 	  //std::cout << "MATCHED " << "jet pt: " << myPFJet.pt() << " tau pt: " << taus[iTau]->pt() << std::endl;
 	  //std::cout << "MATCHED " << "jet eta: " << myPFJet.eta() << " tau eta: " << taus[iTau]->eta() << std::endl;
 	  //std::cout << "MATCHED " << "jet phi: " << myPFJet.phi() << " tau phi: " << taus[iTau]->phi() << std::endl;

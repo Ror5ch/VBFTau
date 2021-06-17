@@ -11,6 +11,9 @@ bool passNewTrig_;
 vector<bool> passTrigBranch;
 vector<bool> passNewTrigBranch;
 
+vector<int>  passhltL1Branch;
+vector<int>  passhltL1NewBranch;
+
 float 	pt_;
 float 	eta_;
 float 	phi_;
@@ -18,6 +21,16 @@ float 	energy_;
 
 // vars associated w old trigger and filters
 //full trigger name is
+//hltL1VBFDiJetOR
+vector<float>	hltL1VBFDiJetOR_pt;
+vector<float>	hltL1VBFDiJetOR_eta;
+vector<float>	hltL1VBFDiJetOR_phi;
+vector<float>	hltL1VBFDiJetOR_energy;
+//hltL1NewVBFDiJet
+vector<float>	hltL1NewVBFDiJet_pt;
+vector<float>	hltL1NewVBFDiJet_eta;
+vector<float>	hltL1NewVBFDiJet_phi;
+vector<float>	hltL1NewVBFDiJet_energy;
 //hltHpsPFTauTrack
 vector<float> 	hltHpsPFTauTrack_pt;
 vector<float> 	hltHpsPFTauTrack_eta;
@@ -62,6 +75,18 @@ void NtupleMaker::branchesTriggers(TTree* tree){
 
     tree->Branch("passTrigBranch", &passTrigBranch);    
     tree->Branch("passNewTrigBranch", &passNewTrigBranch);
+    tree->Branch("passhltL1Branch", &passhltL1Branch);
+    tree->Branch("passhltL1NewBranch", &passhltL1NewBranch);
+
+    tree->Branch("hltL1VBFDiJetOR_pt", &hltL1VBFDiJetOR_pt);
+    tree->Branch("hltL1VBFDiJetOR_eta", &hltL1VBFDiJetOR_eta);
+    tree->Branch("hltL1VBFDiJetOR_phi", &hltL1VBFDiJetOR_phi);
+    tree->Branch("hltL1VBFDiJetOR_energy", &hltL1VBFDiJetOR_energy);
+
+    tree->Branch("hltL1NewVBFDiJet_pt", &hltL1NewVBFDiJet_pt);
+    tree->Branch("hltL1NewVBFDiJet_eta", &hltL1NewVBFDiJet_eta);
+    tree->Branch("hltL1NewVBFDiJet_phi", &hltL1NewVBFDiJet_phi);
+    tree->Branch("hltL1NewVBFDiJet_energy", &hltL1NewVBFDiJet_energy);
 
     tree->Branch("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
     tree->Branch("hltHpsPFTauTrack_eta", &hltHpsPFTauTrack_eta);
@@ -101,19 +126,34 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     // clearing vectors at the start of every event 
     passTrigBranch.clear(); 
     passNewTrigBranch.clear();
+    passhltL1Branch.clear();
+    passhltL1NewBranch.clear();
+
+    hltL1VBFDiJetOR_pt.clear();
+    hltL1VBFDiJetOR_eta.clear();
+    hltL1VBFDiJetOR_phi.clear();
+    hltL1VBFDiJetOR_energy.clear();
+
+    hltL1NewVBFDiJet_pt.clear();
+    hltL1NewVBFDiJet_eta.clear();
+    hltL1NewVBFDiJet_phi.clear();
+    hltL1NewVBFDiJet_energy.clear();
 
     hltHpsPFTauTrack_pt.clear();
     hltHpsPFTauTrack_eta.clear();
     hltHpsPFTauTrack_phi.clear();
     hltHpsPFTauTrack_energy.clear();
+
     hltHpsDoublePFTau_pt.clear();
     hltHpsDoublePFTau_eta.clear();
     hltHpsDoublePFTau_phi.clear();
     hltHpsDoublePFTau_energy.clear();
+
     hltMatchedVBFOne_pt.clear();
     hltMatchedVBFOne_eta.clear();
     hltMatchedVBFOne_phi.clear();
     hltMatchedVBFOne_energy.clear();
+
     hltMatchedVBFTwo_pt.clear();
     hltMatchedVBFTwo_eta.clear();
     hltMatchedVBFTwo_phi.clear();
@@ -123,6 +163,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltMatchedNewVBFTwo_eta.clear();
     hltMatchedNewVBFTwo_phi.clear();
     hltMatchedNewVBFTwo_energy.clear();
+
     hltHpsDoubleAgainstMuon_pt.clear();
     hltHpsDoubleAgainstMuon_eta.clear();
     hltHpsDoubleAgainstMuon_phi.clear();
@@ -144,6 +185,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     // filling branches with triggerObjs information
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
+    std::string hltL1_Tag = "hltL1VBFDiJetOR::MYHLT";
+    std::string hltL1New_Tag = "hltL1NewVBFDiJet::MYHLT";
     std::string hltHpsPFTauTrack_Tag = "hltHpsPFTauTrack::MYHLT";
     std::string hltHpsDoublePFTau_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
     std::string hltMatchedVBFOne_Tag = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
@@ -162,6 +205,21 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	    eta_ = triggerObj.eta();
 	    phi_ = triggerObj.phi();
 	    energy_ = triggerObj.energy();
+	// fill L1 branches
+	    if (filterTag == hltL1_Tag && pt_>0){
+		passhltL1Branch.push_back(1);
+		hltL1VBFDiJetOR_pt.push_back(pt_);
+		hltL1VBFDiJetOR_eta.push_back(eta_);
+		hltL1VBFDiJetOR_phi.push_back(phi_);
+		hltL1VBFDiJetOR_energy.push_back(energy_);
+	    }
+	    if (filterTag == hltL1New_Tag){
+		passhltL1NewBranch.push_back(1);
+		hltL1NewVBFDiJet_pt.push_back(pt_);
+		hltL1NewVBFDiJet_eta.push_back(eta_);
+		hltL1NewVBFDiJet_phi.push_back(phi_);
+		hltL1NewVBFDiJet_energy.push_back(energy_);
+	    }
 	// fill hltHpsPFTauTrack branches if match
 	    if (filterTag == hltHpsPFTauTrack_Tag && pt_>0){
 		hltHpsPFTauTrack_pt.push_back(pt_);

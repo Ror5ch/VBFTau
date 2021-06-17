@@ -11,9 +11,6 @@ bool passNewTrig_;
 vector<bool> passTrigBranch;
 vector<bool> passNewTrigBranch;
 
-vector<int>  passhltL1Branch;
-vector<int>  passhltL1NewBranch;
-
 float 	pt_;
 float 	eta_;
 float 	phi_;
@@ -22,11 +19,13 @@ float 	energy_;
 // vars associated w old trigger and filters
 //full trigger name is
 //hltL1VBFDiJetOR
+vector<int>	passhltL1Branch;
 vector<float>	hltL1VBFDiJetOR_pt;
 vector<float>	hltL1VBFDiJetOR_eta;
 vector<float>	hltL1VBFDiJetOR_phi;
 vector<float>	hltL1VBFDiJetOR_energy;
 //hltL1NewVBFDiJet
+vector<int>	passhltL1NewBranch;
 vector<float>	hltL1NewVBFDiJet_pt;
 vector<float>	hltL1NewVBFDiJet_eta;
 vector<float>	hltL1NewVBFDiJet_phi;
@@ -75,14 +74,14 @@ void NtupleMaker::branchesTriggers(TTree* tree){
 
     tree->Branch("passTrigBranch", &passTrigBranch);    
     tree->Branch("passNewTrigBranch", &passNewTrigBranch);
-    tree->Branch("passhltL1Branch", &passhltL1Branch);
-    tree->Branch("passhltL1NewBranch", &passhltL1NewBranch);
 
+    tree->Branch("passhltL1Branch", &passhltL1Branch);
     tree->Branch("hltL1VBFDiJetOR_pt", &hltL1VBFDiJetOR_pt);
     tree->Branch("hltL1VBFDiJetOR_eta", &hltL1VBFDiJetOR_eta);
     tree->Branch("hltL1VBFDiJetOR_phi", &hltL1VBFDiJetOR_phi);
     tree->Branch("hltL1VBFDiJetOR_energy", &hltL1VBFDiJetOR_energy);
 
+    tree->Branch("passhltL1NewBranch", &passhltL1NewBranch);
     tree->Branch("hltL1NewVBFDiJet_pt", &hltL1NewVBFDiJet_pt);
     tree->Branch("hltL1NewVBFDiJet_eta", &hltL1NewVBFDiJet_eta);
     tree->Branch("hltL1NewVBFDiJet_phi", &hltL1NewVBFDiJet_phi);
@@ -126,14 +125,14 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     // clearing vectors at the start of every event 
     passTrigBranch.clear(); 
     passNewTrigBranch.clear();
-    passhltL1Branch.clear();
-    passhltL1NewBranch.clear();
 
+    passhltL1Branch.clear();
     hltL1VBFDiJetOR_pt.clear();
     hltL1VBFDiJetOR_eta.clear();
     hltL1VBFDiJetOR_phi.clear();
     hltL1VBFDiJetOR_energy.clear();
 
+    passhltL1NewBranch.clear();
     hltL1NewVBFDiJet_pt.clear();
     hltL1NewVBFDiJet_eta.clear();
     hltL1NewVBFDiJet_phi.clear();

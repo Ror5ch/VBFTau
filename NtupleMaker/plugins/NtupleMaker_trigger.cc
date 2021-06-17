@@ -31,21 +31,25 @@ vector<float>	hltL1NewVBFDiJet_eta;
 vector<float>	hltL1NewVBFDiJet_phi;
 vector<float>	hltL1NewVBFDiJet_energy;
 //hltHpsPFTauTrack
+vector<int>	passhltHpsPFTauTrack;
 vector<float> 	hltHpsPFTauTrack_pt;
 vector<float> 	hltHpsPFTauTrack_eta;
 vector<float> 	hltHpsPFTauTrack_phi;
 vector<float>	hltHpsPFTauTrack_energy;
 //hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon
+vector<int>	passhltHpsDoublePFTau;
 vector<float>	hltHpsDoublePFTau_pt;
 vector<float>	hltHpsDoublePFTau_eta;
 vector<float>	hltHpsDoublePFTau_phi;
 vector<float>	hltHpsDoublePFTau_energy;
 //hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
+vector<int>	passhltMatchedVBFOne;
 vector<float> 	hltMatchedVBFOne_pt;
 vector<float> 	hltMatchedVBFOne_eta;
 vector<float> 	hltMatchedVBFOne_phi;
 vector<float>	hltMatchedVBFOne_energy;
 //hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
+vector<int>	passhltMatchedVBFTwo;
 vector<float>	hltMatchedVBFTwo_pt;
 vector<float>	hltMatchedVBFTwo_eta;
 vector<float>	hltMatchedVBFTwo_phi;
@@ -54,15 +58,17 @@ vector<float>	hltMatchedVBFTwo_energy;
 // vars associated w new trigger and filters
 // full trigger name is
 //hltHpsDoubleTightIsoAgainstMuonMatch (this filter checks L1-HLT matched taus > 50 GeV)
-vector<float> hltHpsDoubleAgainstMuon_pt;
-vector<float> hltHpsDoubleAgainstMuon_eta;
-vector<float> hltHpsDoubleAgainstMuon_phi;
-vector<float> hltHpsDoubleAgainstMuon_energy;
+vector<int>	passhltHpsDoubleAgainstMuon;
+vector<float> 	hltHpsDoubleAgainstMuon_pt;
+vector<float> 	hltHpsDoubleAgainstMuon_eta;
+vector<float> 	hltHpsDoubleAgainstMuon_phi;
+vector<float> 	hltHpsDoubleAgainstMuon_energy;
 //hltMatchedNewVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
-vector<float> hltMatchedNewVBFTwo_pt;
-vector<float> hltMatchedNewVBFTwo_eta;
-vector<float> hltMatchedNewVBFTwo_phi;
-vector<float> hltMatchedNewVBFTwo_energy;
+vector<int>	passhltMatchedNewVBFTwo;
+vector<float> 	hltMatchedNewVBFTwo_pt;
+vector<float> 	hltMatchedNewVBFTwo_eta;
+vector<float> 	hltMatchedNewVBFTwo_phi;
+vector<float> 	hltMatchedNewVBFTwo_energy;
 
 //the taus/jets are the same objects and therefore have the same information,
 //no matter if it's stored by the new or the old trigger
@@ -87,31 +93,37 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltL1NewVBFDiJet_phi", &hltL1NewVBFDiJet_phi);
     tree->Branch("hltL1NewVBFDiJet_energy", &hltL1NewVBFDiJet_energy);
 
+    tree->Branch("passhltHpsPFTauTrack", &passhltHpsPFTauTrack);
     tree->Branch("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
     tree->Branch("hltHpsPFTauTrack_eta", &hltHpsPFTauTrack_eta);
     tree->Branch("hltHpsPFTauTrack_phi", &hltHpsPFTauTrack_phi);
     tree->Branch("hltHpsPFTauTrack_energy", &hltHpsPFTauTrack_energy);
 
+    tree->Branch("passhltHpsDoublePFTau", &passhltHpsDoublePFTau);
     tree->Branch("hltHpsDoublePFTau_pt", &hltHpsDoublePFTau_pt);
     tree->Branch("hltHpsDoublePFTau_eta", &hltHpsDoublePFTau_eta);
     tree->Branch("hltHpsDoublePFTau_phi", &hltHpsDoublePFTau_phi);
     tree->Branch("hltHpsDoublePFTau_energy", &hltHpsDoublePFTau_energy);
 
+    tree->Branch("passhltMatchedVBFOne", &passhltMatchedVBFOne);
     tree->Branch("hltMatchedVBFOne_pt", &hltMatchedVBFOne_pt);
     tree->Branch("hltMatchedVBFOne_eta", &hltMatchedVBFOne_eta);
     tree->Branch("hltMatchedVBFOne_phi", &hltMatchedVBFOne_phi);
     tree->Branch("hltMatchedVBFOne_energy", &hltMatchedVBFOne_energy);
 
+    tree->Branch("passhltMatchedVBFTwo", &passhltMatchedVBFTwo);
     tree->Branch("hltMatchedVBFTwo_pt", &hltMatchedVBFTwo_pt);
     tree->Branch("hltMatchedVBFTwo_eta", &hltMatchedVBFTwo_eta);
     tree->Branch("hltMatchedVBFTwo_phi", &hltMatchedVBFTwo_phi);
     tree->Branch("hltMatchedVBFTwo_energy", &hltMatchedVBFTwo_energy);
 
+    tree->Branch("passhltMatchedNewVBFTwo", &passhltMatchedNewVBFTwo);
     tree->Branch("hltMatchedNewVBFTwo_pt", &hltMatchedNewVBFTwo_pt);
     tree->Branch("hltMatchedNewVBFTwo_eta", &hltMatchedNewVBFTwo_eta);
     tree->Branch("hltMatchedNewVBFTwo_phi", &hltMatchedNewVBFTwo_phi);
     tree->Branch("hltMatchedNewVBFTwo_energy", &hltMatchedNewVBFTwo_energy);
 
+    tree->Branch("passhltHpsDoubleAgainstMuon", &passhltHpsDoubleAgainstMuon);
     tree->Branch("hltHpsDoubleAgainstMuon_pt", &hltHpsDoubleAgainstMuon_pt);
     tree->Branch("hltHpsDoubleAgainstMuon_eta", &hltHpsDoubleAgainstMuon_eta);
     tree->Branch("hltHpsDoubleAgainstMuon_phi", &hltHpsDoubleAgainstMuon_phi);
@@ -138,31 +150,37 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltL1NewVBFDiJet_phi.clear();
     hltL1NewVBFDiJet_energy.clear();
 
+    passhltHpsPFTauTrack.clear();
     hltHpsPFTauTrack_pt.clear();
     hltHpsPFTauTrack_eta.clear();
     hltHpsPFTauTrack_phi.clear();
     hltHpsPFTauTrack_energy.clear();
 
+    passhltHpsDoublePFTau.clear();
     hltHpsDoublePFTau_pt.clear();
     hltHpsDoublePFTau_eta.clear();
     hltHpsDoublePFTau_phi.clear();
     hltHpsDoublePFTau_energy.clear();
 
+    passhltMatchedVBFOne.clear();
     hltMatchedVBFOne_pt.clear();
     hltMatchedVBFOne_eta.clear();
     hltMatchedVBFOne_phi.clear();
     hltMatchedVBFOne_energy.clear();
 
+    passhltMatchedVBFTwo.clear();
     hltMatchedVBFTwo_pt.clear();
     hltMatchedVBFTwo_eta.clear();
     hltMatchedVBFTwo_phi.clear();
     hltMatchedVBFTwo_energy.clear();
 
+    passhltMatchedNewVBFTwo.clear();
     hltMatchedNewVBFTwo_pt.clear();
     hltMatchedNewVBFTwo_eta.clear();
     hltMatchedNewVBFTwo_phi.clear();
     hltMatchedNewVBFTwo_energy.clear();
 
+    passhltHpsDoubleAgainstMuon.clear();
     hltHpsDoubleAgainstMuon_pt.clear();
     hltHpsDoubleAgainstMuon_eta.clear();
     hltHpsDoubleAgainstMuon_phi.clear();
@@ -193,11 +211,25 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string hltMatchedNewVBFTwo_Tag = "hltMatchedNewVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
     std::string hltHpsDoubleAgainstMuon_Tag = "hltHpsDoubleTightIsoAgainstMuonMatch::MYHLT";
 
+    // accepted filters per event?
+
+
     for(trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
 	std::string filterTag = triggerEvent->filterTag(iFilter).encode();
 	trigger::Keys objectKeys = triggerEvent->filterKeys(iFilter);
 	const trigger::TriggerObjectCollection& triggerObjects(triggerEvent->getObjects());
-	for(trigger::size_type iKey=0; iKey < objectKeys.size(); ++iKey){
+	// fill "pass filter" branches
+	int nObjKeys = objectKeys.size();
+	if (filterTag == hltL1_Tag && nObjKeys > 0) passhltL1Branch.push_back(1);
+	if (filterTag == hltL1New_Tag && nObjKeys > 0) passhltL1NewBranch.push_back(1);
+	if (filterTag == hltHpsPFTauTrack_Tag && nObjKeys > 0) passhltHpsPFTauTrack.push_back(1);
+ 	if (filterTag == hltHpsDoublePFTau_Tag && nObjKeys > 0) passhltHpsDoublePFTau.push_back(1);
+	if (filterTag == hltMatchedVBFOne_Tag && nObjKeys > 0) passhltMatchedVBFOne.push_back(1);
+	if (filterTag == hltMatchedVBFTwo_Tag && nObjKeys > 0) passhltMatchedVBFTwo.push_back(1);
+	if (filterTag == hltMatchedNewVBFTwo_Tag && nObjKeys > 0) passhltMatchedNewVBFTwo.push_back(1);
+	if (filterTag == hltHpsDoubleAgainstMuon_Tag && nObjKeys > 0) passhltHpsDoubleAgainstMuon.push_back(1);
+
+	for(trigger::size_type iKey=0; iKey < nObjKeys; ++iKey){
 	    trigger::size_type objKey = objectKeys.at(iKey);
 	    const trigger::TriggerObject& triggerObj(triggerObjects[objKey]);
 	    pt_ = triggerObj.pt();
@@ -206,14 +238,12 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	    energy_ = triggerObj.energy();
 	// fill L1 branches
 	    if (filterTag == hltL1_Tag && pt_>0){
-		passhltL1Branch.push_back(1);
 		hltL1VBFDiJetOR_pt.push_back(pt_);
 		hltL1VBFDiJetOR_eta.push_back(eta_);
 		hltL1VBFDiJetOR_phi.push_back(phi_);
 		hltL1VBFDiJetOR_energy.push_back(energy_);
 	    }
 	    if (filterTag == hltL1New_Tag){
-		passhltL1NewBranch.push_back(1);
 		hltL1NewVBFDiJet_pt.push_back(pt_);
 		hltL1NewVBFDiJet_eta.push_back(eta_);
 		hltL1NewVBFDiJet_phi.push_back(phi_);

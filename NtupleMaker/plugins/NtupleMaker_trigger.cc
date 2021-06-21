@@ -243,7 +243,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 		hltL1VBFDiJetOR_phi.push_back(phi_);
 		hltL1VBFDiJetOR_energy.push_back(energy_);
 	    }
-	    if (filterTag == hltL1New_Tag){
+	    if (filterTag == hltL1New_Tag && pt_>0){
 		hltL1NewVBFDiJet_pt.push_back(pt_);
 		hltL1NewVBFDiJet_eta.push_back(eta_);
 		hltL1NewVBFDiJet_phi.push_back(phi_);

@@ -6,10 +6,19 @@
 
 using namespace std; // I think best practice is to include <vector> explicitly at the top of the file
 
-bool passTrig_;
-bool passNewTrig_;
-vector<bool> passTrigBranch;
-vector<bool> passNewTrigBranch;
+bool passOldTrigTight_;
+bool passOldTrigMedium_;
+bool passOldTrigLoose_;
+vector<bool> passOldTrigTightBranch;
+vector<bool> passOldTrigMediumBranch;
+vector<bool> passOldTrigLooseBranch;
+
+bool passNewTrigTight_;
+bool passNewTrigMedium_;
+bool passNewTrigLoose_;
+vector<bool> passNewTrigTightBranch;
+vector<bool> passNewTrigMediumBranch;
+vector<bool> passNewTrigLooseBranch;
 
 float 	pt_;
 float 	eta_;
@@ -78,8 +87,13 @@ vector<float> 	hltMatchedNewVBFTwo_energy;
 
 void NtupleMaker::branchesTriggers(TTree* tree){
 
-    tree->Branch("passTrigBranch", &passTrigBranch);    
-    tree->Branch("passNewTrigBranch", &passNewTrigBranch);
+    tree->Branch("passOldTrigTightBranch", &passOldTrigTightBranch);    
+    tree->Branch("passOldTrigMediumBranch", &passOldTrigMediumBranch); 
+    tree->Branch("passOldTrigLooseBranch", &passOldTrigLooseBranch); 
+    
+    tree->Branch("passNewTrigTightBranch", &passNewTrigTightBranch);
+    tree->Branch("passNewTrigMediumBranch", &passNewTrigMediumBranch);
+    tree->Branch("passNewTrigLooseBranch", &passNewTrigLooseBranch);
 
     tree->Branch("passhltL1Branch", &passhltL1Branch);
     tree->Branch("hltL1VBFDiJetOR_pt", &hltL1VBFDiJetOR_pt);
@@ -135,8 +149,13 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     using namespace edm;
 
     // clearing vectors at the start of every event 
-    passTrigBranch.clear(); 
-    passNewTrigBranch.clear();
+    passOldTrigTightBranch.clear(); 
+    passOldTrigMediumBranch.clear(); 
+    passOldTrigLooseBranch.clear(); 
+
+    passNewTrigTightBranch.clear();
+    passNewTrigMediumBranch.clear();
+    passNewTrigLooseBranch.clear();
 
     passhltL1Branch.clear();
     hltL1VBFDiJetOR_pt.clear();
@@ -193,12 +212,30 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     iEvent.getByToken(triggerEventToken_, triggerEvent);
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
 
-    std::string pathNameTrig="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
-    std::string pathNameNewTrig="HLT_NewVBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
-    passTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameTrig));
-    passNewTrig_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrig));
-    passTrigBranch.push_back(passTrig_);
-    passNewTrigBranch.push_back(passNewTrig_);
+    std::string pathNameOldTrigTight="HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    passOldTrigTight_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameOldTrigTight));
+    passOldTrigTightBranch.push_back(passOldTrigTight_);
+   
+    std::string pathNameOldTrigMedium="HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    passOldTrigMedium_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameOldTrigMedium));
+    passOldTrigMediumBranch.push_back(passOldTrigMedium_);
+
+    std::string pathNameOldTrigLoose="HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    passOldTrigLoose_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameOldTrigLoose));
+    passOldTrigLooseBranch.push_back(passOldTrigLoose_);
+
+    std::string pathNameNewTrigTight="HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1";
+    //std::string pathNameNewTrig="HLT_NewVBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
+    passNewTrigTight_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigTight));
+    passNewTrigTightBranch.push_back(passNewTrigTight_);
+
+    std::string pathNameNewTrigMedium="HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1";
+    passNewTrigMedium_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigMedium));
+    passNewTrigMediumBranch.push_back(passNewTrigMedium_);
+
+    std::string pathNameNewTrigLoose="HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1";
+    passNewTrigLoose_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigLoose));
+    passNewTrigLooseBranch.push_back(passNewTrigLoose_);
 
     // filling branches with triggerObjs information
     const trigger::size_type nFilters(triggerEvent->sizeFilters());

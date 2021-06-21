@@ -60,9 +60,9 @@ int main(int argc, char** argv)	{
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
 	t1_pt_cut = 25;
 	t2_pt_cut = 25;
-	j1_pt_cut = 115; //120; HLT cuts, AOD cuts commented out
-	j2_pt_cut = 40; //45;
-	mjj_cut = 650; //700;
+	j1_pt_cut = 110;//115; //120; HLT cuts, AOD cuts commented out
+	j2_pt_cut = 35;//40; //45;
+	mjj_cut = 620;//650; //700;
 	std::cout << "trigger: " << oldTrigString << std::endl;
 	triggerFlag = 0;
     }

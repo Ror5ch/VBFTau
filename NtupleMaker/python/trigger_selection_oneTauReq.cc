@@ -67,11 +67,11 @@ int main(int argc, char** argv)	{
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 50; //55;
-	t2_pt_cut = 20; //25;
-	j1_pt_cut = 40; //45;
-	j2_pt_cut = 40; //45;
-	mjj_cut = 500; //550;
+	t1_pt_cut = 45;//50; //55;
+	t2_pt_cut = 20;//25;
+	j1_pt_cut = 35;//40; //45;
+	j2_pt_cut = 35;//40; //45;
+	mjj_cut = 450;//500; //550;
 	std::cout << "trigger: " << newTrigString << std::endl;
 	triggerFlag = 1;
     }

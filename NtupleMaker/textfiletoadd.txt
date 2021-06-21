@@ -11,3 +11,7 @@ scram b -j 8
 have you compiled your plugins since changing them?
 cd ../plugins
 scram b -j 8
+
+have you compiled your RecoTauTag library since making changes?
+cd ../../RecoTauTag/
+scram b -j 8

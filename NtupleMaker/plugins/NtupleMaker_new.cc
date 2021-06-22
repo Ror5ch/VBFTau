@@ -17,7 +17,10 @@ NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
     jetsAK4Label_(consumes<edm::View<pat::Jet>>(iConfig.getUntrackedParameter<edm::InputTag>("ak4JetSrc"))),
 
     triggerResultToken_(consumes<edm::TriggerResults>(iConfig.getUntrackedParameter<edm::InputTag>("triggerResults"))),
-    triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent")))
+    triggerEventToken_(consumes<trigger::TriggerEvent>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEvent"))),
+
+    triggerEventWithRefsToken_(consumes<trigger::TriggerEventWithRefs>(iConfig.getUntrackedParameter<edm::InputTag>("triggerEventWithRefs")))
+
 {
 
     edm::Service<TFileService> fs;

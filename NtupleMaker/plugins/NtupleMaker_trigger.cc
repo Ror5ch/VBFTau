@@ -46,24 +46,44 @@ vector<float> 	hltHpsPFTauTrack_phi;
 vector<float>	hltHpsPFTauTrack_energy;
 //
 //filter has 3 working points
-//hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon
+//hltHpsDoublePFTau20TrackTightChargedIso
 vector<int>	passhltHpsDoublePFTauTight;
 vector<float>	hltHpsDoublePFTauTight_pt;
-vector<float>	hltHpsDoublePFTauTight_eta;
-vector<float>	hltHpsDoublePFTauTight_phi;
-vector<float>	hltHpsDoublePFTauTight_energy;
+vector<float>   hltHpsDoublePFTauTight_eta;
+vector<float>   hltHpsDoublePFTauTight_phi;
+vector<float>   hltHpsDoublePFTauTight_energy;
+//hltHpsDoublePFTau20TrackMediumChargedIso
+vector<int>     passhltHpsDoublePFTauMedium;
+vector<float>   hltHpsDoublePFTauMedium_pt;
+vector<float>   hltHpsDoublePFTauMedium_eta;
+vector<float>   hltHpsDoublePFTauMedium_phi;
+vector<float>   hltHpsDoublePFTauMedium_energy;
+//hltHpsDoublePFTau20TrackLooseChargedIso
+vector<int>     passhltHpsDoublePFTauLoose;
+vector<float>   hltHpsDoublePFTauLoose_pt;
+vector<float>   hltHpsDoublePFTauLoose_eta;
+vector<float>   hltHpsDoublePFTauLoose_phi;
+vector<float>   hltHpsDoublePFTauLoose_energy;
+//
+//filter has 3 working points
+//hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon
+vector<int>	passhltHpsDoublePFTauAgainstMuonTight;
+vector<float>	hltHpsDoublePFTauAgainstMuonTight_pt;
+vector<float>	hltHpsDoublePFTauAgainstMuonTight_eta;
+vector<float>	hltHpsDoublePFTauAgainstMuonTight_phi;
+vector<float>	hltHpsDoublePFTauAgainstMuonTight_energy;
 //hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon
-vector<int>	passhltHpsDoublePFTauMedium;
-vector<float>	hltHpsDoublePFTauMedium_pt;
-vector<float>	hltHpsDoublePFTauMedium_eta;
-vector<float>	hltHpsDoublePFTauMedium_phi;
-vector<float>	hltHpsDoublePFTauMedium_energy;
+vector<int>	passhltHpsDoublePFTauAgainstMuonMedium;
+vector<float>	hltHpsDoublePFTauAgainstMuonMedium_pt;
+vector<float>	hltHpsDoublePFTauAgainstMuonMedium_eta;
+vector<float>	hltHpsDoublePFTauAgainstMuonMedium_phi;
+vector<float>	hltHpsDoublePFTauAgainstMuonMedium_energy;
 //hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon
-vector<int>	passhltHpsDoublePFTauLoose;
-vector<float>	hltHpsDoublePFTauLoose_pt;
-vector<float>	hltHpsDoublePFTauLoose_eta;
-vector<float>	hltHpsDoublePFTauLoose_phi;
-vector<float>	hltHpsDoublePFTauLoose_energy;
+vector<int>	passhltHpsDoublePFTauAgainstMuonLoose;
+vector<float>	hltHpsDoublePFTauAgainstMuonLoose_pt;
+vector<float>	hltHpsDoublePFTauAgainstMuonLoose_eta;
+vector<float>	hltHpsDoublePFTauAgainstMuonLoose_phi;
+vector<float>	hltHpsDoublePFTauAgainstMuonLoose_energy;
 //
 // filter has 3 working points 
 //hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched, renamed from hltHpsDoubleTightIsoAgainstMuonMatch
@@ -179,24 +199,43 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltHpsPFTauTrack_phi", &hltHpsPFTauTrack_phi);
     tree->Branch("hltHpsPFTauTrack_energy", &hltHpsPFTauTrack_energy);
 
-    //hltHpsDoublePFTau working points
+    //hlthpsDoublePFTau working points
     tree->Branch("passhltHpsDoublePFTauTight", &passhltHpsDoublePFTauTight);
     tree->Branch("hltHpsDoublePFTauTight_pt", &hltHpsDoublePFTauTight_pt);
     tree->Branch("hltHpsDoublePFTauTight_eta", &hltHpsDoublePFTauTight_eta);
     tree->Branch("hltHpsDoublePFTauTight_phi", &hltHpsDoublePFTauTight_phi);
     tree->Branch("hltHpsDoublePFTauTight_energy", &hltHpsDoublePFTauTight_energy);
-
+    
     tree->Branch("passhltHpsDoublePFTauMedium", &passhltHpsDoublePFTauMedium);
     tree->Branch("hltHpsDoublePFTauMedium_pt", &hltHpsDoublePFTauMedium_pt);
     tree->Branch("hltHpsDoublePFTauMedium_eta", &hltHpsDoublePFTauMedium_eta);
     tree->Branch("hltHpsDoublePFTauMedium_phi", &hltHpsDoublePFTauMedium_phi);
     tree->Branch("hltHpsDoublePFTauMedium_energy", &hltHpsDoublePFTauMedium_energy);
-
+    
     tree->Branch("passhltHpsDoublePFTauLoose", &passhltHpsDoublePFTauLoose);
     tree->Branch("hltHpsDoublePFTauLoose_pt", &hltHpsDoublePFTauLoose_pt);
     tree->Branch("hltHpsDoublePFTauLoose_eta", &hltHpsDoublePFTauLoose_eta);
     tree->Branch("hltHpsDoublePFTauLoose_phi", &hltHpsDoublePFTauLoose_phi);
     tree->Branch("hltHpsDoublePFTauLoose_energy", &hltHpsDoublePFTauLoose_energy);
+    //
+    //hltHpsDoublePFTauAgainstMuon working points
+    tree->Branch("passhltHpsDoublePFTauAgainstMuonTight", &passhltHpsDoublePFTauAgainstMuonTight);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonTight_pt", &hltHpsDoublePFTauAgainstMuonTight_pt);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonTight_eta", &hltHpsDoublePFTauAgainstMuonTight_eta);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonTight_phi", &hltHpsDoublePFTauAgainstMuonTight_phi);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonTight_energy", &hltHpsDoublePFTauAgainstMuonTight_energy);
+
+    tree->Branch("passhltHpsDoublePFTauAgainstMuonMedium", &passhltHpsDoublePFTauAgainstMuonMedium);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonMedium_pt", &hltHpsDoublePFTauAgainstMuonMedium_pt);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonMedium_eta", &hltHpsDoublePFTauAgainstMuonMedium_eta);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonMedium_phi", &hltHpsDoublePFTauAgainstMuonMedium_phi);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonMedium_energy", &hltHpsDoublePFTauAgainstMuonMedium_energy);
+
+    tree->Branch("passhltHpsDoublePFTauAgainstMuonLoose", &passhltHpsDoublePFTauAgainstMuonLoose);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonLoose_pt", &hltHpsDoublePFTauAgainstMuonLoose_pt);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonLoose_eta", &hltHpsDoublePFTauAgainstMuonLoose_eta);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonLoose_phi", &hltHpsDoublePFTauAgainstMuonLoose_phi);
+    tree->Branch("hltHpsDoublePFTauAgainstMuonLoose_energy", &hltHpsDoublePFTauAgainstMuonLoose_energy);
     //
     //hltHpsPFTau50 working points
     tree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
@@ -325,6 +364,25 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltHpsDoublePFTauLoose_eta.clear();
     hltHpsDoublePFTauLoose_phi.clear();
     hltHpsDoublePFTauLoose_energy.clear();
+
+    // hltHpsDoublePFTauAgainstMuon working points
+    passhltHpsDoublePFTauAgainstMuonTight.clear();
+    hltHpsDoublePFTauAgainstMuonTight_pt.clear();
+    hltHpsDoublePFTauAgainstMuonTight_eta.clear();
+    hltHpsDoublePFTauAgainstMuonTight_phi.clear();
+    hltHpsDoublePFTauAgainstMuonTight_energy.clear();
+
+    passhltHpsDoublePFTauAgainstMuonMedium.clear();
+    hltHpsDoublePFTauAgainstMuonMedium_pt.clear();
+    hltHpsDoublePFTauAgainstMuonMedium_eta.clear();
+    hltHpsDoublePFTauAgainstMuonMedium_phi.clear();
+    hltHpsDoublePFTauAgainstMuonMedium_energy.clear();
+
+    passhltHpsDoublePFTauAgainstMuonLoose.clear();
+    hltHpsDoublePFTauAgainstMuonLoose_pt.clear();
+    hltHpsDoublePFTauAgainstMuonLoose_eta.clear();
+    hltHpsDoublePFTauAgainstMuonLoose_phi.clear();
+    hltHpsDoublePFTauAgainstMuonLoose_energy.clear();
     //
     // hltHpsPFTau50 working points
     passhltHpsPFTau50Tight.clear();
@@ -442,9 +500,14 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string hltL1VBFDiJetIsoTau_Tag = "hltL1VBFDiJetIsoTau::MYHLT";
     std::string hltHpsPFTauTrack_Tag = "hltHpsPFTauTrack::MYHLT";
     // hltHpsDoublePFTau working points
-    std::string hltHpsDoublePFTauTight_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
-    std::string hltHpsDoublePFTauMedium_Tag = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon::MYHLT";
-    std::string hltHpsDoublePFTauLoose_Tag = "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon::MYHLT";
+    std::string hltHpsDoublePFTauTight_Tag = "hltHpsDoublePFTau20TrackTightChargedIso::MYHLT";
+    std::string hltHpsDoublePFTauMedium_Tag = "hltHpsDoublePFTau20TrackMediumChargedIso::MYHLT";
+    std::string hltHpsDoublePFTauLoose_Tag = "hltHpsDoublePFTau20TrackLooseChargedIso::MYHLT";
+    // 
+    // hltHpsDoublePFTauAgainstMuon working points
+    std::string hltHpsDoublePFTauAgainstMuonTight_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
+    std::string hltHpsDoublePFTauAgainstMuonMedium_Tag = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon::MYHLT";
+    std::string hltHpsDoublePFTauAgainstMuonLoose_Tag = "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon::MYHLT";
     //
     //hltHpsPFTau50 working points, renamed from hltHpsDoubleTightIsoAgainstMuonMatch
     std::string hltHpsPFTau50Tight_Tag = "hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched::MYHLT";
@@ -470,16 +533,22 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     for(trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
 	std::string filterTag = triggerEvent->filterTag(iFilter).encode();
 	trigger::Keys objectKeys = triggerEvent->filterKeys(iFilter);
+
 	const trigger::TriggerObjectCollection& triggerObjects(triggerEvent->getObjects());
 	// fill "pass filter" branches
 	int nObjKeys = objectKeys.size();
 	if (filterTag == hltL1VBFDiJetOR_Tag && nObjKeys > 0) passhltL1VBFDiJetOR.push_back(1);
 	if (filterTag == hltL1VBFDiJetIsoTau_Tag && nObjKeys > 0) passhltL1VBFDiJetIsoTau.push_back(1);
 	if (filterTag == hltHpsPFTauTrack_Tag && nObjKeys > 0) passhltHpsPFTauTrack.push_back(1);
-	// hltHpsDoublePFTau working points 
+	// hltHpsDoublePFTau working points
 	if (filterTag == hltHpsDoublePFTauTight_Tag && nObjKeys > 0) passhltHpsDoublePFTauTight.push_back(1);
 	if (filterTag == hltHpsDoublePFTauMedium_Tag && nObjKeys > 0) passhltHpsDoublePFTauMedium.push_back(1);
 	if (filterTag == hltHpsDoublePFTauLoose_Tag && nObjKeys > 0) passhltHpsDoublePFTauLoose.push_back(1);
+	//	
+	// hltHpsDoublePFTauAgainstMuon working points 
+	if (filterTag == hltHpsDoublePFTauAgainstMuonTight_Tag && nObjKeys > 0) passhltHpsDoublePFTauAgainstMuonTight.push_back(1);
+	if (filterTag == hltHpsDoublePFTauAgainstMuonMedium_Tag && nObjKeys > 0) passhltHpsDoublePFTauAgainstMuonMedium.push_back(1);
+	if (filterTag == hltHpsDoublePFTauAgainstMuonLoose_Tag && nObjKeys > 0) passhltHpsDoublePFTauAgainstMuonLoose.push_back(1);
 	//
 	// hltHpsPFTau50 working points
 	if (filterTag == hltHpsPFTau50Tight_Tag && nObjKeys > 0) passhltHpsPFTau50Tight.push_back(1);
@@ -550,6 +619,29 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 		hltHpsDoublePFTauLoose_eta.push_back(eta_);
 		hltHpsDoublePFTauLoose_phi.push_back(phi_);
 		hltHpsDoublePFTauLoose_energy.push_back(energy_);
+	    }
+	////
+	// hltHpsDoublePFTauAgainstMuon working points
+	// fill hltHpsDoublePFTauAgainstMuonTight branches if match
+	    if (filterTag == hltHpsDoublePFTauAgainstMuonTight_Tag && pt_>0){
+		hltHpsDoublePFTauAgainstMuonTight_pt.push_back(pt_); 
+		hltHpsDoublePFTauAgainstMuonTight_eta.push_back(eta_);
+		hltHpsDoublePFTauAgainstMuonTight_phi.push_back(phi_);
+		hltHpsDoublePFTauAgainstMuonTight_energy.push_back(energy_);
+	    }
+	// fill hltHpsDoublePFTauAgainstMuonMedium branches if match
+	    if (filterTag == hltHpsDoublePFTauAgainstMuonMedium_Tag && pt_>0){
+		hltHpsDoublePFTauAgainstMuonMedium_pt.push_back(pt_); 
+		hltHpsDoublePFTauAgainstMuonMedium_eta.push_back(eta_);
+		hltHpsDoublePFTauAgainstMuonMedium_phi.push_back(phi_);
+		hltHpsDoublePFTauAgainstMuonMedium_energy.push_back(energy_);
+	    }
+	// fill hltHpsDoublePFTauAgainstMuonLoose branches if match
+	    if (filterTag == hltHpsDoublePFTauAgainstMuonLoose_Tag && pt_>0){
+		hltHpsDoublePFTauAgainstMuonLoose_pt.push_back(pt_); 
+		hltHpsDoublePFTauAgainstMuonLoose_eta.push_back(eta_);
+		hltHpsDoublePFTauAgainstMuonLoose_phi.push_back(phi_);
+		hltHpsDoublePFTauAgainstMuonLoose_energy.push_back(energy_);
 	    }
 	////
 	// fill hltHpsPFTau50Tight branches if match

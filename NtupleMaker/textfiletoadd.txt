@@ -15,3 +15,6 @@ scram b -j 8
 have you compiled your RecoTauTag library since making changes?
 cd ../../RecoTauTag/
 scram b -j 8
+
+did you do your fixe eta compilation? Is the xml file included in the crab job? (see skype)
+did you include triggerwithrefs in the conffile?

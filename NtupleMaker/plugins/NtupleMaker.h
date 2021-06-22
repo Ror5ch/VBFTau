@@ -20,6 +20,8 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+#include "DataFormats/HLTReco/interface/TriggerEventWithRefs.h"
+
 #include "TTree.h"
 /***
 // trigger include files
@@ -119,6 +121,8 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	
 	edm::EDGetTokenT<edm::TriggerResults> triggerResultToken_;
 	edm::EDGetTokenT<trigger::TriggerEvent> triggerEventToken_;
+	edm::EDGetTokenT<trigger::TriggerEventWithRefs> triggerEventWithRefsToken_;
+
 };
 
 #endif

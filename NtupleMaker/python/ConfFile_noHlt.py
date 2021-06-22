@@ -36,6 +36,7 @@ conf_process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
      , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
      , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
+     , triggerEventWithRefs = cms.untracked.InputTag("hltTriggerSummaryRAW","","MYHLT")
      #, PFTauCollection = cms.untracked.InputTag("hltHpsPFTauProducer","","MYHLT")
      #, hltHpsTracks = cms.untracked.InputTag("hltHpsPFTauTrack", "","MYHLT")
 

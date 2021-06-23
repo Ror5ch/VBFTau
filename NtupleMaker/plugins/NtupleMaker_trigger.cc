@@ -25,6 +25,7 @@ float 	eta_;
 float 	phi_;
 float 	energy_;
 
+vector<int>	nEvents;
 //full trigger name is
 //hltL1VBFDiJetOR
 vector<int>	passhltL1VBFDiJetOR;
@@ -34,10 +35,16 @@ vector<float>	hltL1VBFDiJetOR_phi;
 vector<float>	hltL1VBFDiJetOR_energy;
 //hltL1VBFDiJetIsoTau previously called hltL1NewVBFDiJet 
 vector<int>	passhltL1VBFDiJetIsoTau;
-vector<float>	hltL1VBFDiJetIsoTau_pt;
-vector<float>	hltL1VBFDiJetIsoTau_eta;
-vector<float>	hltL1VBFDiJetIsoTau_phi;
-vector<float>	hltL1VBFDiJetIsoTau_energy;
+vector<int>	hltL1VBFDiJetIsoTau_nJets;
+vector<float>	hltL1VBFDiJetIsoTau_jetPt;
+vector<float>	hltL1VBFDiJetIsoTau_jetEta;
+vector<float>	hltL1VBFDiJetIsoTau_jetPhi;
+vector<float>	hltL1VBFDiJetIsoTau_jetEnergy;
+vector<int>	hltL1VBFDiJetIsoTau_nTaus;
+vector<float>	hltL1VBFDiJetIsoTau_tauPt;
+vector<float>	hltL1VBFDiJetIsoTau_tauEta;
+vector<float>	hltL1VBFDiJetIsoTau_tauPhi;
+vector<float>	hltL1VBFDiJetIsoTau_tauEnergy;
 //hltHpsPFTauTrack
 vector<int>	passhltHpsPFTauTrack;
 vector<float> 	hltHpsPFTauTrack_pt;
@@ -173,6 +180,8 @@ vector<float> 	hltMatchedVBFIsoTauTwoLoose_energy;
 
 void NtupleMaker::branchesTriggers(TTree* tree){
 
+    tree->Branch("nEvents", &nEvents);
+
     tree->Branch("passOldTrigTight", &passOldTrigTight);    
     tree->Branch("passOldTrigMedium", &passOldTrigMedium); 
     tree->Branch("passOldTrigLoose", &passOldTrigLoose); 
@@ -188,10 +197,16 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltL1VBFDiJetOR_energy", &hltL1VBFDiJetOR_energy);
 
     tree->Branch("passhltL1VBFDiJetIsoTau", &passhltL1VBFDiJetIsoTau);
-    tree->Branch("hltL1VBFDiJetIsoTau_pt", &hltL1VBFDiJetIsoTau_pt);
-    tree->Branch("hltL1VBFDiJetIsoTau_eta", &hltL1VBFDiJetIsoTau_eta);
-    tree->Branch("hltL1VBFDiJetIsoTau_phi", &hltL1VBFDiJetIsoTau_phi);
-    tree->Branch("hltL1VBFDiJetIsoTau_energy", &hltL1VBFDiJetIsoTau_energy);
+    tree->Branch("hltL1VBFDiJetIsoTau_nJets", &hltL1VBFDiJetIsoTau_nJets);
+    tree->Branch("hltL1VBFDiJetIsoTau_jetPt", &hltL1VBFDiJetIsoTau_jetPt);
+    tree->Branch("hltL1VBFDiJetIsoTau_jetEta", &hltL1VBFDiJetIsoTau_jetEta);
+    tree->Branch("hltL1VBFDiJetIsoTau_jetPhi", &hltL1VBFDiJetIsoTau_jetPhi);
+    tree->Branch("hltL1VBFDiJetIsoTau_jetEnergy", &hltL1VBFDiJetIsoTau_jetEnergy);
+    tree->Branch("hltL1VBFDiJetIsoTau_nTaus", &hltL1VBFDiJetIsoTau_nTaus);
+    tree->Branch("hltL1VBFDiJetIsoTau_tauPt", &hltL1VBFDiJetIsoTau_tauPt);
+    tree->Branch("hltL1VBFDiJetIsoTau_tauEta", &hltL1VBFDiJetIsoTau_tauEta);
+    tree->Branch("hltL1VBFDiJetIsoTau_tauPhi", &hltL1VBFDiJetIsoTau_tauPhi);
+    tree->Branch("hltL1VBFDiJetIsoTau_tauEnergy", &hltL1VBFDiJetIsoTau_tauEnergy);
 
     tree->Branch("passhltHpsPFTauTrack", &passhltHpsPFTauTrack);
     tree->Branch("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
@@ -320,6 +335,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     using namespace edm;
 
     // clearing vectors at the start of every event 
+    nEvents.clear();
+
     passOldTrigTight.clear(); 
     passOldTrigMedium.clear(); 
     passOldTrigLoose.clear(); 
@@ -335,10 +352,16 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltL1VBFDiJetOR_energy.clear();
 
     passhltL1VBFDiJetIsoTau.clear();
-    hltL1VBFDiJetIsoTau_pt.clear();
-    hltL1VBFDiJetIsoTau_eta.clear();
-    hltL1VBFDiJetIsoTau_phi.clear();
-    hltL1VBFDiJetIsoTau_energy.clear();
+    hltL1VBFDiJetIsoTau_nJets.clear();
+    hltL1VBFDiJetIsoTau_jetPt.clear();
+    hltL1VBFDiJetIsoTau_jetEta.clear();
+    hltL1VBFDiJetIsoTau_jetPhi.clear();
+    hltL1VBFDiJetIsoTau_jetEnergy.clear();
+    hltL1VBFDiJetIsoTau_nTaus.clear();
+    hltL1VBFDiJetIsoTau_tauPt.clear();
+    hltL1VBFDiJetIsoTau_tauEta.clear();
+    hltL1VBFDiJetIsoTau_tauPhi.clear();
+    hltL1VBFDiJetIsoTau_tauEnergy.clear();
 
     passhltHpsPFTauTrack.clear();
     hltHpsPFTauTrack_pt.clear();
@@ -494,7 +517,49 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     passNewTrigLoose_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigLoose));
     passNewTrigLoose.push_back(passNewTrigLoose_);
 
-    // filling branches with triggerObjs information
+    // filling branches with triggerObjs information, hltL1VBFDiJetIsoTau object info filled separately since it's a weird trigger
+
+    // getting trigger refs for hltL1VBFDiJetIsoTau filter's tau/jet splitting
+    edm::Handle<trigger::TriggerEventWithRefs> triggerEventWithRefsHandle_;
+    iEvent.getByToken(triggerEventWithRefsToken_, triggerEventWithRefsHandle_);
+    const unsigned int filterIndex(triggerEventWithRefsHandle_->filterIndex(InputTag("hltL1VBFDiJetIsoTau", "", "MYHLT")));
+		//making jet object and filling vector
+    l1t::JetVectorRef jetCandRefVec;
+    trigger::Vids jvids;
+    triggerEventWithRefsHandle_->getObjects(filterIndex, jvids, jetCandRefVec);
+		//making tau object and filling vector
+    l1t::TauVectorRef tauCandRefVec;
+    trigger::Vids tvids;
+    triggerEventWithRefsHandle_->getObjects(filterIndex, tvids, tauCandRefVec);
+
+    const unsigned int nJets(jvids.size());
+    if (nJets > 0) {
+        //std::cout << "   Jets: " << nJets << std::endl;
+        hltL1VBFDiJetIsoTau_nJets.push_back(nJets);
+        for (unsigned int i = 0; i != nJets; ++i) {
+            //std::cout << i << " " << jvids[i] << " " << jetCandRefVec[i]->pt() << endl;
+	    hltL1VBFDiJetIsoTau_jetPt.push_back(jetCandRefVec[i]->pt());
+	    hltL1VBFDiJetIsoTau_jetEta.push_back(jetCandRefVec[i]->eta());
+   	    hltL1VBFDiJetIsoTau_jetPhi.push_back(jetCandRefVec[i]->phi());
+   	    hltL1VBFDiJetIsoTau_jetEnergy.push_back(jetCandRefVec[i]->energy());
+        }
+    }
+
+    const unsigned int nTaus(tvids.size());
+    if (nTaus > 0) {
+	//std::cout << "   Taus: " << nTaus << std::endl;
+	hltL1VBFDiJetIsoTau_nTaus.push_back(nTaus);
+	for (unsigned int i = 0; i != nTaus; ++i) {
+	    //std::cout << i << " " << tvids[i] << " " << tauCandRefVec[i]->pt() << endl;
+	    hltL1VBFDiJetIsoTau_tauPt.push_back(tauCandRefVec[i]->pt());
+	    hltL1VBFDiJetIsoTau_tauEta.push_back(tauCandRefVec[i]->eta());
+   	    hltL1VBFDiJetIsoTau_tauPhi.push_back(tauCandRefVec[i]->phi());
+   	    hltL1VBFDiJetIsoTau_tauEnergy.push_back(tauCandRefVec[i]->energy());
+	}
+    }
+
+    //filling the rest, as well as passFilter branches
+
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
     std::string hltL1VBFDiJetOR_Tag = "hltL1VBFDiJetOR::MYHLT";
     std::string hltL1VBFDiJetIsoTau_Tag = "hltL1VBFDiJetIsoTau::MYHLT";
@@ -537,6 +602,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	const trigger::TriggerObjectCollection& triggerObjects(triggerEvent->getObjects());
 	// fill "pass filter" branches
 	int nObjKeys = objectKeys.size();
+	if (filterTag == hltL1VBFDiJetOR_Tag && nObjKeys >= 0) nEvents.push_back(1); // accept pass or fail condition to fill nEvents
 	if (filterTag == hltL1VBFDiJetOR_Tag && nObjKeys > 0) passhltL1VBFDiJetOR.push_back(1);
 	if (filterTag == hltL1VBFDiJetIsoTau_Tag && nObjKeys > 0) passhltL1VBFDiJetIsoTau.push_back(1);
 	if (filterTag == hltHpsPFTauTrack_Tag && nObjKeys > 0) passhltHpsPFTauTrack.push_back(1);
@@ -585,12 +651,12 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 		hltL1VBFDiJetOR_phi.push_back(phi_);
 		hltL1VBFDiJetOR_energy.push_back(energy_);
 	    }
-	    if (filterTag == hltL1VBFDiJetIsoTau_Tag && pt_>0){
+/***	    if (filterTag == hltL1VBFDiJetIsoTau_Tag && pt_>0){
 		hltL1VBFDiJetIsoTau_pt.push_back(pt_);
 		hltL1VBFDiJetIsoTau_eta.push_back(eta_);
 		hltL1VBFDiJetIsoTau_phi.push_back(phi_);
 		hltL1VBFDiJetIsoTau_energy.push_back(energy_);
-	    }
+	    }***/
 	// fill hltHpsPFTauTrack branches if match
 	    if (filterTag == hltHpsPFTauTrack_Tag && pt_>0){
 		hltHpsPFTauTrack_pt.push_back(pt_);

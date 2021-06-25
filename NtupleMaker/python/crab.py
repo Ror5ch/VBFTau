@@ -6,7 +6,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'new_counting_fixed_eta.py'#'crabConfFile.py'#'ConfFile_hltBothTriggers_and_AOD.py' #'crabConfFile.py'
+config.JobType.psetName = "new_old_all_wp.py"#'new_counting_fixed_eta.py'#'crabConfFile.py'#'ConfFile_hltBothTriggers_and_AOD.py' #'crabConfFile.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -30,9 +30,9 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_NewCountingFixedEta_0621_1'
-    #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
-    #config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
-    config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
+    config.General.requestName = 'VBFHToTauTau_0622_fixedEtaAllWP'
+    config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
+    config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
+    #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
  
     crabCommand('submit', config = config)

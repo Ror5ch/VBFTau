@@ -17,4 +17,8 @@ cd ../../RecoTauTag/
 scram b -j 8
 
 did you do your fixe eta compilation? Is the xml file included in the crab job? (see skype)
-did you include triggerwithrefs in the conffile?
+add L1TUtm file to this directory and scram again
+L1Trigger/L1TGlobal/plugins
+scram b -j 8
+
+does your conffile include triggerwithrefs?

@@ -208,7 +208,7 @@ void trigger_tree::Init(TTree *tree)
     fCurrent = -1;
 
     // from HLT
-    fChain->SetBranchAddres("nEvents", &nEvents);
+    fChain->SetBranchAddress("nEvents", &nEvents);
 
     fChain->SetBranchAddress("passOldTrigTight", &passOldTrigTight);
     fChain->SetBranchAddress("passOldTrigMedium", &passOldTrigMedium);

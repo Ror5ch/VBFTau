@@ -1,5 +1,7 @@
 #Kyungwook's example crab file
 
+import sys
+
 from CRABClient.UserUtilities import config
 config = config()
 
@@ -28,9 +30,26 @@ config.Site.storageSite = 'T3_US_FNALLPC' #'T3_KR_KNU'
 
 if __name__ == '__main__':
 
+    print("Submission checks...")
+    print("Have you compiled your plugins recently?")
+    yesno1 = raw_input('y/n? ')
+    print("Have you added/compiled the 2 correction files?")
+    yesno2 = raw_input('y/n? ')
+    print("Have you added the fixed xml file to the crab submission?")
+    yesno3 = raw_input('y/n? ')
+    print("Are all variables in your conffile set to true?")
+    yesno4 = raw_input('y/n? ')
+
+    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' \
+	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == ''):
+	print("Well, go fix that!")
+	sys.exit()
+
+    print("Remember to check your branches/run selection code as soon as one job is finished!!!")
+
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_0622_fixedEtaAllWP'
+    config.General.requestName = 'VBFHToTauTau_0628_fixedEtaAllWP'
     config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
     config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'

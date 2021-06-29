@@ -285,8 +285,8 @@ int main(int argc, char** argv)	{
 	t2_pt_A = inTree->tauPt->at(1);
 	if (t1_pt_A < t1_pt_cut) continue;
         if (t2_pt_A < t2_pt_cut) continue;
-	std::cout << "tau AOD size: " << inTree->tauPt->size() << std::endl;	
-	std::cout << "AOD: " << t1_pt_A << " " << t2_pt_A << std::endl;
+	//std::cout << "tau AOD size: " << inTree->tauPt->size() << std::endl;	
+	//std::cout << "AOD: " << t1_pt_A << " " << t2_pt_A << std::endl;
 
 	h_cutflow->Fill(3.0,1.0);
 
@@ -298,9 +298,17 @@ int main(int argc, char** argv)	{
 
 	TLorentzVector tau1_A, tau2_A;
 	t1_phi_A = inTree->tauPhi->at(0);
+	t1_energy_A = inTree->tauEnergy->at(0);
 	t2_phi_A = inTree->tauPhi->at(1);
-	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, t1_phi_A, inTree->tauEnergy->at(0));
-	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, inTree->tauEnergy->at(1));
+	t2_energy_A = inTree->tauEnergy->at(1);
+	tau1_A.SetPtEtaPhiE(t1_pt_A, t1_eta_A, t1_phi_A, t1_energy_A);
+	tau2_A.SetPtEtaPhiE(t2_pt_A, t2_eta_A, t2_phi_A, t2_energy_A);
+
+	//std::cout << "tau AOD size: " << inTree->tauPt->size() << std::endl;
+	//std::cout << "AOD pt: " << t1_pt_A << " " << t2_pt_A << std::endl;	
+	//std::cout << "AOD eta: " << t1_eta_A << " " << t2_eta_A << std::endl;	
+	//std::cout << "AOD phi: " << t1_phi_A << " " << t2_phi_A << std::endl;	
+	//std::cout << "AOD energy: " << t1_energy_A << " " << t2_energy_A << std::endl;	
 
 	// jet selection for old trigger:
 	// 2 jets
@@ -480,7 +488,7 @@ int main(int argc, char** argv)	{
 		t1_pt = inTree->hltHpsPFTau50Tight_pt->at(0);
 		t1_loc = 0;
 		t2_pt = inTree->hltHpsPFTau50Tight_pt->at(1);
-		t2_loc = 0;
+		t2_loc = 1;
 		if (t2_pt > t1_pt){
 		    t1_pt = inTree->hltHpsPFTau50Tight_pt->at(1);
 		    t1_loc = 1;
@@ -545,9 +553,12 @@ int main(int argc, char** argv)	{
             dRt2 = tau2.DeltaR(tau2_A);
 	}
 
-	std::cout << "HLT: " << t1_pt << " " << t2_pt << std::endl;
+	//std::cout << "HLT pt: " << t1_pt << " " << t2_pt << std::endl;
+	//std::cout << "HLT eta: " << t1_eta << " " << t2_eta << std::endl; 
+	//std::cout << "HLT phi: " << t1_phi << " " << t2_phi << std::endl; 
+	//std::cout << "HLT energy: " << t1_energy << " " << t2_energy << std::endl; 
 	
-	if (dRt1 < 0.5 && dRt2 < 0.5) std::cout << "matched taus above" << std::endl;
+	//if (dRt1 < 0.5 && dRt2 < 0.5) std::cout << "matched taus above" << std::endl;
 
 	if (dRt1 > 50 || dRt2 > 50) continue; // just here to remove erroneous values
 

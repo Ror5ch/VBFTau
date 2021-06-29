@@ -226,7 +226,7 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 500000; iEntry++) {
+    //for (int iEntry = 0; iEntry < 2000; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
@@ -285,6 +285,8 @@ int main(int argc, char** argv)	{
 	t2_pt_A = inTree->tauPt->at(1);
 	if (t1_pt_A < t1_pt_cut) continue;
         if (t2_pt_A < t2_pt_cut) continue;
+	std::cout << "tau AOD size: " << inTree->tauPt->size() << std::endl;	
+	std::cout << "AOD: " << t1_pt_A << " " << t2_pt_A << std::endl;
 
 	h_cutflow->Fill(3.0,1.0);
 
@@ -442,10 +444,10 @@ int main(int argc, char** argv)	{
                     j2_loc = 0;
                 }
                 j1_eta = inTree->hltMatchedVBFOneTight_eta->at(j1_loc);
-                j2_eta = inTree->hltMatchedVBFOneTight_eta->at(j2_loc);
                 j1_phi = inTree->hltMatchedVBFOneTight_phi->at(j1_loc);
-                j2_phi = inTree->hltMatchedVBFOneTight_phi->at(j2_loc);
                 j1_energy = inTree->hltMatchedVBFOneTight_energy->at(j1_loc);
+                j2_eta = inTree->hltMatchedVBFOneTight_eta->at(j2_loc);
+                j2_phi = inTree->hltMatchedVBFOneTight_phi->at(j2_loc);
                 j2_energy = inTree->hltMatchedVBFOneTight_energy->at(j2_loc);
             }
             // if there's 1 jet in VBFOne filter, make it the leading one. Subleading is in prior filter, VBFTwo.
@@ -538,17 +540,19 @@ int main(int argc, char** argv)	{
 	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){	
             tau1.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);
             tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
- 
+
             dRt1 = tau1.DeltaR(tau1_A);
             dRt2 = tau2.DeltaR(tau2_A);
 	}
+
+	std::cout << "HLT: " << t1_pt << " " << t2_pt << std::endl;
+	
+	if (dRt1 < 0.5 && dRt2 < 0.5) std::cout << "matched taus above" << std::endl;
 
 	if (dRt1 > 50 || dRt2 > 50) continue; // just here to remove erroneous values
 
         // if either of the if statements before triggered, then we have a dijet system from the trigger
 	TLorentzVector jet1, jet2;
-	//std::cout << vecSizeVBFIsoTauTwo << " " << triggerFlag << std::endl;
-	//std::cout << vecSizeVBFOne << " " << triggerFlag << std::endl;
 	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){
 	    jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
 	    jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);

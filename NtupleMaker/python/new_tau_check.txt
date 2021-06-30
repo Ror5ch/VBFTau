@@ -1,0 +1,19 @@
+#psuedocode from zoom chat
+auto flag = false;
+auto index1 = -1;
+auto index2 = -1;
+
+for (50 GeV branch)
+{
+if (match with reco tau1 || match with reco tau2)
+{
+flag = true;
+break;
+}
+}
+
+for (20 GeV branch)
+{
+if (match with reco tau1) index1 = i;
+else if (match with reco tau2) index2 = i;
+} 

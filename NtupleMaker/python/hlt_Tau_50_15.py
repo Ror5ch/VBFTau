@@ -8193,7 +8193,7 @@ process.hltAkIsoTau12Regional = cms.EDProducer( "FastjetJetProducer",
     inputEMin = cms.double( 0.0 )
 )
 process.hltL2TauJets = cms.EDProducer( "L2TauJetsMerger",
-    EtMin = cms.double( 20.0 ),
+    EtMin = cms.double( 15.0 ),
     JetSrc = cms.VInputTag( 'hltAkIsoTau1Regional','hltAkIsoTau2Regional','hltAkIsoTau3Regional','hltAkIsoTau4Regional','hltAkIsoTau5Regional','hltAkIsoTau6Regional','hltAkIsoTau7Regional','hltAkIsoTau8Regional','hltAkIsoTau9Regional','hltAkIsoTau10Regional','hltAkIsoTau11Regional','hltAkIsoTau12Regional' )
 )
 process.hltDoubleL2Tau20eta2p2 = cms.EDFilter( "HLT1CaloJet",
@@ -8206,7 +8206,7 @@ process.hltDoubleL2Tau20eta2p2 = cms.EDFilter( "HLT1CaloJet",
     inputTag = cms.InputTag( "hltL2TauJets" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltL2TausForPixelIsolation = cms.EDFilter( "CaloJetSelector",
     filter = cms.bool( False ),
@@ -8528,7 +8528,7 @@ process.hltDoubleL2IsoTau20eta2p2 = cms.EDFilter( "HLT1CaloJet",
     inputTag = cms.InputTag( "hltL2TauJetsIso" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltStripTrackerHVOn = cms.EDFilter( "DetectorStateFilter",
     DcsStatusLabel = cms.untracked.InputTag( "hltScalersRawToDigi" ),
@@ -13223,7 +13223,7 @@ process.hltParticleFlowBlockForTaus = cms.EDProducer( "PFBlockProducer",
 )
 process.hltParticleFlowForTaus = cms.EDProducer( "PFProducer",
     photon_SigmaiEtaiEta_endcap = cms.double( 0.034 ),
-    minPtForPostCleaning = cms.double( 20.0 ),
+    minPtForPostCleaning = cms.double( 15.0 ),
     pf_nsigma_ECAL = cms.double( 0.0 ),
     GedPhotonValueMap = cms.InputTag( 'tmpGedPhotons','valMapPFEgammaCandToPhoton' ),
     sumPtTrackIsoForPhoton = cms.double( -1.0 ),
@@ -14186,7 +14186,7 @@ process.hltHpsDoublePFTau20 = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsPFTauProducer" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltHpsDoublePFTau20Track = cms.EDFilter( "HLT1PFTau",
     saveTags = cms.bool( True ),
@@ -14198,7 +14198,7 @@ process.hltHpsDoublePFTau20Track = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFinding" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltHpsSelectedPFTausTrackFindingLooseChargedIsolation = cms.EDFilter( "PFTauSelector",
     discriminators = cms.VPSet( 
@@ -14222,7 +14222,7 @@ process.hltHpsDoublePFTau20TrackLooseChargedIso = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingLooseChargedIsolation" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltHpsPFTauAgainstMuonDiscriminator = cms.EDProducer( "PFRecoTauDiscriminationAgainstMuon2",
     maskHitsRPC = cms.vint32( 0, 0, 0, 0 ),
@@ -14269,7 +14269,7 @@ process.hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon = cms.EDFilter( "HLT1
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingLooseChargedIsolationAgainstMuon" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltParticleFlowBlock = cms.EDProducer( "PFBlockProducer",
     debug = cms.untracked.bool( False ),
@@ -14325,7 +14325,7 @@ process.hltParticleFlowBlock = cms.EDProducer( "PFBlockProducer",
 )
 process.hltParticleFlow = cms.EDProducer( "PFProducer",
     photon_SigmaiEtaiEta_endcap = cms.double( 0.034 ),
-    minPtForPostCleaning = cms.double( 20.0 ),
+    minPtForPostCleaning = cms.double( 15.0 ),
     pf_nsigma_ECAL = cms.double( 0.0 ),
     GedPhotonValueMap = cms.InputTag( 'tmpGedPhotons','valMapPFEgammaCandToPhoton' ),
     sumPtTrackIsoForPhoton = cms.double( -1.0 ),
@@ -14866,7 +14866,7 @@ process.hltHpsDoublePFTau20TrackMediumChargedIso = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingMediumChargedIsolation" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltHpsSelectedPFTausTrackFindingMediumChargedIsolationAgainstMuon = cms.EDFilter( "PFTauSelector",
     discriminators = cms.VPSet( 
@@ -14893,7 +14893,7 @@ process.hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon = cms.EDFilter( "HLT
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingMediumChargedIsolationAgainstMuon" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltMatchedVBFTwoPFJetsDoubleMediumChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon" ),
@@ -15146,7 +15146,7 @@ process.hltHpsDoublePFTau20TrackTightChargedIso = cms.EDFilter( "HLT1PFTau",
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingTightChargedIsolation" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltHpsSelectedPFTausTrackFindingTightChargedIsolationAgainstMuon = cms.EDFilter( "PFTauSelector",
     discriminators = cms.VPSet( 
@@ -15173,7 +15173,7 @@ process.hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon = cms.EDFilter( "HLT1
     inputTag = cms.InputTag( "hltHpsSelectedPFTausTrackFindingTightChargedIsolationAgainstMuon" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 20.0 )
+    MinPt = cms.double( 15.0 )
 )
 process.hltMatchedVBFTwoPFJetsDoubleTightChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon" ),
@@ -15271,7 +15271,7 @@ process.hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 45.0 )
+    MinPt = cms.double( 50.0 )
 )
 process.hltVBFIsoTauL1TLooseIDPFJetsMatching = cms.EDProducer( "L1TPFJetsMatching",
     pt3Min = cms.double( 40.0 ),
@@ -15318,7 +15318,7 @@ process.hltHpsPFTau50TrackPt1MediumChargedIsolationL1HLTMatched = cms.EDFilter( 
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackMediumChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 45.0 )
+    MinPt = cms.double( 50.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleMediumChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon" ),
@@ -15356,7 +15356,7 @@ process.hltHpsPFTau50TrackPt1LooseChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackLooseChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 45.0 )
+    MinPt = cms.double( 50.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleLooseChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon" ),
@@ -15486,8 +15486,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(False)
-     , needJets = cms.untracked.bool(False)
+     , needTaus = cms.untracked.bool(True)
+     , needJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -15504,12 +15504,12 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-#        process.rerunMvaIsolationSequence *
-#        getattr(process,updatedTauName) *
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName) *
         process.demo
 )
 
-process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1 ))
+process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1 ))
 
 
 process.source = cms.Source( "PoolSource",

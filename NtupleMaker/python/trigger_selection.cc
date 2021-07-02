@@ -277,23 +277,30 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(1.0,1.0);
 
-	//deepTauVSjet = inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSjet->at(1) > 0.5;
-	deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 && inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
-	//deepTauVSmu = inTree->tauByTightDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByTightDeepTau2017v2p1VSmu->at(1) > 0.5;
-	deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 && inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
-        deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 && inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
+        //for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
+	     
+	//deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 &&  inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
+	//deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 &&  inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
+        //deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 &&  inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
+	
+	//if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
+	//}
 
-	// using same code syntax as Doeyong
-	if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
-
-	h_cutflow->Fill(2.0,1.0);
+	//h_cutflow->Fill(2.0,1.0);	
 
 	if (inTree->tauPt->at(0) < t1_pt_cut ) continue;
 	if (inTree->tauEta->at(0) > 2.1 ) continue;
 
-	h_cutflow->Fill(3.0,1.0);	
+	h_cutflow->Fill(2.0,1.0);	
 
 	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
+
+	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
+	    deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(iTau) > 0.5;
+            deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(iTau) > 0.5;
+	
+	    if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
+
 	    if ( inTree->tauPt->at(iTau) < t2_pt_cut ) continue;
 	    if ( inTree->tauEta->at(iTau) > 2.1 ) continue;
 	    TLorentzVector tauCand;
@@ -303,7 +310,7 @@ int main(int argc, char** argv)	{
 	
 	if (tauCandidates.size() <= 1) continue;
 
-	h_cutflow->Fill(4.0,1.0);	
+	h_cutflow->Fill(3.0,1.0);
 
 	// jet selection for old trigger:
 	// 2 jets
@@ -317,34 +324,27 @@ int main(int argc, char** argv)	{
 	vecSizeAODJet = inTree->jetPt->size();
 	if (vecSizeAODJet <= 1) continue;
 	
-	h_cutflow->Fill(5.0,1.0);
+	h_cutflow->Fill(4.0,1.0);
 
-	// jetID is 2 if it passes loose, and 6 if it passes loose and tight
-	// so, if both jets pass both, your ID value should be 12 if added together
-	jetID = inTree->jetID->at(0) + inTree->jetID->at(1);
-        if (jetID != 12) continue;
-
-	h_cutflow->Fill(6.0,1.0);
-
-	// I put these cuts together for the leading jet because
+        // I put these cuts together for the leading jet because
 	// the subleading jet(s) are also (essentially) together due to the way
 	// I've constructed my for-loops and cutflows.
 	if (inTree->jetPt->at(0) < j1_pt_cut || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
-	h_cutflow->Fill(7.0,1.0);
+	h_cutflow->Fill(5.0,1.0);
 	// put all the jets that passed cuts up to here into a vector of jetCandidates
-	// from jetCandidates, we remove taus (possibly) and make dijet pairs to cut on dijet mass
+	// from jetCandidates, and make dijet pairs to cut on dijet mass
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
 	    // cuts above only applied to first and second jet in list
 	    // these cuts make it so that a list of 11 jets, of which some have pt < 45,
 	    // aren't filled into the jet candidates.
 	    if (inTree->jetPt->at(iJet) < j2_pt_cut) continue;
 	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
+	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 	    TLorentzVector jetCand;
 	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
 	    // if a jetCandidate looks like it could be a tau, don't store it
-	    // std::cout << tau1_A.DeltaR(jetCand) << ' ' << tau2_A.DeltaR(jetCand) << std::endl;
-	    //?for (int iTau = 0; iTau < tauCandidates.size(); iTau++){ if (tauCandidates.at(iTau).DeltaR(jetCand) < 0.5) continue; }
+	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){ if (tauCandidates.at(iTau).DeltaR(jetCand) < 0.5) continue; }
 	    jetCandidates.push_back(jetCand);
 	}
 	// continues inside for-loops don't skip the events, so you need to check the size of
@@ -352,7 +352,7 @@ int main(int argc, char** argv)	{
 	// before filling the cutflow	
 	if (jetCandidates.size() < 2) continue;
 
-	h_cutflow->Fill(8.0,1.0);
+	h_cutflow->Fill(6.0,1.0);
 
 	// mjj cut off for old trigger is 700
 	// 	      for new trigger is 550
@@ -377,29 +377,7 @@ int main(int argc, char** argv)	{
 	if (jetCandsLocs.size() < 1) continue;
         if (jetCandsLocs.size() > 1) overOneCounter += 1;
 
-	h_cutflow->Fill(9.0,1.0); //prev 2 for-loops serv as the mjj cut
-
-	// branches below aren't necessarily the object kinematics that gets matched to hlt object!!!
-	t1_pt_A = tauCandidates.at(0).Pt();
-	t1_eta_A = tauCandidates.at(0).Eta();
-	t1_phi_A = tauCandidates.at(0).Phi();
-	t1_energy_A = tauCandidates.at(0).Energy();
-	t2_pt_A = tauCandidates.at(1).Pt();
-	t2_eta_A = tauCandidates.at(1).Eta();
-	t2_phi_A = tauCandidates.at(1).Phi();
-	t2_energy_A = tauCandidates.at(1).Energy();
-
-	std::pair<int,int> frontJPair = jetCandsLocs.front();
-	j1_pt_A = jetCandidates.at(frontJPair.first).Pt();
-	j1_eta_A = jetCandidates.at(frontJPair.first).Eta();
-	j1_phi_A = jetCandidates.at(frontJPair.first).Phi();
-	j1_energy_A = jetCandidates.at(frontJPair.first).Energy();
-	j2_pt_A = jetCandidates.at(frontJPair.second).Pt();
-	j2_eta_A = jetCandidates.at(frontJPair.second).Eta();
-	j2_phi_A = jetCandidates.at(frontJPair.second).Phi();
-	j2_energy_A = jetCandidates.at(frontJPair.second).Energy();
-
-	mjj_A = (jetCandidates.at(frontJPair.first) + jetCandidates.at(frontJPair.second)).M();
+	h_cutflow->Fill(7.0,1.0); // prev 2 for-loops serve as the mjj cut
 
 	passSel = 1; 
 	// any event that makes it here has passed AOD selection
@@ -543,20 +521,28 @@ int main(int argc, char** argv)	{
 	// end new trigger ifs
 	// now try to match to MiniAOD object if the event passed the trigger
 	
+	// first clean jets from taus (???)
+	//for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+	//    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
+	//	std::cout << iTau << std::endl;
+	//	if (tauCandidates.at(iTau).DeltaR(jetCandidates.at(iJet)) < 0.5) tauCandidates.erase(tauCandidates.begin() + iTau);
+	//    }
+	//}	
+
+	int leadingTauIndex = -1;
+	int subleadingTauIndex = -1;
         TLorentzVector tau1, tau2; 
 	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){	
             tau1.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);
             tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
-	    int leadingTauIndex = -1;
-	    int subleadingTauIndex = -1;
 	    float dRt1_ = 999; // underscores on the ends of variable names usually indicates those are temp variables
 	    float dRt2_ = 999;
 	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
 		//std::cout << tauCandidates.size();
 		dRt1_ = tau1.DeltaR(tauCandidates.at(iTau));
 		dRt2_ = tau2.DeltaR(tauCandidates.at(iTau));
-		if (dRt1_ < dRt1 ) dRt1 = dRt1_; // saves lower temp dR values to permanent dR variable
-		if (dRt2_ < dRt2 ) dRt2 = dRt2_;
+		if (dRt1_ < dRt1 ){ dRt1 = dRt1_; leadingTauIndex = iTau;} // saves lower temp dR values to permanent dR variable
+		if (dRt2_ < dRt2 ){ dRt2 = dRt2_; subleadingTauIndex = iTau;}
 	    }
 	}
 
@@ -569,7 +555,6 @@ int main(int argc, char** argv)	{
 	    jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
 	    mjj = (jet1 + jet2).M();
 	}
-
 
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
@@ -606,6 +591,29 @@ int main(int argc, char** argv)	{
 	if (dRt1 < 0.5 && dRt2 < 0.5) matchedTaus = 1;
 	if (dRj1 < 0.5 && dRj2 < 0.5) matchedJets = 1;
 	if (matchedTaus && matchedJets) matchedBoth = 1;
+        // fill kine branches with matched AOD info
+        if (matchedBoth){
+	    t1_pt_A = tauCandidates.at(leadingTauIndex).Pt();
+	    t1_eta_A = tauCandidates.at(leadingTauIndex).Eta();
+	    t1_phi_A = tauCandidates.at(leadingTauIndex).Phi();
+	    t1_energy_A = tauCandidates.at(leadingTauIndex).Energy();
+	    t2_pt_A = tauCandidates.at(subleadingTauIndex).Pt();
+	    t2_eta_A = tauCandidates.at(subleadingTauIndex).Eta();
+	    t2_phi_A = tauCandidates.at(subleadingTauIndex).Phi();
+	    t2_energy_A = tauCandidates.at(subleadingTauIndex).Energy();
+
+	    std::pair<int,int> JPair = jetCandsLocs.at(savedindex);
+	    j1_pt_A = jetCandidates.at(JPair.first).Pt();
+	    j1_eta_A = jetCandidates.at(JPair.first).Eta();
+	    j1_phi_A = jetCandidates.at(JPair.first).Phi();
+	    j1_energy_A = jetCandidates.at(JPair.first).Energy();
+	    j2_pt_A = jetCandidates.at(JPair.second).Pt();
+	    j2_eta_A = jetCandidates.at(JPair.second).Eta();
+	    j2_phi_A = jetCandidates.at(JPair.second).Phi();
+	    j2_energy_A = jetCandidates.at(JPair.second).Energy();
+	    mjj_A = (jetCandidates.at(JPair.first) + jetCandidates.at(JPair.second)).M();
+	}
+
 	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndOldTrig) passSelOldTrigAndMatchedBoth = 1;

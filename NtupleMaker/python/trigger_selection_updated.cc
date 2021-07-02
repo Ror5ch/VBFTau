@@ -58,21 +58,20 @@ int main(int argc, char** argv)	{
 	return 0; //prevents rest of code from running
     }
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;
-	t2_pt_cut = 25;
-	j1_pt_cut = 120;
-	j2_pt_cut = 45;
-	mjj_cut = 700;
+	t1_pt_cut = 20;//25;
+	t2_pt_cut = 20;//25;
+	j1_pt_cut = 115;//120;
+	j2_pt_cut = 40;//45;
+	mjj_cut = 650;//700;
 	std::cout << "trigger: " << oldTrigString << std::endl;
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 55;
-	t2_pt_cut = 25;
-	j1_pt_cut = 45;
-	j2_pt_cut = 45;
-	mjj_cut = 550;
-	std::cout << "trigger: UNDO THESE L1s!" << newTrigString << std::endl;
+	t1_pt_cut = 50;//55;
+	t2_pt_cut = 20;//25;
+	j1_pt_cut = 40;//45;
+	j2_pt_cut = 40;//45;
+	mjj_cut = 500;//550;
 	triggerFlag = 1;
     }
 

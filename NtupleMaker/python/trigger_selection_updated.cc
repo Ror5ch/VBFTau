@@ -105,7 +105,7 @@ int main(int argc, char** argv)	{
     float t2_phi;
     float t2_energy;
    
-    //AOD vars 
+    // AOD vars 
     int vecSizeAODJet;
     int vecSizeAODTau;
 
@@ -142,8 +142,8 @@ int main(int argc, char** argv)	{
     std::vector<TLorentzVector> tauCandidates;
     std::vector<TLorentzVector> jetCandidates;
     float mjjCandidatePair;
-    std::vector<std::pair<int,int>> jetCandsLocs; //jet candidate locations
-    std::vector<float> dRj1_vec; //container for dR of AOD and HLT j1
+    std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
+    std::vector<float> dRj1_vec; // container for dR of AOD and HLT j1
     std::vector<float> dRj2_vec;
     std::vector<float> dRjSum;
 
@@ -260,11 +260,11 @@ int main(int argc, char** argv)	{
 
 	// tau selection for old trigger:
 	// 2 taus
-	// pt > 25 for both
+	// pt > 20 for both
 	// fabs(eta) < 2.1 for both
 	//		for new trigger:
 	// 2 taus
-	// 1 pt > 55, other pt > 20
+	// 1 pt > 50, other pt > 20
 	// fabs(eta) < 2.1 for both
 	
 	// fill cutflow before any selection
@@ -275,6 +275,8 @@ int main(int argc, char** argv)	{
 	if (vecSizeAODTau <= 1) continue;
 
 	h_cutflow->Fill(1.0,1.0);
+
+	// how the tauID was previously implemented. Changing this was the main increase in events passing selection
 
         //for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
 	     
@@ -287,11 +289,19 @@ int main(int argc, char** argv)	{
 
 	//h_cutflow->Fill(2.0,1.0);	
 
+	// check leading tau kinematics just to rule out low energy events
+
 	if (inTree->tauPt->at(0) < t1_pt_cut ) continue;
 	if (inTree->tauEta->at(0) > 2.1 ) continue;
 
 	h_cutflow->Fill(2.0,1.0);	
 
+	// loop over all taus and store any that pass tauID and kinematic selection
+
+	// noticed an error in the logic here for the new trigger:
+	// there's no condition on t1_pt_cut, so many events pass new trigger selection that
+	// actually shouldn't because a real pair of tau AODs should have 1 with leading pt >= 50GeV,
+	// but this loop doesn't enforce that requirement.
 	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
 
 	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
@@ -306,18 +316,18 @@ int main(int argc, char** argv)	{
 	    tauCand.SetPtEtaPhiE(inTree->tauPt->at(iTau), inTree->tauEta->at(iTau), inTree->tauPhi->at(iTau), inTree->tauEnergy->at(iTau));
 	    tauCandidates.push_back(tauCand);
 	}
-	
+	// need two taus for the event to be valid
 	if (tauCandidates.size() <= 1) continue;
 
 	h_cutflow->Fill(3.0,1.0);
 
 	// jet selection for old trigger:
 	// 2 jets
-	// leading pt > 120, subleading > 45
+	// leading pt > 115, subleading > 40
 	// fabs(eta) < 4.7 for both
 	//		for new trigger:
 	// 2 jets
-	// both pt > 45
+	// both pt > 40
 	// fabs(eta) < 4.7 for both
 	
 	vecSizeAODJet = inTree->jetPt->size();
@@ -332,10 +342,9 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(5.0,1.0);
 	// put all the jets that passed cuts up to here into a vector of jetCandidates
-	// from jetCandidates, and make dijet pairs to cut on dijet mass
+	// from jetCandidates, make dijet pairs to cut on dijet mass
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
-	    // cuts above only applied to first and second jet in list
-	    // these cuts make it so that a list of 11 jets, of which some have pt < 45,
+	    // these cuts make it so that a list of 11 jets, of which some have pt < 40,
 	    // aren't filled into the jet candidates.
 	    if (inTree->jetPt->at(iJet) < j2_pt_cut) continue;
 	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
@@ -353,13 +362,13 @@ int main(int argc, char** argv)	{
 
 	h_cutflow->Fill(6.0,1.0);
 
-	// mjj cut off for old trigger is 700
-	// 	      for new trigger is 550
+	// mjj cut off for old trigger is 650
+	// 	      for new trigger is 500
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
 		if (iCand >= jCand) continue;
 
-		// makes sure one jet has pt > 120 and the other has pt > 45 if it's the old trigger
+		// makes sure one jet has pt > 115 and the other has pt > 40 if it's the old trigger
 		// harmless if it's the new trigger
 		if ((jetCandidates.at(iCand).Pt()>j1_pt_cut && jetCandidates.at(jCand).Pt()>j2_pt_cut) || \
 		    (jetCandidates.at(iCand).Pt()>j2_pt_cut && jetCandidates.at(jCand).Pt()>j1_pt_cut)){
@@ -520,15 +529,8 @@ int main(int argc, char** argv)	{
 	// end new trigger ifs
 	// now try to match to MiniAOD object if the event passed the trigger
 	
-	// first clean jets from taus (???)
-	//for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-	//    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
-	//	std::cout << iTau << std::endl;
-	//	if (tauCandidates.at(iTau).DeltaR(jetCandidates.at(iJet)) < 0.5) tauCandidates.erase(tauCandidates.begin() + iTau);
-	//    }
-	//}	
 
-	int leadingTauIndex = -1;
+	int leadingTauIndex = -1; // save tau indices for retrieving AOD kinematics later
 	int subleadingTauIndex = -1;
         TLorentzVector tau1, tau2; 
 	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){	
@@ -537,15 +539,12 @@ int main(int argc, char** argv)	{
 	    float dRt1_ = 999; // underscores on the ends of variable names usually indicates those are temp variables
 	    float dRt2_ = 999;
 	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-		//std::cout << tauCandidates.size();
 		dRt1_ = tau1.DeltaR(tauCandidates.at(iTau));
 		dRt2_ = tau2.DeltaR(tauCandidates.at(iTau));
 		if (dRt1_ < dRt1 ){ dRt1 = dRt1_; leadingTauIndex = iTau;} // saves lower temp dR values to permanent dR variable
 		if (dRt2_ < dRt2 ){ dRt2 = dRt2_; subleadingTauIndex = iTau;}
 	    }
 	}
-
-	//if (dRt1 > 50 || dRt2 > 50) continue; // just here to remove erroneous values
 
         // if either of the if statements before triggered, then we have a dijet system from the trigger
 	TLorentzVector jet1, jet2;

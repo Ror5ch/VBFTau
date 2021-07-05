@@ -362,8 +362,11 @@ int main(int argc, char** argv)	{
 	    TLorentzVector jetCand;
 	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
 	    // if a jetCandidate looks like it could be a tau, don't store it
-	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){ if (tauCandidates.at(iTau).DeltaR(jetCand) < 0.5) continue; }
-	    jetCandidates.push_back(jetCand);
+	    bool jetCandIsTau = false;
+	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+		if (tauCandidates.at(iTau).DeltaR(jetCand) < 0.5) jetCandIsTau = true;
+	    }
+	    if (!jetCandIsTau) jetCandidates.push_back(jetCand);
 	}
 	// continues inside for-loops don't skip the events, so you need to check the size of
 	// the container you skipped adding events to and then impose a condition on that instead

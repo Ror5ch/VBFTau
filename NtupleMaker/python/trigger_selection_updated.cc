@@ -227,7 +227,7 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 2000; iEntry++) {
+    //for (int iEntry = 0; iEntry < 5000; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
@@ -288,16 +288,7 @@ int main(int argc, char** argv)	{
 	//if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
 	//}
 
-	//h_cutflow->Fill(2.0,1.0);	
-
-	// check leading tau kinematics just to rule out low energy events
-
-	if (inTree->tauPt->at(0) < t1_pt_cut ) continue;
-	if (inTree->tauEta->at(0) > 2.1 ) continue;
-
-	h_cutflow->Fill(2.0,1.0);	
-
-	// loop over all taus and store any that pass tauID and kinematic selection
+	// loop over all taus and store any that pass tauID and minimum kinematic selection
 
 	// noticed an error in the logic here for the new trigger:
 	// there's no condition on t1_pt_cut, so many events pass new trigger selection that
@@ -317,8 +308,23 @@ int main(int argc, char** argv)	{
 	    tauCand.SetPtEtaPhiE(inTree->tauPt->at(iTau), inTree->tauEta->at(iTau), inTree->tauPhi->at(iTau), inTree->tauEnergy->at(iTau));
 	    tauCandidates.push_back(tauCand);
 	}
+
 	// need two taus for the event to be valid
+	// this entry in the cutflow is the same as the next in the case of the old trigger
+	// for the new trigger, the next cutflow category should have fewer events due
+	// to leading tau selection
 	if (tauCandidates.size() <= 1) continue;
+
+	h_cutflow->Fill(2.0,1.0);
+
+	// check leading tau kinematics for new trigger
+	if (triggerFlag == 1) {
+	    bool tauover50 = false;
+	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+	    	if (tauCandidates.at(iTau).Pt() > 50) tauover50 = true;
+	    }
+	    if (!tauover50) continue;
+	}
 
 	h_cutflow->Fill(3.0,1.0);
 
@@ -339,6 +345,9 @@ int main(int argc, char** argv)	{
         // I put these cuts together for the leading jet because
 	// the subleading jet(s) are also (essentially) together due to the way
 	// I've constructed my for-loops and cutflows.
+	//
+	// put this higher selection after the more general one
+	// do a for-loop like was done with taus
 	if (inTree->jetPt->at(0) < j1_pt_cut || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
 	h_cutflow->Fill(5.0,1.0);

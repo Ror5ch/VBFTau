@@ -319,11 +319,11 @@ int main(int argc, char** argv)	{
 
 	// check leading tau kinematics for new trigger
 	if (triggerFlag == 1) {
-	    bool tauover50 = false;
+	    bool tauOverLC = false; // LC = Leading Cut, 55 in the case of the new trigger leading tau
 	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-	    	if (tauCandidates.at(iTau).Pt() > 50) tauover50 = true;
+	    	if (tauCandidates.at(iTau).Pt() > t1_pt_cut) tauOverLC = true;
 	    }
-	    if (!tauover50) continue;
+	    if (!tauOverLC) continue;
 	}
 
 	h_cutflow->Fill(3.0,1.0);
@@ -348,7 +348,7 @@ int main(int argc, char** argv)	{
 	//
 	// put this higher selection after the more general one
 	// do a for-loop like was done with taus
-	if (inTree->jetPt->at(0) < j1_pt_cut || fabs(inTree->jetEta->at(0)) > 4.7) continue;
+	//if (inTree->jetPt->at(0) < j1_pt_cut || fabs(inTree->jetEta->at(0)) > 4.7) continue;
 
 	h_cutflow->Fill(5.0,1.0);
 	// put all the jets that passed cuts up to here into a vector of jetCandidates
@@ -374,6 +374,14 @@ int main(int argc, char** argv)	{
 	if (jetCandidates.size() < 2) continue;
 
 	h_cutflow->Fill(6.0,1.0);
+
+	if (triggerFlag == 0){
+	    bool jetOverLC = false; // LC = Leading Cut, 120GeV in case of old tau trigger
+	    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
+		if (jetCandidates.at(iJet).Pt() > j1_pt_cut) jetOverLC = true;
+	    }
+	    if (!jetOverLC) continue;
+	}
 
 	// mjj cut off for old trigger is 650
 	// 	      for new trigger is 500
@@ -409,9 +417,14 @@ int main(int argc, char** argv)	{
 	vecSizeVBFOne = inTree->hltMatchedVBFOneTight_pt->size();
 	vecSizeVBFTwo = inTree->hltMatchedVBFTwoTight_pt->size();
 
+	//std::cout << " OLD TRIGGER FILTER SIZES " << std::endl;
+	//std::cout << "vecSizeHPSTau: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl;
+	//std::cout << "vecSizeVBFOne: " << inTree->hltMatchedVBFOneTight_pt->size() << std::endl;
+	//std::cout << "vecSizeVBFTwo: " << inTree->hltMatchedVBFTwoTight_pt->size() << std::endl;
+
 	if (triggerFlag == 0){
 	// fill trigger info for taus if it's available
-	    if (vecSizeHpsTau == 2){
+	    if (vecSizeHpsTau >= 2){
 	
 	        t1_pt = inTree->hltHpsDoublePFTauTight_pt->at(0);
 		t1_loc = 0;
@@ -476,11 +489,23 @@ int main(int argc, char** argv)	{
 	vecSizeVBFIsoTauTwo = inTree->hltMatchedVBFIsoTauTwoTight_pt->size(); 
 	vecSizeHpsTau50 = inTree->hltHpsPFTau50Tight_pt->size();
 
+	//std::cout << " NEW TRIGGER FILTERS " << std::endl;
+	//std::cout << "vecSizeVBFIsoTauTwo: " << inTree->hltMatchedVBFIsoTauTwoTight_pt->size() << std::endl;
+	//std::cout << "vecSizeHpsTau50: " << inTree->hltHpsPFTau50Tight_pt->size() << std::endl;
+
 	if (triggerFlag == 1){
+	    TLorentzVector TrigTauCand;
+	    for (int iTrigTau = 0; iTrigTau < vecSizeHpsTau50; iTrigTau++){
+		t1_pt = inTree->hltHpsPFTau50Tight_pt->at(iTrigTau);
+		t1_eta = inTree->hltHpsPFTau50Tight_eta->at(iTrigTau);
+		t1_phi = inTree->hltHpsPFTau50Tight_phi->at(iTrigTau);
+		t1_energy = inTree->hltHpsPFTau50Tight_energy->at(iTrigTau);
+		TrigTauCand.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);	
+	    } 
 	// fill trigger info for taus if its available
 	// if two taus pass the final tau filter, store both and
 	// make the higher pt one the leader
-	    if (vecSizeHpsTau50 == 2){
+	    if (vecSizeHpsTau50 >= 2){
 		t1_pt = inTree->hltHpsPFTau50Tight_pt->at(0);
 		t1_loc = 0;
 		t2_pt = inTree->hltHpsPFTau50Tight_pt->at(1);
@@ -546,7 +571,7 @@ int main(int argc, char** argv)	{
 	int leadingTauIndex = -1; // save tau indices for retrieving AOD kinematics later
 	int subleadingTauIndex = -1;
         TLorentzVector tau1, tau2; 
-	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){	
+	if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo >= 2 && triggerFlag == 1)){	
             tau1.SetPtEtaPhiE(t1_pt, t1_eta, t1_phi, t1_energy);
             tau2.SetPtEtaPhiE(t2_pt, t2_eta, t2_phi, t2_energy);
 	    float dRt1_ = 999; // underscores on the ends of variable names usually indicates those are temp variables

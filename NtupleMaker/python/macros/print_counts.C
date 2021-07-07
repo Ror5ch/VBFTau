@@ -18,6 +18,10 @@ void print_counts(char* filename){
 
     TTree* tree = (TTree*)_file0->Get("outTree");
 
+    int passingMinimalSel = tree->Draw("passMinimalSel", "passMinimalSel>0", "goff");
+
+    std::cout << "passing minimal selection: " << std::endl;
+
     int passingSel = tree->Draw("passSel", "passSel>0", "goff");
 
     std::cout << "passing selection: " << std::endl;
@@ -45,7 +49,16 @@ void print_counts(char* filename){
     std::cout << "New, Taus Matching: " << std::endl;
     std::cout << "New, Both Matching: " << std::endl;
 
+    int jetsMatched = tree->Draw("matchedJets", "matchedJets>0", "goff");
+    int tausMatched = tree->Draw("matchedTaus", "matchedTaus>0", "goff");
+    int bothMatched = tree->Draw("matchedBoth", "matchedBoth>0", "goff");
+
+    std::cout << "jetsMatched: " << std::endl;
+    std::cout << "tausMatched: " << std::endl;
+    std::cout << "bothMatched: " << std::endl;
+
     // vertical lists are easier to copy and paste
+    std::cout << passingMinimalSel << std::endl;
     std::cout << passingSel << std::endl;
     std::cout << passingSelAndOld << std::endl;
     std::cout << passingOldJets << std::endl;
@@ -55,5 +68,8 @@ void print_counts(char* filename){
     std::cout << passingNewJets << std::endl;
     std::cout << passingNewTaus << std::endl;
     std::cout << passingSelNewAndMatching << std::endl;
+    std::cout << jetsMatched << std::endl;
+    std::cout << tausMatched << std::endl;
+    std::cout << bothMatched << std::endl;
 
 }

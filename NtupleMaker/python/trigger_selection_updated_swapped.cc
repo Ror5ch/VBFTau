@@ -340,83 +340,6 @@ int main(int argc, char** argv)	{
 	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
 	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
 
-	//-----------------------------apply offline selection------------------------------//
-
-	// set passSel = 1 here, and set it to zero any time a condition is failed
-	// this way, matching still occurs but we know wether the event passed selection also
-	// consider making second cutflow for just events passing minimal selection
-	passSel = 1;
-
-	// loop over tauCandidates, and erase ones not passing t2_pt_cut
-	for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-	    if (tauCandidates.at(iTau).Pt() < t2_pt_cut) tauCandidates.erase(tauCandidates.begin() + iTau);
-	}
-	// need two taus for the event to be valid
-	if (tauCandidates.size() < 2) passSel = 0;
-	else {min_cutflow->Fill(4.0,1.0); sel_cutflow->Fill(1.0,1.0);}
-
-	// check leading tau kinematics for new trigger
-	// not checked for old trigger because then t1_pt_cut = t2_pt_cut 
-	if (triggerFlag == 1) {
-	    bool tauOverLC = false; // LC = Leading Cut, 55 in the case of the new trigger leading tau
-	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-	    	if (tauCandidates.at(iTau).Pt() > t1_pt_cut) tauOverLC = true;
-	    }
-	    if (!tauOverLC) passSel = 0;
-	}
-
-	// loop over jetCandidates, and erase ones not passing j2_pt_cut
-	for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
-	    if (jetCandidates.at(iJet).Pt() < j2_pt_cut) jetCandidates.erase(jetCandidates.begin() + iJet);
-	}
-	if (jetCandidates.size() < 2) passSel = 0;
-	else {min_cutflow->Fill(5.0,1.0); sel_cutflow->Fill(2.0,1.0);}
-
-	// check leading jet kinematics for old trigger
-	// not checked for new trigger because then j1_pt_cut = j2_pt_cut 
-	if (triggerFlag == 0){
-	    bool jetOverLC = false; // LC = Leading Cut, 120GeV in case of old tau trigger
-	    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
-		if (jetCandidates.at(iJet).Pt() > j1_pt_cut) jetOverLC = true;
-	    }
-	    if (!jetOverLC) passSel = 0;
-	}
-
-	// mjj cut off for old trigger is 650
-	// 	      for new trigger is 500
-	// offline mjj cuts are 50GeV higher than trigger/HLT
-	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
-	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
-		if (iCand >= jCand) continue;
-
-		// makes sure one jet has pt > 120 and the other has pt > 45 if it's the old trigger
-		// harmless if it's the new trigger
-		if ((jetCandidates.at(iCand).Pt()>j1_pt_cut && jetCandidates.at(jCand).Pt()>j2_pt_cut) || \
-		    (jetCandidates.at(iCand).Pt()>j2_pt_cut && jetCandidates.at(jCand).Pt()>j1_pt_cut)){
-
-		    mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
-		    if (mjjCandidatePair < mjj_cut) continue;
-
-		    jetCandsLocs.push_back(std::make_pair(iCand,jCand));
-		}// end if statement on jet pair pt
-	    }// end inner for-loop
-	}// end for-loop
-
-	// if there isn't a viable dijet system, selection is failed
-	if (jetCandsLocs.size() < 1) passSel = 0;
-	else { min_cutflow->Fill(6.0,1.0); sel_cutflow->Fill(3.0,1.0);}
-        if (jetCandsLocs.size() > 1) overOneCounter += 1;
-	
-	// if there aren't at least 2 taus and 2 jets passing selection, then we
-	// cannot attempt matching and must drop the event.
-	if (tauCandidates.size() < 2 || jetCandidates.size() < 2) continue;
-
-	// as keti proposed, take leading two AOD taus
-	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
-	//TLorentzVector aodTau1, aodTau2;
-	//aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
-	//aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
-
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	
 	// get number of objects in tau and jet trigger filters
@@ -529,7 +452,84 @@ int main(int argc, char** argv)	{
 	    //std::cout << "mjj: " << mjj << std::endl;
 	    //std::cout << "end debug" << std::endl;
 	}
+	//-----------------------------apply offline selection------------------------------//
 
+	// set passSel = 1 here, and set it to zero any time a condition is failed
+	// this way, matching still occurs but we know wether the event passed selection also
+	// consider making second cutflow for just events passing minimal selection
+	passSel = 1;
+
+	// loop over tauCandidates, and erase ones not passing t2_pt_cut
+	for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+	    if (tauCandidates.at(iTau).Pt() < t2_pt_cut) tauCandidates.erase(tauCandidates.begin() + iTau);
+	}
+	// need two taus for the event to be valid
+	if (tauCandidates.size() < 2) passSel = 0;
+	else {min_cutflow->Fill(4.0,1.0); sel_cutflow->Fill(1.0,1.0);}
+
+	// check leading tau kinematics for new trigger
+	// not checked for old trigger because then t1_pt_cut = t2_pt_cut 
+	if (triggerFlag == 1) {
+	    bool tauOverLC = false; // LC = Leading Cut, 55 in the case of the new trigger leading tau
+	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+	    	if (tauCandidates.at(iTau).Pt() > t1_pt_cut) tauOverLC = true;
+	    }
+	    if (!tauOverLC) passSel = 0;
+	}
+
+	// loop over jetCandidates, and erase ones not passing j2_pt_cut
+	for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
+	    if (jetCandidates.at(iJet).Pt() < j2_pt_cut) jetCandidates.erase(jetCandidates.begin() + iJet);
+	}
+	if (jetCandidates.size() < 2) passSel = 0;
+	else {min_cutflow->Fill(5.0,1.0); sel_cutflow->Fill(2.0,1.0);}
+
+	// check leading jet kinematics for old trigger
+	// not checked for new trigger because then j1_pt_cut = j2_pt_cut 
+	if (triggerFlag == 0){
+	    bool jetOverLC = false; // LC = Leading Cut, 120GeV in case of old tau trigger
+	    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
+		if (jetCandidates.at(iJet).Pt() > j1_pt_cut) jetOverLC = true;
+	    }
+	    if (!jetOverLC) passSel = 0;
+	}
+
+	// mjj cut off for old trigger is 650
+	// 	      for new trigger is 500
+	// offline mjj cuts are 50GeV higher than trigger/HLT
+	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
+	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
+		if (iCand >= jCand) continue;
+
+		// makes sure one jet has pt > 120 and the other has pt > 45 if it's the old trigger
+		// harmless if it's the new trigger
+		if ((jetCandidates.at(iCand).Pt()>j1_pt_cut && jetCandidates.at(jCand).Pt()>j2_pt_cut) || \
+		    (jetCandidates.at(iCand).Pt()>j2_pt_cut && jetCandidates.at(jCand).Pt()>j1_pt_cut)){
+
+		    mjjCandidatePair = (jetCandidates.at(iCand) + jetCandidates.at(jCand)).M();
+		    if (mjjCandidatePair < mjj_cut) continue;
+
+		    jetCandsLocs.push_back(std::make_pair(iCand,jCand));
+		}// end if statement on jet pair pt
+	    }// end inner for-loop
+	}// end for-loop
+
+	// if there isn't a viable dijet system, selection is failed
+	if (jetCandsLocs.size() < 1) passSel = 0;
+	else { min_cutflow->Fill(6.0,1.0); sel_cutflow->Fill(3.0,1.0);}
+        if (jetCandsLocs.size() > 1) overOneCounter += 1;
+	
+	// if there aren't at least 2 taus and 2 jets passing selection, then we
+	// cannot attempt matching and must drop the event.
+	if (tauCandidates.size() < 2 || jetCandidates.size() < 2) continue;
+
+	// as keti proposed, take leading two AOD taus
+	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
+	//TLorentzVector aodTau1, aodTau2;
+	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
+	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
+
+	//-------------------------fill branches and check flags---------------------------------//
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 

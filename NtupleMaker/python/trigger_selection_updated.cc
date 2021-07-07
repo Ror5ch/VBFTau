@@ -150,9 +150,7 @@ int main(int argc, char** argv)	{
     std::vector<TLorentzVector> triggerJetCandidates;
 
     std::vector<TLorentzVector> tauCandidates;
-    std::vector<TLorentzVector> tauTempCandidates;
     std::vector<TLorentzVector> jetCandidates;
-    std::vector<TLorentzVector> jetTempCandidates;
     float mjjCandidatePair;
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
     std::vector<float> dRj1_vec; // container for dR of AOD and HLT j1
@@ -262,9 +260,7 @@ int main(int argc, char** argv)	{
 	passSelNewTrigAndMatchedBoth = 0;
 
 	tauCandidates.clear();	
-	tauTempCandidates.clear();
 	jetCandidates.clear(); // all for matching jets later
-	jetTempCandidates.clear();
 	jetCandsLocs.clear();
 	dRt1 = 999;
 	dRt2 = 999;
@@ -277,7 +273,7 @@ int main(int argc, char** argv)	{
 	triggerTauCandidates.clear();
 	triggerJetCandidates.clear();
 
-	//----------------------------------------------------------//
+	//---------------------apply minimal selection------------------------------//
 	h_cutflow->Fill(0.0,1.0); // fill cutflow before any selection
 
 	vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
@@ -331,47 +327,25 @@ int main(int argc, char** argv)	{
 	    }
 	    if (!jetCandIsTau) jetCandidates.push_back(jetCand);
 	}
-	// check taht we have at least two good taus
+	// check that we have at least two good taus
 	if (jetCandidates.size() < 2) continue;
 	h_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good jets
 
 	passMinimalSel = 1;
 
+	//-----------------------------apply offline selection------------------------------//
+
 	// set passSel = 1 here, and set it to zero any time a condition is failed
-	// this way, matching still occurs but we know wether the event passed selection
+	// this way, matching still occurs but we know wether the event passed selection also
 	// unfortunately, this makes cutflows a bit trickier (i think, need to look into)
 	passSel = 1;
-	/***
-	//vecSizeAODTau = inTree->tauPt->size();
 
-	//if (vecSizeAODTau < 2) continue;
-
-	//h_cutflow->Fill(1.0,1.0);
-
-	// loop over all taus and store any that pass tauID and minimum kinematic selection
-	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
-
-	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
-	    deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(iTau) > 0.5;
-            deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(iTau) > 0.5;
-	
-	    if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
-
-	    if ( inTree->tauPt->at(iTau) < t2_pt_cut ) continue;
-	    if ( inTree->tauEta->at(iTau) > 2.1 ) continue;
-	    TLorentzVector tauCand;
-	    tauCand.SetPtEtaPhiE(inTree->tauPt->at(iTau), inTree->tauEta->at(iTau), inTree->tauPhi->at(iTau), inTree->tauEnergy->at(iTau));
-	    tauCandidates.push_back(tauCand);
-	}
-***/
 	// loop over tauCandidates, and erase ones not passing t2_pt_cut
 	for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
 	    if (tauCandidates.at(iTau).Pt() < t2_pt_cut) tauCandidates.erase(tauCandidates.begin() + iTau);
 	}
 	// need two taus for the event to be valid
 	if (tauCandidates.size() < 2) passSel = 0;
-
-//	h_cutflow->Fill(2.0,1.0);
 
 	// check leading tau kinematics for new trigger
 	// not checked for old trigger because then t1_pt_cut = t2_pt_cut 
@@ -383,33 +357,6 @@ int main(int argc, char** argv)	{
 	    if (!tauOverLC) passSel = 0;
 	}
 
-//	h_cutflow->Fill(3.0,1.0);
-
-	// need at least two jets in the event	
-	//vecSizeAODJet = inTree->jetPt->size();
-	//if (vecSizeAODJet < 2) continue;
-	
-	//h_cutflow->Fill(4.0,1.0);
-
-/***
-	// put jets into a vector, and from that vector of jetCandidates, make dijet pairs to cut on dijet mass
-	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
-	    // these cuts make it so that a list of 11 jets, of which some have pt < 40,
-	    // aren't filled into the jet candidates.
-	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
-	    if (inTree->jetPt->at(iJet) < j2_pt_cut) continue;
-	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
-	    TLorentzVector jetCand;
-	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
-	    // if a jetCandidate looks like it could be a tau, don't store it
-	    bool jetCandIsTau = false;
-	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
-		if (tauCandidates.at(iTau).DeltaR(jetCand) < 0.5) jetCandIsTau = true;
-	    }
-	    if (!jetCandIsTau) jetCandidates.push_back(jetCand);
-	}
-***/
-	
 	// loop over jetCandidates, and erase ones not passing j2_pt_cut
 	for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
 	    if (jetCandidates.at(iJet).Pt() < j2_pt_cut) jetCandidates.erase(jetCandidates.begin() + iJet);
@@ -463,8 +410,7 @@ int main(int argc, char** argv)	{
 	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
 	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
 
-	// check if the event passed the trigger AND if it can be matched to AOD
-	//--------------------------------------------------------------------------------//
+	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	
 	// get number of objects in tau and jet trigger filters
 	vecSizeHpsTau = inTree->hltHpsDoublePFTauTight_pt->size(); // at least two taus > 20 GeV filter, common to both
@@ -606,7 +552,6 @@ int main(int argc, char** argv)	{
 	}// end if, sets dRj1 and 2
 ***/
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
-	// don't use continue because we don't want to lose objects that didn't match but still passed selection
 	if (dRt1 < 0.5 && dRt2 < 0.5) matchedTaus = 1;
 	if (dRj1 < 0.5 && dRj2 < 0.5) matchedJets = 1;
 	if (matchedTaus && matchedJets) matchedBoth = 1;
@@ -633,6 +578,13 @@ int main(int argc, char** argv)	{
 	    mjj_A = (jetCandidates.at(JPair.first) + jetCandidates.at(JPair.second)).M();
 ***/
 	    j1_pt_A = aodJet1.Pt();
+	    j1_eta_A = aodJet1.Eta();
+	    j1_eta_A = aodJet1.Phi();
+	    j1_energy_A = aodJet1.Energy();
+	    j2_pt_A = aodJet2.Pt();
+	    j2_eta_A = aodJet2.Eta();
+	    j2_eta_A = aodJet2.Phi();
+	    j2_energy_A = aodJet2.Energy();
 	}
 
 	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;

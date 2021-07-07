@@ -52,9 +52,12 @@ int main(int argc, char** argv)	{
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
     std::string newTrigString = "new";
-    int triggerFlag = 2;
-    if (whichTrigger.find(oldTrigString) == std::string::npos && whichTrigger.find(newTrigString) == std::string::npos) {
-	std::cout << "specify whether this is the new trigger or the old trigger with \"old\" or \"new\" as the 3rd argument" << std::endl;
+    std::string httTrigString = "htt";
+    int triggerFlag = 3;
+    if (whichTrigger.find(oldTrigString) == std::string::npos && 
+	whichTrigger.find(newTrigString) == std::string::npos &&
+	whichTrigger.find(httTrigString) == std::string::npos) {
+	std::cout << "specify whether this is the new trigger or the old trigger or htt selection with \"old\" or \"new\" or \"htt\" as the 3rd argument" << std::endl;
 	return 0; //prevents rest of code from running
     }
     // offline selection should be consistently 5 GeV above HLT thresholds
@@ -74,6 +77,14 @@ int main(int argc, char** argv)	{
 	j2_pt_cut = 45;
 	mjj_cut = 550;
 	triggerFlag = 1;
+    }
+    if ( whichTrigger.find(httTrigString) != std::string::npos){
+	t1_pt_cut = 20;
+	t2_pt_cut = 20;
+	j1_pt_cut = 35;
+	j2_pt_cut = 35;
+	mjj_cut = 350;
+	triggerFlag = 2; // not functional currently due to if statements in trigger object filling logic
     }
 
     // hlt vars
@@ -144,7 +155,9 @@ int main(int argc, char** argv)	{
     std::vector<TLorentzVector> triggerJetCandidates;
 
     std::vector<TLorentzVector> tauCandidates;
+    std::vector<TLorentzVector> tauTempCandidates;
     std::vector<TLorentzVector> jetCandidates;
+    std::vector<TLorentzVector> jetTempCandidates;
     float mjjCandidatePair;
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
     std::vector<float> dRj1_vec; // container for dR of AOD and HLT j1
@@ -152,6 +165,7 @@ int main(int argc, char** argv)	{
     std::vector<float> dRjSum;
 
     // flag vars
+    int passMinimalSel;
     int passSel;
     int passOldTrig;
     int passNewTrig;
@@ -205,6 +219,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("dRt1", &dRt1);
     outTree->Branch("dRt2", &dRt2);
     // flag vars
+    outTree->Branch("passMinimalSel", &passMinimalSel);
     outTree->Branch("passSel", &passSel);
     outTree->Branch("passOldTrig", &passOldTrig);
     outTree->Branch("passNewTrig", &passNewTrig);
@@ -230,11 +245,12 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 5000; iEntry++) {
-    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    for (int iEntry = 0; iEntry < 50000; iEntry++) {
+    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
+	passMinimalSel = 0;
 	passSel = 0;  // ints standing in as booleans for these flag variables
 	passOldTrig = 0; // to tell if an event passed selection, trigger, etc.
 	passNewTrig = 0;
@@ -251,7 +267,9 @@ int main(int argc, char** argv)	{
 	passSelNewTrigAndMatchedBoth = 0;
 
 	tauCandidates.clear();	
+	tauTempCandidates.clear();
 	jetCandidates.clear(); // all for matching jets later
+	jetTempCandidates.clear();
 	jetCandsLocs.clear();
 	dRt1 = 999;
 	dRt2 = 999;
@@ -264,35 +282,72 @@ int main(int argc, char** argv)	{
 	triggerTauCandidates.clear();
 	triggerJetCandidates.clear();
 
-	// tau selection for old trigger:
-	// 2 taus
-	// pt > 20 for both
-	// fabs(eta) < 2.1 for both
-	//		for new trigger:
-	// 2 taus
-	// 1 pt > 50, other pt > 20
-	// fabs(eta) < 2.1 for both
-	// offline selection is 5 GeV above trigger/hlt selection
+	//----------------------------------------------------------//
+	h_cutflow->Fill(0.0,1.0); // fill cutflow before any selection
+
+	vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
+	vecSizeAODJet = inTree->jetPt->size(); // number of jets in event
+	//minimal selection common to both triggers//
+	// check the number of objects in the event, need at least two of each
+	if (vecSizeAODTau < 2) continue;
+	if (vecSizeAODJet < 2) continue;
+	h_cutflow->Fill(1.0,1.0); // fill cutflow with events that have 2 taus and 2 jets
+	// check kinematics and ID of tau objects, store good taus
+	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
+
+	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
+	    deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(iTau) > 0.5;
+            deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(iTau) > 0.5;
 	
-	// fill cutflow before any selection
-	h_cutflow->Fill(0.0,1.0);
+	    if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
+
+	    if ( inTree->tauPt->at(iTau) < 20 ) continue;
+	    if ( inTree->tauEta->at(iTau) > 2.1 ) continue;
+	    TLorentzVector tauCandTemp;
+	    tauCandTemp.SetPtEtaPhiE(inTree->tauPt->at(iTau),
+				     inTree->tauEta->at(iTau), 
+				     inTree->tauPhi->at(iTau), 
+				     inTree->tauEnergy->at(iTau));
+
+	    tauTempCandidates.push_back(tauCandTemp);
+	}
+	// continues inside for-loops don't skip the events, so you need to check the size of
+	// the container you skipped adding events to and then impose a condition on that instead
+	// check that we have at least 2 good taus
+	if (tauTempCandidates.size() < 2) continue;
+	h_cutflow->Fill(2.0,1.0); // fill cutflow with events that have 2 or more good taus
+
+	// check kinematics and ID of jet objects, store good jets
+	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
+
+	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
+
+	    if (inTree->jetPt->at(iJet) < 35) continue;
+	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
+	    TLorentzVector jetCandTemp;
+	    jetCandTemp.SetPtEtaPhiE(inTree->jetPt->at(iJet), 
+				     inTree->jetEta->at(iJet), 
+				     inTree->jetPhi->at(iJet), 
+				     inTree->jetEn->at(iJet));
+	    // if a jetCandidate looks like it could be a tau, don't store it
+	    bool jetCandIsTau = false;
+	    for (int iTau = 0; iTau < tauCandidates.size(); iTau++){
+		if (tauTempCandidates.at(iTau).DeltaR(jetCandTemp) < 0.5) jetCandIsTau = true;
+	    }
+	    if (!jetCandIsTau) jetTempCandidates.push_back(jetCandTemp);
+	}
+	// check taht we have at least two good taus
+	if (jetTempCandidates.size() < 2) continue;
+	h_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good jets
+
+	passMinimalSel = 1;
+
 	
 	vecSizeAODTau = inTree->tauPt->size();
 
-	if (vecSizeAODTau <= 1) continue;
+	if (vecSizeAODTau < 2) continue;
 
-	h_cutflow->Fill(1.0,1.0);
-
-	// how the tauID was previously implemented. Changing this was the main increase in events passing selection
-
-        //for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
-	     
-	//deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(0) > 0.5 &&  inTree->tauByMediumDeepTau2017v2p1VSjet->at(1) > 0.5;
-	//deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(0) > 0.5 &&  inTree->tauByVLooseDeepTau2017v2p1VSmu->at(1) > 0.5;
-        //deepTauVSele = inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(0) > 0.5 &&  inTree->tauByVVVLooseDeepTau2017v2p1VSe->at(1) > 0.5;
-	
-	//if (!deepTauVSjet || !deepTauVSmu || !deepTauVSele) continue;
-	//}
+//	h_cutflow->Fill(1.0,1.0);
 
 	// loop over all taus and store any that pass tauID and minimum kinematic selection
 	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
@@ -311,12 +366,9 @@ int main(int argc, char** argv)	{
 	}
 
 	// need two taus for the event to be valid
-	// this entry in the cutflow is the same as the next in the case of the old trigger
-	// for the new trigger, the next cutflow category should have fewer events due
-	// to leading tau selection
-	if (tauCandidates.size() <= 1) continue;
+	if (tauCandidates.size() < 2) continue;
 
-	h_cutflow->Fill(2.0,1.0);
+//	h_cutflow->Fill(2.0,1.0);
 
 	// check leading tau kinematics for new trigger
 	// not checked for old trigger because then t1_pt_cut = t2_pt_cut 
@@ -328,32 +380,21 @@ int main(int argc, char** argv)	{
 	    if (!tauOverLC) continue;
 	}
 
-	h_cutflow->Fill(3.0,1.0);
+//	h_cutflow->Fill(3.0,1.0);
 
-	// jet selection for old trigger:
-	// 2 jets
-	// leading pt > 115, subleading > 40
-	// fabs(eta) < 4.7 for both
-	//		for new trigger:
-	// 2 jets
-	// both pt > 40
-	// fabs(eta) < 4.7 for both
-	// offline selection is 5 GeV above trigger/hlt selection
-	
+	// need at least two jets in the event	
 	vecSizeAODJet = inTree->jetPt->size();
-	if (vecSizeAODJet <= 1) continue;
+	if (vecSizeAODJet < 2) continue;
 	
 	h_cutflow->Fill(4.0,1.0);
 
-
-	// put all the jets that passed cuts up to here into a vector of jetCandidates
-	// from jetCandidates, make dijet pairs to cut on dijet mass
+	// put jets into a vector, and from that vector of jetCandidates, make dijet pairs to cut on dijet mass
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
 	    // these cuts make it so that a list of 11 jets, of which some have pt < 40,
 	    // aren't filled into the jet candidates.
+	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 	    if (inTree->jetPt->at(iJet) < j2_pt_cut) continue;
 	    if (fabs(inTree->jetEta->at(iJet) > 4.7)) continue;
-	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 	    TLorentzVector jetCand;
 	    jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), inTree->jetEta->at(iJet), inTree->jetPhi->at(iJet), inTree->jetEn->at(iJet));
 	    // if a jetCandidate looks like it could be a tau, don't store it
@@ -365,7 +406,6 @@ int main(int argc, char** argv)	{
 	}
 	// continues inside for-loops don't skip the events, so you need to check the size of
 	// the container you skipped adding events to and then impose a condition on that instead
-	// before filling the cutflow	
 	if (jetCandidates.size() < 2) continue;
 
 	h_cutflow->Fill(5.0,1.0);
@@ -383,6 +423,7 @@ int main(int argc, char** argv)	{
 	// mjj cut off for old trigger is 650
 	// 	      for new trigger is 500
 	// offline mjj cuts are 50GeV higher than trigger/HLT
+	/***
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
 		if (iCand >= jCand) continue;
@@ -403,7 +444,7 @@ int main(int argc, char** argv)	{
 	// if there isn't a viable dijet system, skip the event
 	if (jetCandsLocs.size() < 1) continue;
         if (jetCandsLocs.size() > 1) overOneCounter += 1;
-
+	***/
 	h_cutflow->Fill(6.0,1.0); // prev 2 for-loops serve as the mjj cut
 
 	passSel = 1; 
@@ -486,6 +527,8 @@ int main(int argc, char** argv)	{
 	    // we could find all dRs once, and pick the lowest two, then check mjj
 	    // we can check mjj after because if the dRs aren't low enough for AOD and HLT to match
 	    // then the mjj value doesn't matter
+	    // this is related to the check Keti/Kyungwook asked me to perform 
+	    // check performance between matching first then enforcing selection and selection first then matching
 	    int leadingTrigJetIndex = -1;
 	    int subleadingTrigJetIndex = -1;
 	    int leadingAODJetIndex = -1;
@@ -525,15 +568,6 @@ int main(int argc, char** argv)	{
 	    //std::cout << "mjj: " << mjj << std::endl;
 	    //std::cout << "end debug" << std::endl;
 	}
-
-	// now try to match to MiniAOD object if the event passed the trigger
-        // if either of the if statements before triggered, then we have a dijet system from the trigger
-	//TLorentzVector jet1, jet2;
-	//if (((vecSizeVBFOne == 1 || vecSizeVBFOne == 2) && triggerFlag == 0) || (vecSizeVBFIsoTauTwo == 2 && triggerFlag == 1)){
-	//    jet1.SetPtEtaPhiE(j1_pt,j1_eta,j1_phi,j1_energy);
-	//    jet2.SetPtEtaPhiE(j2_pt,j2_eta,j2_phi,j2_energy);
-	//    mjj = (jet1 + jet2).M();
-	//}
 
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
@@ -606,7 +640,7 @@ int main(int argc, char** argv)	{
         outTree->Fill();
     }// end event loop
 
-    //std::cout << "overOneCounter: " << overOneCounter <<std::endl;
+    std::cout << "overOneCounter: " << overOneCounter <<std::endl;
     //std::cout << "overOneAfterMatchingCounter: " << overOneAfterMatchingCounter << std::endl;
 
     std::string outputFileName = outName;

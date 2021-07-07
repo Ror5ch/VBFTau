@@ -336,9 +336,16 @@ int main(int argc, char** argv)	{
 
 	passMinimalSel = 1;
 
+	// as keti proposed, take leading two AOD taus
+	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector aodTau1, aodTau2;
 	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
 	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
+	// as keti propose, take leading two AOD jets
+	// jetCandidates are already ordered by pt (this was checked with simple cout statements)
+	TLorentzVector aodJet1, aodJet2;
+	aodJet1.SetPtEtaPhiE(jetCandidates.at(0).Pt(), jetCandidates.at(0).Eta(), jetCandidates.at(0).Phi(), jetCandidates.at(0).Energy());
+	aodJet2.SetPtEtaPhiE(jetCandidates.at(1).Pt(), jetCandidates.at(1).Eta(), jetCandidates.at(1).Phi(), jetCandidates.at(1).Energy());
 
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	
@@ -349,7 +356,7 @@ int main(int argc, char** argv)	{
 	vecSizeVBFIsoTauTwo = inTree->hltMatchedVBFIsoTauTwoTight_pt->size(); // at least two jets > 45 GeV filter and iso tau present, new trigger
 	vecSizeHpsTau50 = inTree->hltHpsPFTau50Tight_pt->size(); // at least one tau > 50 GeV filter, new trigger
 
-	TLorentzVector trigTau1, trigTau2, trigJet1, trigJet2, aodJet1, aodJet2;
+	TLorentzVector trigTau1, trigTau2, trigJet1, trigJet2;//, aodJet1, aodJet2;
 	if (vecSizeHpsTau >= 2 && ((vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) 
 				|| (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1))  ){
 	    // fill trigger tau candidates for either trigger from 20 GeV tau filter
@@ -411,6 +418,24 @@ int main(int argc, char** argv)	{
 	    // then the mjj value doesn't matter
 	    // this is related to the check Keti/Kyungwook asked me to perform 
 	    // check performance between matching first then enforcing selection and selection first then matching
+	    int leadingJetIndex = -1;
+	    int subleadingJetIndex = -1;
+	    float dRj1_ = 999;
+	    float dRj2_ = 999;
+	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
+		dRj1_ = aodJet1.DeltaR(triggerJetCandidates.at(iTriggerJetCand));
+		if (dRj1_ < dRj1){ dRj1 = dRj1_; leadingJetIndex = iTriggerJetCand;}
+	    }
+	    trigJet1 = triggerJetCandidates.at(leadingJetIndex);
+	    triggerJetCandidates.erase(triggerJetCandidates.begin() + leadingJetIndex);
+	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
+		dRj2_ = aodJet2.DeltaR(triggerJetCandidates.at(iTriggerJetCand));
+		if (dRj2_ < dRj2){ dRj2 = dRj2_; subleadingJetIndex = iTriggerJetCand;}
+	    }
+	    trigJet2 = triggerJetCandidates.at(subleadingJetIndex);
+	    mjj = (trigJet1 + trigJet2).M();
+	    mjj_A = (aodJet1 + aodJet2).M();
+	    /***
 	    int leadingTrigJetIndex = -1;
 	    int subleadingTrigJetIndex = -1;
 	    int leadingAODJetIndex = -1;
@@ -451,6 +476,7 @@ int main(int argc, char** argv)	{
 	    mjj_A = (aodJet1 + aodJet2).M();
 	    //std::cout << "mjj: " << mjj << std::endl;
 	    //std::cout << "end debug" << std::endl;
+	    ***/
 	}
 	//-----------------------------apply offline selection------------------------------//
 
@@ -526,10 +552,10 @@ int main(int argc, char** argv)	{
 	// as keti proposed, take leading two AOD taus
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
 	//TLorentzVector aodTau1, aodTau2;
-	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
-	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
+	//aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
+	//aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
 
-	//-------------------------fill branches and check flags---------------------------------//
+
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 

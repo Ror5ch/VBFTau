@@ -41,22 +41,6 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector aod
     return bestObjIndex;
 }
 
-//function not currently working
-//int& not stable, returning pairs is tricky
-std::pair<int, int> detailedMatching(std::vector<TLorentzVector> trigContainer, std::vector<TLorentzVector> aodContainer){
-    int bestTrigObjIndex = -1;
-    int bestAodObjIndex = -1;
-    float dRObj = 999;
-    float dRObj_ = 999;
-    for (int iTrigObj = 0; iTrigObj < trigContainer.size(); iTrigObj++){
-	for (int iAodObj = 0; iAodObj < aodContainer.size(); iAodObj++){
-       	    dRObj_ = trigContainer.at(iTrigObj).DeltaR(aodContainer.at(iAodObj));	
-	    if (dRObj_ < dRObj) { dRObj = dRObj_; bestTrigObjIndex = iTrigObj; bestAodObjIndex = iAodObj;} 
-	}
-    }
-    return std::make_pair<int&, int&>(bestTrigObjIndex, bestAodObjIndex); 
-}
-
 int main(int argc, char** argv)	{
     //myMap1 = new map<std::string, TH1F*>(); // i think this is for generalized naming/name fixing of different files
     //////////////////////////////////////
@@ -421,12 +405,6 @@ int main(int argc, char** argv)	{
 	// cannot attempt matching and must drop the event.
 	if (tauCandidates.size() < 2 || jetCandidates.size() < 2) continue;
 
-	// as keti proposed, take leading two AOD taus
-	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
-	//TLorentzVector aodTau1, aodTau2;
-	//aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
-	//aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
-
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	
 	// get number of objects in tau and jet trigger filters
@@ -469,29 +447,9 @@ int main(int argc, char** argv)	{
 		    triggerJetCandidates.push_back(triggerJetCand);
 		}
 	    }
+
 	    // match AOD and HLT taus
-	    /***
-	    int leadingTauIndex = -1;
-	    int subleadingTauIndex = -1;
-	    float dRt1_ = 999; // temp variables
-	    float dRt2_ = 999;
-	    //TLorentzVector trigTau1, trigTau2;
-   	    // loop over HLT taus once to match to leading tau
-	    // save the index, then set trigTau1 to that tau from list of triggerTauCandidates
-	    // then erase that tau from the list and loop again to find subleading tau
-	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
-		dRt1_ = aodTau1.DeltaR(triggerTauCandidates.at(iTriggerTauCand));
-		if (dRt1_ < dRt1){ dRt1 = dRt1_; leadingTauIndex = iTriggerTauCand;}
-	    }
-	    trigTau1 = triggerTauCandidates.at(leadingTauIndex); 
-	    // have to use .begin() function because .erase() takes an iterator as an argument, not a regular integer
-	    triggerTauCandidates.erase(triggerTauCandidates.begin() + leadingTauIndex);
-	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
-		dRt2_ = aodTau2.DeltaR(triggerTauCandidates.at(iTriggerTauCand));
-		if (dRt2_ < dRt2){ dRt2 = dRt2_; subleadingTauIndex = iTriggerTauCand;}
-	    }
-	    trigTau2 = triggerTauCandidates.at(subleadingTauIndex);
-	    ***/
+
 	    int leadingTauIndex = -1;
 	    int subleadingTauIndex = -1;
 	    // get leading tau index with simple matching
@@ -518,111 +476,10 @@ int main(int argc, char** argv)	{
 	    trigJet2 = triggerJetCandidates.at(subleadingJetIndex);
 	    dRj2 = trigJet2.DeltaR(aodJet2);
 
-/***
-	    int leadingTrigTauIndex = -1;
-	    int subleadingTrigTauIndex = -1;
-	    int leadingAODTauIndex = -1;
-	    int subleadingAODTauIndex = -1;
-	    float dRt1_ = 999;
-	    float dRt2_ = 999;
-	    //std::cout << "start debug" << std::endl;
-	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
-	    	for (int iTauCand = 0; iTauCand < tauCandidates.size(); iTauCand++){
-		    //std::cout << "triggerTau: " << iTriggerTauCand << " aodTau: " << iTauCand << std::endl;
-		    dRt1_ = tauCandidates.at(iTauCand).DeltaR(triggerTauCandidates.at(iTriggerTauCand));
-		    //std::cout << "dRt1_: " << dRt1_ << std::endl;
-		    if (dRt1_ < dRt1){ dRt1 = dRt1_; leadingTrigTauIndex = iTriggerTauCand; leadingAODTauIndex = iTauCand;}
-		    //std::cout << "triggerTau: " << iTriggerTauCand << " leadingTrigTauIndex: " << leadingTrigTauIndex << std::endl;
-		}
-	    }
-	    trigTau1 = triggerTauCandidates.at(leadingTrigTauIndex);
-	    //std::cout << "tauCands size before erase: " << triggerTauCandidates.size() << std::endl;
-	    triggerTauCandidates.erase(triggerTauCandidates.begin() + leadingTrigTauIndex);
-	    //std::cout << "tauCands size after erase: " << triggerTauCandidates.size() << std::endl;
-	    aodTau1 = tauCandidates.at(leadingAODTauIndex);
-	    tauTempCandidates = tauCandidates;
-	    //jetCandidates.erase(jetCandidates.begin() + leadingAODTauIndex);
-	    tauTempCandidates.erase(tauTempCandidates.begin() + leadingAODTauIndex);
-	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
-		for (int iTauCand = 0; iTauCand < tauTempCandidates.size(); iTauCand++){
-		    //std::cout << "triggerTau: " << iTriggerTauCand << " aodTau: " << iTauCand << std::endl;
-		    dRt2_ = tauTempCandidates.at(iTauCand).DeltaR(triggerTauCandidates.at(iTriggerTauCand));
-		    //std::cout << "dRj2_: " << dRj2_ << std::endl;
-		    if (dRt2_ < dRt2){ dRt2 = dRt2_; subleadingTrigTauIndex = iTriggerTauCand; subleadingAODTauIndex = iTauCand;}
-		    //std::cout << "triggerTau: " << iTriggerTauCand << " subleadingTrigTauIndex: " << subleadingTauIndex << std::endl;
-		}
-	    }
-	    trigTau2 = triggerTauCandidates.at(subleadingTrigTauIndex);
-	    if (trigTau1.DeltaR(trigTau2) < 0.5) overlapped = 1;//std::cout << "trig taus overlap matching " << trigTau1.DeltaR(trigTau2) <<  std::endl;
-	    aodTau2 = tauTempCandidates.at(subleadingAODTauIndex);
+	    mjj = (trigJet1 + trigJet2).M();
+	    mjj_A = (aodJet1 + aodJet2).M();
 
-***/
-	    // match AOD and HLT jets
-	    // this could be written more efficiently
-	    // we could find all dRs once, and pick the lowest two, then check mjj
-	    // we can check mjj after because if the dRs aren't low enough for AOD and HLT to match
-	    // then the mjj value doesn't matter
-	    /***
-	    int leadingJetIndex = -1;
-	    int subleadingJetIndex = -1;
-	    float dRj1_ = 999;
-	    float dRj2_ = 999;
-	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
-		dRj1_ = aodJet1.DeltaR(triggerJetCandidates.at(iTriggerJetCand));
-		if (dRj1_ < dRj1){ dRj1 = dRj1_; leadingJetIndex = iTriggerJetCand;}
-	    }
-	    trigJet1 = triggerJetCandidates.at(leadingJetIndex);
-	    triggerJetCandidates.erase(triggerJetCandidates.begin() + leadingJetIndex);
-	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
-		dRj2_ = aodJet2.DeltaR(triggerJetCandidates.at(iTriggerJetCand));
-		if (dRj2_ < dRj2){ dRj2 = dRj2_; subleadingJetIndex = iTriggerJetCand;}
-	    }
-	    trigJet2 = triggerJetCandidates.at(subleadingJetIndex);
-	    mjj = (trigJet1 + trigJet2).M();
-	    mjj_A = (aodJet1 + aodJet2).M();
-	    ***/
-/***	    
-	    int leadingTrigJetIndex = -1;
-	    int subleadingTrigJetIndex = -1;
-	    int leadingAODJetIndex = -1;
-	    int subleadingAODJetIndex = -1;
-	    float dRj1_ = 999;
-	    float dRj2_ = 999;
-	    //std::cout << "start debug" << std::endl;
-	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
-	    	for (int iJetCand = 0; iJetCand < jetCandidates.size(); iJetCand++){
-		    //std::cout << "triggerJet: " << iTriggerJetCand << " aodJet: " << iJetCand << std::endl;
-		    dRj1_ = jetCandidates.at(iJetCand).DeltaR(triggerJetCandidates.at(iTriggerJetCand));
-		    //std::cout << "dRj1_: " << dRj1_ << std::endl;
-		    if (dRj1_ < dRj1){ dRj1 = dRj1_; leadingTrigJetIndex = iTriggerJetCand; leadingAODJetIndex = iJetCand;}
-		    //std::cout << "triggerJet: " << iTriggerJetCand << " leadingTrigJetIndex: " << leadingTrigJetIndex << std::endl;
-		}
-	    }
-	    trigJet1 = triggerJetCandidates.at(leadingTrigJetIndex);
-	    //std::cout << "jetCands size before erase: " << triggerJetCandidates.size() << std::endl;
-	    triggerJetCandidates.erase(triggerJetCandidates.begin() + leadingTrigJetIndex);
-	    //std::cout << "jetCands size after erase: " << triggerJetCandidates.size() << std::endl;
-	    aodJet1 = jetCandidates.at(leadingAODJetIndex);
-	    jetTempCandidates = jetCandidates;
-	    //jetCandidates.erase(jetCandidates.begin() + leadingAODJetIndex);
-	    jetTempCandidates.erase(jetTempCandidates.begin() + leadingAODJetIndex);
-	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
-		for (int iJetCand = 0; iJetCand < jetTempCandidates.size(); iJetCand++){
-		    //std::cout << "triggerJet: " << iTriggerJetCand << " aodJet: " << iJetCand << std::endl;
-		    dRj2_ = jetTempCandidates.at(iJetCand).DeltaR(triggerJetCandidates.at(iTriggerJetCand));
-		    //std::cout << "dRj2_: " << dRj2_ << std::endl;
-		    if (dRj2_ < dRj2){ dRj2 = dRj2_; subleadingTrigJetIndex = iTriggerJetCand; subleadingAODJetIndex = iJetCand;}
-		    //std::cout << "triggerJet: " << iTriggerJetCand << " subleadingTrigJetIndex: " << subleadingJetIndex << std::endl;
-		}
-	    }
-	    trigJet2 = triggerJetCandidates.at(subleadingTrigJetIndex);
-	    aodJet2 = jetTempCandidates.at(subleadingAODJetIndex);
-	    mjj = (trigJet1 + trigJet2).M();
-	    mjj_A = (aodJet1 + aodJet2).M();
-	    //std::cout << "mjj: " << mjj << std::endl;
-	    //std::cout << "end debug" << std::endl;
-	    //
-***/
+
 	    if (trigTau1.DeltaR(trigTau2) < 0.5) overlapped = 1;
 	    if (aodTau1.DeltaR(aodTau2) < 0.5) overlapped = 1;
 	    if (trigJet1.DeltaR(trigJet2) < 0.5) overlapped = 1;

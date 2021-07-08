@@ -334,6 +334,10 @@ int main(int argc, char** argv)	{
 	// if jets are overlapped, drop the event
 	if (aodJet1.DeltaR(aodJet2) < 0.5) continue;// std::cout << "aod Jet overlap base " << aodJet1.DeltaR(aodJet2) << std::endl;
 
+	// explicitly check that aod jets and taus aren't overlapped
+	if (aodTau1.DeltaR(aodJet1) < 0.5 || aodTau1.DeltaR(aodJet2) < 0.5 ||
+	    aodTau2.DeltaR(aodJet1) < 0.5 || aodTau2.DeltaR(aodJet2) < 0.5) continue;
+
 	//-----------------------------apply offline selection------------------------------//
 
 	// set passSel = 1 here, and set it to zero any time a condition is failed
@@ -484,6 +488,10 @@ int main(int argc, char** argv)	{
 	    if (aodTau1.DeltaR(aodTau2) < 0.5) overlapped = 1;
 	    if (trigJet1.DeltaR(trigJet2) < 0.5) overlapped = 1;
 	    if (aodJet1.DeltaR(aodJet2) < 0.5) overlapped = 1;
+
+	    // explicitly check that jets and taus are not overlapped
+	    if (trigTau1.DeltaR(trigJet1) < 0.5 || trigTau1.DeltaR(trigJet2) < 0.5 ||
+		trigTau2.DeltaR(trigJet1) < 0.5 || trigTau2.DeltaR(trigJet2) < 0.5) overlapped = 1;
 	}
 
 	if (overlapped) continue;

@@ -44,10 +44,10 @@ int main(int argc, char** argv)	{
     outTree->SetDirectory(0);
 
     // vars for AOD selection, which change depending on the trigger being studied
-    float t1_pt_cut;
-    float t2_pt_cut;
-    float j1_pt_cut;
-    float j2_pt_cut;
+    float t1_pt_cut, t2_pt_cut;
+    //float t2_pt_cut;
+    float j1_pt_cut, j2_pt_cut;
+    //float j2_pt_cut;
     float mjj_cut;
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
@@ -83,80 +83,80 @@ int main(int argc, char** argv)	{
     float minimal_jet_pt_cut = 35;
 
     // hlt vars
-    int j1_loc; //jet1 location, either position 0 or 1 in the vector of jets
-    int j2_loc; //other intermediate variables
-    int t1_loc;
-    int t2_loc;
+    int vecSizeHpsTau;
     int vecSizeVBFOne;
     int vecSizeVBFTwo;
-    int vecSizeHpsTau;
     int vecSizeVBFIsoTauTwo;
     int vecSizeHpsTau50;
     
-    float j1_pt; // branch variables (eta, phi, energy are necessary for mjj calculation)
-    float j1_eta;
-    float j1_phi;
-    float j1_energy;
-    float j2_pt;
-    float j2_eta;
-    float j2_phi;
-    float j2_energy;
+    float j1_pt, j1_eta, j1_phi, j1_energy; 
+    //float j1_eta;
+    //float j1_phi;
+    //float j1_energy;
+    float j2_pt, j2_eta, j2_phi, j2_energy; 
+    //float j2_pt;
+    //float j2_eta;
+    //float j2_phi;
+    //float j2_energy;
     float mjj;
 
-    float t1_pt;
-    float t1_eta;
-    float t1_phi;
-    float t1_energy;
-    float t2_pt;
-    float t2_eta;
-    float t2_phi;
-    float t2_energy;
+    float t1_pt, t1_eta, t1_phi, t1_energy;
+    //float t1_eta;
+    //float t1_phi;
+    //float t1_energy;
+    float t2_pt, t2_eta, t2_phi, t2_energy;
+    //float t2_pt;
+    //float t2_eta;
+    //float t2_phi;
+    //float t2_energy;
    
     // AOD vars 
     int vecSizeAODJet;
     int vecSizeAODTau;
 
-    float j1_pt_A; //A is for MiniAOD
-    float j1_eta_A;
-    float j1_phi_A;
-    float j1_energy_A;
-    float j2_pt_A;
-    float j2_eta_A;
-    float j2_phi_A;
-    float j2_energy_A;
+    // A is for AOD
+    float j1_pt_A, j1_eta_A, j1_phi_A, j1_energy_A; 
+    //float j1_eta_A;
+    //float j1_phi_A;
+    //float j1_energy_A;
+    float j2_pt_A, j2_eta_A, j2_phi_A, j2_energy_A; 
+    //float j2_pt_A;
+    //float j2_eta_A;
+    //float j2_phi_A;
+    //float j2_energy_A;
     float mjj_A;
 
-    float t1_pt_A;
-    float t1_eta_A;
-    float t1_phi_A;
-    float t1_energy_A;
-    float t2_pt_A;
-    float t2_eta_A;
-    float t2_phi_A;
-    float t2_energy_A;
+    float t1_pt_A, t1_eta_A, t1_phi_A, t1_energy_A;
+    //float t1_eta_A;
+    //float t1_phi_A;
+    //float t1_energy_A;
+    float t2_pt_A, t2_eta_A, t2_phi_A, t2_energy_A;
+    //float t2_pt_A;
+    //float t2_eta_A;
+    //float t2_phi_A;
+    //float t2_energy_A;
 
-    int deepTauVSjet;
-    int deepTauVSmu;
-    int deepTauVSele;
+    int deepTauVSjet, deepTauVSmu, deepTauVSele;
+    //int deepTauVSmu;
+    //int deepTauVSele;
     int jetID;
 
     // vars for matching
-    float dRj1;
-    float dRj2;
-    float dRt1;
-    float dRt2;
+    float dRj1, dRj2, dRt1, dRt2;
 
-    std::vector<TLorentzVector> triggerTauCandidates;
-    std::vector<TLorentzVector> triggerJetCandidates;
+    std::vector<TLorentzVector> tauCandidates, jetCandidates;
+    std::vector<TLorentzVector> tauTempCandidates, jetTempCandidates;
+    std::vector<TLorentzVector> triggerTauCandidates, triggerJetCandidates;
+    //std::vector<TLorentzVector> triggerJetCandidates;
 
-    std::vector<TLorentzVector> tauCandidates;
-    std::vector<TLorentzVector> jetCandidates;
-    std::vector<TLorentzVector> jetTempCandidates;
+    //std::vector<TLorentzVector> tauTempCandidates;
+    //std::vector<TLorentzVector> jetCandidates;
+    //std::vector<TLorentzVector> jetTempCandidates;
     float mjjCandidatePair;
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
-    std::vector<float> dRj1_vec; // container for dR of AOD and HLT j1
-    std::vector<float> dRj2_vec;
-    std::vector<float> dRjSum;
+    std::vector<float> dRj1_vec, dRj2_vec, dRjSum; // container for dR of AOD and HLT j1
+    //std::vector<float> dRj2_vec;
+    //std::vector<float> dRjSum;
 
     // flag vars
     int passMinimalSel;
@@ -467,6 +467,7 @@ int main(int argc, char** argv)	{
 		}
 	    }
 	    // match AOD and HLT taus
+	    /***
 	    int leadingTauIndex = -1;
 	    int subleadingTauIndex = -1;
 	    float dRt1_ = 999; // temp variables
@@ -487,14 +488,49 @@ int main(int argc, char** argv)	{
 		if (dRt2_ < dRt2){ dRt2 = dRt2_; subleadingTauIndex = iTriggerTauCand;}
 	    }
 	    trigTau2 = triggerTauCandidates.at(subleadingTauIndex);
+	    ***/
+	    int leadingTrigTauIndex = -1;
+	    int subleadingTrigTauIndex = -1;
+	    int leadingAODTauIndex = -1;
+	    int subleadingAODTauIndex = -1;
+	    float dRt1_ = 999;
+	    float dRt2_ = 999;
+	    //std::cout << "start debug" << std::endl;
+	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
+	    	for (int iTauCand = 0; iTauCand < tauCandidates.size(); iTauCand++){
+		    //std::cout << "triggerTau: " << iTriggerTauCand << " aodTau: " << iTauCand << std::endl;
+		    dRt1_ = tauCandidates.at(iTauCand).DeltaR(triggerTauCandidates.at(iTriggerTauCand));
+		    //std::cout << "dRt1_: " << dRt1_ << std::endl;
+		    if (dRt1_ < dRt1){ dRt1 = dRt1_; leadingTrigTauIndex = iTriggerTauCand; leadingAODTauIndex = iTauCand;}
+		    //std::cout << "triggerTau: " << iTriggerTauCand << " leadingTrigTauIndex: " << leadingTrigTauIndex << std::endl;
+		}
+	    }
+	    trigTau1 = triggerTauCandidates.at(leadingTrigTauIndex);
+	    //std::cout << "tauCands size before erase: " << triggerTauCandidates.size() << std::endl;
+	    triggerTauCandidates.erase(triggerTauCandidates.begin() + leadingTrigTauIndex);
+	    //std::cout << "tauCands size after erase: " << triggerTauCandidates.size() << std::endl;
+	    aodTau1 = tauCandidates.at(leadingAODTauIndex);
+	    tauTempCandidates = tauCandidates;
+	    //jetCandidates.erase(jetCandidates.begin() + leadingAODTauIndex);
+	    tauTempCandidates.erase(tauTempCandidates.begin() + leadingAODTauIndex);
+	    for (int iTriggerTauCand = 0; iTriggerTauCand < triggerTauCandidates.size(); iTriggerTauCand++){
+		for (int iTauCand = 0; iTauCand < tauTempCandidates.size(); iTauCand++){
+		    //std::cout << "triggerTau: " << iTriggerTauCand << " aodTau: " << iTauCand << std::endl;
+		    dRt2_ = tauTempCandidates.at(iTauCand).DeltaR(triggerTauCandidates.at(iTriggerTauCand));
+		    //std::cout << "dRj2_: " << dRj2_ << std::endl;
+		    if (dRt2_ < dRt2){ dRt2 = dRt2_; subleadingTrigTauIndex = iTriggerTauCand; subleadingAODTauIndex = iTauCand;}
+		    //std::cout << "triggerTau: " << iTriggerTauCand << " subleadingTrigTauIndex: " << subleadingTauIndex << std::endl;
+		}
+	    }
+	    trigTau2 = triggerTauCandidates.at(subleadingTrigTauIndex);
+	    aodTau2 = tauTempCandidates.at(subleadingAODTauIndex);
 
 	    // match AOD and HLT jets
 	    // this could be written more efficiently
 	    // we could find all dRs once, and pick the lowest two, then check mjj
 	    // we can check mjj after because if the dRs aren't low enough for AOD and HLT to match
 	    // then the mjj value doesn't matter
-	    // this is related to the check Keti/Kyungwook asked me to perform 
-	    // check performance between matching first then enforcing selection and selection first then matching
+	    /***
 	    int leadingJetIndex = -1;
 	    int subleadingJetIndex = -1;
 	    float dRj1_ = 999;
@@ -512,14 +548,14 @@ int main(int argc, char** argv)	{
 	    trigJet2 = triggerJetCandidates.at(subleadingJetIndex);
 	    mjj = (trigJet1 + trigJet2).M();
 	    mjj_A = (aodJet1 + aodJet2).M();
-	    /***
+	    ***/
+	    
 	    int leadingTrigJetIndex = -1;
 	    int subleadingTrigJetIndex = -1;
 	    int leadingAODJetIndex = -1;
 	    int subleadingAODJetIndex = -1;
 	    float dRj1_ = 999;
 	    float dRj2_ = 999;
-	    //TLorentzVector trigJet1, trigJet2, aodJet1, aodJet2;
 	    //std::cout << "start debug" << std::endl;
 	    for (int iTriggerJetCand = 0; iTriggerJetCand < triggerJetCandidates.size(); iTriggerJetCand++){
 	    	for (int iJetCand = 0; iJetCand < jetCandidates.size(); iJetCand++){
@@ -548,12 +584,11 @@ int main(int argc, char** argv)	{
 		}
 	    }
 	    trigJet2 = triggerJetCandidates.at(subleadingTrigJetIndex);
-	    aodJet2 = jetCandidates.at(subleadingAODJetIndex);
+	    aodJet2 = jetTempCandidates.at(subleadingAODJetIndex);
 	    mjj = (trigJet1 + trigJet2).M();
 	    mjj_A = (aodJet1 + aodJet2).M();
 	    //std::cout << "mjj: " << mjj << std::endl;
 	    //std::cout << "end debug" << std::endl;
-	    ***/
 	}
 
 	passOldTrig = inTree->passOldTrigTight->at(0);

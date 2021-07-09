@@ -97,7 +97,7 @@ int main(int argc, char** argv)	{
     }
 
     if ( whichTrigger.find(andTrigString) != std::string::npos){
-	t1_pt_cut = 55;
+	t1_pt_cut = 50;//55;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -241,13 +241,13 @@ int main(int argc, char** argv)	{
     outTree->Branch("passSelNewTrigAndMatchedJets", &passSelNewTrigAndMatchedJets);
     outTree->Branch("passSelNewTrigAndMatchedBoth", &passSelNewTrigAndMatchedBoth);
 
-    TH1F *min_cutflow = new TH1F("","",6,0,6);
-    TH1F *sel_cutflow = new TH1F("","",12,0,12);
+    TH1F *min_cutflow = new TH1F("","",5,0,5);
+    TH1F *sel_cutflow = new TH1F("","",7,0,7);
 
     int sameTauPassSel = 0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 2002; iEntry++) {
+    //for (int iEntry = 0; iEntry < 200000; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
@@ -299,10 +299,8 @@ int main(int argc, char** argv)	{
 	// check the number of objects in the event, need at least two of each
 	if (vecSizeAODTau < 2) continue;
 	min_cutflow->Fill(1.0,1.0);
-	sel_cutflow->Fill(0.0,1.0);
 	if (vecSizeAODJet < 2) continue;
 	min_cutflow->Fill(2.0,1.0); // fill cutflow with events that have 2 taus and 2 jets
-	sel_cutflow->Fill(1.0,1.0);
 	// check kinematics and ID of tau objects, store good taus
 	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
 
@@ -326,10 +324,8 @@ int main(int argc, char** argv)	{
 
 	// continues inside for-loops don't skip the events, so you need to check the size of
 	// the container you skipped adding events to and then impose a condition on that instead
-	// check that we have at least 2 good taus
+	// check that we have at least 2 good taus to work with
 	if (tauCandidates.size() < 2) continue;
-	min_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good taus
-	sel_cutflow->Fill(2.0,1.0);
 
 	// as keti proposed, take leading two AOD taus
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
@@ -346,6 +342,8 @@ int main(int argc, char** argv)	{
 	// I think this is unlikely but it's good to be redundant
 	if (aodTau1.DeltaR(aodTau2) < 0.5) continue; 
 
+	min_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good taus
+	sel_cutflow->Fill(0.0,1.0);
 
 	// check kinematics and ID of jet objects, store good jets
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
@@ -366,10 +364,8 @@ int main(int argc, char** argv)	{
 
 	    if (!jetCandIsTau) jetCandidates.push_back(jetCand);
 	}
-	// check that we have at least two good taus
+	// check that we have at least two good jets
 	if (jetCandidates.size() < 2) continue;
-	min_cutflow->Fill(4.0,1.0); // fill cutflow with events that have 2 or more good jets
-	sel_cutflow->Fill(3.0,1.0);
 
 	// find mjj of all pairs of jets passing baseline selection, store the mjj values and pairs of jets that generated them
 	// store index of largest mjj to retrieve pair of jets causing it later
@@ -407,30 +403,35 @@ int main(int argc, char** argv)	{
 	// calculate mjj of AOD jets
 	mjj_A = (aodJet1 + aodJet2).M();
 
-	min_cutflow->Fill(5.0,1.0);
-	sel_cutflow->Fill(4.0,1.0);
+	min_cutflow->Fill(4.0,1.0);
+	sel_cutflow->Fill(1.0,1.0);
 
 	passBase = 1;
 
 	//-----------------------tighter selection guided by trigger specific cutoffs---------------//
 
-	passSel = 1;	
 
-	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) passSel = 0;
-	else {sel_cutflow->Fill(5.0,1.0);}
+	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) continue;// passSel = 0;
+	//else {sel_cutflow->Fill(5.0,1.0);}
+	sel_cutflow->Fill(2.0,1.0);
 	
-	if (aodTau1.Pt() < t1_pt_cut) passSel = 0;
-	else {sel_cutflow->Fill(6.0,1.0);}
+	if (aodTau1.Pt() < t1_pt_cut) continue;//passSel = 0;
+	//else {sel_cutflow->Fill(6.0,1.0);}
+	sel_cutflow->Fill(3.0,1.0);
 
-	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) passSel = 0;
-	else {sel_cutflow->Fill(7.0,1.0);}
+	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) continue; //passSel = 0;
+	//else {sel_cutflow->Fill(7.0,1.0);}
+	sel_cutflow->Fill(4.0,1.0);
 
-	if (aodJet1.Pt() < j1_pt_cut) passSel = 0;
-	else {sel_cutflow->Fill(8.0,1.0);}
+	if (aodJet1.Pt() < j1_pt_cut) continue;//passSel = 0;
+	//else {sel_cutflow->Fill(8.0,1.0);}
+	sel_cutflow->Fill(5.0,1.0);
 
-	if (mjj_A < mjj_cut) passSel = 0;
-	else {sel_cutflow->Fill(9.0,1.0);}
+	if (mjj_A < mjj_cut) continue; //passSel = 0;
+	//else {sel_cutflow->Fill(9.0,1.0);}
+	sel_cutflow->Fill(6.0,1.0);
 
+	passSel = 1;
 
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	

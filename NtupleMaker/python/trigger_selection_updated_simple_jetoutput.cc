@@ -134,11 +134,9 @@ int main(int argc, char** argv)	{
     std::vector<TLorentzVector> triggerTauCandidates, triggerJetCandidates;
     std::vector<TLorentzVector> triggerJetTempCandidates;
 
-    std::vector<float> mjjCandidates;
-    std::vector<std::pair<int,int>> jetMjjPairs;
-
     float mjjCandidatePair;
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
+    std::vector<float> dRj1_vec, dRj2_vec, dRjSum; // container for dR of AOD and HLT j1
 
     // flag vars
     int passMinimalSel;
@@ -245,15 +243,21 @@ int main(int argc, char** argv)	{
 	passSelNewTrigAndMatchedTaus = 0;
 	passSelNewTrigAndMatchedJets = 0;
 	passSelNewTrigAndMatchedBoth = 0;
+	int jetCandID;
+	std::vector<int> jetCandIDs;
 
 	overlapped = 0;
 
-	mjjCandidates.clear();
-	jetMjjPairs.clear();
 	tauCandidates.clear();	
-	jetCandidates.clear();
-
+	jetCandidates.clear(); // all for matching jets later
 	jetCandsLocs.clear();
+	dRt1 = 999;
+	dRt2 = 999;
+	dRj1 = 999;
+	dRj2 = 999;
+	dRj1_vec.clear();
+	dRj2_vec.clear();
+	dRjSum.clear();
 
 	triggerTauCandidates.clear();
 	triggerJetCandidates.clear();
@@ -296,6 +300,8 @@ int main(int argc, char** argv)	{
 	// check kinematics and ID of jet objects, store good jets
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
 
+	    jetCandID = inTree->jetID->at(iJet);
+	    jetCandIDs.push_back(jetCandID);
 	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 
 	    if (inTree->jetPt->at(iJet) < minimal_jet_pt_cut) continue;
@@ -317,6 +323,7 @@ int main(int argc, char** argv)	{
 	min_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good jets
 	sel_cutflow->Fill(0.0,1.0); // fill sel cutflow with all events passing minimal selection	
 
+	passMinimalSel = 1;
 
 	// as keti proposed, take leading two AOD taus
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
@@ -325,43 +332,11 @@ int main(int argc, char** argv)	{
 	aodTau2.SetPtEtaPhiE(tauCandidates.at(1).Pt(), tauCandidates.at(1).Eta(), tauCandidates.at(1).Phi(), tauCandidates.at(1).Energy());
 	// if taus are overlapped, drop the event
 	if (aodTau1.DeltaR(aodTau2) < 0.5) continue;// std::cout << "aod Tau overlap base " << aodTau1.DeltaR(aodTau2) << std::endl;
-
-	// find mjj of all pairs of jets passing baseline selection, store the mjj values and pairs of jets that generated them
-	for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
-	    for (int jJet = 0; jJet < jetCandidates.size(); jJet++){
-		if (jJet>=iJet) continue;
-		mjjCandidates.push_back((jetCandidates.at(iJet) + jetCandidates.at(jJet)).M());
-		jetMjjPairs.push_back(std::make_pair(jJet,iJet));
-	    }
-	}
-	// find the largest mjj value and its location in the mjjCandidates vector
-	int highestMjjCandIndex = -1;
-	float tempMjj = -1;
-	for (int iVal = 0; iVal < mjjCandidates.size(); iVal++){
-	    if (mjjCandidates.at(iVal) > tempMjj) { tempMjj = mjjCandidates.at(iVal); highestMjjCandIndex = iVal;}
-	}
-
-	// select the pair of jets that produced the largest mjj value
-	std::pair<int,int> jetPair = jetMjjPairs.at(highestMjjCandIndex);
-
-	// fill aodJets with the selected jets
-	// from cout statements, aodJet1 was verified to be leading jet
-	// Most often the jet indices are 0 and 1, as we might expect
-	// but it's not uncommon to see indices of 0 and 3, 1 and 2, or 0 and 2 as well
+	// as keti propose, take leading two AOD jets
+	// jetCandidates are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector aodJet1, aodJet2;
-	aodJet1.SetPtEtaPhiE(jetCandidates.at(jetPair.first).Pt(), 
-			     jetCandidates.at(jetPair.first).Eta(), 
-			     jetCandidates.at(jetPair.first).Phi(), 
-			     jetCandidates.at(jetPair.first).Energy());
-
-	aodJet2.SetPtEtaPhiE(jetCandidates.at(jetPair.second).Pt(), 
-			     jetCandidates.at(jetPair.second).Eta(), 
-			     jetCandidates.at(jetPair.second).Phi(), 
-			     jetCandidates.at(jetPair.second).Energy());
-
-	// calculate mjj of AOD objects but don't cut on it until offline selection
-	mjj_A = (aodJet1 + aodJet2).M();
-
+	aodJet1.SetPtEtaPhiE(jetCandidates.at(0).Pt(), jetCandidates.at(0).Eta(), jetCandidates.at(0).Phi(), jetCandidates.at(0).Energy());
+	aodJet2.SetPtEtaPhiE(jetCandidates.at(1).Pt(), jetCandidates.at(1).Eta(), jetCandidates.at(1).Phi(), jetCandidates.at(1).Energy());
 	// if jets are overlapped, drop the event
 	if (aodJet1.DeltaR(aodJet2) < 0.5) continue;// std::cout << "aod Jet overlap base " << aodJet1.DeltaR(aodJet2) << std::endl;
 
@@ -369,12 +344,11 @@ int main(int argc, char** argv)	{
 	if (aodTau1.DeltaR(aodJet1) < 0.5 || aodTau1.DeltaR(aodJet2) < 0.5 ||
 	    aodTau2.DeltaR(aodJet1) < 0.5 || aodTau2.DeltaR(aodJet2) < 0.5) continue;
 
-	passMinimalSel = 1;
-
 	//-----------------------------apply offline selection------------------------------//
 
 	// set passSel = 1 here, and set it to zero any time a condition is failed
 	// this way, matching still occurs but we know wether the event passed selection also
+	// consider making second cutflow for just events passing minimal selection
 	passSel = 1;
 
 	// loop over tauCandidates, and erase ones not passing t2_pt_cut
@@ -415,9 +389,6 @@ int main(int argc, char** argv)	{
 	// mjj cut off for old trigger is 650
 	// 	      for new trigger is 500
 	// offline mjj cuts are 50GeV higher than trigger/HLT
-	//for (int iVal = 0; iVal < mjjCandidates.size(); iVal++){
-	//    if (mjjCandidates.at(iVal) < mjj_cut)
-	//}
 	for (int iCand = 0; iCand < jetCandidates.size(); iCand++){
 	    for (int jCand = 0; jCand < jetCandidates.size(); jCand++){
 		if (iCand >= jCand) continue;
@@ -489,8 +460,6 @@ int main(int argc, char** argv)	{
 
 	    // match AOD and HLT taus
 
-	    dRt1 = 999;
-	    dRt2 = 999;
 	    int leadingTauIndex = -1;
 	    int subleadingTauIndex = -1;
 	    // get leading tau index with simple matching
@@ -504,10 +473,6 @@ int main(int argc, char** argv)	{
 	    trigTau2 = triggerTauCandidates.at(subleadingTauIndex);
 	    dRt2 = trigTau2.DeltaR(aodTau2);
 
-	    // match AOD and HLT jets	
-
-	    dRj1 = 999;
-	    dRj2 = 999;
 	    int leadingJetIndex = -1;
 	    int subleadingJetIndex = -1;
 	    // get leading jet index with simple matching
@@ -523,6 +488,7 @@ int main(int argc, char** argv)	{
 	    dRj2 = trigJet2.DeltaR(aodJet2);
 
 	    mjj = (trigJet1 + trigJet2).M();
+	    mjj_A = (aodJet1 + aodJet2).M();
 
 
 	    if (trigTau1.DeltaR(trigTau2) < 0.5) overlapped = 1;
@@ -542,8 +508,31 @@ int main(int argc, char** argv)	{
 
 	if (passSel == 1 && passOldTrig == 1 && triggerFlag == 0) passSelAndOldTrig = 1; // triggerFlag == 0 indicates old trigger is used
 	if (passSel == 1 && passNewTrig == 1 && triggerFlag == 1) passSelAndNewTrig = 1; // triggerFlag == 1 indicates new trigger is used
-
-
+/***
+	int savedindex = -1;	
+	if (passOldTrig || passNewTrig){
+	    
+	    for (std::vector<std::pair<int,int>>::iterator it = jetCandsLocs.begin(); it != jetCandsLocs.end(); ++it){
+	    	dRj1 = jet1.DeltaR(jetCandidates.at(it->first));
+		dRj1_vec.push_back(dRj1);
+	    	dRj2 = jet2.DeltaR(jetCandidates.at(it->second));
+		dRj2_vec.push_back(dRj2);
+		dRjSum.push_back(dRj1+dRj2);
+	    }// end for-loop, fills possible dRj1s and dRj2s to vectors that are checked in the for-loop below
+	
+	    if (dRj1_vec.size() != 0 && dRj2_vec.size() != 0){
+		int dRjSum_ = 999;
+		for (int n = 0; n < dRjSum.size(); n++){
+		    if (dRjSum[n] < dRjSum_){
+			savedindex = n;
+			dRjSum_ = dRjSum[n];
+			dRj1 = dRj1_vec.at(n);
+			dRj2 = dRj2_vec.at(n);
+		    }
+		}// end for-loop, finds min dR for both jets
+	    }// end if, checks if vectors containing possible dRs are non-zero 	
+	}// end if, sets dRj1 and 2
+***/
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
 	if (dRt1 < 0.5 && dRt2 < 0.5) matchedTaus = 1;
 	if (dRj1 < 0.5 && dRj2 < 0.5) matchedJets = 1;
@@ -590,6 +579,29 @@ int main(int argc, char** argv)	{
 	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
 //	if (savedindex > 0) overOneAfterMatchingCounter += 1;
+
+	if (thisMany < 20 && passSelAndNewTrig){
+	std::cout << "iEvent: " << iEntry << std::endl;
+	    for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
+		std::cout << "aod Jet Pt: " << jetCandidates.at(iJet).Pt() << std::endl;
+		std::cout << "aod Jet Eta: " << jetCandidates.at(iJet).Eta() << std::endl;
+		std::cout << "aod Jet Phi: " << jetCandidates.at(iJet).Phi() << std::endl;
+		//std::cout << "aod Jet Energy: " << jetCandidates.at(iJet).Energy() << std::endl;
+		//std::cout << "aod Jet ID: " << jetCandIDs.at(iJet) << std::endl;
+
+	    }
+	    for (int iTJet = 0; iTJet < triggerJetTempCandidates.size(); iTJet++){
+		std::cout << "trig Jet Pt: " << triggerJetTempCandidates.at(iTJet).Pt() << std::endl;
+		std::cout << "trig Jet Eta: " << triggerJetTempCandidates.at(iTJet).Eta() << std::endl;
+		std::cout << "trig Jet Phi: " << triggerJetTempCandidates.at(iTJet).Phi() << std::endl;
+		//std::cout << "trig Jet Energy: " << triggerJetTempCandidates.at(iTJet).Energy() << std::endl;
+
+	    }
+	std::cout << "matched Jets (1=yes, 0=no): " << matchedJets << std::endl;
+	std::cout << "dRj1: " << dRj1 << " dRj2: " << dRj2 << std::endl;
+	thisMany += 1;
+	std::cout << "event of 20: " << thisMany << "/20" << std::endl;
+	}
 
         outTree->Fill();
     }// end event loop

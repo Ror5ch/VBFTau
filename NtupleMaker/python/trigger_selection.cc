@@ -88,7 +88,7 @@ int main(int argc, char** argv)	{
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 55;
+	t1_pt_cut = 50;//55;
 	t2_pt_cut = 25;
 	j1_pt_cut = 45;
 	j2_pt_cut = 45;
@@ -97,7 +97,7 @@ int main(int argc, char** argv)	{
     }
 
     if ( whichTrigger.find(andTrigString) != std::string::npos){
-	t1_pt_cut = 50;//55;
+	t1_pt_cut = 55;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;

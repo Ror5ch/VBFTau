@@ -205,9 +205,9 @@ int main(int argc, char** argv)	{
     outTree->Branch("passNewTrig", &passNewTrig);
     outTree->Branch("passSelAndOldTrig", &passSelAndOldTrig);
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
-    outTree->Branch("matchedTaus", &matchedTaus);
-    outTree->Branch("matchedJets", &matchedJets);
-    outTree->Branch("matchedBoth", &matchedBoth);
+    //outTree->Branch("matchedTaus", &matchedTaus);
+    //outTree->Branch("matchedJets", &matchedJets);
+    //outTree->Branch("matchedBoth", &matchedBoth);
     outTree->Branch("passSelOldTrigAndMatchedTaus", &passSelOldTrigAndMatchedTaus);
     outTree->Branch("passSelOldTrigAndMatchedJets", &passSelOldTrigAndMatchedJets);
     outTree->Branch("passSelOldTrigAndMatchedBoth", &passSelOldTrigAndMatchedBoth);
@@ -247,10 +247,6 @@ int main(int argc, char** argv)	{
 
 	jetCandidates.clear(); // all for matching jets later
 	jetCandsLocs.clear();
-	dRt1 = 999;
-	dRt2 = 999;
-	dRj1 = 999;
-	dRj2 = 999;
 	dRj1_vec.clear();
 	dRj2_vec.clear();
 	dRjSum.clear();

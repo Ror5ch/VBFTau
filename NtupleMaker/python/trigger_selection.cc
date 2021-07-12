@@ -97,7 +97,7 @@ int main(int argc, char** argv)	{
     }
 
     if ( whichTrigger.find(andTrigString) != std::string::npos){
-	t1_pt_cut = 55;
+	t1_pt_cut = 50;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -532,8 +532,8 @@ int main(int argc, char** argv)	{
 	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel
 	if (passBase && passNewTrig ) passBaseAndNewTrig = 1;
 
-	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
-	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
+	if (passSel && passOldTrig && (triggerFlag == 0 || triggerFlag == 2)) passSelAndOldTrig = 1;
+	if (passSel && passNewTrig && (triggerFlag == 1 || triggerFlag == 2)) passSelAndNewTrig = 1;
 
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
 	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;

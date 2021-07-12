@@ -52,13 +52,16 @@ int main(int argc, char** argv)	{
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
     std::string newTrigString = "new";
-    int triggerFlag = 2;
-    if (whichTrigger.find(oldTrigString) == std::string::npos && whichTrigger.find(newTrigString) == std::string::npos) {
+    std::string andTrigString = "and";
+    int triggerFlag = 3;
+    if (whichTrigger.find(oldTrigString) == std::string::npos && 
+	whichTrigger.find(newTrigString) == std::string::npos &&
+	whichTrigger.find(andTrigString) == std::string::npos) {
 	std::cout << "specify whether this is the new trigger or the old trigger with \"old\" or \"new\" as the 3rd argument" << std::endl;
 	return 0; //prevents rest of code from running
     }
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;
+	t1_pt_cut = 80;//25;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -67,12 +70,20 @@ int main(int argc, char** argv)	{
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
+	t1_pt_cut = 80;//50;
+	t2_pt_cut = 25;
+	j1_pt_cut = 120;//45;
+	j2_pt_cut = 45;
+	mjj_cut = 700;//550;
+	triggerFlag = 1;
+    }
+    if ( whichTrigger.find(andTrigString) != std::string::npos){
 	t1_pt_cut = 50;
 	t2_pt_cut = 25;
-	j1_pt_cut = 45;
+	j1_pt_cut = 120;
 	j2_pt_cut = 45;
-	mjj_cut = 550;
-	triggerFlag = 1;
+	mjj_cut = 700;
+	triggerFlag = 2;
     }
 
     // hlt vars
@@ -205,9 +216,9 @@ int main(int argc, char** argv)	{
     outTree->Branch("passNewTrig", &passNewTrig);
     outTree->Branch("passSelAndOldTrig", &passSelAndOldTrig);
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
-    //outTree->Branch("matchedTaus", &matchedTaus);
-    //outTree->Branch("matchedJets", &matchedJets);
-    //outTree->Branch("matchedBoth", &matchedBoth);
+    outTree->Branch("matchedTaus", &matchedTaus);
+    outTree->Branch("matchedJets", &matchedJets);
+    outTree->Branch("matchedBoth", &matchedBoth);
     outTree->Branch("passSelOldTrigAndMatchedTaus", &passSelOldTrigAndMatchedTaus);
     outTree->Branch("passSelOldTrigAndMatchedJets", &passSelOldTrigAndMatchedJets);
     outTree->Branch("passSelOldTrigAndMatchedBoth", &passSelOldTrigAndMatchedBoth);
@@ -225,7 +236,7 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 2000; iEntry++) {
+    //for (int iEntry = 0; iEntry < 20000; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}

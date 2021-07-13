@@ -70,16 +70,15 @@ int main(int argc, char** argv)	{
     std::string newTrigString = "new";
     std::string andTrigString = "and";
 
-    int triggerFlag = 3;
+    int triggerFlag = 2;
     if (whichTrigger.find(oldTrigString) == std::string::npos && 
-	whichTrigger.find(newTrigString) == std::string::npos &&
-	whichTrigger.find(andTrigString) == std::string::npos) {
+	whichTrigger.find(newTrigString) == std::string::npos) {
 	std::cout << "specify whether this is the new trigger or the old trigger or htt selection with \"old\" or \"new\" or \"and\" as the 3rd argument" << std::endl;
 	return 0; //prevents rest of code from running
     }
     // offline selection should be consistently 5 GeV above HLT thresholds
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;
+	t1_pt_cut = 50;//25;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -90,19 +89,10 @@ int main(int argc, char** argv)	{
     if ( whichTrigger.find(newTrigString) != std::string::npos){
 	t1_pt_cut = 50;//55;
 	t2_pt_cut = 25;
-	j1_pt_cut = 45;
+	j1_pt_cut = 120;//45;
 	j2_pt_cut = 45;
-	mjj_cut = 550;
+	mjj_cut = 700;//550;
 	triggerFlag = 1;
-    }
-
-    if ( whichTrigger.find(andTrigString) != std::string::npos){
-	t1_pt_cut = 50;
-	t2_pt_cut = 25;
-	j1_pt_cut = 120;
-	j2_pt_cut = 45;
-	mjj_cut = 700;
-	triggerFlag = 2;
     }
 
     float minimal_tau_pt_cut = 20;
@@ -151,8 +141,22 @@ int main(int argc, char** argv)	{
     float mjjCandidatePair;
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
 
-    // flag vars
-    int passL1;
+    // offline filter eff cutflow flag vars
+    int passL1Old;
+    int passhltHpsPFTauTrackOld;
+    int passhltHpsDoublePFTauTightOld;
+    int passhltHpsDoublePFTauAgainstMuonTightOld;
+    int passhltMatchedVBFTwoTight;
+    int passhltMatchedVBFOneTight;
+
+    int passL1New;
+    int passhltHpsPFTauTrackNew;
+    int passhltHpsDoublePFTauTightNew;
+    int passhltHpsDoublePFTauAgainstMuonTightNew;
+    int passhltHpsPFTau50Tight;
+    int passhltMatchedVBFIsoTauTwoTight;
+
+    // normal offline flag vars
     int passBase;
     int passBaseAndOldTrig;
     int passBaseOldTrigAndMatchedTaus;
@@ -220,8 +224,23 @@ int main(int argc, char** argv)	{
     outTree->Branch("matchedTaus", &matchedTaus);
     outTree->Branch("matchedJets", &matchedJets);
     outTree->Branch("matchedBoth", &matchedBoth);
+    // offline filter eff cutflow vars
+    // path for old trigger
+    outTree->Branch("passL1Old", &passL1Old);
+    outTree->Branch("passhltHpsPFTauTrackOld", &passhltHpsPFTauTrackOld);
+    outTree->Branch("passhltHpsDoublePFTauTightOld", &passhltHpsDoublePFTauTightOld);
+    outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightOld", &passhltHpsDoublePFTauAgainstMuonTightOld);
+    outTree->Branch("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
+    outTree->Branch("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
+    // path for new trigger
+    outTree->Branch("passL1New", &passL1New);
+    outTree->Branch("passhltHpsPFTauTrackNew", &passhltHpsPFTauTrackNew);
+    outTree->Branch("passhltHpsDoublePFTauTightNew", &passhltHpsDoublePFTauTightNew);
+    outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightNew", &passhltHpsDoublePFTauAgainstMuonTightNew);
+    outTree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
+    outTree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
+
     // flag vars
-    outTree->Branch("passL1", &passL1);
     outTree->Branch("passBase", &passBase);
     outTree->Branch("passBaseAndOldTrig", &passBaseAndOldTrig);
     outTree->Branch("passBaseOldTrigAndMatchedTaus", &passBaseOldTrigAndMatchedTaus);
@@ -252,9 +271,26 @@ int main(int argc, char** argv)	{
     //for (int iEntry = 0; iEntry < 200000; iEntry++) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
-	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
+	if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
+
+	// initialize all flags to zero
+	// offline trigger filter cutflow efficiency flags	
+	// old trigger path
+	passL1Old = 0;
+	passhltHpsPFTauTrackOld = 0;
+        passhltHpsDoublePFTauTightOld = 0;
+	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
+    	passhltMatchedVBFTwoTight = 0;
+ 	passhltMatchedVBFOneTight = 0;
+	// new trigger path
+	passL1New = 0;
+	passhltHpsPFTauTrackNew = 0;
+	passhltHpsDoublePFTauTightNew = 0;
+	passhltHpsDoublePFTauAgainstMuonTightNew = 0;
+	passhltHpsPFTau50Tight = 0;
+	passhltMatchedVBFIsoTauTwoTight = 0; 
 	
-	passL1 = 0;
+	// base selection flags (usually not checked anymore)
 	passBase = 0;
 	passBaseAndOldTrig = 0;
 	passBaseOldTrigAndMatchedTaus = 0;	
@@ -265,8 +301,9 @@ int main(int argc, char** argv)	{
 	passBaseNewTrigAndMatchedJets = 0;	
 	passBaseNewTrigAndMatchedBoth = 0;	
 
-	passSel = 0;  // ints standing in as booleans for these flag variables
-	passOldTrig = 0; // to tell if an event passed selection, trigger, etc.
+	// full selection + trigger firing + matching flags
+	passSel = 0;
+	passOldTrig = 0;
 	passNewTrig = 0;
 	passSelAndOldTrig = 0;
 	passSelAndNewTrig = 0;
@@ -532,22 +569,39 @@ int main(int argc, char** argv)	{
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
-	if (passOldTrig && triggerFlag == 0) passL1 = inTree->passhltL1VBFDiJetOR->at(0);
-	if (passNewTrig && triggerFlag == 1) passL1 = inTree->passhltL1VBFIsoTauDiJet->at(0);
 
-	//if (passSel && passL1 && triggerFlag == 0) {
-	//    passhltHpsPF = inTree->passhltL1VBFDiJetOR
-	//}
+	// old trigger filter cutflow eff flags
+	if (passSel && triggerFlag == 0 && inTree->passhltL1VBFDiJetOR->size()>0) passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
 
-	//if (passSel && passL1 && triggerFlag == 1) {
+	if (passL1Old && inTree->passhltHpsPFTauTrack->size()>0) passhltHpsPFTauTrackOld = inTree->passhltHpsPFTauTrack->at(0);
 
-	//}
+	if (passhltHpsPFTauTrackOld && inTree->passhltHpsDoublePFTauTight->size()>0) passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight->at(0); 
 
+	if (passhltHpsDoublePFTauTightOld && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+
+	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->passhltMatchedVBFTwoTight->size()>0) passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight->at(0);
+
+	if (passhltMatchedVBFTwoTight && inTree->passhltMatchedVBFOneTight->size()>0) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight->at(0);
+
+	// new trigger filter cutflow eff flags
+	if (passSel && triggerFlag == 1 && inTree->passhltL1VBFDiJetIsoTau->size()>0) passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
+
+	if (passL1New && inTree->passhltHpsPFTauTrack->size()>0) passhltHpsPFTauTrackNew = inTree->passhltHpsPFTauTrack->at(0);
+
+	if (passhltHpsPFTauTrackNew && inTree->passhltHpsDoublePFTauTight->size()>0) passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight->at(0);
+
+	if (passhltHpsDoublePFTauTightNew && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+
+	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->passhltHpsPFTau50Tight->size()>0) passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight->at(0);
+
+	if (passhltHpsPFTau50Tight && inTree->passhltMatchedVBFIsoTauTwoTight->size()>0) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight->at(0);
+
+	// filling offline selection flags / pass trigger flags
 	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel
 	if (passBase && passNewTrig ) passBaseAndNewTrig = 1;
 
-	if (passSel && passOldTrig && (triggerFlag == 0 || triggerFlag == 2)) passSelAndOldTrig = 1;
-	if (passSel && passNewTrig && (triggerFlag == 1 || triggerFlag == 2)) passSelAndNewTrig = 1;
+	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
+	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
 
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
 	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;
@@ -595,15 +649,17 @@ int main(int argc, char** argv)	{
         outTree->Fill();
     }// end event loop
 
-    //std::cout << sameTauPassSel << std::endl;
-
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");
     fOut->cd();
+
     min_cutflow->SetName("MinCutflow");
     min_cutflow->Write();
     sel_cutflow->SetName("SelCutflow");
     sel_cutflow->Write();
+
+
+
     outTree->Write();
     fOut->Close();
     return 0;

@@ -92,7 +92,7 @@ void MakeAndDraw_auto(char* filename){
     } 
 
     TCanvas *c1 = new TCanvas("c1", "", 600, 400);
-    c1->SetLogy();
+    //c1->SetLogy();
     gStyle->SetOptStat(kFALSE);
 
     oldTrigAbsEff->SetTitle("Trigger Filter Absolute Efficiency Cutflow;; Efficiency");
@@ -110,17 +110,17 @@ void MakeAndDraw_auto(char* filename){
     legendAbsEff->AddEntry(newTrigAbsEff, "New Trigger Path");
     legendAbsEff->Draw();
 
-    c1->Print("cutflowAbsEffLog.png", "png");
-    //c1->Print("cutflowAbsEff.png", "png");
+    //c1->Print("cutflowAbsEffLog.png", "png");
+    c1->Print("cutflowAbsEff.png", "png");
 
     TCanvas *c2 = new TCanvas("c2", "", 600, 400);
-    c2->SetLogy();
+    //c2->SetLogy();
     gStyle->SetOptStat(kFALSE);
 
     oldTrigRelEff->SetTitle("Trigger Filter Relative Efficiency Cutflow;; Efficiency");
     oldTrigRelEff->GetXaxis()->SetLabelSize(0.039);
 
-    //oldTrigRelEff->SetAxisRange(0,1.1, "Y");
+    oldTrigRelEff->SetAxisRange(0,1.1, "Y");
     
     oldTrigRelEff->Draw("hist");
     oldTrigRelEff->SetLineColor(1);
@@ -135,6 +135,6 @@ void MakeAndDraw_auto(char* filename){
     legendRelEff->AddEntry(newTrigRelEff, "New Trigger Path");
     legendRelEff->Draw();
 
-    c2->Print("cutflowRelEffLog.png", "png");
-    //c2->Print("cutflowRelEff.png", "png");
+    //c2->Print("cutflowRelEffLog.png", "png");
+    c2->Print("cutflowRelEff.png", "png");
 }

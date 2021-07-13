@@ -6610,7 +6610,8 @@ process.hltOnlineBeamSpot = cms.EDProducer( "BeamSpotOnlineProducer",
     maxRadius = cms.double( 2.0 )
 )
 process.hltL1VBFDiJetOR = cms.EDFilter( "HLTL1TSeed",
-    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+    L1SeedsLogicalExpression = cms.string( #"L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+    "L1_DoubleJet_110_35_DoubleJet35_Mass_Min620"),
     L1EGammaInputTag = cms.InputTag( 'hltGtStage2Digis','EGamma' ),
     L1JetInputTag = cms.InputTag( 'hltGtStage2Digis','Jet' ),
     saveTags = cms.bool( True ),

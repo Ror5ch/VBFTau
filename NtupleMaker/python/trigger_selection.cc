@@ -152,6 +152,7 @@ int main(int argc, char** argv)	{
     std::vector<std::pair<int,int>> jetCandsLocs; // jet candidate locations
 
     // flag vars
+    int passL1;
     int passBase;
     int passBaseAndOldTrig;
     int passBaseOldTrigAndMatchedTaus;
@@ -220,6 +221,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("matchedJets", &matchedJets);
     outTree->Branch("matchedBoth", &matchedBoth);
     // flag vars
+    outTree->Branch("passL1", &passL1);
     outTree->Branch("passBase", &passBase);
     outTree->Branch("passBaseAndOldTrig", &passBaseAndOldTrig);
     outTree->Branch("passBaseOldTrigAndMatchedTaus", &passBaseOldTrigAndMatchedTaus);
@@ -252,6 +254,7 @@ int main(int argc, char** argv)	{
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) { std::cout << std::to_string(iEntry) << std::endl;}
 	
+	passL1 = 0;
 	passBase = 0;
 	passBaseAndOldTrig = 0;
 	passBaseOldTrigAndMatchedTaus = 0;	
@@ -528,6 +531,17 @@ int main(int argc, char** argv)	{
 
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
+
+	if (passOldTrig && triggerFlag == 0) passL1 = inTree->passhltL1VBFDiJetOR->at(0);
+	if (passNewTrig && triggerFlag == 1) passL1 = inTree->passhltL1VBFIsoTauDiJet->at(0);
+
+	//if (passSel && passL1 && triggerFlag == 0) {
+	//    passhltHpsPF = inTree->passhltL1VBFDiJetOR
+	//}
+
+	//if (passSel && passL1 && triggerFlag == 1) {
+
+	//}
 
 	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel
 	if (passBase && passNewTrig ) passBaseAndNewTrig = 1;

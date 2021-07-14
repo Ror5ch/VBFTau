@@ -20,5 +20,7 @@ did you do your fixe eta compilation? Is the xml file included in the crab job? 
 add L1TUtm file to this directory and scram again
 L1Trigger/L1TGlobal/plugins
 scram b -j 8
+then remake menu (l1 menu collision was changed slightly and you need to make sure the new file was compiled)
+--l1Xml L1Menu_Collisions2018_v1_0_0-d1_fixed.xml
 
 does your conffile include triggerwithrefs?

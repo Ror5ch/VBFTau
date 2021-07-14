@@ -44,7 +44,16 @@ hltGetConfiguration /users/knam/backport/target/backported/V2 \
 --l1Xml L1Menu_Collisions2018_v1_0_0-d1_fixed.xml --prescale none \
 --max-events 2000 --output none > test.py
 
+both triggers with all 3 WP and xml fix present
 
+hltGetConfiguration /users/knam/backport/target/backported/V2 --globaltag 101X_upgrade2018_realistic_TSG_2018_04_16_20_31_16 --path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --input root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root --mc --process MYHLT --full --offline --l1-emulator uGT --l1Xml L1Menu_Collisions2018_v1_0_0-d1_fixed.xml --prescale none --max-events 2000 --output none
+
+both triggers with all 3 WP and xml fix NOT present (used to avoid tau eta fix)
+
+hltGetConfiguration /users/knam/backport/target/backported/V2 --globaltag 101X_upgrade2018_realistic_TSG_2018_04_16_20_31_16 --path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1*,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --input root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root --mc --process MYHLT --full --offline --l1-emulator uGT --l1 L1Menu_Collisions2018_v1_0_0-d1_xml --prescale none --max-events 2000 --output none
+
+only difference between above two is this line
+--l1 L1Menu_Collisions2018_v1_0_0-d1_xml
 
 and then add this to the file if you want a local root file to run over instead of accessing via cmsxrootd (really doesn't matter, don't do it by default bc you'll need to remove it if you ever want to submit a crab job to run triggers)
 process.addedhltVBF = cms.OutputModule( "PoolOutputModule",

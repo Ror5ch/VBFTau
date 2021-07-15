@@ -68,7 +68,6 @@ int main(int argc, char** argv)	{
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
     std::string newTrigString = "new";
-    std::string andTrigString = "and";
 
     int triggerFlag = 2;
     if (whichTrigger.find(oldTrigString) == std::string::npos && 
@@ -78,7 +77,7 @@ int main(int argc, char** argv)	{
     }
     // offline selection should be consistently 5 GeV above HLT thresholds
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 50;//25;
+	t1_pt_cut = 80;//25;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -87,11 +86,12 @@ int main(int argc, char** argv)	{
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 50;//55;
+	t1_pt_cut = 80;//55;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;//45;
 	j2_pt_cut = 45;
 	mjj_cut = 700;//550;
+	std::cout << "trigger: " << newTrigString << std::endl;
 	triggerFlag = 1;
     }
 
@@ -367,7 +367,7 @@ int main(int argc, char** argv)	{
 	// check that we have at least 2 good taus to work with
 	if (tauCandidates.size() < 2) continue;
 
-	// as keti proposed, take leading two AOD taus
+	// as keti proposed, take first two AOD taus that aren't overlapped
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector aodTau1, aodTau2;
 	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
@@ -383,7 +383,7 @@ int main(int argc, char** argv)	{
 	if (aodTau1.DeltaR(aodTau2) < 0.5) continue; 
 
 	min_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good taus
-	sel_cutflow->Fill(0.0,1.0);
+	sel_cutflow->Fill(0.0,1.0); // start of smaller cutflow graph (keep two just for scaling purposes)
 
 	// check kinematics and ID of jet objects, store good jets
 	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
@@ -451,23 +451,25 @@ int main(int argc, char** argv)	{
 	//-----------------------tighter selection guided by trigger specific cutoffs---------------//
 
 
-	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) continue;// passSel = 0;
+	passSel = 1;
+
+	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) passSel = 0; //continue;
 	//else {sel_cutflow->Fill(5.0,1.0);}
 	sel_cutflow->Fill(2.0,1.0);
 	
-	if (aodTau1.Pt() < t1_pt_cut) continue;//passSel = 0;
+	if (aodTau1.Pt() < t1_pt_cut) passSel = 0; //continue;
 	//else {sel_cutflow->Fill(6.0,1.0);}
 	sel_cutflow->Fill(3.0,1.0);
 
-	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) continue; //passSel = 0;
+	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) passSel = 0; //continue;
 	//else {sel_cutflow->Fill(7.0,1.0);}
 	sel_cutflow->Fill(4.0,1.0);
 
-	if (aodJet1.Pt() < j1_pt_cut) continue;//passSel = 0;
+	if (aodJet1.Pt() < j1_pt_cut) passSel = 0; //continue;
 	//else {sel_cutflow->Fill(8.0,1.0);}
 	sel_cutflow->Fill(5.0,1.0);
 
-	if (mjj_A < mjj_cut) continue; //passSel = 0;
+	if (mjj_A < mjj_cut) passSel = 0; //continue;
 	//else {sel_cutflow->Fill(9.0,1.0);}
 	sel_cutflow->Fill(6.0,1.0);
 
@@ -563,6 +565,7 @@ int main(int argc, char** argv)	{
 		trigTau2.DeltaR(trigJet1) < 0.5 || trigTau2.DeltaR(trigJet2) < 0.5) overlapped = 1;
 	}
 
+	//------------------------------fill flags and output tree-----------------------------------//
 	// passSel 
 	// passBase alredy defined near start
 
@@ -571,30 +574,54 @@ int main(int argc, char** argv)	{
 
 
 	// old trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 0 && inTree->passhltL1VBFDiJetOR->size()>0) passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
+	if (passSel && triggerFlag == 0 && inTree->passhltL1VBFDiJetOR->size()>0) {
+	    passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
+	}
 
-	if (passL1Old && inTree->passhltHpsPFTauTrack->size()>0) passhltHpsPFTauTrackOld = inTree->passhltHpsPFTauTrack->at(0);
+	if (passL1Old && inTree->passhltHpsPFTauTrack->size()>0) {
+	    passhltHpsPFTauTrackOld = inTree->passhltHpsPFTauTrack->at(0);
+	}
 
-	if (passhltHpsPFTauTrackOld && inTree->passhltHpsDoublePFTauTight->size()>0) passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight->at(0); 
+	if (passhltHpsPFTauTrackOld && inTree->passhltHpsDoublePFTauTight->size()>0) {
+	    passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight->at(0); 
+	}
 
-	if (passhltHpsDoublePFTauTightOld && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	if (passhltHpsDoublePFTauTightOld && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) {
+	    passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	}
 
-	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->passhltMatchedVBFTwoTight->size()>0) passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight->at(0);
+	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->passhltMatchedVBFTwoTight->size()>0) {
+	    passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight->at(0);
+	}
 
-	if (passhltMatchedVBFTwoTight && inTree->passhltMatchedVBFOneTight->size()>0) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight->at(0);
+	if (passhltMatchedVBFTwoTight && inTree->passhltMatchedVBFOneTight->size()>0) {
+	    passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight->at(0);
+	}
 
 	// new trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 1 && inTree->passhltL1VBFDiJetIsoTau->size()>0) passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
+	if (passSel && triggerFlag == 1 && inTree->passhltL1VBFDiJetIsoTau->size()>0) {
+	    passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
+	}
 
-	if (passL1New && inTree->passhltHpsPFTauTrack->size()>0) passhltHpsPFTauTrackNew = inTree->passhltHpsPFTauTrack->at(0);
+	if (passL1New && inTree->passhltHpsPFTauTrack->size()>0) {
+	    passhltHpsPFTauTrackNew = inTree->passhltHpsPFTauTrack->at(0);
+	}
 
-	if (passhltHpsPFTauTrackNew && inTree->passhltHpsDoublePFTauTight->size()>0) passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight->at(0);
+	if (passhltHpsPFTauTrackNew && inTree->passhltHpsDoublePFTauTight->size()>0) {
+	    passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight->at(0);
+	}
 
-	if (passhltHpsDoublePFTauTightNew && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	if (passhltHpsDoublePFTauTightNew && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) {
+	    passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	}
 
-	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->passhltHpsPFTau50Tight->size()>0) passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight->at(0);
+	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->passhltHpsPFTau50Tight->size()>0) {
+	    passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight->at(0);
+	}
 
-	if (passhltHpsPFTau50Tight && inTree->passhltMatchedVBFIsoTauTwoTight->size()>0) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight->at(0);
+	if (passhltHpsPFTau50Tight && inTree->passhltMatchedVBFIsoTauTwoTight->size()>0) {
+	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight->at(0);
+	}
 
 	// filling offline selection flags / pass trigger flags
 	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel

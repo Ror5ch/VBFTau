@@ -22,3 +22,6 @@ L1Trigger/L1TGlobal/plugins
 scram b -j 8
 
 does your conffile include triggerwithrefs?
+
+useful command from doyeong
+scram pro -n MyWorkingAreaName CMSSW CMSSW_10_3_3

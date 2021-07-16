@@ -1,4 +1,4 @@
-void MakeAndDraw_offline(char* inFileOld, char* inFileNew){
+void FilterEffOfflineSingle(char* inFileOld, char* inFileNew){
 
     //-------------------------------------getting data from two different files----------//
     // get file for old trig data

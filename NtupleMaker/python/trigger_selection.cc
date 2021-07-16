@@ -473,7 +473,7 @@ int main(int argc, char** argv)	{
 	//else {sel_cutflow->Fill(9.0,1.0);}
 	sel_cutflow->Fill(6.0,1.0);
 
-	passSel = 1;
+	//passSel = 1;
 
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	

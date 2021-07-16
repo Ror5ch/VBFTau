@@ -1,4 +1,4 @@
-void FilterEffOfflineSingle(char* inFileOld, char* inFileNew){
+void FilterEffOfflineSingle(char* inFileOld, char* inFileNew, int log){
 
     //-------------------------------------getting data from two different files----------//
     // get file for old trig data
@@ -99,13 +99,13 @@ void FilterEffOfflineSingle(char* inFileOld, char* inFileNew){
     } 
 
     TCanvas *c1 = new TCanvas("c1", "", 600, 400);
-    c1->SetLogy();
+    if (log == 1) c1->SetLogy();
+    else oldTrigAbsEff->SetAxisRange(0,1.1, "Y");
     gStyle->SetOptStat(kFALSE);
 
     oldTrigAbsEff->SetTitle("Trigger Filter Absolute Efficiency Cutflow;; Efficiency");
     oldTrigAbsEff->GetXaxis()->SetLabelSize(0.039);
 
-    //oldTrigAbsEff->SetAxisRange(0,1.1, "Y");
 
     oldTrigAbsEff->Draw("hist");
     oldTrigAbsEff->SetLineColor(1);
@@ -119,17 +119,17 @@ void FilterEffOfflineSingle(char* inFileOld, char* inFileNew){
     legendAbsEff->AddEntry(newTrigAbsEff, "New Trigger Path");
     legendAbsEff->Draw();
 
-    c1->Print("offline_cutflowAbsEffLog.png", "png");
-    //c1->Print("offline_cutflowAbsEff.png", "png");
+    if (log == 1) c1->Print("offline_cutflowAbsEffLog.png", "png");
+    else c1->Print("offline_cutflowAbsEff.png", "png");
 
     TCanvas *c2 = new TCanvas("c2", "", 600, 400);
-    c2->SetLogy();
+    if (log == 1) c2->SetLogy();
+    else oldTrigRelEff->SetAxisRange(0,1.1, "Y");
     gStyle->SetOptStat(kFALSE);
 
     oldTrigRelEff->SetTitle("Trigger Filter Relative Efficiency Cutflow;; Efficiency");
     oldTrigRelEff->GetXaxis()->SetLabelSize(0.039);
 
-    //oldTrigRelEff->SetAxisRange(0,1.1, "Y");
     
     oldTrigRelEff->Draw("hist");
     oldTrigRelEff->SetLineColor(1);
@@ -144,7 +144,7 @@ void FilterEffOfflineSingle(char* inFileOld, char* inFileNew){
     legendRelEff->AddEntry(newTrigRelEff, "New Trigger Path");
     legendRelEff->Draw();
 
-    c2->Print("offline_cutflowRelEffLog.png", "png");
-    //c2->Print("offline_cutflowRelEff.png", "png");
+    if (log == 1) c2->Print("offline_cutflowRelEffLog.png", "png");
+    else c2->Print("offline_cutflowRelEff.png", "png");
 
 }

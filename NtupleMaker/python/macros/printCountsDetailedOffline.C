@@ -1,4 +1,4 @@
-void printCountsDetailedOffline(char* inFileOld, char* inFileNew){
+void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
 
     //-------------------------------------getting data from two different files----------//
     // get file for old trig data
@@ -11,7 +11,10 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew){
     double passBaseOld = oldTree->Draw("passBase", "passBase>0", "goff");
     double passBaseAndOldTrig = oldTree->Draw("passBaseAndOldTrig", "passBaseAndOldTrig>0", "goff");
     double passOldTrig = oldTree->Draw("passOldTrig", "passOldTrig>0", "goff");
-    double passSelOld = oldTree->Draw("passSel", "passSel>0", "goff");
+
+    double passSelOld;
+    if (comp == 1) passSelOld = oldTree->Draw("passSel", "passSel<1", "goff");
+    else passSelOld = oldTree->Draw("passSel", "passSel>0", "goff");
 
     // getting data from old trigger to fill to an array to be filled to a histogram later
     double passL1Old = oldTree->Draw("passL1Old", "passL1Old>0", "goff");

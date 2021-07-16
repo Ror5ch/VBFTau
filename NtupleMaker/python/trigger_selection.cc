@@ -572,61 +572,101 @@ int main(int argc, char** argv)	{
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
+/***
+	if (passOldTrig && inTree->hltL1VBFDiJetOR_pt->size() < 4){
+	std::cout << "-----------------------------" << std::endl;
+	std::cout << "L1VBFDiJetOR: " << inTree->hltL1VBFDiJetOR_pt->size() << std::endl; // 3
+	std::cout << "PFTauTrack: " << inTree->hltHpsPFTauTrack_pt->size() << std::endl; // 2
+	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
+	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 2
+	std::cout << "MatchedVBFTwoTight: " << inTree->hltMatchedVBFTwoTight_pt->size() << std::endl; // 2
+	std::cout << "MatchedVBFOneTight: " << inTree->hltMatchedVBFOneTight_pt->size() << std::endl; // 1
+	std::cout << "pass old trig: " << passOldTrig << std::endl;
+	std::cout << "-----------------------------" << std::endl;
+	}
+***/
 
 	// old trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 0 && inTree->passhltL1VBFDiJetOR->size()>0) {
+	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 3) {
 	    passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
 	}
 
-	if (passL1Old && inTree->passhltHpsPFTauTrack->size()>0) {
+	if (passL1Old && inTree->hltHpsPFTauTrack_pt->size() >= 2) {
 	    passhltHpsPFTauTrackOld = inTree->passhltHpsPFTauTrack->at(0);
 	}
 
-	if (passhltHpsPFTauTrackOld && inTree->passhltHpsDoublePFTauTight->size()>0) {
+	if (passhltHpsPFTauTrackOld && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
 	    passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight->at(0); 
 	}
 
-	if (passhltHpsDoublePFTauTightOld && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) {
+	if (passhltHpsDoublePFTauTightOld && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) {
 	    passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
 	}
 
-	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->passhltMatchedVBFTwoTight->size()>0) {
+	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->hltMatchedVBFTwoTight_pt->size() >= 2) {
 	    passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight->at(0);
 	}
 
-	if (passhltMatchedVBFTwoTight && inTree->passhltMatchedVBFOneTight->size()>0) {
+	if (passhltMatchedVBFTwoTight && inTree->hltMatchedVBFOneTight_pt->size() >= 1) {
 	    passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight->at(0);
 	}
 
+/***
+	if (passNewTrig && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1 && inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2){
+	std::cout << "---------------------------------------------------" << std::endl;
+	std::cout << "L1VBFDiJetIsoTau Tau#: " << inTree->hltL1VBFDiJetIsoTau_tauPt->size() << std::endl; // 1
+	std::cout << "L1VBFDiJetIsoTau Jet#: " << inTree->hltL1VBFDiJetIsoTau_jetPt->size() << std::endl; // 2
+
+	std::cout << "PFTauTrack: " << inTree->hltHpsPFTauTrack_pt->size() << std::endl; // 2
+	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
+	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 1
+	std::cout << "HpsPFTau50Tight: " << inTree->hltHpsPFTau50Tight_pt->size() << std::endl;
+	std::cout << "MatchedVBFIsoTauTwoTight: " << inTree->hltMatchedVBFIsoTauTwoTight_pt->size() << std::endl; // 2
+	std::cout << "pass new trig: " << passNewTrig << std::endl;
+	std::cout << "---------------------------------------------------" << std::endl;
+
+	}
+***/
 	// new trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 1 && inTree->passhltL1VBFDiJetIsoTau->size()>0) {
+	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
+					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) {
 	    passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
 	}
 
-	if (passL1New && inTree->passhltHpsPFTauTrack->size()>0) {
+	if (passL1New && inTree->hltHpsPFTauTrack_pt->size() >= 2) {
 	    passhltHpsPFTauTrackNew = inTree->passhltHpsPFTauTrack->at(0);
 	}
 
-	if (passhltHpsPFTauTrackNew && inTree->passhltHpsDoublePFTauTight->size()>0) {
+	if (passhltHpsPFTauTrackNew && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
 	    passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight->at(0);
 	}
 
-	if (passhltHpsDoublePFTauTightNew && inTree->passhltHpsDoublePFTauAgainstMuonTight->size()>0) {
+	if (passhltHpsDoublePFTauTightNew && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) {
 	    passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
 	}
 
-	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->passhltHpsPFTau50Tight->size()>0) {
+	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->hltHpsPFTau50Tight_pt->size() >= 1) {
 	    passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight->at(0);
 	}
 
-	if (passhltHpsPFTau50Tight && inTree->passhltMatchedVBFIsoTauTwoTight->size()>0) {
+	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) {
 	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight->at(0);
 	}
-
+/***
+	if (passSel && (inTree->passhltMatchedVBFIsoTauTwoTight->size()>0 != inTree->passNewTrigTight->at(0))){
+	    std::cout << "mismatch" << std::endl;
+	    std::cout << "size MatchedVBFIsoTauTwoTight_pt: " << inTree->hltMatchedVBFIsoTauTwoTight_pt->size() << std::endl;
+	}
+***/
 	// filling offline selection flags / pass trigger flags
 	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel
 	if (passBase && passNewTrig ) passBaseAndNewTrig = 1;
-
+/***
+//	if (passSel && (inTree->passhltMatchedVBFIsoTauTwoTight->size()>0 != inTree->passNewTrigTight->at(0))) {
+//	    std::cout << "mismatch" << std::endl;
+//	    std::cout << inTree->passhltMatchedVBFIsoTauTwoTight->size()  << std::endl;
+// 	}
+***/
 	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
 	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
 

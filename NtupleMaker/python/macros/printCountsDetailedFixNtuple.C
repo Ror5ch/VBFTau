@@ -1,4 +1,4 @@
-void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
+void printCountsDetailedFixNtuple(char* inFileOld, char* inFileNew){//, int comp){
 
     //-------------------------------------getting data from two different files----------//
     // get file for old trig data
@@ -6,15 +6,11 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
 
     TTree* oldTree = (TTree*)oldFile->Get("outTree");
 
-    // in principle passSel for the old trigger and passSel for the new trigger are the same
-    // at least for the overlap selection of datasets this macro was made for
-    double passBaseOld = oldTree->Draw("passBase", "passBase>0", "goff");
-    double passBaseAndOldTrig = oldTree->Draw("passBaseAndOldTrig", "passBaseAndOldTrig>0", "goff");
     double passOldTrig = oldTree->Draw("passOldTrig", "passOldTrig>0", "goff");
 
-    double passSelOld;
-    if (comp == 1) passSelOld = oldTree->Draw("passSel", "passSel<1", "goff");
-    else passSelOld = oldTree->Draw("passSel", "passSel>0", "goff");
+    double nEvents = 2108405;
+//    if (comp == 1) nEvents = oldTree->Draw("passSel", "passSel<1", "goff");
+//    else nEvents = oldTree->Draw("passSel", "passSel>0", "goff");
 
     // getting data from old trigger to fill to an array to be filled to a histogram later
     double passL1Old = oldTree->Draw("passL1Old", "passL1Old>0", "goff");
@@ -24,13 +20,13 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
     double passhltMatchedVBFTwoTight = oldTree->Draw("passhltMatchedVBFTwoTight", "passhltMatchedVBFTwoTight>0", "goff");
     double passhltMatchedVBFOneTight = oldTree->Draw("passhltMatchedVBFOneTight", "passhltMatchedVBFOneTight>0", "goff");
 
-    double passSelAndOldTrig = oldTree->Draw("passSelAndOldTrig", "passSelAndOldTrig>0", "goff");
+    //double passSelAndOldTrig = oldTree->Draw("passSelAndOldTrig", "passSelAndOldTrig>0", "goff");
 
     // put all the values into an array
-    double rawOld[] = {passSelOld, passL1Old, passhltHpsPFTauTrackOld, \
+    double rawOld[] = {nEvents, passL1Old, passhltHpsPFTauTrackOld, \
 		passhltHpsDoublePFTauTightOld, passhltHpsDoublePFTauAgainstMuonTightOld, \
 		passhltHpsDoublePFTauAgainstMuonTightOld, passhltMatchedVBFTwoTight, \
-		passhltMatchedVBFOneTight, passSelAndOldTrig};
+		passhltMatchedVBFOneTight, passOldTrig};
 
     oldFile->Close();
 
@@ -39,13 +35,11 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
 
     TTree* newTree = (TTree*)newFile->Get("outTree");
 
-    // see earlier comment about passSel
-    double passBaseNew = newTree->Draw("passBase", "passBase>0", "goff");
-    double passBaseAndNewTrig = newTree->Draw("passBaseAndNewTrig", "passBaseAndNewTrig>0", "goff");
     double passNewTrig = newTree->Draw("passNewTrig", "passNewTrig>0", "goff");
-    double passSelNew;
-    if (comp == 1) passSelNew = newTree->Draw("passSel", "passSel<1", "goff");
-    else passSelNew = newTree->Draw("passSel", "passSel>0", "goff");
+
+    double nEventsSame = 2108405;
+//    if (comp == 1) nEventsSame = newTree->Draw("passSel", "passSel<1", "goff");
+//    else nEventsSame = newTree->Draw("passSel", "passSel>0", "goff");
 
     // getting data from old trigger to fill to an array to be filled to a histogram later
     double passL1New = newTree->Draw("passL1New", "passL1New>0", "goff");
@@ -55,19 +49,20 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
     double passhltHpsPFTau50Tight = newTree->Draw("passhltHpsPFTau50Tight", "passhltHpsPFTau50Tight>0", "goff");
     double passhltMatchedVBFIsoTauTwoTight = newTree->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltMatchedVBFIsoTauTwoTight>0", "goff");
 
-    double passSelAndNewTrig = newTree->Draw("passSelAndNewTrig", "passSelAndNewTrig>0", "goff");
+    //double passSelAndNewTrig = newTree->Draw("passSelAndNewTrig", "passSelAndNewTrig>0", "goff");
 
     // put all the values into an array
-    double rawNew[] = {passSelNew, passL1New, passhltHpsPFTauTrackNew, \
+    double rawNew[] = {nEventsSame, passL1New, passhltHpsPFTauTrackNew, \
 		passhltHpsDoublePFTauTightNew, passhltHpsDoublePFTauAgainstMuonTightNew, \
 		passhltHpsPFTau50Tight, passhltMatchedVBFIsoTauTwoTight, \
-		passhltMatchedVBFIsoTauTwoTight, passSelAndNewTrig};
+		passhltMatchedVBFIsoTauTwoTight, passNewTrig};
     
     //-------------------------------filling and plotting---------------------------------//
     // now that we have both containers, we can fill histograms and write them to canvases
-    const char *names[9] = {"Offline Only", "Off. + L1", "Off. + Req. 1 Tau", "Off. + Req. 2nd Tau", \
-			"Off. + TauID vs Muon", "Off. + 45 GeV Tau (New)", "Off. + Req. 2 Jets", \
-			"Off. + 115 GeV Jet (Old)", "Off. + Trigger"};
+
+    const char *names[9] = {"None", "L1", "Req. 1 Tau", "Req. 2nd Tau", \
+                        "TauID vs Muon", "50 GeV Tau (New)", "Req. 2 Jets", \
+                        "115 GeV Jet (Old)", "Passed All Filters"};
 
     double oldFrac[9];
     double newFrac[9];
@@ -75,7 +70,7 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
 
     double diff;
 
-    std::cout << "Differences in Absolute Efficiency of Filters after Offline Selection" << std::endl;
+    std::cout << "Differences in Absolute Efficiency of Filters" << std::endl;
     std::cout << "old val " << '\t' << "new val " << '\t' << "difference " << '\t' << "label " << std::endl;
     for (int i = 0; i < n; i++){
 
@@ -91,9 +86,9 @@ void printCountsDetailedOffline(char* inFileOld, char* inFileNew, int comp){
     std::cout << '\n' << std::endl;
 
     std::cout << "Event Numbers" << std::endl;
-    std::cout << "events passing base for old or new sel (should be same) " << passBaseOld << ' ' << passBaseNew << std::endl;
-    std::cout << "events passing old or new sel (sel are same) = " << passSelOld << ' ' << passSelNew << std::endl;
-    std::cout << "pass base and old trig: " << passBaseAndOldTrig << '\t' << " pass base and new trig: " << passBaseAndNewTrig << std::endl;
+    //std::cout << "events passing base for old or new sel (should be same) " << passBaseOld << ' ' << passBaseNew << std::endl;
+    std::cout << "events passing old or new sel (sel are same) = " << nEvents << ' ' << nEventsSame << std::endl;
+    //std::cout << "pass base and old trig: " << passBaseAndOldTrig << '\t' << " pass base and new trig: " << passBaseAndNewTrig << std::endl;
     std::cout << "pass old trig: " << passOldTrig << '\t' << "pass new trig: " << passNewTrig << std::endl;
     std::cout << "old " << '\t' << "new " << '\t' << "difference " << '\t' << "label" << std::endl;
     for (int i = 0; i < n; i++){

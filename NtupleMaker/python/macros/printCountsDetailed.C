@@ -30,10 +30,6 @@ void printCountsDetailed(char* filename){
 
     double passNewTrigTight = tree->Draw("passNewTrigTight", "passNewTrigTight>0", "goff");
 
-    // filters common to both triggers
-    //double passhltHpsPFTauTrack = tree->Draw("passhltHpsPFTauTrack", "passhltHpsPFTauTrack>0", "goff");
-    //double passhltHpsDoublePFTauTight = tree->Draw("passhltHpsDoublePFTauTight", "passhltHpsDoublePFTauTight>0", "goff");
-    //double passhltHpsDoublePFTauAgainstMuonTight = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
 
     // arrays holding these values
     // zeros where filters don't match / no counterpart exists

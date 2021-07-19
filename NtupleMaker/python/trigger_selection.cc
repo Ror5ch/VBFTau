@@ -587,7 +587,7 @@ int main(int argc, char** argv)	{
 ***/
 
 	// old trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 3) {
+	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
 	    passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
 	}
 

@@ -1,4 +1,4 @@
-void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBroken, int log, int comp){
+void FilterEffOfflineComplementAndOG(char* inFileOld, char* inFileNew, char* inFileNewBroken, int log){
 
     //-------------------------------------getting data from two different files----------//
     // get file for old trig data
@@ -8,9 +8,7 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
 
     // in principle passSel for the old trigger and passSel for the new trigger are the same
     // at least for the overlap selection of datasets this macro was made for
-    double passSelOld;
-    if (comp == 1) passSelOld = oldTree->Draw("passSel", "passSel<1", "goff");
-    else passSelOld = oldTree->Draw("passSel", "passSel>0", "goff");
+    double passSelOld = oldTree->Draw("passSel", "passSel>0", "goff");
 
     // getting data from old trigger to fill to an array to be filled to a histogram later
     double passL1Old = oldTree->Draw("passL1Old", "passL1Old>0", "goff");
@@ -36,11 +34,9 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     TTree* newTree = (TTree*)newFile->Get("outTree");
 
     // see earlier comment about passSel
-    double passSelNew;
-    if (comp == 1) passSelNew = newTree->Draw("passSel", "passSel<1", "goff");
-    else passSelNew = newTree->Draw("passSel", "passSel>0", "goff");
+    double passSelNew = newTree->Draw("passSel", "passSel>0", "goff");
 
-    // getting data from old trigger to fill to an array to be filled to a histogram later
+    // getting data from new trigger to fill to an array to be filled to a histogram later
     double passL1New = newTree->Draw("passL1New", "passL1New>0", "goff");
     double passhltHpsPFTauTrackNew = newTree->Draw("passhltHpsPFTauTrackNew", "passhltHpsPFTauTrackNew>0", "goff");
     double passhltHpsDoublePFTauTightNew = newTree->Draw("passhltHpsDoublePFTauTightNew", "passhltHpsDoublePFTauTightNew>0", "goff");
@@ -65,27 +61,25 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     TTree* newTreeBroken = (TTree*)newFileBroken->Get("outTree");
 
     // see earlier comment about passSel
-    double passSelNewBroken;
-    if (comp == 1) passSelNewBroken = newTreeBroken->Draw("passSel", "passSel<1", "goff");
-    else passSelNewBroken = newTreeBroken->Draw("passSel", "passSel>0", "goff");
+    double passSelOldComp = newTreeBroken->Draw("passSel", "passSel<1", "goff");
 
     // getting data from old trigger to fill to an array to be filled to a histogram later
-    double passL1NewBroken = newTreeBroken->Draw("passL1New", "passL1New>0", "goff");
-    double passhltHpsPFTauTrackNewBroken = newTreeBroken->Draw("passhltHpsPFTauTrackNew", "passhltHpsPFTauTrackNew>0", "goff");
-    double passhltHpsDoublePFTauTightNewBroken = newTreeBroken->Draw("passhltHpsDoublePFTauTightNew", "passhltHpsDoublePFTauTightNew>0", "goff");
-    double passhltHpsDoublePFTauAgainstMuonTightNewBroken = newTreeBroken->Draw("passhltHpsDoublePFTauAgainstMuonTightNew", "passhltHpsDoublePFTauAgainstMuonTightNew>0", "goff");
-    double passhltHpsPFTau50TightBroken = newTreeBroken->Draw("passhltHpsPFTau50Tight", "passhltHpsPFTau50Tight>0", "goff");
-    double passhltMatchedVBFIsoTauTwoTightBroken = newTreeBroken->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltMatchedVBFIsoTauTwoTight>0", "goff");
+    double passL1OldComp = newTreeBroken->Draw("passL1Old", "passL1Old>0", "goff");
+    double passhltHpsPFTauTrackOldComp = newTreeBroken->Draw("passhltHpsPFTauTrackOld", "passhltHpsPFTauTrackOld>0", "goff");
+    double passhltHpsDoublePFTauTightOldComp = newTreeBroken->Draw("passhltHpsDoublePFTauTightOld", "passhltHpsDoublePFTauTightOld>0", "goff");
+    double passhltHpsDoublePFTauAgainstMuonTightOldComp = newTreeBroken->Draw("passhltHpsDoublePFTauAgainstMuonTightOld", "passhltHpsDoublePFTauAgainstMuonTightOld>0", "goff");
+    double passhltMatchedVBFTwoTightComp = newTreeBroken->Draw("passhltMatchedVBFTwoTight", "passhltMatchedVBFTwoTight>0", "goff");
+    double passhltMatchedVBFOneTightComp = newTreeBroken->Draw("passhltMatchedVBFOneTight", "passhltMatchedVBFOneTight>0", "goff");
 
-    double passSelAndNewTrigBroken = newTreeBroken->Draw("passSelAndNewTrig", "passSelAndNewTrig>0", "goff");
+    double passSelAndOldTrigComp = newTreeBroken->Draw("passSelAndOldTrig", "passSelAndOldTrig>0", "goff");
 
     // put all the values into an array
-    double rawNewBroken[] = {passSelNewBroken, passL1NewBroken, passhltHpsPFTauTrackNewBroken, \
-		passhltHpsDoublePFTauTightNewBroken, passhltHpsDoublePFTauAgainstMuonTightNewBroken, \
-		passhltHpsPFTau50TightBroken, passhltMatchedVBFIsoTauTwoTightBroken, \
-		passhltMatchedVBFIsoTauTwoTightBroken, passSelAndNewTrigBroken};
+    double rawOldComp[] = {passSelOldComp, passL1OldComp, passhltHpsPFTauTrackOldComp, \
+		passhltHpsDoublePFTauTightOldComp, passhltHpsDoublePFTauAgainstMuonTightOldComp, \
+		passhltHpsDoublePFTauAgainstMuonTightOldComp, passhltMatchedVBFTwoTightComp, \
+		passhltMatchedVBFOneTightComp, passSelAndOldTrigComp};
 
-    
+
     //-------------------------------filling and plotting---------------------------------//
     // now that we have both containers, we can fill histograms and write them to canvases
     const char *names[9] = {"Offline Only", "Off. + L1", "Off. + Req. 1 Tau", "Off. + Req. 2nd Tau", \
@@ -109,7 +103,7 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
 	newFrac[i] = rawNew[i]/rawNew[0];
 	newTrigAbsEff->Fill(names[i], newFrac[i]);
 	//std::cout << "rawNew AbsEff: " << newFrac[i] << std::endl;
-	newFracBroken[i] = rawNewBroken[i]/rawNewBroken[0];
+	newFracBroken[i] = rawOldComp[i]/rawOldComp[0];
 	newTrigAbsEffBroken->Fill(names[i], newFracBroken[i]);
 	//std::cout << "rawNewBroken AbsEff: " << newFracBroken[i] << std::endl;
 
@@ -164,7 +158,7 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     legendAbsEff->SetHeader("Key", "C");
     legendAbsEff->AddEntry(oldTrigAbsEff, "Old Trigger Path");
     legendAbsEff->AddEntry(newTrigAbsEff, "New Trigger Path w/ Eta Fix");
-    legendAbsEff->AddEntry(newTrigAbsEffBroken, "New Trigger Path w/o Eta Fix");
+    legendAbsEff->AddEntry(newTrigAbsEffBroken, "Old Trigger Path NOT passing Sel");
     legendAbsEff->Draw();
 
     if (log == 1) c1->Print("offline_cutflowAbsEffLog.png", "png");
@@ -193,7 +187,7 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     legendRelEff->SetTextSize(0.035);
     legendRelEff->AddEntry(oldTrigRelEff, "Old Trigger Path");
     legendRelEff->AddEntry(newTrigRelEff, "New Trigger Path w/ Eta Fix");
-    legendRelEff->AddEntry(newTrigRelEffBroken, "New Trigger Path w/o Eta Fix");
+    legendRelEff->AddEntry(newTrigRelEffBroken, "Old Trigger Path NOT passing Sel");
     legendRelEff->Draw();
 
     if (log == 1) c2->Print("offline_cutflowRelEffLog.png", "png");

@@ -583,7 +583,7 @@ int main(int argc, char** argv)	{
 	    //if (newJetNum < 2) std::cout << newJetNum <<  " new jet objs present" << std::endl;
 	    newTauNum = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
 	    //if (newTauNum < 1) std::cout << newTauNum << " new tau objs present" << std::endl;
-	    
+	    std::cout << "hltL1VBF tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(0) << std::endl; 
 	    std::cout << "oldJetNum: " << oldJetNum << '\t' << "newJetNum: " << newJetNum << '\t' << "newTauNum: " << newTauNum << std::endl;
 	    std::vector<TLorentzVector> L1JetCand;
 	    for (int iOldJet = 0; iOldJet < oldJetNum; iOldJet++){

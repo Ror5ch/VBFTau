@@ -12,7 +12,7 @@
 // .x MakeAndDraw()
 //
 
-void print_counts(char* filename){
+void printCountsBasic(char* filename){
 
     TFile *_file0 = TFile::Open(filename);
 

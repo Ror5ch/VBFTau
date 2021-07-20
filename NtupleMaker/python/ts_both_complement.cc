@@ -77,7 +77,7 @@ int main(int argc, char** argv)	{
     }
     // offline selection should be consistently 5 GeV above HLT thresholds
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 80;//50;//25;
+	t1_pt_cut = 50;//80;//25;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
@@ -86,7 +86,7 @@ int main(int argc, char** argv)	{
 	triggerFlag = 0;
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 80;//50;//55;
+	t1_pt_cut = 50;//80;//55;
 	t2_pt_cut = 25;
 	j1_pt_cut = 120;//45;
 	j2_pt_cut = 45;
@@ -268,8 +268,8 @@ int main(int argc, char** argv)	{
     int sameTauPassSel = 0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 200000; iEntry++) {
-    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    //for (int iEntry = 0; iEntry < 200000; iEntry++) {
+    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
@@ -572,87 +572,6 @@ int main(int argc, char** argv)	{
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
-	// L1 object investigation in same trigger phase space
-	// passes offline selection, passes old trigger, doesn't pass new trigger
-	int oldJetNum, newJetNum, newTauNum;
-	if (passSel && passOldTrig && !passNewTrig) {
-	    // if there are L1 objects present for both, compare
-	    oldJetNum = inTree->hltL1VBFDiJetOR_pt->size();
-	    //if (oldJetNum >= 2) std::cout << oldJetNum << " old jet objs present" << std::endl;
-	    newJetNum = inTree->hltL1VBFDiJetIsoTau_jetPt->size();
-	    //if (newJetNum < 2) std::cout << newJetNum <<  " new jet objs present" << std::endl;
-	    newTauNum = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
-	    //if (newTauNum < 1) std::cout << newTauNum << " new tau objs present" << std::endl;
-	    std::cout << "hltL1VBF tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(0) << std::endl; 
-	    std::cout << "oldJetNum: " << oldJetNum << '\t' << "newJetNum: " << newJetNum << '\t' << "newTauNum: " << newTauNum << std::endl;
-	    std::vector<TLorentzVector> L1JetCand;
-	    for (int iOldJet = 0; iOldJet < oldJetNum; iOldJet++){
-
-		TLorentzVector L1Jet;
-        	L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-	        L1JetCand.push_back(L1Jet);
-		std::cout << "old jet Pt: " << L1Jet.Pt() << '\t' << " old jet invariant mass (L1Jet.M2()): " << L1Jet.M2() << std::endl;
-	     }
-	    // if new jets and taus present, compute dR by hand and see what's going on...
-	    if (oldJetNum >= 2 && newJetNum >= 2 && newTauNum >= 1) {
-		std::cout << "iEntry!: " <<  iEntry << std::endl;
-		std::cout << "-----------------------------" << std::endl;
-		std::cout << "oldJetNum: " << oldJetNum << '\t' << "newJetNum: " << newJetNum << '\t' << "newTauNum: " << newTauNum << std::endl;
-		// cout object kinems for now? "provided the jets are energetic enough, you can look for the tau..."
-		std::vector<TLorentzVector> L1JetCand;
-		TLorentzVector L1Jet;
-		for (int iOldJet = 0; iOldJet < oldJetNum; iOldJet++){
-		//std::cout << "iOldJet: " << iOldJet << std::endl;
-		std::cout << iOldJet << " old jet Pt: " << inTree->hltL1VBFDiJetOR_pt->at(iOldJet) << std::endl;
-		//std::cout << "jet Eta: " << inTree->hltL1VBFDiJetOR_eta->at(iOldJet) << std::endl;
-		//std::cout << "jet Phi: " << inTree->hltL1VBFDiJetOR_phi->at(iOldJet) << std::endl;
-		//std::cout << "jet Energy: " << inTree->hltL1VBFDiJetOR_energy->at(iOldJet) << std::endl;
-		L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-		//L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_jetPt->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetEta->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetPhi->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetEnergy->at(iOldJet));
-		L1JetCand.push_back(L1Jet);
-		}
-		std::vector<TLorentzVector> L1TauCand;
-		TLorentzVector L1Tau;
-		for (int iNewJet = 0; iNewJet < newJetNum; iNewJet++){
-		//std::cout << "iNewJet: " << iNewJet << std::endl;
-		std::cout << iNewJet << " new jet Pt: " << inTree->hltL1VBFDiJetIsoTau_jetPt->at(iNewJet) << std::endl;
-		//std::cout << "jet Eta: " << inTree->hltL1VBFDiJetIsoTau_jetEta->at(iNewJet) << std::endl;
-		//std::cout << "jet Phi: " << inTree->hltL1VBFDiJetIsoTau_jetPhi->at(iNewJet) << std::endl;
-		//std::cout << "jet Energy: " << inTree->hltL1VBFDiJetIsoTau_jetEnergy->at(iNewJet) << std::endl;
-		}
-		for (int iNewTau = 0; iNewTau < newTauNum; iNewTau++){
-		//std::cout << "iNewTau: " << iNewTau << std::endl;
-		std::cout << iNewTau << " new tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau) << std::endl;
-		//std::cout << "tau Eta: " << inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau) << std::endl;
-		//std::cout << "tau Phi: " << inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau) << std::endl;
-		//std::cout << "tau Energy: " << inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau) << std::endl;
-		L1Tau.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau));
-		L1TauCand.push_back(L1Tau);
-		std::cout << "tau inv mass: " << L1Tau.M2() << std::endl;
-		}
-		for (int iJetCand = 0; iJetCand < L1JetCand.size(); iJetCand++){
-		    for (int iTauCand = 0; iTauCand < L1TauCand.size(); iTauCand++){
-			std::cout << "old jet cand: " << iJetCand << " new tau cand: " << iTauCand << " dR: " \
-			<< L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) << " old jet pT: " \
-			<< L1JetCand.at(iJetCand).Pt() << " new tau pT: " << L1TauCand.at(iTauCand).Pt() << std::endl;
-		    }
-		}
-		std::cout << "-----------------------------" << std::endl;
-	    }
-	}
-
 /***
 	if (passOldTrig && inTree->hltL1VBFDiJetOR_pt->size() < 4){
 	std::cout << "-----------------------------" << std::endl;
@@ -668,7 +587,7 @@ int main(int argc, char** argv)	{
 ***/
 
 	// old trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
+	if (!passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
 	    passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
 	}
 
@@ -709,7 +628,7 @@ int main(int argc, char** argv)	{
 	}
 ***/
 	// new trigger filter cutflow eff flags
-	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
+	if (!passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
 					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) {
 	    passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
 	}
@@ -748,8 +667,8 @@ int main(int argc, char** argv)	{
 //	    std::cout << inTree->passhltMatchedVBFIsoTauTwoTight->size()  << std::endl;
 // 	}
 ***/
-	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
-	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
+	if (!passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
+	if (!passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
 
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
 	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;

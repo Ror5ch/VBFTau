@@ -24,3 +24,6 @@ then remake menu (l1 menu collision was changed slightly and you need to make su
 --l1Xml L1Menu_Collisions2018_v1_0_0-d1_fixed.xml
 
 does your conffile include triggerwithrefs?
+
+useful command from doyeong
+scram pro -n MyWorkingAreaName CMSSW CMSSW_10_3_3

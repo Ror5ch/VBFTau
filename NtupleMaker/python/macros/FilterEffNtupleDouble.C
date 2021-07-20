@@ -1,9 +1,9 @@
-void MakeAndDraw_auto(char* filename){
+void FilterEffNtupleDouble(char* filenameOne, char* filenameTwo){
 
     // get file
-    TFile *_file0 = TFile::Open(filename);
+    TFile *fileOne = TFile::Open(filenameOne);
     // get TTree (must go thru demo directory where the tree is stored)
-    TTree* tree = (TTree*)_file0->Get("demo/vbf");    
+    TTree* tree = (TTree*)fileOne->Get("demo/vbf");    
 
     //-------------------get data to be used in histos------------//
 
@@ -30,11 +30,6 @@ void MakeAndDraw_auto(char* filename){
 
     double passNewTrigTight = tree->Draw("passNewTrigTight", "passNewTrigTight>0", "goff");
 
-    // filters common to both triggers
-    //double passhltHpsPFTauTrack = tree->Draw("passhltHpsPFTauTrack", "passhltHpsPFTauTrack>0", "goff");
-    //double passhltHpsDoublePFTauTight = tree->Draw("passhltHpsDoublePFTauTight", "passhltHpsDoublePFTauTight>0", "goff");
-    //double passhltHpsDoublePFTauAgainstMuonTight = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
-
     // arrays holding these values
     // zeros where filters don't match / no counterpart exists
     double rawOld[] = {nEvents, passhltL1VBFDiJetOR, passhltHpsPFTauTrackOld, \
@@ -46,6 +41,32 @@ void MakeAndDraw_auto(char* filename){
 		passhltHpsPFTau50Tight, passhltMatchedVBFIsoTauTwoTight, \
 		passhltMatchedVBFIsoTauTwoTight, passNewTrigTight};
 
+
+    fileOne->Close();
+
+    // close first file and get data from second file
+    TFile *fileTwo = TFile::Open(filenameTwo);
+    // get TTree (must go thru demo directory where the tree is stored)
+    TTree* newTree = (TTree*)fileTwo->Get("demo/vbf");     
+
+    double nEventsTwo = newTree->Draw("nEvents", "nEvents>0", "goff");
+    // new trigger filters and final decision
+    double passhltL1VBFDiJetIsoTauTwo = newTree->Draw("passhltL1VBFDiJetIsoTau", "passhltL1VBFDiJetIsoTau>0", "goff");
+    double passhltHpsPFTauTrackNewTwo = newTree->Draw("passhltHpsPFTauTrack", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0", "goff");
+    double passhltHpsDoublePFTauTightNewTwo = newTree->Draw("passhltHpsDoublePFTauTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0", "goff");
+    double passhltHpsDoublePFTauAgainstMuonTightNewTwo = newTree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
+    double passhltHpsPFTau50TightTwo = newTree->Draw("passhltHpsPFTau50Tight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0", "goff");
+    double passhltMatchedVBFIsoTauTwoTightTwo = newTree->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0 && passhltMatchedVBFIsoTauTwoTight>0", "goff");
+
+    double passNewTrigTightTwo = newTree->Draw("passNewTrigTight", "passNewTrigTight>0", "goff");
+
+    double rawNewTwo[] = {nEventsTwo, passhltL1VBFDiJetIsoTauTwo, passhltHpsPFTauTrackNewTwo, \
+		passhltHpsDoublePFTauTightNewTwo, passhltHpsDoublePFTauAgainstMuonTightNewTwo, \
+		passhltHpsPFTau50TightTwo, passhltMatchedVBFIsoTauTwoTightTwo, \
+		passhltMatchedVBFIsoTauTwoTightTwo, passNewTrigTightTwo};
+
+
+
     //-----------------------------make histos-------------------//
 
     const char *names[9] = {"None", "L1", "Req. 1 Tau", "Req. 2nd Tau", \
@@ -54,9 +75,12 @@ void MakeAndDraw_auto(char* filename){
 
     TH1F* oldTrigAbsEff = new TH1F("oldTrigAbsEff","", 9, 0.0, 9.0);
     TH1F* newTrigAbsEff = new TH1F("newTrigAbsEff","", 9, 0.0, 9.0);
+    TH1F* newTrigAbsEffTwo = new TH1F("newTrigAbsEffTwo","", 9, 0.0, 9.0);
+    
 
     double oldFrac[9];
     double newFrac[9];
+    double newFracTwo[9];
     size_t n = sizeof(rawOld) / sizeof(double);
     for (int i = 0; i < n; i++){
 
@@ -66,27 +90,34 @@ void MakeAndDraw_auto(char* filename){
 	newFrac[i] = rawNew[i]/rawNew[0];
 	newTrigAbsEff->Fill(names[i], newFrac[i]);
 	//std::cout << "rawnewabseff: " << newFrac[i] << std::endl;
+	newFracTwo[i] = rawNewTwo[i]/rawNewTwo[0];
+	newTrigAbsEffTwo->Fill(names[i], newFracTwo[i]);
+	//std::cout << "rawnewabseff: " << newFracTwo[i] << std::endl;
 
     }
 
     TH1F* oldTrigRelEff = new TH1F("oldTrigRelEff", "", 8, 0.0, 8.0);
     TH1F* newTrigRelEff = new TH1F("newTrigRelEff", "", 8, 0.0, 8.0);
+    TH1F* newTrigRelEffTwo = new TH1F("newTrigRelEffTwo", "", 8, 0.0, 8.0);
    
     for (int i = 1; i < n; i++){
 
 	if (i == 8){
 	    oldTrigRelEff->Fill(names[i], oldFrac[i]/oldFrac[i-1]);
 	    newTrigRelEff->Fill(names[i], newFrac[i]/newFrac[i-2]);
+	    newTrigRelEffTwo->Fill(names[i], newFracTwo[i]/newFracTwo[i-2]);
 	}
 
 	else if(i == 6){
 	    oldTrigRelEff->Fill(names[i], oldFrac[i]/oldFrac[i-2]);
 	    newTrigRelEff->Fill(names[i], newFrac[i]/newFrac[i-1]);
+	    newTrigRelEffTwo->Fill(names[i], newFracTwo[i]/newFracTwo[i-1]);
 	}
 
 	else{
 	    oldTrigRelEff->Fill(names[i], oldFrac[i]/oldFrac[i-1]);
 	    newTrigRelEff->Fill(names[i], newFrac[i]/newFrac[i-1]);
+	    newTrigRelEffTwo->Fill(names[i], newFracTwo[i]/newFracTwo[i-1]);
 	}
 
     } 
@@ -103,11 +134,15 @@ void MakeAndDraw_auto(char* filename){
     newTrigAbsEff->SetLineStyle(7);
     newTrigAbsEff->SetLineColor(9);
     newTrigAbsEff->Draw("hist SAME");
+    newTrigAbsEffTwo->SetLineStyle(2);
+    newTrigAbsEffTwo->SetLineColor(2);
+    newTrigAbsEffTwo->Draw("hist SAME");
 
     auto legendAbsEff = new TLegend(0.48, 0.7, 0.9, 0.9);
     legendAbsEff->SetHeader("Key", "C");
     legendAbsEff->AddEntry(oldTrigAbsEff, "Old Trigger Path");
-    legendAbsEff->AddEntry(newTrigAbsEff, "New Trigger Path");
+    legendAbsEff->AddEntry(newTrigAbsEff, "New Trigger Path w/ Eta Fix");
+    legendAbsEff->AddEntry(newTrigAbsEffTwo, "New Trigger Path w/o Eta Fix");
     legendAbsEff->Draw();
 
     //c1->Print("cutflowAbsEffLog.png", "png");
@@ -127,12 +162,16 @@ void MakeAndDraw_auto(char* filename){
     newTrigRelEff->SetLineStyle(7);
     newTrigRelEff->SetLineColor(9);
     newTrigRelEff->Draw("hist SAME");
+    newTrigRelEffTwo->SetLineStyle(2);
+    newTrigRelEffTwo->SetLineColor(2);
+    newTrigRelEffTwo->Draw("hist SAME");
 
-    auto legendRelEff = new TLegend(0.1, 0.7, 0.4, 0.9);
+    auto legendRelEff = new TLegend(0.1, 0.7, 0.5, 0.9);
     legendRelEff->SetHeader("Key", "C");
     legendRelEff->SetTextSize(0.035);
     legendRelEff->AddEntry(oldTrigRelEff, "Old Trigger Path");
-    legendRelEff->AddEntry(newTrigRelEff, "New Trigger Path");
+    legendRelEff->AddEntry(newTrigRelEff, "New Trigger Path w/ Eta Fix");
+    legendRelEff->AddEntry(newTrigRelEffTwo, "New Trigger Path w/o Eta Fix");
     legendRelEff->Draw();
 
     //c2->Print("cutflowRelEffLog.png", "png");

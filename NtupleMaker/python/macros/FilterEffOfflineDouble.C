@@ -23,10 +23,13 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     double passSelAndOldTrig = oldTree->Draw("passSelAndOldTrig", "passSelAndOldTrig>0", "goff");
 
     // put all the values into an array
-    double rawOld[] = {passSelOld, passL1Old, passhltHpsPFTauTrackOld, \
+    //double rawOld[] = {passSelOld, passL1Old, passhltHpsPFTauTrackOld, \
 		passhltHpsDoublePFTauTightOld, passhltHpsDoublePFTauAgainstMuonTightOld, \
 		passhltHpsDoublePFTauAgainstMuonTightOld, passhltMatchedVBFTwoTight, \
 		passhltMatchedVBFOneTight, passSelAndOldTrig};
+    double rawOld[] = {passSelOld, passL1Old, passhltHpsDoublePFTauAgainstMuonTightOld, \
+		passhltHpsDoublePFTauAgainstMuonTightOld, passhltMatchedVBFTwoTight, \
+		passSelAndOldTrig};
 
     oldFile->Close();
 
@@ -51,11 +54,13 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     double passSelAndNewTrig = newTree->Draw("passSelAndNewTrig", "passSelAndNewTrig>0", "goff");
 
     // put all the values into an array
-    double rawNew[] = {passSelNew, passL1New, passhltHpsPFTauTrackNew, \
+    //double rawNew[] = {passSelNew, passL1New, passhltHpsPFTauTrackNew, \
 		passhltHpsDoublePFTauTightNew, passhltHpsDoublePFTauAgainstMuonTightNew, \
 		passhltHpsPFTau50Tight, passhltMatchedVBFIsoTauTwoTight, \
 		passhltMatchedVBFIsoTauTwoTight, passSelAndNewTrig};
-
+    double rawNew[] {passSelNew, passL1New, passhltHpsDoublePFTauAgainstMuonTightNew, \
+		passhltHpsPFTau50Tight, passhltMatchedVBFIsoTauTwoTight, \
+		passSelAndNewTrig};
 
     newFile->Close();
 
@@ -80,29 +85,37 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
     double passSelAndNewTrigBroken = newTreeBroken->Draw("passSelAndNewTrig", "passSelAndNewTrig>0", "goff");
 
     // put all the values into an array
-    double rawNewBroken[] = {passSelNewBroken, passL1NewBroken, passhltHpsPFTauTrackNewBroken, \
+    //double rawNewBroken[] = {passSelNewBroken, passL1NewBroken, passhltHpsPFTauTrackNewBroken, \
 		passhltHpsDoublePFTauTightNewBroken, passhltHpsDoublePFTauAgainstMuonTightNewBroken, \
 		passhltHpsPFTau50TightBroken, passhltMatchedVBFIsoTauTwoTightBroken, \
 		passhltMatchedVBFIsoTauTwoTightBroken, passSelAndNewTrigBroken};
-
+    double rawNewBroken[] = {passSelNewBroken, passL1NewBroken, \
+		passhltHpsDoublePFTauAgainstMuonTightNewBroken, \
+		passhltHpsPFTau50TightBroken, passhltMatchedVBFIsoTauTwoTightBroken, \
+		passSelAndNewTrigBroken};
     
     //-------------------------------filling and plotting---------------------------------//
     // now that we have both containers, we can fill histograms and write them to canvases
+    /***
     const char *names[9] = {"Offline Only", "Off. + L1", "Off. + Req. 1 Tau", "Off. + Req. 2nd Tau", \
 			"Off. + TauID vs Muon", "Off. + 45 GeV Tau (New)", "Off. + Req. 2 Jets", \
 			"Off. + 115 GeV Jet (Old)", "Off. + Trigger"};
+    ***/
+    const char *names[6] = {"Offline Only", "Off. + L1", "Off. + Req. 2nd Tau", \
+			"Off. + 45 GeV Tau (New)", "Off. + Req. 2 Jets", "Off. + Trigger"};
 
-    TH1F* oldTrigAbsEff = new TH1F("oldTrigAbsEff","", 9, 0.0, 9.0);
-    TH1F* newTrigAbsEff = new TH1F("newTrigAbsEff","", 9, 0.0, 9.0);
-    TH1F* newTrigAbsEffBroken = new TH1F("newTrigAbsEffBroken","", 9, 0.0, 9.0);
+    TH1F* oldTrigAbsEff = new TH1F("oldTrigAbsEff","", 6, 0.0, 6.0);
+    TH1F* newTrigAbsEff = new TH1F("newTrigAbsEff","", 6, 0.0, 6.0);
+    TH1F* newTrigAbsEffBroken = new TH1F("newTrigAbsEffBroken","", 6, 0.0, 6.0);
 
-    double oldFrac[9];
-    double newFrac[9];
-    double newFracBroken[9];
+    double oldFrac[6];
+    double newFrac[6];
+    double newFracBroken[6];
     size_t n = sizeof(rawOld) / sizeof(double);
     for (int i = 0; i < n; i++){
 
 	//std::cout << i << std::endl;
+	std::cout << "Event # for label: " << names[i] << std::endl;
 	oldFrac[i] = rawOld[i]/rawOld[0];
         oldTrigAbsEff->Fill(names[i], oldFrac[i]);
 	//std::cout << "rawOld AbsEff: " << oldFrac[i] << std::endl;
@@ -112,12 +125,13 @@ void FilterEffOfflineDouble(char* inFileOld, char* inFileNew, char* inFileNewBro
 	newFracBroken[i] = rawNewBroken[i]/rawNewBroken[0];
 	newTrigAbsEffBroken->Fill(names[i], newFracBroken[i]);
 	//std::cout << "rawNewBroken AbsEff: " << newFracBroken[i] << std::endl;
+	std::cout << rawOld[i] << '\t' << rawNew[i] << '\t' << rawNewBroken[i] << std::endl;
 
     }
 
-    TH1F* oldTrigRelEff = new TH1F("oldTrigRelEff", "", 8, 0.0, 8.0);
-    TH1F* newTrigRelEff = new TH1F("newTrigRelEff", "", 8, 0.0, 8.0);
-    TH1F* newTrigRelEffBroken = new TH1F("newTrigRelEffBroken", "", 8, 0.0, 8.0);
+    TH1F* oldTrigRelEff = new TH1F("oldTrigRelEff", "", 5, 0.0, 5.0);
+    TH1F* newTrigRelEff = new TH1F("newTrigRelEff", "", 5, 0.0, 5.0);
+    TH1F* newTrigRelEffBroken = new TH1F("newTrigRelEffBroken", "", 5, 0.0, 5.0);
    
     for (int i = 1; i < n; i++){
 

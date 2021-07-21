@@ -41,9 +41,13 @@ if __name__ == '__main__':
     yesno4 = raw_input('y/n? ')
     print("Did you remove the OR conditions on L1 old trigger in hlt paths?")
     yesno5 = raw_input('y/n? ')
+    print("Did you add the L1 ditau trigger?")
+    yesno6 = raw_input('y/n? ')
+    print("Did you remove the OR conditions on L1 ditau trigger in hlt paths?")
+    yesno7 = raw_input('y/n? ')
 
-    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' or yesno5 == 'n'\
-	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == '' or yesno5 == 'n'):
+    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' or yesno5 == 'n' or yesno6 == 'n' or yesno7 == 'n'\
+	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == '' or yesno5 == '' or yesno6 == '' or yesno7 == ''):
 	print("Well, go fix that!")
 	sys.exit()
 

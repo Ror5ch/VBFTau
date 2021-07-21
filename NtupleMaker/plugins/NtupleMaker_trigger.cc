@@ -6,9 +6,9 @@
 
 using namespace std; // I think best practice is to include <vector> explicitly at the top of the file
 
-vector<int> runNumber;
-vector<int> lumiBlock;
-vector<int> eventNumberID;
+int runNumber;
+int lumiBlock;
+int eventNumberID;
 
 bool passDitauTrig_;
 vector<bool> passDitauTrig;
@@ -358,9 +358,12 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     using namespace edm;
 
-    runNumber.push_back(iEvent.id().run()); 
-    lumiBlock.push_back(iEvent.id().luminosityBlock());
-    eventNumberID.push_back(iEvent.id().event());
+    //runNumber.push_back(iEvent.id().run()); 
+    //lumiBlock.push_back(iEvent.id().luminosityBlock());
+    //eventNumberID.push_back(iEvent.id().event());
+    runNumber = iEvent.id().run();
+    lumiBlock = iEvent.id().run();
+    eventNumberID = iEvent.id().run();
 
     // clearing vectors at the start of every event 
     nEvents = 0;

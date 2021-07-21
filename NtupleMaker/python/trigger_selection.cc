@@ -143,20 +143,23 @@ int main(int argc, char** argv)	{
 
     // offline filter eff cutflow flag vars
     int passL1Old;
-    int passhltHpsPFTauTrackOld;
+    int passhltHpsDoublePFTau20Old;
     int passhltHpsDoublePFTauTightOld;
     int passhltHpsDoublePFTauAgainstMuonTightOld;
     int passhltMatchedVBFTwoTight;
     int passhltMatchedVBFOneTight;
 
     int passL1New;
-    int passhltHpsPFTauTrackNew;
+    int passhltHpsDoublePFTau20New;
     int passhltHpsDoublePFTauTightNew;
     int passhltHpsDoublePFTauAgainstMuonTightNew;
     int passhltHpsPFTau50Tight;
     int passhltMatchedVBFIsoTauTwoTight;
 
     // normal offline flag vars
+    // delete these when you have time
+    // basic or "preselection" should never be used as it has no physical meaning.
+    // this is kind of like tying your shoes together from an analysis standpoint
     int passBase;
     int passBaseAndOldTrig;
     int passBaseOldTrigAndMatchedTaus;
@@ -183,8 +186,15 @@ int main(int argc, char** argv)	{
     int passSelNewTrigAndMatchedBoth;
 
     int overlapped;
-    
+   
+    int nEvents, runNumber, lumiBlock, eventNumberID;
+ 
     // filled data branches
+    //
+    outTree->Branch("nEvents", &nEvents);
+    outTree->Branch("runNumber", &runNumber);
+    outTree->Branch("lumiBlock", &lumiBlock);
+    outTree->Branch("eventNumberID", &eventNumberID);
     // hlt vars
     outTree->Branch("j1_pt", &j1_pt);
     outTree->Branch("j1_eta", &j1_eta);
@@ -227,14 +237,14 @@ int main(int argc, char** argv)	{
     // offline filter eff cutflow vars
     // path for old trigger
     outTree->Branch("passL1Old", &passL1Old);
-    outTree->Branch("passhltHpsPFTauTrackOld", &passhltHpsPFTauTrackOld);
+    outTree->Branch("passhltHpsDoublePFTau20Old", &passhltHpsDoublePFTau20Old);
     outTree->Branch("passhltHpsDoublePFTauTightOld", &passhltHpsDoublePFTauTightOld);
     outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightOld", &passhltHpsDoublePFTauAgainstMuonTightOld);
     outTree->Branch("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
     outTree->Branch("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
     // path for new trigger
     outTree->Branch("passL1New", &passL1New);
-    outTree->Branch("passhltHpsPFTauTrackNew", &passhltHpsPFTauTrackNew);
+    outTree->Branch("passhltHpsDoublePFTau20New", &passhltHpsDoublePFTau20New);
     outTree->Branch("passhltHpsDoublePFTauTightNew", &passhltHpsDoublePFTauTightNew);
     outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightNew", &passhltHpsDoublePFTauAgainstMuonTightNew);
     outTree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
@@ -268,23 +278,28 @@ int main(int argc, char** argv)	{
     int sameTauPassSel = 0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 200000; iEntry++) {
-    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    //for (int iEntry = 0; iEntry < 3000; iEntry++) {
+    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
+
+	nEvents = inTree->nEvents;
+	runNumber = inTree->runNumber->at(0); //update to ints in NtupleMaker
+	lumiBlock = inTree->lumiBlock->at(0);
+	eventNumberID = inTree->eventNumberID->at(0);
 
 	// initialize all flags to zero
 	// offline trigger filter cutflow efficiency flags	
 	// old trigger path
 	passL1Old = 0;
-	passhltHpsPFTauTrackOld = 0;
+	passhltHpsDoublePFTau20Old = 0;
         passhltHpsDoublePFTauTightOld = 0;
 	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
     	passhltMatchedVBFTwoTight = 0;
  	passhltMatchedVBFOneTight = 0;
 	// new trigger path
 	passL1New = 0;
-	passhltHpsPFTauTrackNew = 0;
+	passhltHpsDoublePFTau20New = 0;
 	passhltHpsDoublePFTauTightNew = 0;
 	passhltHpsDoublePFTauAgainstMuonTightNew = 0;
 	passhltHpsPFTau50Tight = 0;
@@ -574,39 +589,28 @@ int main(int argc, char** argv)	{
 
 	// L1 object investigation in same trigger phase space
 	// passes offline selection, passes old trigger, doesn't pass new trigger
-	int oldJetNum, newJetNum, newTauNum;
-	if (passSel && passOldTrig && !passNewTrig) {
-	    // if there are L1 objects present for both, compare
-	    oldJetNum = inTree->hltL1VBFDiJetOR_pt->size();
-	    //if (oldJetNum >= 2) std::cout << oldJetNum << " old jet objs present" << std::endl;
-	    newJetNum = inTree->hltL1VBFDiJetIsoTau_jetPt->size();
-	    //if (newJetNum < 2) std::cout << newJetNum <<  " new jet objs present" << std::endl;
-	    newTauNum = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
-	    //if (newTauNum < 1) std::cout << newTauNum << " new tau objs present" << std::endl;
-	    std::cout << "hltL1VBF tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(0) << std::endl; 
-	    std::cout << "oldJetNum: " << oldJetNum << '\t' << "newJetNum: " << newJetNum << '\t' << "newTauNum: " << newTauNum << std::endl;
-	    std::vector<TLorentzVector> L1JetCand;
-	    for (int iOldJet = 0; iOldJet < oldJetNum; iOldJet++){
+	int jetNum, tauNum;
+	if (passSel && passOldTrig && inTree->hltL1VBFDiJetIsoTau_pt->size() == 0) { 
+		//!passNewTrig) { // not pass new trigger or not pass new L1? I think the second
 
-		TLorentzVector L1Jet;
-        	L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-	        L1JetCand.push_back(L1Jet);
-		std::cout << "old jet Pt: " << L1Jet.Pt() << '\t' << " old jet invariant mass (L1Jet.M2()): " << L1Jet.M2() << std::endl;
-	     }
+	    jetNum = inTree->hltL1VBFDiJetOR_pt->size(); // jets from old trigger
+	    tauNum = inTree->hltL1sDoubleTauBigOR_pt->size(); // taus from ditau trigger
+
+	    std::cout << "jetNum: " << jetNum << " tau Num: " << tauNum << std::endl;
+
 	    // if new jets and taus present, compute dR by hand and see what's going on...
-	    if (oldJetNum >= 2 && newJetNum >= 2 && newTauNum >= 1) {
+	    
+	    if (jetNum >= 2 && tauNum >= 1) { // only need one tau from ditau trigger, except it won't fire unless there's at least two..
 		std::cout << "iEntry!: " <<  iEntry << std::endl;
 		std::cout << "-----------------------------" << std::endl;
-		std::cout << "oldJetNum: " << oldJetNum << '\t' << "newJetNum: " << newJetNum << '\t' << "newTauNum: " << newTauNum << std::endl;
-		// cout object kinems for now? "provided the jets are energetic enough, you can look for the tau..."
+
+		// "provided the jets are energetic enough, you can look for the tau..."
+
 		std::vector<TLorentzVector> L1JetCand;
 		TLorentzVector L1Jet;
-		for (int iOldJet = 0; iOldJet < oldJetNum; iOldJet++){
+		for (int iOldJet = 0; iOldJet < jetNum; iOldJet++){
 		//std::cout << "iOldJet: " << iOldJet << std::endl;
-		std::cout << iOldJet << " old jet Pt: " << inTree->hltL1VBFDiJetOR_pt->at(iOldJet) << std::endl;
+		//std::cout << iOldJet << " old jet Pt: " << inTree->hltL1VBFDiJetOR_pt->at(iOldJet) << std::endl;
 		//std::cout << "jet Eta: " << inTree->hltL1VBFDiJetOR_eta->at(iOldJet) << std::endl;
 		//std::cout << "jet Phi: " << inTree->hltL1VBFDiJetOR_phi->at(iOldJet) << std::endl;
 		//std::cout << "jet Energy: " << inTree->hltL1VBFDiJetOR_energy->at(iOldJet) << std::endl;
@@ -614,39 +618,30 @@ int main(int argc, char** argv)	{
 				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-		//L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_jetPt->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetEta->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetPhi->at(iOldJet),
-		//			inTree->hltL1VBFDiJetIsoTau_jetEnergy->at(iOldJet));
 		L1JetCand.push_back(L1Jet);
 		}
+
+
 		std::vector<TLorentzVector> L1TauCand;
 		TLorentzVector L1Tau;
-		for (int iNewJet = 0; iNewJet < newJetNum; iNewJet++){
-		//std::cout << "iNewJet: " << iNewJet << std::endl;
-		std::cout << iNewJet << " new jet Pt: " << inTree->hltL1VBFDiJetIsoTau_jetPt->at(iNewJet) << std::endl;
-		//std::cout << "jet Eta: " << inTree->hltL1VBFDiJetIsoTau_jetEta->at(iNewJet) << std::endl;
-		//std::cout << "jet Phi: " << inTree->hltL1VBFDiJetIsoTau_jetPhi->at(iNewJet) << std::endl;
-		//std::cout << "jet Energy: " << inTree->hltL1VBFDiJetIsoTau_jetEnergy->at(iNewJet) << std::endl;
-		}
-		for (int iNewTau = 0; iNewTau < newTauNum; iNewTau++){
+		for (int iNewTau = 0; iNewTau < tauNum; iNewTau++){
 		//std::cout << "iNewTau: " << iNewTau << std::endl;
-		std::cout << iNewTau << " new tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau) << std::endl;
+		//std::cout << iNewTau << " new tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau) << std::endl;
 		//std::cout << "tau Eta: " << inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau) << std::endl;
 		//std::cout << "tau Phi: " << inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau) << std::endl;
 		//std::cout << "tau Energy: " << inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau) << std::endl;
-		L1Tau.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau),
-					inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau));
+		L1Tau.SetPtEtaPhiE(inTree->hltL1sDoubleTauBigOR_pt->at(iNewTau),
+					inTree->hltL1sDoubleTauBigOR_eta->at(iNewTau),
+					inTree->hltL1sDoubleTauBigOR_phi->at(iNewTau),
+					inTree->hltL1sDoubleTauBigOR_energy->at(iNewTau));
 		L1TauCand.push_back(L1Tau);
-		std::cout << "tau inv mass: " << L1Tau.M2() << std::endl;
 		}
+
 		for (int iJetCand = 0; iJetCand < L1JetCand.size(); iJetCand++){
 		    for (int iTauCand = 0; iTauCand < L1TauCand.size(); iTauCand++){
 			std::cout << "old jet cand: " << iJetCand << " new tau cand: " << iTauCand << " dR: " \
-			<< L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) << " old jet pT: " \
-			<< L1JetCand.at(iJetCand).Pt() << " new tau pT: " << L1TauCand.at(iTauCand).Pt() << std::endl;
+			<< L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) << '\t' << " old jet pT: " \
+			<< L1JetCand.at(iJetCand).Pt() << '\t' << " new tau pT: " << L1TauCand.at(iTauCand).Pt() << std::endl;
 		    }
 		}
 		std::cout << "-----------------------------" << std::endl;
@@ -657,7 +652,7 @@ int main(int argc, char** argv)	{
 	if (passOldTrig && inTree->hltL1VBFDiJetOR_pt->size() < 4){
 	std::cout << "-----------------------------" << std::endl;
 	std::cout << "L1VBFDiJetOR: " << inTree->hltL1VBFDiJetOR_pt->size() << std::endl; // 3
-	std::cout << "PFTauTrack: " << inTree->hltHpsPFTauTrack_pt->size() << std::endl; // 2
+	std::cout << "PFTauTrack: " << inTree->hltHpsDoublePFTau20_pt->size() << std::endl; // 2
 	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
 	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 2
 	std::cout << "MatchedVBFTwoTight: " << inTree->hltMatchedVBFTwoTight_pt->size() << std::endl; // 2
@@ -669,27 +664,27 @@ int main(int argc, char** argv)	{
 
 	// old trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
-	    passL1Old = inTree->passhltL1VBFDiJetOR->at(0);
+	    passL1Old = inTree->passhltL1VBFDiJetOR;
 	}
 
-	if (passL1Old && inTree->hltHpsPFTauTrack_pt->size() >= 2) {
-	    passhltHpsPFTauTrackOld = inTree->passhltHpsPFTauTrack->at(0);
+	if (passL1Old && inTree->hltHpsDoublePFTau20_pt->size() >= 2) {
+	    passhltHpsDoublePFTau20Old = inTree->passhltHpsDoublePFTau20;
 	}
 
-	if (passhltHpsPFTauTrackOld && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
-	    passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight->at(0); 
+	if (passhltHpsDoublePFTau20Old && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
+	    passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight; 
 	}
 
 	if (passhltHpsDoublePFTauTightOld && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) {
-	    passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	    passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight;
 	}
 
 	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->hltMatchedVBFTwoTight_pt->size() >= 2) {
-	    passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight->at(0);
+	    passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight;
 	}
 
 	if (passhltMatchedVBFTwoTight && inTree->hltMatchedVBFOneTight_pt->size() >= 1) {
-	    passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight->at(0);
+	    passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
 	}
 
 /***
@@ -698,7 +693,7 @@ int main(int argc, char** argv)	{
 	std::cout << "L1VBFDiJetIsoTau Tau#: " << inTree->hltL1VBFDiJetIsoTau_tauPt->size() << std::endl; // 1
 	std::cout << "L1VBFDiJetIsoTau Jet#: " << inTree->hltL1VBFDiJetIsoTau_jetPt->size() << std::endl; // 2
 
-	std::cout << "PFTauTrack: " << inTree->hltHpsPFTauTrack_pt->size() << std::endl; // 2
+	std::cout << "PFTauTrack: " << inTree->hltHpsDoublePFTau20_pt->size() << std::endl; // 2
 	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
 	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 1
 	std::cout << "HpsPFTau50Tight: " << inTree->hltHpsPFTau50Tight_pt->size() << std::endl;
@@ -711,27 +706,27 @@ int main(int argc, char** argv)	{
 	// new trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
 					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) {
-	    passL1New = inTree->passhltL1VBFDiJetIsoTau->at(0);
+	    passL1New = inTree->passhltL1VBFDiJetIsoTau;
 	}
 
-	if (passL1New && inTree->hltHpsPFTauTrack_pt->size() >= 2) {
-	    passhltHpsPFTauTrackNew = inTree->passhltHpsPFTauTrack->at(0);
+	if (passL1New && inTree->hltHpsDoublePFTau20_pt->size() >= 2) {
+	    passhltHpsDoublePFTau20New = inTree->passhltHpsDoublePFTau20;
 	}
 
-	if (passhltHpsPFTauTrackNew && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
-	    passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight->at(0);
+	if (passhltHpsDoublePFTau20New && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) {
+	    passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight;
 	}
 
 	if (passhltHpsDoublePFTauTightNew && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) {
-	    passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight->at(0);
+	    passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight;
 	}
 
 	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->hltHpsPFTau50Tight_pt->size() >= 1) {
-	    passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight->at(0);
+	    passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight;
 	}
 
 	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) {
-	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight->at(0);
+	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 	}
 /***
 	if (passSel && (inTree->passhltMatchedVBFIsoTauTwoTight->size()>0 != inTree->passNewTrigTight->at(0))){

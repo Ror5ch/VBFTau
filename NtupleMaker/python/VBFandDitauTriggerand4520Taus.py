@@ -18115,7 +18115,7 @@ process.hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltVBFIsoTauL1TLooseIDPFJetsMatching = cms.EDProducer( "L1TPFJetsMatching",
     pt3Min = cms.double( 40.0 ),
@@ -18162,7 +18162,7 @@ process.hltHpsPFTau50TrackPt1MediumChargedIsolationL1HLTMatched = cms.EDFilter( 
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackMediumChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleMediumChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon" ),
@@ -18200,7 +18200,7 @@ process.hltHpsPFTau50TrackPt1LooseChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackLooseChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleLooseChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon" ),
@@ -18344,8 +18344,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(False)#True)
-     , needJets = cms.untracked.bool(False)#True)
+     , needTaus = cms.untracked.bool(True)
+     , needJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -18362,8 +18362,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-        #process.rerunMvaIsolationSequence *
-        #getattr(process,updatedTauName) *
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName) *
         process.demo
 )
 

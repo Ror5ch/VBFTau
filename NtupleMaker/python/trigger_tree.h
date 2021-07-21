@@ -12,8 +12,13 @@ public :
     Int_t	fCurrent;
 
     // from HLT
-    std::vector<int>* nEvents = nullptr;
+    std::vector<int>* runNumber = nullptr;
+    std::vector<int>* lumiBlock = nullptr;
+    std::vector<int>* eventNumberID = nullptr;
 
+    int nEvents;
+
+    std::vector<bool>* passDitauTrig = nullptr;
     std::vector<bool>* passOldTrigTight = nullptr;
     std::vector<bool>* passOldTrigMedium = nullptr;
     std::vector<bool>* passOldTrigLoose = nullptr;
@@ -21,13 +26,19 @@ public :
     std::vector<bool>* passNewTrigMedium = nullptr;
     std::vector<bool>* passNewTrigLoose = nullptr;
 
-    std::vector<int>* passhltL1VBFDiJetOR = nullptr;
+    int passhltL1VBFDiJetOR;
     std::vector<float>* hltL1VBFDiJetOR_pt = nullptr;
     std::vector<float>* hltL1VBFDiJetOR_eta = nullptr;
     std::vector<float>* hltL1VBFDiJetOR_phi = nullptr;
     std::vector<float>* hltL1VBFDiJetOR_energy = nullptr;
 
-    std::vector<int>* passhltL1VBFDiJetIsoTau = nullptr;
+    int passhltL1sDoubleTauBigOR;
+    std::vector<float>* hltL1sDoubleTauBigOR_pt = nullptr;
+    std::vector<float>* hltL1sDoubleTauBigOR_eta = nullptr;
+    std::vector<float>* hltL1sDoubleTauBigOR_phi = nullptr;
+    std::vector<float>* hltL1sDoubleTauBigOR_energy = nullptr;
+
+    int passhltL1VBFDiJetIsoTau;
     std::vector<float>* hltL1VBFDiJetIsoTau_nJets = nullptr;
     std::vector<float>* hltL1VBFDiJetIsoTau_jetPt = nullptr;
     std::vector<float>* hltL1VBFDiJetIsoTau_jetEta = nullptr; 
@@ -39,109 +50,109 @@ public :
     std::vector<float>* hltL1VBFDiJetIsoTau_tauPhi = nullptr; 
     std::vector<float>* hltL1VBFDiJetIsoTau_tauEnergy = nullptr; 
 
-    std::vector<int>* passhltHpsPFTauTrack = nullptr;
-    std::vector<float>* hltHpsPFTauTrack_pt = nullptr;
-    std::vector<float>* hltHpsPFTauTrack_eta = nullptr;
-    std::vector<float>* hltHpsPFTauTrack_phi = nullptr;
-    std::vector<float>* hltHpsPFTauTrack_energy = nullptr;
+    int passhltHpsDoublePFTau20;
+    std::vector<float>* hltHpsDoublePFTau20_pt = nullptr;
+    std::vector<float>* hltHpsDoublePFTau20_eta = nullptr;
+    std::vector<float>* hltHpsDoublePFTau20_phi = nullptr;
+    std::vector<float>* hltHpsDoublePFTau20_energy = nullptr;
 
     // multiple working points
-    std::vector<int>* passhltHpsDoublePFTauTight = nullptr;
+    int passhltHpsDoublePFTauTight;
     std::vector<float>* hltHpsDoublePFTauTight_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauTight_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauTight_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauTight_energy = nullptr;
-    std::vector<int>* passhltHpsDoublePFTauMedium = nullptr;
+    int passhltHpsDoublePFTauMedium;
     std::vector<float>* hltHpsDoublePFTauMedium_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauMedium_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauMedium_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauMedium_energy = nullptr;
-    std::vector<int>* passhltHpsDoublePFTauLoose = nullptr;
+    int passhltHpsDoublePFTauLoose;
     std::vector<float>* hltHpsDoublePFTauLoose_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauLoose_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauLoose_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauLoose_energy = nullptr;
 
     // multiple working points
-    std::vector<int>* passhltHpsDoublePFTauAgainstMuonTight = nullptr;
+    int passhltHpsDoublePFTauAgainstMuonTight;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonTight_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonTight_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonTight_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonTight_energy = nullptr;
-    std::vector<int>* passhltHpsDoublePFTauAgainstMuonMedium = nullptr;
+    int passhltHpsDoublePFTauAgainstMuonMedium;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonMedium_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonMedium_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonMedium_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonMedium_energy = nullptr;
-    std::vector<int>* passhltHpsDoublePFTauAgainstMuonLoose = nullptr;
+    int passhltHpsDoublePFTauAgainstMuonLoose;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonLoose_pt = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonLoose_eta = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonLoose_phi = nullptr;
     std::vector<float>* hltHpsDoublePFTauAgainstMuonLoose_energy = nullptr;
 
     // multiple working points
-    std::vector<int>* passhltHpsPFTau50Tight = nullptr;
-    std::vector<float>* hltHpsPFTau50Tight_pt = nullptr;
-    std::vector<float>* hltHpsPFTau50Tight_eta = nullptr; 
-    std::vector<float>* hltHpsPFTau50Tight_phi = nullptr; 
-    std::vector<float>* hltHpsPFTau50Tight_energy = nullptr;
-    std::vector<int>* passhltHpsPFTau50Medium = nullptr;
-    std::vector<float>* hltHpsPFTau50Medium_pt = nullptr;
-    std::vector<float>* hltHpsPFTau50Medium_eta = nullptr; 
-    std::vector<float>* hltHpsPFTau50Medium_phi = nullptr; 
-    std::vector<float>* hltHpsPFTau50Medium_energy = nullptr; 
-    std::vector<int>* passhltHpsPFTau50Loose = nullptr;
-    std::vector<float>* hltHpsPFTau50Loose_pt = nullptr;
-    std::vector<float>* hltHpsPFTau50Loose_eta = nullptr; 
-    std::vector<float>* hltHpsPFTau50Loose_phi = nullptr; 
-    std::vector<float>* hltHpsPFTau50Loose_energy = nullptr; 
-
-    // multiple working points
-    std::vector<int>* passhltMatchedVBFOneTight = nullptr;
-    std::vector<float>* hltMatchedVBFOneTight_pt = nullptr;
-    std::vector<float>* hltMatchedVBFOneTight_eta = nullptr;
-    std::vector<float>* hltMatchedVBFOneTight_phi = nullptr;
-    std::vector<float>* hltMatchedVBFOneTight_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFOneMedium = nullptr;
-    std::vector<float>* hltMatchedVBFOneMedium_pt = nullptr;
-    std::vector<float>* hltMatchedVBFOneMedium_eta = nullptr;
-    std::vector<float>* hltMatchedVBFOneMedium_phi = nullptr;
-    std::vector<float>* hltMatchedVBFOneMedium_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFOneLoose = nullptr;
-    std::vector<float>* hltMatchedVBFOneLoose_pt = nullptr;
-    std::vector<float>* hltMatchedVBFOneLoose_eta = nullptr;
-    std::vector<float>* hltMatchedVBFOneLoose_phi = nullptr;
-    std::vector<float>* hltMatchedVBFOneLoose_energy = nullptr;
-
-    // multiple working points
-    std::vector<int>* passhltMatchedVBFTwoTight = nullptr;
+    int passhltMatchedVBFTwoTight;
     std::vector<float>* hltMatchedVBFTwoTight_pt = nullptr;
     std::vector<float>* hltMatchedVBFTwoTight_eta = nullptr;
     std::vector<float>* hltMatchedVBFTwoTight_phi = nullptr;
     std::vector<float>* hltMatchedVBFTwoTight_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFTwoMedium = nullptr;
+    int passhltMatchedVBFTwoMedium;
     std::vector<float>* hltMatchedVBFTwoMedium_pt = nullptr;
     std::vector<float>* hltMatchedVBFTwoMedium_eta = nullptr;
     std::vector<float>* hltMatchedVBFTwoMedium_phi = nullptr;
     std::vector<float>* hltMatchedVBFTwoMedium_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFTwoLoose = nullptr;
+    int passhltMatchedVBFTwoLoose;
     std::vector<float>* hltMatchedVBFTwoLoose_pt = nullptr;
     std::vector<float>* hltMatchedVBFTwoLoose_eta = nullptr;
     std::vector<float>* hltMatchedVBFTwoLoose_phi = nullptr;
     std::vector<float>* hltMatchedVBFTwoLoose_energy = nullptr;
 
     // multiple working points
-    std::vector<int>* passhltMatchedVBFIsoTauTwoTight = nullptr;
+    int passhltMatchedVBFOneTight;
+    std::vector<float>* hltMatchedVBFOneTight_pt = nullptr;
+    std::vector<float>* hltMatchedVBFOneTight_eta = nullptr;
+    std::vector<float>* hltMatchedVBFOneTight_phi = nullptr;
+    std::vector<float>* hltMatchedVBFOneTight_energy = nullptr;
+    int passhltMatchedVBFOneMedium;
+    std::vector<float>* hltMatchedVBFOneMedium_pt = nullptr;
+    std::vector<float>* hltMatchedVBFOneMedium_eta = nullptr;
+    std::vector<float>* hltMatchedVBFOneMedium_phi = nullptr;
+    std::vector<float>* hltMatchedVBFOneMedium_energy = nullptr;
+    int passhltMatchedVBFOneLoose;
+    std::vector<float>* hltMatchedVBFOneLoose_pt = nullptr;
+    std::vector<float>* hltMatchedVBFOneLoose_eta = nullptr;
+    std::vector<float>* hltMatchedVBFOneLoose_phi = nullptr;
+    std::vector<float>* hltMatchedVBFOneLoose_energy = nullptr;
+
+    // multiple working points
+    int passhltHpsPFTau50Tight;
+    std::vector<float>* hltHpsPFTau50Tight_pt = nullptr;
+    std::vector<float>* hltHpsPFTau50Tight_eta = nullptr; 
+    std::vector<float>* hltHpsPFTau50Tight_phi = nullptr; 
+    std::vector<float>* hltHpsPFTau50Tight_energy = nullptr;
+    int passhltHpsPFTau50Medium;
+    std::vector<float>* hltHpsPFTau50Medium_pt = nullptr;
+    std::vector<float>* hltHpsPFTau50Medium_eta = nullptr; 
+    std::vector<float>* hltHpsPFTau50Medium_phi = nullptr; 
+    std::vector<float>* hltHpsPFTau50Medium_energy = nullptr; 
+    int passhltHpsPFTau50Loose;
+    std::vector<float>* hltHpsPFTau50Loose_pt = nullptr;
+    std::vector<float>* hltHpsPFTau50Loose_eta = nullptr; 
+    std::vector<float>* hltHpsPFTau50Loose_phi = nullptr; 
+    std::vector<float>* hltHpsPFTau50Loose_energy = nullptr; 
+
+    // multiple working points
+    int passhltMatchedVBFIsoTauTwoTight;
     std::vector<float>* hltMatchedVBFIsoTauTwoTight_pt = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoTight_eta = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoTight_phi = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoTight_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFIsoTauTwoMedium = nullptr;
+    int passhltMatchedVBFIsoTauTwoMedium;
     std::vector<float>* hltMatchedVBFIsoTauTwoMedium_pt = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoMedium_eta = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoMedium_phi = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoMedium_energy = nullptr;
-    std::vector<int>* passhltMatchedVBFIsoTauTwoLoose = nullptr;
+    int passhltMatchedVBFIsoTauTwoLoose;
     std::vector<float>* hltMatchedVBFIsoTauTwoLoose_pt = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoLoose_eta = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoLoose_phi = nullptr;
@@ -208,8 +219,13 @@ void trigger_tree::Init(TTree *tree)
     fCurrent = -1;
 
     // from HLT
+    fChain->SetBranchAddress("runNumber", &runNumber);
+    fChain->SetBranchAddress("lumiBlock", &lumiBlock);
+    fChain->SetBranchAddress("eventNumberID", &eventNumberID);
+
     fChain->SetBranchAddress("nEvents", &nEvents);
 
+    fChain->SetBranchAddress("passDitauTrig", &passDitauTrig);
     fChain->SetBranchAddress("passOldTrigTight", &passOldTrigTight);
     fChain->SetBranchAddress("passOldTrigMedium", &passOldTrigMedium);
     fChain->SetBranchAddress("passOldTrigLoose", &passOldTrigLoose);
@@ -223,6 +239,12 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltL1VBFDiJetOR_phi", &hltL1VBFDiJetOR_phi);
     fChain->SetBranchAddress("hltL1VBFDiJetOR_energy", &hltL1VBFDiJetOR_energy);
 
+    fChain->SetBranchAddress("passhltL1sDoubleTauBigOR", &passhltL1sDoubleTauBigOR);
+    fChain->SetBranchAddress("hltL1sDoubleTauBigOR_pt", &hltL1sDoubleTauBigOR_pt);
+    fChain->SetBranchAddress("hltL1sDoubleTauBigOR_eta", &hltL1sDoubleTauBigOR_eta);
+    fChain->SetBranchAddress("hltL1sDoubleTauBigOR_phi", &hltL1sDoubleTauBigOR_phi);
+    fChain->SetBranchAddress("hltL1sDoubleTauBigOR_energy", &hltL1sDoubleTauBigOR_energy);
+
     fChain->SetBranchAddress("passhltL1VBFDiJetIsoTau", &passhltL1VBFDiJetIsoTau);
     fChain->SetBranchAddress("hltL1VBFDiJetIsoTau_nJets", &hltL1VBFDiJetIsoTau_nJets);
     fChain->SetBranchAddress("hltL1VBFDiJetIsoTau_jetPt", &hltL1VBFDiJetIsoTau_jetPt);
@@ -235,11 +257,11 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltL1VBFDiJetIsoTau_tauPhi", &hltL1VBFDiJetIsoTau_tauPhi);
     fChain->SetBranchAddress("hltL1VBFDiJetIsoTau_tauEnergy", &hltL1VBFDiJetIsoTau_tauEnergy);
 
-    fChain->SetBranchAddress("passhltHpsPFTauTrack", &passhltHpsPFTauTrack);
-    fChain->SetBranchAddress("hltHpsPFTauTrack_pt", &hltHpsPFTauTrack_pt);
-    fChain->SetBranchAddress("hltHpsPFTauTrack_eta", &hltHpsPFTauTrack_eta);
-    fChain->SetBranchAddress("hltHpsPFTauTrack_phi", &hltHpsPFTauTrack_phi);
-    fChain->SetBranchAddress("hltHpsPFTauTrack_energy", &hltHpsPFTauTrack_energy);
+    fChain->SetBranchAddress("passhltHpsDoublePFTau20", &passhltHpsDoublePFTau20);
+    fChain->SetBranchAddress("hltHpsDoublePFTau20_pt", &hltHpsDoublePFTau20_pt);
+    fChain->SetBranchAddress("hltHpsDoublePFTau20_eta", &hltHpsDoublePFTau20_eta);
+    fChain->SetBranchAddress("hltHpsDoublePFTau20_phi", &hltHpsDoublePFTau20_phi);
+    fChain->SetBranchAddress("hltHpsDoublePFTau20_energy", &hltHpsDoublePFTau20_energy);
 
     // multiple working points
     fChain->SetBranchAddress("passhltHpsDoublePFTauTight", &passhltHpsDoublePFTauTight);
@@ -276,21 +298,21 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltHpsDoublePFTauAgainstMuonLoose_energy", &hltHpsDoublePFTauAgainstMuonLoose_energy);
 
     // multiple working points
-    fChain->SetBranchAddress("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
-    fChain->SetBranchAddress("hltHpsPFTau50Tight_pt", &hltHpsPFTau50Tight_pt);
-    fChain->SetBranchAddress("hltHpsPFTau50Tight_eta", &hltHpsPFTau50Tight_eta);
-    fChain->SetBranchAddress("hltHpsPFTau50Tight_phi", &hltHpsPFTau50Tight_phi);
-    fChain->SetBranchAddress("hltHpsPFTau50Tight_energy", &hltHpsPFTau50Tight_energy);
-    fChain->SetBranchAddress("passhltHpsPFTau50Medium", &passhltHpsPFTau50Medium);
-    fChain->SetBranchAddress("hltHpsPFTau50Medium_pt", &hltHpsPFTau50Medium_pt);
-    fChain->SetBranchAddress("hltHpsPFTau50Medium_eta", &hltHpsPFTau50Medium_eta);
-    fChain->SetBranchAddress("hltHpsPFTau50Medium_phi", &hltHpsPFTau50Medium_phi);
-    fChain->SetBranchAddress("hltHpsPFTau50Medium_energy", &hltHpsPFTau50Medium_energy);
-    fChain->SetBranchAddress("passhltHpsPFTau50Loose", &passhltHpsPFTau50Loose);
-    fChain->SetBranchAddress("hltHpsPFTau50Loose_pt", &hltHpsPFTau50Loose_pt);
-    fChain->SetBranchAddress("hltHpsPFTau50Loose_eta", &hltHpsPFTau50Loose_eta);
-    fChain->SetBranchAddress("hltHpsPFTau50Loose_phi", &hltHpsPFTau50Loose_phi);
-    fChain->SetBranchAddress("hltHpsPFTau50Loose_energy", &hltHpsPFTau50Loose_energy);
+    fChain->SetBranchAddress("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
+    fChain->SetBranchAddress("hltMatchedVBFTwoTight_pt", &hltMatchedVBFTwoTight_pt);
+    fChain->SetBranchAddress("hltMatchedVBFTwoTight_eta", &hltMatchedVBFTwoTight_eta);
+    fChain->SetBranchAddress("hltMatchedVBFTwoTight_phi", &hltMatchedVBFTwoTight_phi);
+    fChain->SetBranchAddress("hltMatchedVBFTwoTight_energy", &hltMatchedVBFTwoTight_energy);
+    fChain->SetBranchAddress("passhltMatchedVBFTwoMedium", &passhltMatchedVBFTwoMedium);
+    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_pt", &hltMatchedVBFTwoMedium_pt);
+    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_eta", &hltMatchedVBFTwoMedium_eta);
+    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_phi", &hltMatchedVBFTwoMedium_phi);
+    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_energy", &hltMatchedVBFTwoMedium_energy);
+    fChain->SetBranchAddress("passhltMatchedVBFTwoLoose", &passhltMatchedVBFTwoLoose);
+    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_pt", &hltMatchedVBFTwoLoose_pt);
+    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_eta", &hltMatchedVBFTwoLoose_eta);
+    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_phi", &hltMatchedVBFTwoLoose_phi);
+    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_energy", &hltMatchedVBFTwoLoose_energy);
 
     // multiple working points
     fChain->SetBranchAddress("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
@@ -310,21 +332,21 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltMatchedVBFOneLoose_energy", &hltMatchedVBFOneLoose_energy);
 
     // multiple working points
-    fChain->SetBranchAddress("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
-    fChain->SetBranchAddress("hltMatchedVBFTwoTight_pt", &hltMatchedVBFTwoTight_pt);
-    fChain->SetBranchAddress("hltMatchedVBFTwoTight_eta", &hltMatchedVBFTwoTight_eta);
-    fChain->SetBranchAddress("hltMatchedVBFTwoTight_phi", &hltMatchedVBFTwoTight_phi);
-    fChain->SetBranchAddress("hltMatchedVBFTwoTight_energy", &hltMatchedVBFTwoTight_energy);
-    fChain->SetBranchAddress("passhltMatchedVBFTwoMedium", &passhltMatchedVBFTwoMedium);
-    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_pt", &hltMatchedVBFTwoMedium_pt);
-    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_eta", &hltMatchedVBFTwoMedium_eta);
-    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_phi", &hltMatchedVBFTwoMedium_phi);
-    fChain->SetBranchAddress("hltMatchedVBFTwoMedium_energy", &hltMatchedVBFTwoMedium_energy);
-    fChain->SetBranchAddress("passhltMatchedVBFTwoLoose", &passhltMatchedVBFTwoLoose);
-    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_pt", &hltMatchedVBFTwoLoose_pt);
-    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_eta", &hltMatchedVBFTwoLoose_eta);
-    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_phi", &hltMatchedVBFTwoLoose_phi);
-    fChain->SetBranchAddress("hltMatchedVBFTwoLoose_energy", &hltMatchedVBFTwoLoose_energy);
+    fChain->SetBranchAddress("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
+    fChain->SetBranchAddress("hltHpsPFTau50Tight_pt", &hltHpsPFTau50Tight_pt);
+    fChain->SetBranchAddress("hltHpsPFTau50Tight_eta", &hltHpsPFTau50Tight_eta);
+    fChain->SetBranchAddress("hltHpsPFTau50Tight_phi", &hltHpsPFTau50Tight_phi);
+    fChain->SetBranchAddress("hltHpsPFTau50Tight_energy", &hltHpsPFTau50Tight_energy);
+    fChain->SetBranchAddress("passhltHpsPFTau50Medium", &passhltHpsPFTau50Medium);
+    fChain->SetBranchAddress("hltHpsPFTau50Medium_pt", &hltHpsPFTau50Medium_pt);
+    fChain->SetBranchAddress("hltHpsPFTau50Medium_eta", &hltHpsPFTau50Medium_eta);
+    fChain->SetBranchAddress("hltHpsPFTau50Medium_phi", &hltHpsPFTau50Medium_phi);
+    fChain->SetBranchAddress("hltHpsPFTau50Medium_energy", &hltHpsPFTau50Medium_energy);
+    fChain->SetBranchAddress("passhltHpsPFTau50Loose", &passhltHpsPFTau50Loose);
+    fChain->SetBranchAddress("hltHpsPFTau50Loose_pt", &hltHpsPFTau50Loose_pt);
+    fChain->SetBranchAddress("hltHpsPFTau50Loose_eta", &hltHpsPFTau50Loose_eta);
+    fChain->SetBranchAddress("hltHpsPFTau50Loose_phi", &hltHpsPFTau50Loose_phi);
+    fChain->SetBranchAddress("hltHpsPFTau50Loose_energy", &hltHpsPFTau50Loose_energy);
 
     // multiple working points
     fChain->SetBranchAddress("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);

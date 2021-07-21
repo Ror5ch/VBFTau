@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'hlt_Tau_45_20.py'
+config.JobType.psetName = 'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -45,9 +45,11 @@ if __name__ == '__main__':
     yesno6 = raw_input('y/n? ')
     print("Did you remove the OR conditions on L1 ditau trigger in hlt paths?")
     yesno7 = raw_input('y/n? ')
+    print("Did you reduce the leading tau cut to 45 in your hlt menu?")
+    yesno8 = raw_input('y/n? ')
 
-    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' or yesno5 == 'n' or yesno6 == 'n' or yesno7 == 'n'\
-	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == '' or yesno5 == '' or yesno6 == '' or yesno7 == ''):
+    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' or yesno5 == 'n' or yesno6 == 'n' or yesno7 == 'n' or yesno8 == 'n'\
+	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == '' or yesno5 == '' or yesno6 == '' or yesno7 == '' or yesno8 == ''):
 	print("Well, go fix that!")
 	sys.exit()
 
@@ -55,7 +57,7 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_4520ptTausCorrected'
+    config.General.requestName = 'VBFHToTauTau_DitauAndVBF_4520Tau_CorrectedEta'
     config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
     config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'

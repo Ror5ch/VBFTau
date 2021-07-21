@@ -78,7 +78,7 @@ int main(int argc, char** argv)	{
     // offline selection should be consistently 5 GeV above HLT thresholds
     if ( whichTrigger.find(oldTrigString) != std::string::npos){
 	t1_pt_cut = 80;//50;//25;
-	t2_pt_cut = 25;
+	t2_pt_cut = 40;//25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
 	mjj_cut = 700;
@@ -87,7 +87,7 @@ int main(int argc, char** argv)	{
     }
     if ( whichTrigger.find(newTrigString) != std::string::npos){
 	t1_pt_cut = 80;//50;//55;
-	t2_pt_cut = 25;
+	t2_pt_cut = 40;//25;
 	j1_pt_cut = 120;//45;
 	j2_pt_cut = 45;
 	mjj_cut = 700;//550;

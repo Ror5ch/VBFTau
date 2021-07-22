@@ -276,10 +276,14 @@ int main(int argc, char** argv)	{
     TH1F *sel_cutflow = new TH1F("","",7,0,7);
 
     int sameTauPassSel = 0;
+    int passSelL1JetL1Tau = 0;
+    int viableBeforeRmvOl=0;
+    int viableAfterRmvOl=0;
+    int viableAfterMjj=0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 3000; iEntry++) {
-    for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
+    for (int iEntry = 0; iEntry < 60001; iEntry++) {
+    //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
@@ -588,79 +592,114 @@ int main(int argc, char** argv)	{
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
 	// L1 object investigation in same trigger phase space
-	// passes offline selection, passes old trigger, doesn't pass new trigger
+	// passes offline selection, passes old L1, doesn't pass new L1
 	int jetNum, tauNum;
-	if (passSel && passOldTrig && inTree->hltL1VBFDiJetIsoTau_pt->size() == 0) { 
-		//!passNewTrig) { // not pass new trigger or not pass new L1? I think the second
+	//int viableBeforeRmvOl=0;
+	//int viableAfterRmvOl=0;
+	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && 
+		(inTree->hltL1VBFDiJetIsoTau_tauPt->size() < 1 || inTree->hltL1VBFDiJetIsoTau_jetPt->size() < 2)) { 
 
-	    jetNum = inTree->hltL1VBFDiJetOR_pt->size(); // jets from old trigger
-	    tauNum = inTree->hltL1sDoubleTauBigOR_pt->size(); // taus from ditau trigger
+	    jetNum = inTree->hltL1VBFDiJetOR_pt->size(); 	// # jets from old trigger
+	    tauNum = inTree->hltL1sDoubleTauBigOR_pt->size(); 	// # taus from ditau trigger
 
-	    std::cout << "jetNum: " << jetNum << " tau Num: " << tauNum << std::endl;
+	    //std::cout << "jetNum: " << jetNum << " tau Num: " << tauNum << std::endl;
 
-	    // if new jets and taus present, compute dR by hand and see what's going on...
+	    // if jets and taus present from other triggers, compute dR by hand and see what's going on in new VBF L1...
 	    
 	    if (jetNum >= 2 && tauNum >= 1) { // only need one tau from ditau trigger, except it won't fire unless there's at least two..
-		std::cout << "iEntry!: " <<  iEntry << std::endl;
-		std::cout << "-----------------------------" << std::endl;
+		//std::cout << "-----------------------------" << std::endl;
+		//std::cout << "iEntry!: " <<  iEntry << std::endl;
 
-		// "provided the jets are energetic enough, you can look for the tau..."
+		passSelL1JetL1Tau += 1;
 
+		// get L1Jets from old VBF trigger
+		// if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1JetCand;
 		TLorentzVector L1Jet;
 		for (int iOldJet = 0; iOldJet < jetNum; iOldJet++){
-		//std::cout << "iOldJet: " << iOldJet << std::endl;
-		//std::cout << iOldJet << " old jet Pt: " << inTree->hltL1VBFDiJetOR_pt->at(iOldJet) << std::endl;
-		//std::cout << "jet Eta: " << inTree->hltL1VBFDiJetOR_eta->at(iOldJet) << std::endl;
-		//std::cout << "jet Phi: " << inTree->hltL1VBFDiJetOR_phi->at(iOldJet) << std::endl;
-		//std::cout << "jet Energy: " << inTree->hltL1VBFDiJetOR_energy->at(iOldJet) << std::endl;
 		L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
+		if (L1Jet.Pt() > 35) {
 		L1JetCand.push_back(L1Jet);
+		} 
+		//std::cout << "Jet pT: " << L1Jet.Pt() << std::endl;
 		}
 
-
+		// get L1Taus from ditau trigger
+		// if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1TauCand;
 		TLorentzVector L1Tau;
 		for (int iNewTau = 0; iNewTau < tauNum; iNewTau++){
-		//std::cout << "iNewTau: " << iNewTau << std::endl;
-		//std::cout << iNewTau << " new tau Pt: " << inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau) << std::endl;
-		//std::cout << "tau Eta: " << inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau) << std::endl;
-		//std::cout << "tau Phi: " << inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau) << std::endl;
-		//std::cout << "tau Energy: " << inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau) << std::endl;
 		L1Tau.SetPtEtaPhiE(inTree->hltL1sDoubleTauBigOR_pt->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_eta->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_phi->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_energy->at(iNewTau));
+		if (L1Tau.Pt() > 45){
 		L1TauCand.push_back(L1Tau);
+		} 
+		//std::cout << "Tau pT: " << L1Tau.Pt() << std::endl;
 		}
 
+		//std::cout << "Good Jet Num: " << L1JetCand.size() << '\t' << "Good Tau Num: " << L1TauCand.size() << std::endl;
+
+		// if we have at least 2 jets and at least 1 tau passing new VBF L1, event may be viable 
+		if (L1JetCand.size() >= 2 && L1TauCand.size() >= 1) viableBeforeRmvOl += 1;
+
+		// cross-clean L1 jets and taus
+		// taus get priority, so if an obj from L1 jets is overlapped with an obj from L1 taus
+		// then don't store that L1 jet to the new cross-cleaned container of L1 jets
+		std::vector<TLorentzVector> crossCleanedL1Jets;
 		for (int iJetCand = 0; iJetCand < L1JetCand.size(); iJetCand++){
+		    bool clean = true;
 		    for (int iTauCand = 0; iTauCand < L1TauCand.size(); iTauCand++){
-			std::cout << "old jet cand: " << iJetCand << " new tau cand: " << iTauCand << " dR: " \
-			<< L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) << '\t' << " old jet pT: " \
-			<< L1JetCand.at(iJetCand).Pt() << '\t' << " new tau pT: " << L1TauCand.at(iTauCand).Pt() << std::endl;
+			if (L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) < 0.5) {
+			    clean = false;
+			}
+		    }
+		    if (clean) crossCleanedL1Jets.push_back(L1JetCand.at(iJetCand));
+		}
+		//std::cout << "ccL1Jets Num: " << crossCleanedL1Jets.size() << std::endl;
+		
+		// if you have at least two jets in the cross-cleaned container, then the event is still viable
+		// all that's left to check is the Mjj of the L1 cross-cleaned jets
+		if (crossCleanedL1Jets.size() >= 2 && L1TauCand.size() >= 1) {
+		    viableAfterRmvOl += 1;
+		    std::cout << "viable after rmovl" << std::endl;
+		
+		// store Mjjs and jets pairs if they pass the 450 cut from the new VBF L1
+		float L1mjj;
+		std::vector<float> mjjL1Jets;
+		std::vector<std::pair<int,int>> L1JetMjjPairs;
+		float prevMjj = -1;
+		int   highMjjIndex = -1;
+		for (int iJet = 0; iJet < crossCleanedL1Jets.size(); iJet++){
+		    for (int jJet = 0; jJet < crossCleanedL1Jets.size(); jJet++){
+			if (jJet >= iJet) continue;
+			if (crossCleanedL1Jets.at(iJet).DeltaR(crossCleanedL1Jets.at(jJet)) > 0.5) {
+			    L1mjj = (crossCleanedL1Jets.at(iJet) + crossCleanedL1Jets.at(jJet)).M();
+			    std::cout << "L1mjj " << L1mjj << '\t' << iJet << '\t' << jJet << std::endl;
+			    if (L1mjj > 450){
+			    	mjjL1Jets.push_back(L1mjj);
+			    	L1JetMjjPairs.push_back(std::make_pair(jJet, iJet));	
+				if (L1mjj > prevMjj){
+				    prevMjj = L1mjj;
+				    highMjjIndex = mjjL1Jets.size() - 1;
+				}
+			    }
+			}
 		    }
 		}
-		std::cout << "-----------------------------" << std::endl;
+
+		if (highMjjIndex == -1) std::cout << "no good mjj pairs " << std::endl;
+		else{   viableAfterMjj += 1;
+			std::cout << "viable after mjj" << std::endl;}
+		}
+		//std::cout << "-----------------------------" << std::endl;
 	    }
 	}
 
-/***
-	if (passOldTrig && inTree->hltL1VBFDiJetOR_pt->size() < 4){
-	std::cout << "-----------------------------" << std::endl;
-	std::cout << "L1VBFDiJetOR: " << inTree->hltL1VBFDiJetOR_pt->size() << std::endl; // 3
-	std::cout << "PFTauTrack: " << inTree->hltHpsDoublePFTau20_pt->size() << std::endl; // 2
-	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
-	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 2
-	std::cout << "MatchedVBFTwoTight: " << inTree->hltMatchedVBFTwoTight_pt->size() << std::endl; // 2
-	std::cout << "MatchedVBFOneTight: " << inTree->hltMatchedVBFOneTight_pt->size() << std::endl; // 1
-	std::cout << "pass old trig: " << passOldTrig << std::endl;
-	std::cout << "-----------------------------" << std::endl;
-	}
-***/
 
 	// old trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
@@ -687,22 +726,6 @@ int main(int argc, char** argv)	{
 	    passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
 	}
 
-/***
-	if (passNewTrig && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1 && inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2){
-	std::cout << "---------------------------------------------------" << std::endl;
-	std::cout << "L1VBFDiJetIsoTau Tau#: " << inTree->hltL1VBFDiJetIsoTau_tauPt->size() << std::endl; // 1
-	std::cout << "L1VBFDiJetIsoTau Jet#: " << inTree->hltL1VBFDiJetIsoTau_jetPt->size() << std::endl; // 2
-
-	std::cout << "PFTauTrack: " << inTree->hltHpsDoublePFTau20_pt->size() << std::endl; // 2
-	std::cout << "DoublePFTauTrack: " << inTree->hltHpsDoublePFTauTight_pt->size() << std::endl; // 2
-	std::cout << "DoublePFTauAgainstMuonTight: " << inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() << std::endl; // 1
-	std::cout << "HpsPFTau50Tight: " << inTree->hltHpsPFTau50Tight_pt->size() << std::endl;
-	std::cout << "MatchedVBFIsoTauTwoTight: " << inTree->hltMatchedVBFIsoTauTwoTight_pt->size() << std::endl; // 2
-	std::cout << "pass new trig: " << passNewTrig << std::endl;
-	std::cout << "---------------------------------------------------" << std::endl;
-
-	}
-***/
 	// new trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
 					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) {
@@ -728,21 +751,8 @@ int main(int argc, char** argv)	{
 	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) {
 	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 	}
-/***
-	if (passSel && (inTree->passhltMatchedVBFIsoTauTwoTight->size()>0 != inTree->passNewTrigTight->at(0))){
-	    std::cout << "mismatch" << std::endl;
-	    std::cout << "size MatchedVBFIsoTauTwoTight_pt: " << inTree->hltMatchedVBFIsoTauTwoTight_pt->size() << std::endl;
-	}
-***/
-	// filling offline selection flags / pass trigger flags
-	if (passBase && passOldTrig ) passBaseAndOldTrig = 1; // triggerFlag not necessary for base sel
-	if (passBase && passNewTrig ) passBaseAndNewTrig = 1;
-/***
-//	if (passSel && (inTree->passhltMatchedVBFIsoTauTwoTight->size()>0 != inTree->passNewTrigTight->at(0))) {
-//	    std::cout << "mismatch" << std::endl;
-//	    std::cout << inTree->passhltMatchedVBFIsoTauTwoTight->size()  << std::endl;
-// 	}
-***/
+	// filling offline selection && pass trigger flags
+
 	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
 	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
 
@@ -750,14 +760,6 @@ int main(int argc, char** argv)	{
 	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;
 	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) matchedJets = 1;
 	if (matchedTaus && matchedJets) matchedBoth = 1;
-
-	if (matchedTaus && passBaseAndOldTrig) passBaseOldTrigAndMatchedTaus = 1;
-	if (matchedJets && passBaseAndOldTrig) passBaseOldTrigAndMatchedJets = 1;
-	if (matchedBoth && passBaseAndOldTrig) passBaseOldTrigAndMatchedBoth = 1;
-
-	if (matchedTaus && passBaseAndNewTrig) passBaseNewTrigAndMatchedTaus = 1;
-	if (matchedJets && passBaseAndNewTrig) passBaseNewTrigAndMatchedJets = 1;
-	if (matchedBoth && passBaseAndNewTrig) passBaseNewTrigAndMatchedBoth = 1;
 
 	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
@@ -791,6 +793,11 @@ int main(int argc, char** argv)	{
 
         outTree->Fill();
     }// end event loop
+
+    std::cout << "viable L1: " << passSelL1JetL1Tau << '\t' << \
+		"viable after pt: " << viableBeforeRmvOl << '\t' << \
+		"viable after rmvol: " << viableAfterRmvOl << '\t' << \
+		"viable after Mjj: " << viableAfterMjj << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

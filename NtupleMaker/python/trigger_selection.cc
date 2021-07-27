@@ -613,6 +613,81 @@ int main(int argc, char** argv)	{
 
 
 	// L1 object investigation in same trigger phase space
+	// passes offline selection, passes old L1, passes new L1
+	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && (inTree->hltL1VBFDiJetIsoTau_tauPt->size() >=1 && inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2)){
+	    //std::cout << "passed old and new L1: " << iEntry << std::endl;
+
+    	    // get L1Jets from old VBF trigger
+    	    // if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
+    	    std::vector<TLorentzVector> passL1JetCands;
+    	    TLorentzVector passL1Jet;
+    	    for (int iOldJet = 0; iOldJet < inTree->hltL1VBFDiJetOR_pt->size(); iOldJet++){
+    	    passL1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
+    			inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
+    			inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
+    			inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
+    	    if (passL1Jet.Pt() > 35) {
+    		passL1JetCands.push_back(passL1Jet);
+    	    } 
+    	    //std::cout << "Jet pT: " << L1Jet.Pt() << std::endl;
+    	    }
+
+    	    // get L1Taus from ditau trigger
+    	    // if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
+    	    std::vector<TLorentzVector> passL1TauCands;
+    	    TLorentzVector passL1Tau;
+    	    for (int iNewTau = 0; iNewTau < inTree->hltL1VBFDiJetIsoTau_tauPt->size(); iNewTau++){
+    		passL1Tau.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau),
+    				inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau),
+    				inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau),
+    				inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau));
+     	    if (passL1Tau.Pt() > 45){
+    		passL1TauCands.push_back(passL1Tau);
+	    } 
+	    //std::cout << "Tau pT: " << L1Tau.Pt() << std::endl;
+	    }
+	    if (iEntry == 33 || iEntry == 1339 || iEntry == 1355) {
+		    std::cout << "iEntry: " << iEntry << std::endl;
+		    std::cout << "-----------------passed old and new L1----------------" << std::endl;
+		    //print all aod info as well,,,
+		    std::cout << "aod jet  info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::setprecision(4);
+		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
+
+		    std::cout << "aod tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+
+		    std::cout << "L1 jet info" << std::endl;
+
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempJet;
+		    for (int iJets = 0; iJets < passL1JetCands.size(); iJets++) {
+			tempJet = passL1JetCands.at(iJets);
+			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
+				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
+		    }
+		    std::cout << "L1 tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempTau;
+		    for (int iTaus = 0; iTaus < passL1TauCands.size(); iTaus++) {
+			tempTau = passL1TauCands.at(iTaus);
+			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
+				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
+		    }
+		    std::cout << "----------------------------------------------------" << std::endl;
+		    } //end if statement	
+
+
+	}
+	
 	// passes offline selection, passes old L1, doesn't pass new L1
 	int jetNum, tauNum;
 	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && inTree->hltL1sDoubleTauBigOR_pt->size() >= 2 && //passOldTrig &&

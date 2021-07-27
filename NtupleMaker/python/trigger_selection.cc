@@ -3,10 +3,8 @@
 #include <sstream>
 #include <stdio.h>
 #include <vector>
-#include <utility> 	//?
-#include <map> 		//?
 #include <string>
-//#include <vector>
+#include <iomanip>
 
 #include "TH1F.h"
 #include "TH2F.h"	//won't need?
@@ -280,12 +278,16 @@ int main(int argc, char** argv)	{
     int viableBeforeRmvOl=0;
     int viableAfterRmvOl=0;
     int viableAfterMjj=0;
+    int jetsMatchedBeforeRmvOl = 0;  
+    int tauMatchedBeforeRmvOl = 0;
+    int bothJetsMatchedAfterRmvOl = 0;
+    int oneJetMatchedAfterRmvOl = 0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
     for (int iEntry = 0; iEntry < 60001; iEntry++) {
     //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
-	if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
+	//if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
 	nEvents = inTree->nEvents;
 	runNumber = inTree->runNumber->at(0); //update to ints in NtupleMaker
@@ -591,12 +593,29 @@ int main(int argc, char** argv)	{
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
+	// filling offline selection && pass trigger flags
+	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
+	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
+
+
+	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
+	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;
+	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) matchedJets = 1;
+	if (matchedTaus && matchedJets) matchedBoth = 1;
+
+	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
+	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
+	if (matchedBoth && passSelAndOldTrig) passSelOldTrigAndMatchedBoth = 1;
+
+	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
+	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
+	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
+
+
 	// L1 object investigation in same trigger phase space
 	// passes offline selection, passes old L1, doesn't pass new L1
 	int jetNum, tauNum;
-	//int viableBeforeRmvOl=0;
-	//int viableAfterRmvOl=0;
-	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && 
+	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && inTree->hltL1sDoubleTauBigOR_pt->size() >= 2 && //passOldTrig &&
 		(inTree->hltL1VBFDiJetIsoTau_tauPt->size() < 1 || inTree->hltL1VBFDiJetIsoTau_jetPt->size() < 2)) { 
 
 	    jetNum = inTree->hltL1VBFDiJetOR_pt->size(); 	// # jets from old trigger
@@ -614,7 +633,7 @@ int main(int argc, char** argv)	{
 
 		// get L1Jets from old VBF trigger
 		// if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
-		std::vector<TLorentzVector> L1JetCand;
+		std::vector<TLorentzVector> L1JetCands;
 		TLorentzVector L1Jet;
 		for (int iOldJet = 0; iOldJet < jetNum; iOldJet++){
 		L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
@@ -622,14 +641,14 @@ int main(int argc, char** argv)	{
 				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
 		if (L1Jet.Pt() > 35) {
-		L1JetCand.push_back(L1Jet);
+		L1JetCands.push_back(L1Jet);
 		} 
 		//std::cout << "Jet pT: " << L1Jet.Pt() << std::endl;
 		}
 
 		// get L1Taus from ditau trigger
 		// if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
-		std::vector<TLorentzVector> L1TauCand;
+		std::vector<TLorentzVector> L1TauCands;
 		TLorentzVector L1Tau;
 		for (int iNewTau = 0; iNewTau < tauNum; iNewTau++){
 		L1Tau.SetPtEtaPhiE(inTree->hltL1sDoubleTauBigOR_pt->at(iNewTau),
@@ -637,66 +656,239 @@ int main(int argc, char** argv)	{
 					inTree->hltL1sDoubleTauBigOR_phi->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_energy->at(iNewTau));
 		if (L1Tau.Pt() > 45){
-		L1TauCand.push_back(L1Tau);
+		L1TauCands.push_back(L1Tau);
 		} 
 		//std::cout << "Tau pT: " << L1Tau.Pt() << std::endl;
 		}
 
-		//std::cout << "Good Jet Num: " << L1JetCand.size() << '\t' << "Good Tau Num: " << L1TauCand.size() << std::endl;
+		//std::cout << "Good Jet Num: " << L1JetCands.size() << '\t' << "Good Tau Num: " << L1TauCands.size() << std::endl;
 
 		// if we have at least 2 jets and at least 1 tau passing new VBF L1, event may be viable 
-		if (L1JetCand.size() >= 2 && L1TauCand.size() >= 1) viableBeforeRmvOl += 1;
+		if (L1JetCands.size() >= 2 && L1TauCands.size() >= 1) {
+ 		    viableBeforeRmvOl += 1;
+
+		    // see if event obj matches AOD before overlap removal
+		    // not as precise at L1, but try anyways
+		    int jetMatchIndex1 = -1;
+		    double dRAODJet1;
+		    TLorentzVector jetMatch1;
+		    int jetMatchIndex2 = -1;
+		    double dRAODJet2;
+		    TLorentzVector jetMatch2;
+
+		    jetMatchIndex1 = simpleMatching(L1JetCands, aodJet1);
+		    jetMatchIndex2 = simpleMatching(L1JetCands, aodJet2);
+		    jetMatch1 = L1JetCands.at(jetMatchIndex1);
+		    dRAODJet1 = jetMatch1.DeltaR(aodJet1);
+		    jetMatch2 = L1JetCands.at(jetMatchIndex2);
+		    dRAODJet2 = jetMatch2.DeltaR(aodJet2);
+
+		    if (jetMatchIndex1 == jetMatchIndex2) {
+			std::vector<TLorentzVector> tempL1Jets;
+			tempL1Jets = L1JetCands;
+			tempL1Jets.erase(tempL1Jets.begin() + jetMatchIndex1); // indices are equal, so either is fine to use here
+		 	if (dRAODJet1 <= dRAODJet2) {// look for jet 2 again, removed jet was jet 1
+			    jetMatchIndex2 = simpleMatching(tempL1Jets, aodJet2);
+			    jetMatch2 = tempL1Jets.at(jetMatchIndex2);
+			    dRAODJet2 = jetMatch2.DeltaR(aodJet2);
+			}
+			if (dRAODJet2 < dRAODJet1) {// look for jet 1 again, removed jet was jet 2
+			    jetMatchIndex1 = simpleMatching(tempL1Jets, aodJet1);
+			    jetMatch1 = tempL1Jets.at(jetMatchIndex1);
+			    dRAODJet1 = jetMatch1.DeltaR(aodJet1);
+			}
+		    }
+
+		    //std::cout << "# jets before cleaning: " << L1JetCands.size() << std::endl;		 
+		    //std::cout << "dR1 before: " << dRAODJet1 << '\t' << "dR2 before: " << dRAODJet2 << std::endl;
+		    //if (dRAODJet1 < 0.5 || dRAODJet2 < 0.5) std::cout << "one matched before cleaning" << std::endl;
+		    if (dRAODJet1 < 0.5 && dRAODJet2 < 0.5) jetsMatchedBeforeRmvOl += 1;//std::cout << "both matched before cleaning" << std::endl;
+		    TLorentzVector tauMatch;
+		    int tauMatchIndex = -1;
+		    double dRAODTau1;
+		    double dRAODTau2;		
+		    tauMatchIndex = simpleMatching(L1TauCands, aodTau1);
+		    tauMatch = L1TauCands.at(tauMatchIndex);
+		    dRAODTau1 = tauMatch.DeltaR(aodTau1);
+		    tauMatchIndex = simpleMatching(L1TauCands, aodTau2);
+		    tauMatch = L1TauCands.at(tauMatchIndex);
+		    dRAODTau2 = tauMatch.DeltaR(aodTau2);
+		    if (dRAODTau1 < 0.5 || dRAODTau2 < 0.5) tauMatchedBeforeRmvOl += 1; 
+
+		}
 
 		// cross-clean L1 jets and taus
 		// taus get priority, so if an obj from L1 jets is overlapped with an obj from L1 taus
 		// then don't store that L1 jet to the new cross-cleaned container of L1 jets
 		std::vector<TLorentzVector> crossCleanedL1Jets;
-		for (int iJetCand = 0; iJetCand < L1JetCand.size(); iJetCand++){
+		for (int iJetCand = 0; iJetCand < L1JetCands.size(); iJetCand++){
 		    bool clean = true;
-		    for (int iTauCand = 0; iTauCand < L1TauCand.size(); iTauCand++){
-			if (L1TauCand.at(iTauCand).DeltaR(L1JetCand.at(iJetCand)) < 0.5) {
+		    for (int iTauCand = 0; iTauCand < L1TauCands.size(); iTauCand++){
+			if (L1TauCands.at(iTauCand).DeltaR(L1JetCands.at(iJetCand)) < 0.5) {//plot dR
 			    clean = false;
 			}
 		    }
-		    if (clean) crossCleanedL1Jets.push_back(L1JetCand.at(iJetCand));
+		    if (clean) crossCleanedL1Jets.push_back(L1JetCands.at(iJetCand));
 		}
 		//std::cout << "ccL1Jets Num: " << crossCleanedL1Jets.size() << std::endl;
-		
+				
 		// if you have at least two jets in the cross-cleaned container, then the event is still viable
 		// all that's left to check is the Mjj of the L1 cross-cleaned jets
-		if (crossCleanedL1Jets.size() >= 2 && L1TauCand.size() >= 1) {
+		if (crossCleanedL1Jets.size() >= 2 && L1TauCands.size() >= 1) {
+
+		    if (iEntry == 930 || iEntry == 1673 || iEntry == 8386) {
+		    std::cout << "iEntry: " << iEntry << std::endl;
+		    std::cout << "-----------------passed overlap removal----------------" << std::endl;
+		    //print all aod info as well,,,
+		    std::cout << "aod jet  info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::setprecision(4);
+		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
+
+		    std::cout << "aod tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+
+		    std::cout << "L1 jet info" << std::endl;
+		    std::cout << "number matched to taus " << '\t' << L1JetCands.size() - crossCleanedL1Jets.size() << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempJet;
+		    for (int iJets = 0; iJets < L1JetCands.size(); iJets++) {
+			tempJet = L1JetCands.at(iJets);
+			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
+				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
+		    }
+		    std::cout << "L1 tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempTau;
+		    for (int iTaus = 0; iTaus < L1TauCands.size(); iTaus++) {
+			tempTau = L1TauCands.at(iTaus);
+			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
+				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
+		    }
+		    std::cout << "----------------------------------------------------" << std::endl;
+		    } //end if statement	
+
 		    viableAfterRmvOl += 1;
-		    std::cout << "viable after rmovl" << std::endl;
-		
-		// store Mjjs and jets pairs if they pass the 450 cut from the new VBF L1
-		float L1mjj;
-		std::vector<float> mjjL1Jets;
-		std::vector<std::pair<int,int>> L1JetMjjPairs;
-		float prevMjj = -1;
-		int   highMjjIndex = -1;
-		for (int iJet = 0; iJet < crossCleanedL1Jets.size(); iJet++){
-		    for (int jJet = 0; jJet < crossCleanedL1Jets.size(); jJet++){
-			if (jJet >= iJet) continue;
-			if (crossCleanedL1Jets.at(iJet).DeltaR(crossCleanedL1Jets.at(jJet)) > 0.5) {
-			    L1mjj = (crossCleanedL1Jets.at(iJet) + crossCleanedL1Jets.at(jJet)).M();
-			    std::cout << "L1mjj " << L1mjj << '\t' << iJet << '\t' << jJet << std::endl;
-			    if (L1mjj > 450){
-			    	mjjL1Jets.push_back(L1mjj);
-			    	L1JetMjjPairs.push_back(std::make_pair(jJet, iJet));	
-				if (L1mjj > prevMjj){
-				    prevMjj = L1mjj;
-				    highMjjIndex = mjjL1Jets.size() - 1;
-				}
-			    }
+
+		    // see if event obj matches AOD even after overlap removal
+		    // not as precise at L1, but try anyways
+		    int cleanedJetMatchIndex1 = -1;
+		    double dRCleanedJetAODJet1;
+		    TLorentzVector cleanedJetMatch1;
+
+		    int cleanedJetMatchIndex2 = -1;
+		    double dRCleanedJetAODJet2;
+		    TLorentzVector cleanedJetMatch2;
+
+		    cleanedJetMatchIndex1 = simpleMatching(crossCleanedL1Jets, aodJet1);
+		    cleanedJetMatch1 = crossCleanedL1Jets.at(cleanedJetMatchIndex1);
+		    dRCleanedJetAODJet1 = cleanedJetMatch1.DeltaR(aodJet1);
+		    cleanedJetMatchIndex2 = simpleMatching(crossCleanedL1Jets, aodJet2);
+		    cleanedJetMatch2 = crossCleanedL1Jets.at(cleanedJetMatchIndex2);
+		    dRCleanedJetAODJet2 = cleanedJetMatch2.DeltaR(aodJet2);
+
+		    if (cleanedJetMatchIndex1 == cleanedJetMatchIndex2) {
+			std::vector<TLorentzVector> tempCleanedL1Jets;
+			tempCleanedL1Jets = crossCleanedL1Jets;
+			tempCleanedL1Jets.erase(tempCleanedL1Jets.begin() + cleanedJetMatchIndex1); // indices are the same, so either can be used here
+			if (dRCleanedJetAODJet1 <= dRCleanedJetAODJet2) { //look for jet 2 obj again, removed obj was jet 1
+			    cleanedJetMatchIndex2 = simpleMatching(tempCleanedL1Jets, aodJet2);
+			    cleanedJetMatch2 = tempCleanedL1Jets.at(cleanedJetMatchIndex2);
+			    dRCleanedJetAODJet2 = cleanedJetMatch2.DeltaR(aodJet2);
+			}
+			if (dRCleanedJetAODJet2 < dRCleanedJetAODJet1) { //look for jet 1 obj again, removed obj was jet 2
+			    cleanedJetMatchIndex1 = simpleMatching(tempCleanedL1Jets, aodJet1);
+			    cleanedJetMatch1 = tempCleanedL1Jets.at(cleanedJetMatchIndex1);
+			    dRCleanedJetAODJet1 = cleanedJetMatch1.DeltaR(aodJet1);
 			}
 		    }
+
+		    //std::cout << "# clean jets: " << crossCleanedL1Jets.size() << std::endl;		 
+		    //std::cout << "dR1 after: " << dRCleanedJetAODJet1 << '\t' << "dR2 after: " << dRCleanedJetAODJet2 << std::endl;
+		    if (dRCleanedJetAODJet1 < 0.5 || dRCleanedJetAODJet2 < 0.5) oneJetMatchedAfterRmvOl += 1;//std::cout << "one matched after cleaning" << std::endl;
+		    if (dRCleanedJetAODJet1 < 0.5 && dRCleanedJetAODJet2 < 0.5) bothJetsMatchedAfterRmvOl += 1;//std::cout << "both matched after cleaning" << std::endl;
+
+		    //std::cout << "viable after rmovl" << std::endl;
+		
+		// store Mjjs and jets pairs if they pass the 450 cut from the new VBF L1
+     		    float L1mjj;
+    		    std::vector<float> mjjL1Jets;
+    		    std::vector<std::pair<int,int>> L1JetMjjPairs;
+    		    float prevMjj = -1;
+    		    int   highMjjIndex = -1;
+    		    for (int iJet = 0; iJet < crossCleanedL1Jets.size(); iJet++){
+    		        for (int jJet = 0; jJet < crossCleanedL1Jets.size(); jJet++){
+    			    if (jJet >= iJet) continue;
+    			    if (crossCleanedL1Jets.at(iJet).DeltaR(crossCleanedL1Jets.at(jJet)) > 0.5) {
+    			        L1mjj = (crossCleanedL1Jets.at(iJet) + crossCleanedL1Jets.at(jJet)).M();
+    			        //std::cout << "L1mjj " << L1mjj << '\t' << iJet << '\t' << jJet << std::endl;
+			        if (L1mjj > 450){
+			    	    mjjL1Jets.push_back(L1mjj);
+			    	    L1JetMjjPairs.push_back(std::make_pair(jJet, iJet));	
+				    if (L1mjj > prevMjj){
+				        prevMjj = L1mjj;
+				        highMjjIndex = mjjL1Jets.size() - 1;
+				    }
+			        }
+			    }
+		        }
+		    }
+
+		    if (highMjjIndex == -1) continue;//std::cout << "no good mjj pairs " << std::endl;
+		    else{   viableAfterMjj += 1;
+			//std::cout << "viable after mjj" << std::endl;
+		        }
 		}
 
-		if (highMjjIndex == -1) std::cout << "no good mjj pairs " << std::endl;
-		else{   viableAfterMjj += 1;
-			std::cout << "viable after mjj" << std::endl;}
+		else{
+
+		    if (iEntry == 694 || iEntry == 6494 || iEntry == 12602) {
+		    std::cout << "iEntry: " << iEntry << std::endl;
+		    std::cout << "-----------failed after overlap removal-----------" << std::endl;
+		    //print all aod info as well,,,
+		    std::cout << "aod jet  info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::setprecision(4);
+		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
+
+		    std::cout << "aod tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
+		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+
+		    std::cout << "L1 jet info" << std::endl;
+		    std::cout << "number matched to taus " << '\t' << L1JetCands.size() - crossCleanedL1Jets.size() << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempJet;
+		    for (int iJets = 0; iJets < L1JetCands.size(); iJets++) {
+			tempJet = L1JetCands.at(iJets);
+			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
+				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
+		    }
+		    std::cout << "L1 tau info" << std::endl;
+		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+		    TLorentzVector tempTau;
+		    for (int iTaus = 0; iTaus < L1TauCands.size(); iTaus++) {
+			tempTau = L1TauCands.at(iTaus);
+			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
+				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
+				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
+		    }		
+		    std::cout << "----------------------------------------------------" << std::endl;
 		}
-		//std::cout << "-----------------------------" << std::endl;
+
+		}
 	    }
 	}
 
@@ -751,25 +943,7 @@ int main(int argc, char** argv)	{
 	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) {
 	    passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 	}
-	// filling offline selection && pass trigger flags
-
-	if (passSel && passOldTrig && triggerFlag == 0) passSelAndOldTrig = 1;
-	if (passSel && passNewTrig && triggerFlag == 1) passSelAndNewTrig = 1;
-
-	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
-	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;
-	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) matchedJets = 1;
-	if (matchedTaus && matchedJets) matchedBoth = 1;
-
-	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
-	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
-	if (matchedBoth && passSelAndOldTrig) passSelOldTrigAndMatchedBoth = 1;
-
-	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
-	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
-	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
-
-
+	
         // fill kine branches with matched AOD
         if (passSel){
 	    t1_pt_A = aodTau1.Pt();
@@ -794,10 +968,16 @@ int main(int argc, char** argv)	{
         outTree->Fill();
     }// end event loop
 
-    std::cout << "viable L1: " << passSelL1JetL1Tau << '\t' << \
-		"viable after pt: " << viableBeforeRmvOl << '\t' << \
-		"viable after rmvol: " << viableAfterRmvOl << '\t' << \
-		"viable after Mjj: " << viableAfterMjj << std::endl;
+    //formatting for 30 minutes until i realized you could just put the number first...
+
+    std::cout << passSelL1JetL1Tau << '\t' << "Passed Sel. passed old VBF L1, passed ditau L1, failed new VBF L1" << std::endl << \
+		viableBeforeRmvOl << '\t' << "Passed double 35 jet pt, 45 tau pt" << std::endl << \
+		jetsMatchedBeforeRmvOl << '\t' << "Two jets matched before overlap removal" << std::endl << \
+		tauMatchedBeforeRmvOl << '\t' << "Tau matched before overlap removal" << std::endl << \
+		viableAfterRmvOl << '\t' << "At least two jets remain after overlap removal" << std::endl << \
+		oneJetMatchedAfterRmvOl << '\t' << "At least one jet is matched after overlap removal" << std::endl << \
+		bothJetsMatchedAfterRmvOl << '\t' << "Both jets matched after overlap removal" << std::endl << \
+		viableAfterMjj << '\t' << "Dijet pair passing Mjj > 450 GeV" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

@@ -32,7 +32,7 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector aod
     int bestObjIndex = -1;
     float dRObj = 999;
     float dRObj_ = 999;
-    for (int iTrigObj = 0; iTrigObj < trigContainer.size(); iTrigObj++){
+    for (int iTrigObj = 0; iTrigObj < trigContainer.size(); ++iTrigObj){
 	dRObj_ = aodObj.DeltaR(trigContainer.at(iTrigObj));
 	if (dRObj_ < dRObj) {dRObj = dRObj_; bestObjIndex = iTrigObj;}
     }
@@ -305,7 +305,7 @@ int main(int argc, char** argv)	{
     int oneJetMatchedAfterRmvOl = 0;
     // Event Loop
     // for-loop of just 2000 events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 60001; iEntry++) {
+    for (int iEntry = 0; iEntry < 60001; ++iEntry) {
     //for (int iEntry = 0; iEntry < inTree->GetEntries(); iEntry++) {
 	inTree->GetEntry(iEntry);
 	//if (iEntry % 1000 == 0) std::cout << std::to_string(iEntry) << std::endl;
@@ -384,7 +384,7 @@ int main(int argc, char** argv)	{
 	if (vecSizeAODJet < 2) continue;
 	min_cutflow->Fill(2.0,1.0); // fill cutflow with events that have 2 taus and 2 jets
 	// check kinematics and ID of tau objects, store good taus
-	for (int iTau = 0; iTau < vecSizeAODTau; iTau++){
+	for (int iTau = 0; iTau < vecSizeAODTau; ++iTau){
 
 	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
 	    deepTauVSmu = inTree->tauByVLooseDeepTau2017v2p1VSmu->at(iTau) > 0.5;
@@ -413,7 +413,7 @@ int main(int argc, char** argv)	{
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector aodTau1, aodTau2;
 	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
-	for (int iTau = 1; iTau < tauCandidates.size(); iTau++){
+	for (int iTau = 1; iTau < tauCandidates.size(); ++iTau){
 	    aodTau2.SetPtEtaPhiE(tauCandidates.at(iTau).Pt(),
 				 tauCandidates.at(iTau).Eta(),
 				 tauCandidates.at(iTau).Phi(),
@@ -428,7 +428,7 @@ int main(int argc, char** argv)	{
 	sel_cutflow->Fill(0.0,1.0); // start of smaller cutflow graph (keep two just for scaling purposes)
 
 	// check kinematics and ID of jet objects, store good jets
-	for (int iJet = 0; iJet < vecSizeAODJet; iJet++){
+	for (int iJet = 0; iJet < vecSizeAODJet; ++iJet){
 
 	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 
@@ -453,8 +453,8 @@ int main(int argc, char** argv)	{
 	// store index of largest mjj to retrieve pair of jets causing it later
 	int highestMjjCandIndex = -1;
 	float tempMjj = -1;
-	for (int iJet = 0; iJet < jetCandidates.size(); iJet++){
-	    for (int jJet = 0; jJet < jetCandidates.size(); jJet++){
+	for (int iJet = 0; iJet < jetCandidates.size(); ++iJet){
+	    for (int jJet = 0; jJet < jetCandidates.size(); ++jJet){
 		if (jJet>=iJet) continue;
 		if (jetCandidates.at(iJet).DeltaR(jetCandidates.at(jJet)) > 0.5) {
 		    mjj_A = (jetCandidates.at(iJet) + jetCandidates.at(jJet)).M();
@@ -536,7 +536,7 @@ int main(int argc, char** argv)	{
 	if (vecSizeHpsTau >= 2 && ((vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) 
 				|| (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1))  ){
 	    // fill trigger tau candidates for either trigger from 20 GeV tau filter
-	    for (int iTriggerTau = 0; iTriggerTau < vecSizeHpsTau; iTriggerTau++){
+	    for (int iTriggerTau = 0; iTriggerTau < vecSizeHpsTau; ++iTriggerTau){
 		TLorentzVector triggerTauCand;
 		triggerTauCand.SetPtEtaPhiE(inTree->hltHpsDoublePFTauTight_pt->at(iTriggerTau),
 					    inTree->hltHpsDoublePFTauTight_eta->at(iTriggerTau),
@@ -547,7 +547,7 @@ int main(int argc, char** argv)	{
 	    TLorentzVector triggerJetCand;
 	    // fill trigger jet candidates for old trigger
 	    if (vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) {
-		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFTwo; iTriggerJet++){
+		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFTwo; ++iTriggerJet){
 		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFTwoTight_pt->at(iTriggerJet),
 						inTree->hltMatchedVBFTwoTight_eta->at(iTriggerJet),
 	    					inTree->hltMatchedVBFTwoTight_phi->at(iTriggerJet),
@@ -557,7 +557,7 @@ int main(int argc, char** argv)	{
 	    }
 	    // fill trigger jet candidates for new trigger
 	    if (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1) {
-		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFIsoTauTwo; iTriggerJet++){
+		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFIsoTauTwo; ++iTriggerJet){
 		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFIsoTauTwoTight_pt->at(iTriggerJet),
 						inTree->hltMatchedVBFIsoTauTwoTight_eta->at(iTriggerJet),
 	    					inTree->hltMatchedVBFIsoTauTwoTight_phi->at(iTriggerJet),
@@ -648,7 +648,7 @@ int main(int argc, char** argv)	{
     	    // if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
     	    std::vector<TLorentzVector> passL1JetCands;
     	    TLorentzVector passL1Jet;
-    	    for (int iOldJet = 0; iOldJet < inTree->hltL1VBFDiJetOR_pt->size(); iOldJet++){
+    	    for (int iOldJet = 0; iOldJet < inTree->hltL1VBFDiJetOR_pt->size(); ++iOldJet){
     	    passL1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
     			inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
     			inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
@@ -663,7 +663,7 @@ int main(int argc, char** argv)	{
     	    // if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
     	    std::vector<TLorentzVector> passL1TauCands;
     	    TLorentzVector passL1Tau;
-    	    for (int iNewTau = 0; iNewTau < inTree->hltL1VBFDiJetIsoTau_tauPt->size(); iNewTau++){
+    	    for (int iNewTau = 0; iNewTau < inTree->hltL1VBFDiJetIsoTau_tauPt->size(); ++iNewTau){
     		passL1Tau.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau),
     				inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau),
     				inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau),
@@ -718,7 +718,7 @@ int main(int argc, char** argv)	{
 		// if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1JetCands;
 		TLorentzVector L1Jet;
-		for (int iOldJet = 0; iOldJet < jetNum; iOldJet++){
+		for (int iOldJet = 0; iOldJet < jetNum; ++iOldJet){
 		L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
 				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
@@ -733,7 +733,7 @@ int main(int argc, char** argv)	{
 		// if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1TauCands;
 		TLorentzVector L1Tau;
-		for (int iNewTau = 0; iNewTau < tauNum; iNewTau++){
+		for (int iNewTau = 0; iNewTau < tauNum; ++iNewTau){
 		L1Tau.SetPtEtaPhiE(inTree->hltL1sDoubleTauBigOR_pt->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_eta->at(iNewTau),
 					inTree->hltL1sDoubleTauBigOR_phi->at(iNewTau),
@@ -804,7 +804,7 @@ int main(int argc, char** argv)	{
 		// taus get priority, so if an obj from L1 jets is overlapped with an obj from L1 taus
 		// then don't store that L1 jet to the new cross-cleaned container of L1 jets
 		std::vector<TLorentzVector> crossCleanedL1Jets;
-		for (int iJetCand = 0; iJetCand < L1JetCands.size(); iJetCand++){
+		for (int iJetCand = 0; iJetCand < L1JetCands.size(); ++iJetCand){
 		    bool clean = true;
 		    for (int iTauCand = 0; iTauCand < L1TauCands.size(); iTauCand++){
 			if (L1TauCands.at(iTauCand).DeltaR(L1JetCands.at(iJetCand)) < 0.5) {//plot dR
@@ -889,8 +889,8 @@ int main(int argc, char** argv)	{
     		    std::vector<std::pair<int,int>> L1JetMjjPairs;
     		    float prevMjj = -1;
     		    int   highMjjIndex = -1;
-    		    for (int iJet = 0; iJet < crossCleanedL1Jets.size(); iJet++){
-    		        for (int jJet = 0; jJet < crossCleanedL1Jets.size(); jJet++){
+    		    for (int iJet = 0; iJet < crossCleanedL1Jets.size(); ++iJet){
+    		        for (int jJet = 0; jJet < crossCleanedL1Jets.size(); ++jJet){
     			    if (jJet >= iJet) continue;
     			    if (crossCleanedL1Jets.at(iJet).DeltaR(crossCleanedL1Jets.at(jJet)) > 0.5) {
     			        L1mjj = (crossCleanedL1Jets.at(iJet) + crossCleanedL1Jets.at(jJet)).M();

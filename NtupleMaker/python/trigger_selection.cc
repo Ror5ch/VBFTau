@@ -28,7 +28,7 @@
 // TLorentzVector, representing aod object to be matched
 // output:
 // integer representing location of object with lowest dR between trigger objs in container and given aod object
-int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector aodObj){
+int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector aodObj) {
     int bestObjIndex = -1;
     float dRObj = 999;
     float dRObj_ = 999;
@@ -38,6 +38,27 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector aod
     }
     return bestObjIndex;
 }
+
+//debugging functions that print kinematic info
+void coutAODobjs(TLorentzVector AODobj1, TLorentzVector AODobj2) {
+    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
+    std::cout << "1      " << std::setprecision(4) << AODobj1.Pt() << '\t' << AODobj1.Eta() << '\t' << AODobj1.Phi() << std::endl;
+    std::cout << "2      " << std::setprecision(4) << AODobj2.Pt() << '\t' << AODobj2.Eta() << '\t' << AODobj2.Phi() << std::endl;
+}
+
+void coutL1objs(std::vector<TLorentzVector> L1ObjContainer, std::vector<TLorentzVector> AODObjContainer) {
+    // assume AODObjContainer is (aodJet1, aodJet2, aodTau1, aodTau2)
+    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
+    '\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
+    TLorentzVector tempL1Obj;
+    for (int iObj = 0; iObj < L1ObjContainer.size(); ++iObj) {
+	tempL1Obj = L1ObjContainer.at(iObj);
+	std::cout << iObj << '\t' << tempL1Obj.Pt() << '\t' << tempL1Obj.Eta() << '\t' << tempL1Obj.Phi() << '\t' \
+		  << tempL1Obj.DeltaR(AODObjContainer.at(0)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(1)) << '\t' << '\t' \
+		  << tempL1Obj.DeltaR(AODObjContainer.at(2)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(3)) << std::endl;
+    }
+}
+
 
 int main(int argc, char** argv)	{
     //myMap1 = new map<std::string, TH1F*>(); // i think this is for generalized naming/name fixing of different files
@@ -469,6 +490,12 @@ int main(int argc, char** argv)	{
 
 	passBase = 1;
 
+        std::vector<TLorentzVector> aodObjs;
+	aodObjs.push_back(aodJet1);
+	aodObjs.push_back(aodJet2);
+	aodObjs.push_back(aodTau1);
+	aodObjs.push_back(aodTau2);
+
 	//-----------------------tighter selection guided by trigger specific cutoffs---------------//
 
 
@@ -651,38 +678,19 @@ int main(int argc, char** argv)	{
 		    std::cout << "-----------------passed old and new L1----------------" << std::endl;
 		    //print all aod info as well,,,
 		    std::cout << "aod jet  info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::setprecision(4);
-		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
+		    coutAODobjs(aodJet1, aodJet2);
 
 		    std::cout << "aod tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+		    coutAODobjs(aodTau1, aodTau2);
 
 		    std::cout << "L1 jet info" << std::endl;
+		    coutL1objs(passL1JetCands, aodObjs);
 
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempJet;
-		    for (int iJets = 0; iJets < passL1JetCands.size(); iJets++) {
-			tempJet = passL1JetCands.at(iJets);
-			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
-				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
-		    }
 		    std::cout << "L1 tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempTau;
-		    for (int iTaus = 0; iTaus < passL1TauCands.size(); iTaus++) {
-			tempTau = passL1TauCands.at(iTaus);
-			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
-				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
-		    }
+		    coutL1objs(passL1TauCands, aodObjs);
+
 		    std::cout << "----------------------------------------------------" << std::endl;
+
 		    } //end if statement	
 
 
@@ -812,42 +820,25 @@ int main(int argc, char** argv)	{
 		if (crossCleanedL1Jets.size() >= 2 && L1TauCands.size() >= 1) {
 
 		    if (iEntry == 930 || iEntry == 1673 || iEntry == 8386) {
+
 		    std::cout << "iEntry: " << iEntry << std::endl;
 		    std::cout << "-----------------passed overlap removal----------------" << std::endl;
 		    //print all aod info as well,,,
 		    std::cout << "aod jet  info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::setprecision(4);
-		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
+		    coutAODobjs(aodJet1, aodJet2);
 
 		    std::cout << "aod tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+		    coutAODobjs(aodTau1, aodTau2);
 
 		    std::cout << "L1 jet info" << std::endl;
 		    std::cout << "number matched to taus " << '\t' << L1JetCands.size() - crossCleanedL1Jets.size() << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempJet;
-		    for (int iJets = 0; iJets < L1JetCands.size(); iJets++) {
-			tempJet = L1JetCands.at(iJets);
-			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
-				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
-		    }
+		    coutL1objs(L1JetCands, aodObjs);
+
 		    std::cout << "L1 tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempTau;
-		    for (int iTaus = 0; iTaus < L1TauCands.size(); iTaus++) {
-			tempTau = L1TauCands.at(iTaus);
-			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
-				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
-		    }
+		    coutL1objs(L1TauCands, aodObjs);
+
 		    std::cout << "----------------------------------------------------" << std::endl;
+
 		    } //end if statement	
 
 		    viableAfterRmvOl += 1;
@@ -925,41 +916,22 @@ int main(int argc, char** argv)	{
 		else{
 
 		    if (iEntry == 694 || iEntry == 6494 || iEntry == 12602) {
+
 		    std::cout << "iEntry: " << iEntry << std::endl;
 		    std::cout << "-----------failed after overlap removal-----------" << std::endl;
 		    //print all aod info as well,,,
 		    std::cout << "aod jet  info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::setprecision(4);
-		    std::cout << "1      " << std::setprecision(4) << aodJet1.Pt() << '\t' << aodJet1.Eta() << '\t' << aodJet1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodJet2.Pt() << '\t' << aodJet2.Eta() << '\t' << aodJet2.Phi() << std::endl;
-
+		    coutAODobjs(aodJet1, aodJet2);
 		    std::cout << "aod tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-		    std::cout << "1      " << std::setprecision(4) << aodTau1.Pt() << '\t' << aodTau1.Eta() << '\t' << aodTau1.Phi() << std::endl;
-		    std::cout << "2      " << std::setprecision(4) << aodTau2.Pt() << '\t' << aodTau2.Eta() << '\t' << aodTau2.Phi() << std::endl;
+		    coutAODobjs(aodTau1, aodTau2);
 
 		    std::cout << "L1 jet info" << std::endl;
 		    std::cout << "number matched to taus " << '\t' << L1JetCands.size() - crossCleanedL1Jets.size() << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempJet;
-		    for (int iJets = 0; iJets < L1JetCands.size(); iJets++) {
-			tempJet = L1JetCands.at(iJets);
-			std::cout << iJets << '\t' << tempJet.Pt() << '\t' << tempJet.Eta() << '\t' << tempJet.Phi() << '\t' \
-				<< tempJet.DeltaR(aodJet1) << '\t' << '\t' << tempJet.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempJet.DeltaR(aodTau1) << '\t' << '\t' << tempJet.DeltaR(aodTau2) << std::endl;
-		    }
+		    coutL1objs(L1JetCands, aodObjs);
+
 		    std::cout << "L1 tau info" << std::endl;
-		    std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" <<\
-			'\t' << "dR AODJet 1" << '\t' << "dR AODJet 2" << '\t' << "dR AODTau 1" << '\t' << "dR AODTau 2" << std::endl;
-		    TLorentzVector tempTau;
-		    for (int iTaus = 0; iTaus < L1TauCands.size(); iTaus++) {
-			tempTau = L1TauCands.at(iTaus);
-			std::cout <<  iTaus << '\t' << tempTau.Pt() << '\t' << tempTau.Eta() << '\t' << tempTau.Phi() << '\t' \
-				<< tempTau.DeltaR(aodJet1) << '\t' << '\t' << tempTau.DeltaR(aodJet2) << '\t' << '\t' \
-				<< tempTau.DeltaR(aodTau1) << '\t' << '\t' << tempTau.DeltaR(aodTau2) << std::endl;
-		    }		
+		    coutL1objs(L1TauCands, aodObjs);
+
 		    std::cout << "----------------------------------------------------" << std::endl;
 		}
 

@@ -35,9 +35,9 @@ NtupleMaker::~NtupleMaker(){
 //destructor
 }
 
-int runNumber;
-int lumiBlock;
-int eventNumberID;
+//int runNumber;
+//int lumiBlock;
+//int eventNumberID;
 
 void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
@@ -53,7 +53,7 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if(need_taus) fillTaus(iEvent);
     if(need_jets) fillJets(iEvent, iSetup);
 
-
+/***
     tree_->Branch("runNumber", &runNumber);
     tree_->Branch("lumiBlock", &lumiBlock);
     tree_->Branch("eventNumberID", &eventNumberID);
@@ -61,7 +61,7 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     runNumber = iEvent.id().run();
     lumiBlock = iEvent.id().luminosityBlock();
     eventNumberID = iEvent.id().event();
-
+***/
     tree_->Fill();
 }
 

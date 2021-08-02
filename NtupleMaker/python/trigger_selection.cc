@@ -390,6 +390,10 @@ int main(int argc, char** argv)	{
 
     //int sameTauPassSel = 0; 
 
+    int numMatchedJets = 0;
+    int numMatchedTaus = 0;
+    int numMatchedBoth = 0;
+
     int numPassSel = 0;
     int numPassSelAndOldTrig = 0;
     int numPassSelAndNewTrig = 0;
@@ -421,6 +425,11 @@ int main(int argc, char** argv)	{
 	eventNumberID = inTree->eventNumberID->at(0);
 
 	//--------------------initialize all flags to zero, clear vectors-------------------------//
+
+	dRj1 = 999;
+	dRj2 = 999;
+	dRt1 = 999;
+	dRt2 = 999;	
 	
 	// offline trigger filter cutflow efficiency flags	
 	// old trigger path
@@ -467,12 +476,8 @@ int main(int argc, char** argv)	{
 
 	overlapped = 0;
 
-	mjjCandidates.clear();
-	jetMjjPairs.clear();
 	tauCandidates.clear();	
 	jetCandidates.clear();
-
-	jetCandsLocs.clear();
 
 	triggerTauCandidates.clear();
 	triggerJetCandidates.clear();
@@ -555,81 +560,14 @@ int main(int argc, char** argv)	{
 	// check that we have at least two good jets
 	if (jetCandidates.size() < 2) continue;
 
-	// find mjj of all pairs of jets passing baseline selection, store the mjj values and pairs of jets that generated them
-	// store index of largest mjj to retrieve pair of jets causing it later
-/***
-	int highestMjjCandIndex = -1;
-	float tempMjj = -1;
-	for (int iJet = 0; iJet < jetCandidates.size(); ++iJet){
-	    for (int jJet = 0; jJet < jetCandidates.size(); ++jJet){
-		if (jJet>=iJet) continue;
-		if (jetCandidates.at(iJet).DeltaR(jetCandidates.at(jJet)) > 0.5) {
-		    mjj_A = (jetCandidates.at(iJet) + jetCandidates.at(jJet)).M();
-		    mjjCandidates.push_back(mjj_A);
-		    jetMjjPairs.push_back(std::make_pair(jJet,iJet));
-		    if (mjj_A > tempMjj) {
-		    	tempMjj = mjj_A; 
-		    	highestMjjCandIndex = mjjCandidates.size() - 1; // assign most recent addition of mjjCand vector
-		    }
-		}
-	    }
-	}
-	if (highestMjjCandIndex == -1) continue;
-***/
-/***
-// makeTLorentzPairs(jetCandidates);
-std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVector> jetContainer) {
-    int highestMjjCandIndex = -1;
-    float tempMjj = -1;
-    float tempMjj_ = -1;
-    std::vector<double> mjjCands;
-    std::vector<std::pair<int,int>> jetPairs;
-    for (int iObj = 0; iObj < jetContainer.size(); ++iObj) {
-	for (int jObj = 0; jObj < jetContainer.size(); ++jObj) {
-	    if (jObj >= iObj) continue;
-	    // if TLorentz objects aren't overlapped, store their positions as a pair
-	    if (jetContainer.at(iObj).DeltaR(jetContainer.at(jObj)) > 0.5) {
-		jetPairs.push_back(std::make_pair(jObj, iObj));
-		tempMjj = (jetContainer.at(iObj) + jetContainer.at(jObj)).M();
-		mjjCands.push_back(tempMjj);
-		if (tempMjj > tempMjj_) {
-		    tempMjj_ = tempMjj;
-		    highestMjjCandIndex = mjjCands.size() - 1;
-		}
-	    }
-	}
-    }
-    // define two empty TLorentzVectors
-    // if they aren't filled from the jet pair cands, then the output will be two
-    // empty jets, whose mjj will of course be zero which therefore will not pass any
-    // enforced selection
-    TLorentzVector outJet1.SetPtEtaPhiE(0,0,0,0), outJet2.SetPtEtaPhiE(0,0,0,0);
-    if (highesMjjCandIndex != -1) {
-	std::pair<int,int> jetPair = jetPairs.at(highestMjjCandIndex);
-	outJet1 = jetContainer.at(jetPair.first);
-	outJet2 = jetContainer.at(jetPair.second);
-    }
-    return std::make_tuple(outJet1, outJet2);
-}
-***/
-	// select the pair of jets that produced the largest mjj value
-	// Most often the jet indices are 0 and 1, as we might expect
-	// but it's not uncommon to see indices of 0 and 3, 1 and 2, or 0 and 2 as well
-	//std::pair<int,int> jetPair = jetMjjPairs.at(highestMjjCandIndex);
-
-	// fill aodJets with the selected jets
+	// fill aod jets with pair of jets that produced the largest mjj value
 	// from cout statements, aodJet1 was verified to be leading jet
 	TLorentzVector aodJet1, aodJet2;
         std::tie(aodJet1, aodJet2) = highestMjjPair(jetCandidates);
-        //if (highestMjjCandIndex == -1) continue;
-        //aodJet1 = jetCandidates.at(jetPair.first);
-	//aodJet2 = jetCandidates.at(jetPair.second);
-
 
 	// calculate mjj of AOD jets
 	mjj_A = (aodJet1 + aodJet2).M();
-	//std::cout << "mjj " << mjj_A << std::endl;
-	//if (mjj_A == 0) continue;
+	if (mjj_A == 0) continue;
 
 	min_cutflow->Fill(4.0,1.0);
 	sel_cutflow->Fill(1.0,1.0);
@@ -712,41 +650,17 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
 		}
 	    }
 
-	    // match AOD and HLT taus
+	    // match AOD and HLT jets and taus
 
-	    dRt1 = 999;
-	    dRt2 = 999;
-	    int leadingTauIndex = -1;
-	    int subleadingTauIndex = -1;
-	    // get leading tau index with simple matching
-	    leadingTauIndex = simpleMatching(triggerTauCandidates, aodTau1);
-	    trigTau1 = triggerTauCandidates.at(leadingTauIndex);
+	    // tie is a handy method for assigning tuple output
+            std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, aodJet1, aodJet2);
+            dRj1 = trigJet1.DeltaR(aodJet1);
+            dRj2 = trigJet2.DeltaR(aodJet2);
+
+
+	    std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, aodTau1, aodTau2);
 	    dRt1 = trigTau1.DeltaR(aodTau1);
-	    // remove matched tau from trigger tau candidates
-	    triggerTauCandidates.erase(triggerTauCandidates.begin() + leadingTauIndex);
-	    // get subleading tau index with simple matching
-	    subleadingTauIndex = simpleMatching(triggerTauCandidates, aodTau2);
-	    //if (leadingTauIndex == subleadingTauIndex && passSel) sameTauPassSel += 1;//std::cout << "same tau partner" << std::endl;
-	    trigTau2 = triggerTauCandidates.at(subleadingTauIndex);
 	    dRt2 = trigTau2.DeltaR(aodTau2);
-
-	    // match AOD and HLT jets	
-
-	    dRj1 = 999;
-	    dRj2 = 999;
-	    int leadingJetIndex = -1;
-	    int subleadingJetIndex = -1;
-	    // get leading jet index with simple matching
-	    leadingJetIndex = simpleMatching(triggerJetCandidates, aodJet1);
-	    trigJet1 = triggerJetCandidates.at(leadingJetIndex);
-	    dRj1 = trigJet1.DeltaR(aodJet1);
-	    triggerJetTempCandidates = triggerJetCandidates;
-	    // remove matched jet from trigger jet candidates
-	    triggerJetCandidates.erase(triggerJetCandidates.begin() + leadingJetIndex);
-	    // get subleading jet index with simple matching
-	    subleadingJetIndex = simpleMatching(triggerJetCandidates, aodJet2);
-	    trigJet2 = triggerJetCandidates.at(subleadingJetIndex);
-	    dRj2 = trigJet2.DeltaR(aodJet2);
 
 	    mjj = (trigJet1 + trigJet2).M();
 
@@ -772,9 +686,9 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
 
 
 	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
-	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) matchedTaus = 1;
-	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) matchedJets = 1;
-	if (matchedTaus && matchedJets) matchedBoth = 1;
+	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) {matchedTaus = 1; numMatchedTaus += 1;}
+	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) {matchedJets = 1; numMatchedJets += 1;}
+	if (matchedTaus && matchedJets) {matchedBoth = 1; numMatchedBoth += 1;}
 
 	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
@@ -922,37 +836,15 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
 		    if (dRCleanedJetAODJet1 < 0.5 || dRCleanedJetAODJet2 < 0.5) oneJetMatchedAfterRmvOl += 1;
 		    if (dRCleanedJetAODJet1 < 0.5 && dRCleanedJetAODJet2 < 0.5) bothJetsMatchedAfterRmvOl += 1;
 
-		
-		    // store Mjjs and jets pairs if they pass the 450 cut from the new VBF L1
-     		    float L1mjj;
-    		    std::vector<float> mjjL1Jets;
-    		    std::vector<std::pair<int,int>> L1JetMjjPairs;
-    		    float prevMjj = -1;
-    		    int   highMjjIndex = -1;
-    		    for (int iJet = 0; iJet < crossCleanedL1Jets.size(); ++iJet){
-    		        for (int jJet = 0; jJet < crossCleanedL1Jets.size(); ++jJet){
-    			    if (jJet >= iJet) continue;
-    			    if (crossCleanedL1Jets.at(iJet).DeltaR(crossCleanedL1Jets.at(jJet)) > 0.5) {
-    			        L1mjj = (crossCleanedL1Jets.at(iJet) + crossCleanedL1Jets.at(jJet)).M();
-    			        //std::cout << "L1mjj " << L1mjj << '\t' << iJet << '\t' << jJet << std::endl;
-			        if (L1mjj > 450){
-			    	    mjjL1Jets.push_back(L1mjj);
-			    	    L1JetMjjPairs.push_back(std::make_pair(jJet, iJet));	
-				    if (L1mjj > prevMjj){
-				        prevMjj = L1mjj;
-				        highMjjIndex = mjjL1Jets.size() - 1;
-				    }
-			        }
-			    }
-		        }
-		    }
+		    TLorentzVector cleanedJet1, cleanedJet2;
+        	    std::tie(cleanedJet1, cleanedJet2) = highestMjjPair(crossCleanedL1Jets);
 
-		    if (highMjjIndex == -1) continue;//std::cout << "no good mjj pairs " << std::endl;
-		    else { viableAfterMjj += 1;}
+		    // calculate mjj of two highest mjj cleaned jets
+		    float temp_mjj = (cleanedJet1 + cleanedJet2).M();
+		    if (temp_mjj > 450) viableAfterMjj +=1;//continue;
+
 		}
-		else{continue;
-		    //dumpEventKinemInfo(iEntry, "failed after overlap removal", aodObjs, L1JetCands, L1TauCands);
-		}
+		else{continue;}//dumpEventKinemInfo(iEntry, "failed after overlap removal", aodObjs, L1JetCands, L1TauCands);
 	    }
 	}
 
@@ -1054,6 +946,10 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
 		oneJetMatchedAfterRmvOl << '\t' << "At Least One Jet is Matched After Overlap Removal" << std::endl << \
 		bothJetsMatchedAfterRmvOl << '\t' << "Both Jets Matched After Overlap Removal" << std::endl << \
 		viableAfterMjj << '\t' << "Dijet Pair Passing Mjj > 450 GeV" << std::endl;
+
+    std::cout << numMatchedJets << '\t' << "matched jets" << std::endl << \
+		numMatchedTaus << '\t' << "matched taus" << std::endl << \
+		numMatchedBoth << '\t' << "matched both" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

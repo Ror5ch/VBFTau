@@ -18343,9 +18343,9 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
 
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
-     , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(False)#True)
-     , needJets = cms.untracked.bool(False)#True)
+     , needTriggers = cms.untracked.bool(False)#True)
+     , needTaus = cms.untracked.bool(True)
+     , needJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -18360,7 +18360,7 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
 )
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("histo.root"),
+    fileName = cms.string("histoAOD.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -18372,12 +18372,15 @@ process.demoPath = cms.EndPath(
 
 
 
-process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1, process.HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1 ))
+process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, 
+#process.HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1, process.HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1, process.HLTriggerFinalPath, 
+process.HLTAnalyzerEndpath))#, process.HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_MediumChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1 ))
 
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root',
+        #'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root',
+	'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/021DCAE8-242E-E811-B362-02163E01A0CE.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -18410,12 +18413,12 @@ if 'GlobalTag' in process.__dict__:
     from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
     process.GlobalTag = customiseGlobalTag(process.GlobalTag, globaltag = '101X_upgrade2018_realistic_TSG_2018_04_16_20_31_16')
 
-if 'MessageLogger' in process.__dict__:
-    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
-    process.MessageLogger.categories.append('L1GtTrigReport')
-    process.MessageLogger.categories.append('L1TGlobalSummary')
-    process.MessageLogger.categories.append('HLTrigReport')
-    process.MessageLogger.categories.append('FastReport')
+#if 'MessageLogger' in process.__dict__:
+    #process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
+    #process.MessageLogger.categories.append('L1GtTrigReport')
+    #process.MessageLogger.categories.append('L1TGlobalSummary')
+    #process.MessageLogger.categories.append('HLTrigReport')
+    #process.MessageLogger.categories.append('FastReport')
 
 # load the DQMStore and DQMRootOutputModule
 process.load( "DQMServices.Core.DQMStore_cfi" )
@@ -18438,7 +18441,9 @@ _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
 _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
 _customInfo['maxEvents' ]=  500
 _customInfo['globalTag' ]= "101X_upgrade2018_realistic_TSG_2018_04_16_20_31_16"
-_customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root']
+
+_customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/021DCAE8-242E-E811-B362-02163E01A0CE.root']
+#_customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root']
 _customInfo['realData'  ]=  False
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 process = customizeHLTforAll(process,"GRun",_customInfo)

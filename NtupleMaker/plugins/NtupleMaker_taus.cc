@@ -11,7 +11,12 @@ Int_t          nTau_;
 
 // decay mode discriminators
 
-
+// Tau L1 Primitives
+vector<float> 	tauL1PrimitivesPt_;
+vector<float> 	tauL1PrimitivesEta_;
+vector<float> 	tauL1PrimitivesPhi_;
+vector<float> 	tauL1PrimitivesEnergy_;
+vector<int> 	tauL1PrimitivesIso_; //? need to check type of this object
 
 //Tau Id & Isolation
 vector<bool>   taupfTausDiscriminationByDecayModeFinding_;
@@ -123,13 +128,17 @@ vector<float> taudxy_;
 
 
 
-
-
-
 void NtupleMaker::branchesTaus(TTree* tree)
 {
     tree->Branch("nTau", &nTau_);
     
+    // Tau L1 Primitives
+    tree->Branch("tauL1PrimitivesPt_", &tauL1PrimitivesPt_);
+    tree->Branch("tauL1PrimitivesEta_", &tauL1PrimitivesEta_);
+    tree->Branch("tauL1PrimitivesPhi_", &tauL1PrimitivesPhi_);
+    tree->Branch("tauL1PrimitivesEnergy_", &tauL1PrimitivesEnergy_);
+    tree->Branch("tauL1PrimitivesIso_", &tauL1PrimitivesIso_);
+
     //Tau Id & Isolation
     tree->Branch("taupfTausDiscriminationByDecayModeFinding", &taupfTausDiscriminationByDecayModeFinding_);
     tree->Branch("taupfTausDiscriminationByDecayModeFindingNewDMs", &taupfTausDiscriminationByDecayModeFindingNewDMs_);
@@ -243,7 +252,14 @@ void NtupleMaker::branchesTaus(TTree* tree)
 
 void NtupleMaker::fillTaus(const edm::Event& e)
 {
-    
+
+    // Tau L1 primitives
+    tauL1PrimitivesPt_.clear(); 
+    tauL1PrimitivesEta_.clear(); 
+    tauL1PrimitivesPhi_.clear(); 
+    tauL1PrimitivesEnergy_.clear(); 
+    tauL1PrimitivesIso_.clear(); 
+   
     // Tau Id & Isolation
     
     taupfTausDiscriminationByDecayModeFinding_.clear();
@@ -360,7 +376,20 @@ void NtupleMaker::fillTaus(const edm::Event& e)
     edm::Handle<BXVector<l1t::Tau>> tauL1Handle;
     e.getByToken(tauTriggerPrimitives_, tauL1Handle);
 
+    //l1t::Tau
+
+    for(BXVector<l1t::Tau>::const_iterator itau = tauL1Handle->begin(); itau != tauL1Handle->end(); ++itau) {
+	tauL1Handle->size();
+    }
+
     tauL1Handle->size();
+    tauL1Handle->at(0, 0);
+
+	//tauL1PrimitivesPt_.push_back();
+	//tauL1PrimitivesEta_.push_back();
+	//tauL1PrimitivesPhi_.push_back();
+	//tauL1PrimitivesEnergy_.push_back();
+	//tauL1PrimitivesIso_.push_back();
 
     //original Tau lines
 

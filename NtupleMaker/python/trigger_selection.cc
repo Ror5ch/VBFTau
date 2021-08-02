@@ -48,7 +48,8 @@ std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVect
     TLorentzVector tempObj2 = objCands.at(objMatchIndex2);
     double dRtempObj1 = tempObj1.DeltaR(aodObj1);
     double dRtempObj2 = tempObj2.DeltaR(aodObj2);
-
+    // if AODs match to the same object index, check which has a smaller dR
+    // then remove that object and rematch
     if (objMatchIndex1 == objMatchIndex2){
 	std::vector<TLorentzVector> tempObjCands = objCands;
 	tempObjCands.erase(tempObjCands.begin() + objMatchIndex1);
@@ -63,7 +64,42 @@ std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVect
     }
 
     return std::make_tuple(tempObj1, tempObj2);
+}
 
+std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVector> jetContainer) {
+    int highestMjjCandIndex = -1;
+    float tempMjj = -1;
+    float tempMjj_ = -1;
+    std::vector<double> mjjCands;
+    std::vector<std::pair<int,int>> jetPairs;
+    for (int iObj = 0; iObj < jetContainer.size(); ++iObj) {
+	for (int jObj = 0; jObj < jetContainer.size(); ++jObj) {
+	    if (jObj >= iObj) continue;
+	    // if TLorentz objects aren't overlapped, store their positions as a pair
+	    if (jetContainer.at(iObj).DeltaR(jetContainer.at(jObj)) > 0.5) {
+		jetPairs.push_back(std::make_pair(jObj, iObj));
+		tempMjj = (jetContainer.at(iObj) + jetContainer.at(jObj)).M();
+		mjjCands.push_back(tempMjj);
+		if (tempMjj > tempMjj_) {
+		    tempMjj_ = tempMjj;
+		    highestMjjCandIndex = mjjCands.size() - 1;
+		}
+	    }
+	}
+    }
+    // define two empty TLorentzVectors
+    // if they aren't filled from the jet pair cands, then the output will be two
+    // empty jets, whose mjj will of course be zero which therefore will not pass any
+    // enforced selection
+    TLorentzVector outJet1, outJet2;
+    outJet1.SetPtEtaPhiE(0,0,0,0);
+    outJet2.SetPtEtaPhiE(0,0,0,0);
+    if (highestMjjCandIndex != -1) {
+	std::pair<int,int> jetPair = jetPairs.at(highestMjjCandIndex);
+	outJet1 = jetContainer.at(jetPair.first);
+	outJet2 = jetContainer.at(jetPair.second);
+    }
+    return std::make_tuple(outJet1, outJet2);
 }
 
 //debugging functions that print kinematic info
@@ -83,8 +119,6 @@ void coutL1objs(std::vector<TLorentzVector> L1ObjContainer, std::vector<TLorentz
 	std::cout << iObj << '\t' << tempL1Obj.Pt() << '\t' << tempL1Obj.Eta() << '\t' << tempL1Obj.Phi() << '\t' \
 		  << tempL1Obj.DeltaR(AODObjContainer.at(0)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(1)) << '\t' << '\t' \
 		  << tempL1Obj.DeltaR(AODObjContainer.at(2)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(3)) << std::endl;
-	//if (tempL1Obj.DeltaR(AODObjContainer.at(0)) < 0.5) std::cout << "matched leading jet" << std::endl;
-	//if (tempL1Obj.DeltaR(AODObjContainer.at(0)) < 0.5 || tempL1Obj.DeltaR(AODObjContainer.at(1)) < 0.5) std::cout << "matched leading or subleading jet" << std::endl;
     }
 }
 
@@ -93,7 +127,7 @@ void dumpEventKinemInfo(int iEntry, std::string label,
     std::cout << "iEntry: " << iEntry << std::endl;
     std::cout << "-------------" << label << "--------------" << std::endl;
     std::cout << "aod jet info" << std::endl;
-    coutAODobjs(aodObjs.at(0), aodObjs.at(1));
+    coutAODobjs(aodObjs.at(0), aodObjs.at(1)); // assume aodObjs is (aodJet1, aodJet2, aodTau1, aodTau2)
     std::cout << "aod tau info" << std::endl;
     coutAODobjs(aodObjs.at(2), aodObjs.at(3));
 
@@ -376,7 +410,7 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 200001; ++iEntry) {
+    for (int iEntry = 0; iEntry < 60001; ++iEntry) {
     //for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 10000 == 0) std::cout << std::to_string(iEntry) << std::endl;
@@ -523,6 +557,7 @@ int main(int argc, char** argv)	{
 
 	// find mjj of all pairs of jets passing baseline selection, store the mjj values and pairs of jets that generated them
 	// store index of largest mjj to retrieve pair of jets causing it later
+/***
 	int highestMjjCandIndex = -1;
 	float tempMjj = -1;
 	for (int iJet = 0; iJet < jetCandidates.size(); ++iJet){
@@ -540,22 +575,61 @@ int main(int argc, char** argv)	{
 	    }
 	}
 	if (highestMjjCandIndex == -1) continue;
-
-
+***/
+/***
+// makeTLorentzPairs(jetCandidates);
+std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVector> jetContainer) {
+    int highestMjjCandIndex = -1;
+    float tempMjj = -1;
+    float tempMjj_ = -1;
+    std::vector<double> mjjCands;
+    std::vector<std::pair<int,int>> jetPairs;
+    for (int iObj = 0; iObj < jetContainer.size(); ++iObj) {
+	for (int jObj = 0; jObj < jetContainer.size(); ++jObj) {
+	    if (jObj >= iObj) continue;
+	    // if TLorentz objects aren't overlapped, store their positions as a pair
+	    if (jetContainer.at(iObj).DeltaR(jetContainer.at(jObj)) > 0.5) {
+		jetPairs.push_back(std::make_pair(jObj, iObj));
+		tempMjj = (jetContainer.at(iObj) + jetContainer.at(jObj)).M();
+		mjjCands.push_back(tempMjj);
+		if (tempMjj > tempMjj_) {
+		    tempMjj_ = tempMjj;
+		    highestMjjCandIndex = mjjCands.size() - 1;
+		}
+	    }
+	}
+    }
+    // define two empty TLorentzVectors
+    // if they aren't filled from the jet pair cands, then the output will be two
+    // empty jets, whose mjj will of course be zero which therefore will not pass any
+    // enforced selection
+    TLorentzVector outJet1.SetPtEtaPhiE(0,0,0,0), outJet2.SetPtEtaPhiE(0,0,0,0);
+    if (highesMjjCandIndex != -1) {
+	std::pair<int,int> jetPair = jetPairs.at(highestMjjCandIndex);
+	outJet1 = jetContainer.at(jetPair.first);
+	outJet2 = jetContainer.at(jetPair.second);
+    }
+    return std::make_tuple(outJet1, outJet2);
+}
+***/
 	// select the pair of jets that produced the largest mjj value
 	// Most often the jet indices are 0 and 1, as we might expect
 	// but it's not uncommon to see indices of 0 and 3, 1 and 2, or 0 and 2 as well
-	std::pair<int,int> jetPair = jetMjjPairs.at(highestMjjCandIndex);
+	//std::pair<int,int> jetPair = jetMjjPairs.at(highestMjjCandIndex);
 
 	// fill aodJets with the selected jets
 	// from cout statements, aodJet1 was verified to be leading jet
 	TLorentzVector aodJet1, aodJet2;
-	aodJet1 = jetCandidates.at(jetPair.first);
-	aodJet2 = jetCandidates.at(jetPair.second);
+        std::tie(aodJet1, aodJet2) = highestMjjPair(jetCandidates);
+        //if (highestMjjCandIndex == -1) continue;
+        //aodJet1 = jetCandidates.at(jetPair.first);
+	//aodJet2 = jetCandidates.at(jetPair.second);
 
 
 	// calculate mjj of AOD jets
 	mjj_A = (aodJet1 + aodJet2).M();
+	//std::cout << "mjj " << mjj_A << std::endl;
+	//if (mjj_A == 0) continue;
 
 	min_cutflow->Fill(4.0,1.0);
 	sel_cutflow->Fill(1.0,1.0);

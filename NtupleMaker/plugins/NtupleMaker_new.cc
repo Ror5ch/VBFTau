@@ -12,6 +12,10 @@ NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
     genParticlesCollection_(consumes<vector<reco::GenParticle>>(iConfig.getUntrackedParameter<edm::InputTag>("genParticleSrc"))),
     tauCollection_(consumes<vector<pat::Tau>>(iConfig.getUntrackedParameter<edm::InputTag>("tauSrc"))),
     //PFTauCollection_(consumes<vector<reco::PFTau>>(iConfig.getUntrackedParameter<edm::InputTag>("PFTauCollection"))),
+    // L1 Trigger Primitives
+    jetTriggerPrimitives_(consumes<BXVector<l1t::Jet>>(iConfig.getUntrackedParameter<edm::InputTag>("jetTriggerPrimitives"))),
+    tauTriggerPrimitives_(consumes<BXVector<l1t::Tau>>(iConfig.getUntrackedParameter<edm::InputTag>("tauTriggerPrimitives"))),
+
     vtxLabel_(consumes<reco::VertexCollection>(iConfig.getUntrackedParameter<edm::InputTag>("VtxLabel"))),
     rhoLabel_(consumes<double>(iConfig.getUntrackedParameter<edm::InputTag>("rhoLabel"))),
     jetsAK4Label_(consumes<edm::View<pat::Jet>>(iConfig.getUntrackedParameter<edm::InputTag>("ak4JetSrc"))),
@@ -35,10 +39,6 @@ NtupleMaker::~NtupleMaker(){
 //destructor
 }
 
-//int runNumber;
-//int lumiBlock;
-//int eventNumberID;
-
 void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     //using namespace edm;
@@ -53,15 +53,14 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if(need_taus) fillTaus(iEvent);
     if(need_jets) fillJets(iEvent, iSetup);
 
-/***
-    tree_->Branch("runNumber", &runNumber);
-    tree_->Branch("lumiBlock", &lumiBlock);
-    tree_->Branch("eventNumberID", &eventNumberID);
+    //tree_->Branch("runNumber", &runNumber);
+    //tree_->Branch("lumiBlock", &lumiBlock);
+    //tree_->Branch("eventNumberID", &eventNumberID);
 
-    runNumber = iEvent.id().run();
-    lumiBlock = iEvent.id().luminosityBlock();
-    eventNumberID = iEvent.id().event();
-***/
+    //runNumber = iEvent.id().run();
+    //lumiBlock = iEvent.id().luminosityBlock();
+    //eventNumberID = iEvent.id().event();
+
     tree_->Fill();
 }
 

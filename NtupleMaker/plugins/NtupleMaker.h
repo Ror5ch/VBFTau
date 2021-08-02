@@ -104,18 +104,26 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	//-------------member data----------------//
 	TTree* tree_; 
 
+	//int runNumber;
+	//int lumiBlock;
+	//int eventNumberID;
+
 	bool need_triggers;
 	bool need_taus;
 	bool need_jets;
 
 	bool development_; //had to add these in so the copied tau/jet files would play nice with my config file
 	bool doGenParticles_;
-	edm::EDGetTokenT<vector<reco::GenParticle> >     genParticlesCollection_;
-	edm::EDGetTokenT<vector<pat::Tau> >              tauCollection_; 
-        //edm::EDGetTokenT<vector<reco::PFTau>>		 PFTauCollection_;
-	edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
-	edm::EDGetTokenT<double>                         rhoLabel_;
-	edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK4Label_;
+	edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesCollection_;
+	edm::EDGetTokenT<vector<pat::Tau> >             tauCollection_; 
+        //edm::EDGetTokenT<vector<reco::PFTau>>		PFTauCollection_;
+        // trigger primitives
+        edm::EDGetTokenT<BXVector<l1t::Jet>>		jetTriggerPrimitives_;
+	edm::EDGetTokenT<BXVector<l1t::Tau>>		tauTriggerPrimitives_;
+
+	edm::EDGetTokenT<reco::VertexCollection>        vtxLabel_;
+	edm::EDGetTokenT<double>                        rhoLabel_;
+	edm::EDGetTokenT<edm::View<pat::Jet> >          jetsAK4Label_;
 	JME::JetResolution            jetResolution_;
         JME::JetResolutionScaleFactor jetResolutionSF_;	////
 	

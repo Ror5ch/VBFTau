@@ -356,6 +356,14 @@ void NtupleMaker::fillTaus(const edm::Event& e)
     
     nTau_ = 0;
     
+    //startTaus L1
+    edm::Handle<BXVector<l1t::Tau>> tauL1Handle;
+    e.getByToken(tauTriggerPrimitives_, tauL1Handle);
+
+    tauL1Handle->size();
+
+    //original Tau lines
+
     edm::Handle<vector<pat::Tau> > tauHandle;
     e.getByToken(tauCollection_, tauHandle);
     

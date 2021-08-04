@@ -48,6 +48,9 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
+     , jetTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Jet", "RECO")
+     , tauTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Tau", "RECO")
+
      , genParticleSrc = cms.untracked.InputTag("prunedGenParticles")
      , VtxLabel = cms.untracked.InputTag("offlineSlimmedPrimaryVertices")
      , rhoLabel = cms.untracked.InputTag("fixedGridRhoFastjetAll")

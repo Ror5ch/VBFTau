@@ -16,6 +16,13 @@ using namespace std;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 
 Int_t          nJet_;
+
+vector<float>  jetL1PrimitivesPt_;
+vector<float>  jetL1PrimitivesEta_;
+vector<float>  jetL1PrimitivesPhi_;
+vector<float>  jetL1PrimitivesEnergy_;
+	
+
 vector<float>  jetPt_;
 vector<float>  jetEn_;
 vector<float>  jetEta_;
@@ -77,6 +84,12 @@ vector<int>    jetGenPartonMomID_;
 void NtupleMaker::branchesJets(TTree* tree) {
   
   tree->Branch("nJet",                &nJet_);
+
+  tree->Branch("jetL1PrimitivesPt",  &jetL1PrimitivesPt_);
+  tree->Branch("jetL1PrimitivesPhi", &jetL1PrimitivesEta_);
+  tree->Branch("jetL1PrimitivesEta", &jetL1PrimitivesPhi_);
+  tree->Branch("jetL1PrimitivesEnergy",    &jetL1PrimitivesEnergy_);
+
   tree->Branch("jetPt",               &jetPt_);
   tree->Branch("jetEn",               &jetEn_);
   tree->Branch("jetEta",              &jetEta_);
@@ -142,6 +155,11 @@ void NtupleMaker::branchesJets(TTree* tree) {
 
 void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
+  jetL1PrimitivesPt_			  .clear();
+  jetL1PrimitivesEta_			  .clear();
+  jetL1PrimitivesPhi_			  .clear();
+  jetL1PrimitivesEnergy_		  .clear();
+
   jetPt_                                  .clear();
   jetEn_                                  .clear();
   jetEta_                                 .clear();
@@ -203,6 +221,20 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
   nJet_ = 0;
 
+  // fill L1 Jet trigger primitives
+  edm::Handle<BXVector<l1t::Jet>> jetL1Handle;
+  e.getByToken(jetTriggerPrimitives_, jetL1Handle);
+
+  l1t::Jet tempJet;
+
+  for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(); ijet != jetL1Handle->end(); ++ijet) {
+      jetL1PrimitivesPt_.push_back(ijet->pt());
+      jetL1PrimitivesEta_.push_back(ijet->eta());
+      jetL1PrimitivesPhi_.push_back(ijet->phi());
+      jetL1PrimitivesEnergy_.push_back(ijet->energy());
+  }
+
+  // fill jet pat
   edm::Handle<edm::View<pat::Jet> > jetHandle;
   e.getByToken(jetsAK4Label_, jetHandle);
 

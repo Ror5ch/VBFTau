@@ -12,9 +12,9 @@ public :
     Int_t	fCurrent;
 
     // from HLT
-    std::vector<int>* runNumber = nullptr;
-    std::vector<int>* lumiBlock = nullptr;
-    std::vector<int>* eventNumberID = nullptr;
+    int runNumber;
+    int lumiBlock;
+    int eventNumberID;
 
     int nEvents;
 
@@ -160,6 +160,18 @@ public :
     // end HLT branches
 
     // from AOD
+    // trigger primitives
+    std::vector<float>* tauL1PrimitivesPt = nullptr;    
+    std::vector<float>* tauL1PrimitivesEta = nullptr;    
+    std::vector<float>* tauL1PrimitivesPhi = nullptr;    
+    std::vector<float>* tauL1PrimitivesEnergy = nullptr;    
+    std::vector<int>* tauL1PrimitivesIso = nullptr;    
+
+    std::vector<float>* jetL1PrimitivesPt = nullptr;    
+    std::vector<float>* jetL1PrimitivesEta = nullptr;    
+    std::vector<float>* jetL1PrimitivesPhi = nullptr;    
+    std::vector<float>* jetL1PrimitivesEnergy = nullptr;    
+
     std::vector<float>* jetPt = nullptr;
     std::vector<float>* jetEta = nullptr;
     std::vector<float>* jetPhi = nullptr;
@@ -367,6 +379,19 @@ void trigger_tree::Init(TTree *tree)
     // end HLT
 
     // from AOD
+    // trigger primitives
+
+    fChain->SetBranchAddress("tauL1PrimitivesPt", &tauL1PrimitivesPt);
+    fChain->SetBranchAddress("tauL1PrimitivesEta", &tauL1PrimitivesEta);
+    fChain->SetBranchAddress("tauL1PrimitivesPhi", &tauL1PrimitivesPhi);
+    fChain->SetBranchAddress("tauL1PrimitivesEnergy", &tauL1PrimitivesEnergy);
+    fChain->SetBranchAddress("tauL1PrimitivesIso", &tauL1PrimitivesIso);
+
+    fChain->SetBranchAddress("jetL1PrimitivesPt", &jetL1PrimitivesPt);
+    fChain->SetBranchAddress("jetL1PrimitivesEta", &jetL1PrimitivesEta);
+    fChain->SetBranchAddress("jetL1PrimitivesPhi", &jetL1PrimitivesPhi);
+    fChain->SetBranchAddress("jetL1PrimitivesEnergy", &jetL1PrimitivesEnergy);
+
     fChain->SetBranchAddress("jetPt", &jetPt);
     fChain->SetBranchAddress("jetEta", &jetEta);
     fChain->SetBranchAddress("jetPhi", &jetPhi);

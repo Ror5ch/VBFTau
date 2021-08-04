@@ -68,9 +68,9 @@ std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVect
 
 std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVector> jetContainer) {
     int highestMjjCandIndex = -1;
+    int mjjCandCounter = -1; //start at -1 so when the first element is added it's element zero
     float tempMjj = -1;
     float tempMjj_ = -1;
-    std::vector<double> mjjCands;
     std::vector<std::pair<int,int>> jetPairs;
     for (int iObj = 0; iObj < jetContainer.size(); ++iObj) {
 	for (int jObj = 0; jObj < jetContainer.size(); ++jObj) {
@@ -79,11 +79,8 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
 	    if (jetContainer.at(iObj).DeltaR(jetContainer.at(jObj)) > 0.5) {
 		jetPairs.push_back(std::make_pair(jObj, iObj));
 		tempMjj = (jetContainer.at(iObj) + jetContainer.at(jObj)).M();
-		mjjCands.push_back(tempMjj);
-		if (tempMjj > tempMjj_) {
-		    tempMjj_ = tempMjj;
-		    highestMjjCandIndex = mjjCands.size() - 1;
-		}
+		mjjCandCounter += 1;
+		if (tempMjj_ < tempMjj) { tempMjj_ = tempMjj;	highestMjjCandIndex = mjjCandCounter;}
 	    }
 	}
     }
@@ -95,9 +92,8 @@ std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVe
     outJet1.SetPtEtaPhiE(0,0,0,0);
     outJet2.SetPtEtaPhiE(0,0,0,0);
     if (highestMjjCandIndex != -1) {
-	std::pair<int,int> jetPair = jetPairs.at(highestMjjCandIndex);
-	outJet1 = jetContainer.at(jetPair.first);
-	outJet2 = jetContainer.at(jetPair.second);
+	outJet1 = jetContainer.at(jetPairs.at(highestMjjCandIndex).first);
+	outJet2 = jetContainer.at(jetPairs.at(highestMjjCandIndex).second);
     }
     return std::make_tuple(outJet1, outJet2);
 }
@@ -124,10 +120,11 @@ void coutL1objs(std::vector<TLorentzVector> L1ObjContainer, std::vector<TLorentz
 
 void dumpEventKinemInfo(int iEntry, std::string label,
                         std::vector<TLorentzVector> aodObjs, std::vector<TLorentzVector> jets, std::vector<TLorentzVector> taus) {
+    // assume aodObjs is (aodJet1, aodJet2, aodTau1, aodTau2)
     std::cout << "iEntry: " << iEntry << std::endl;
     std::cout << "-------------" << label << "--------------" << std::endl;
     std::cout << "aod jet info" << std::endl;
-    coutAODobjs(aodObjs.at(0), aodObjs.at(1)); // assume aodObjs is (aodJet1, aodJet2, aodTau1, aodTau2)
+    coutAODobjs(aodObjs.at(0), aodObjs.at(1)); 
     std::cout << "aod tau info" << std::endl;
     coutAODobjs(aodObjs.at(2), aodObjs.at(3));
 
@@ -152,6 +149,42 @@ bool AODObjInContainer(std::vector<TLorentzVector> L1ObjContainer, std::vector<T
     }
 
     return AODObjInContainer;
+}
+
+std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string filterName, int objNumber){
+    std::vector<float>* branchPt;
+    std::vector<float>* branchEta;
+    std::vector<float>* branchPhi;
+    std::vector<float>* branchEnergy;
+
+    if (filterName == "hltHpsDoublePFTauTight") {
+	branchPt = inTree->hltHpsDoublePFTauTight_pt;
+	branchEta = inTree->hltHpsDoublePFTauTight_eta;
+	branchPhi = inTree->hltHpsDoublePFTauTight_phi;
+	branchEnergy = inTree->hltHpsDoublePFTauTight_energy;
+    }
+    if (filterName == "hltMatchedVBFTwoTight") {
+	branchPt = inTree->hltMatchedVBFTwoTight_pt;
+	branchEta = inTree->hltMatchedVBFTwoTight_eta;
+	branchPhi = inTree->hltMatchedVBFTwoTight_phi;
+	branchEnergy = inTree->hltMatchedVBFTwoTight_energy;
+    }
+    if (filterName == "hltMatchedVBFIsoTauTwoTight") {
+	branchPt = inTree->hltMatchedVBFIsoTauTwoTight_pt;
+	branchEta = inTree->hltMatchedVBFIsoTauTwoTight_eta;
+	branchPhi = inTree->hltMatchedVBFIsoTauTwoTight_phi;
+	branchEnergy = inTree->hltMatchedVBFIsoTauTwoTight_energy;
+    }
+    std::vector<TLorentzVector> objContainer;
+    TLorentzVector tempObj;
+    for (int iObj = 0; iObj < objNumber; ++iObj) {
+	tempObj.SetPtEtaPhiE(branchPt->at(iObj),
+			     branchEta->at(iObj),
+			     branchPhi->at(iObj),
+			     branchEnergy->at(iObj));
+	objContainer.push_back(tempObj);
+    }	
+    return objContainer;
 }
 
 int main(int argc, char** argv)	{
@@ -420,9 +453,9 @@ int main(int argc, char** argv)	{
 	if (iEntry % 10000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
 	nEvents = inTree->nEvents;
-	runNumber = inTree->runNumber->at(0); //update to ints in NtupleMaker
-	lumiBlock = inTree->lumiBlock->at(0);
-	eventNumberID = inTree->eventNumberID->at(0);
+	runNumber = inTree->runNumber;
+	lumiBlock = inTree->lumiBlock;
+	eventNumberID = inTree->eventNumberID;
 
 	//--------------------initialize all flags to zero, clear vectors-------------------------//
 
@@ -620,6 +653,8 @@ int main(int argc, char** argv)	{
 	if (vecSizeHpsTau >= 2 && ((vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) 
 				|| (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1))  ){
 	    // fill trigger tau candidates for either trigger from 20 GeV tau filter
+	    triggerTauCandidates = hltFillWithCands(inTree, "hltHpsDoublePFTauTight", vecSizeHpsTau);
+	    /***
 	    for (int iTriggerTau = 0; iTriggerTau < vecSizeHpsTau; ++iTriggerTau){
 		TLorentzVector triggerTauCand;
 		triggerTauCand.SetPtEtaPhiE(inTree->hltHpsDoublePFTauTight_pt->at(iTriggerTau),
@@ -628,9 +663,12 @@ int main(int argc, char** argv)	{
 					    inTree->hltHpsDoublePFTauTight_energy->at(iTriggerTau));
 		triggerTauCandidates.push_back(triggerTauCand);
 	    }
+***/
 	    TLorentzVector triggerJetCand;
 	    // fill trigger jet candidates for old trigger
 	    if (vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) {
+		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFTwoTight", vecSizeVBFTwo);
+/***
 		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFTwo; ++iTriggerJet){
 		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFTwoTight_pt->at(iTriggerJet),
 						inTree->hltMatchedVBFTwoTight_eta->at(iTriggerJet),
@@ -638,9 +676,14 @@ int main(int argc, char** argv)	{
 	    					inTree->hltMatchedVBFTwoTight_energy->at(iTriggerJet));
 		    triggerJetCandidates.push_back(triggerJetCand);
 		}
+***/
 	    }
+
 	    // fill trigger jet candidates for new trigger
 	    if (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1) {
+
+		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", vecSizeVBFIsoTauTwo);
+/***
 		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFIsoTauTwo; ++iTriggerJet){
 		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFIsoTauTwoTight_pt->at(iTriggerJet),
 						inTree->hltMatchedVBFIsoTauTwoTight_eta->at(iTriggerJet),
@@ -648,6 +691,7 @@ int main(int argc, char** argv)	{
 	    					inTree->hltMatchedVBFIsoTauTwoTight_energy->at(iTriggerJet));
 		    triggerJetCandidates.push_back(triggerJetCand);
 		}
+***/
 	    }
 
 	    // match AOD and HLT jets and taus
@@ -697,7 +741,7 @@ int main(int argc, char** argv)	{
 	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
-
+/***
 	// OR pass
 	if (passSel && (passOldTrig || passNewTrig) && (triggerFlag == 0 || triggerFlag == 1)) numPassSelAndOR += 1;
 
@@ -847,8 +891,7 @@ int main(int argc, char** argv)	{
 		else{continue;}//dumpEventKinemInfo(iEntry, "failed after overlap removal", aodObjs, L1JetCands, L1TauCands);
 	    }
 	}
-
-
+***/
 	// old trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
 	    passL1Old = inTree->passhltL1VBFDiJetOR;
@@ -924,12 +967,13 @@ int main(int argc, char** argv)	{
         outTree->Fill();
     }// end event loop
 
-    //formatting for 30 minutes until i realized you could just put the number first...
 
     std::cout << numPassSel << '\t' << "Passed Sel." << std::endl << \
 		"Sel (t1 pt, t2 pt, j1 pt, j2 pt, mjj): " << t1_pt_cut << '\t' << t2_pt_cut << '\t' << j1_pt_cut << '\t' << j2_pt_cut << '\t' << mjj_cut << std::endl << \
 		numPassSelAndOldTrig << '\t' << "Passed Sel. and Old Trigger (ignore if not Old selection)" << std::endl << \
 		numPassSelAndNewTrig << '\t' << "Passed Sel. and New Trigger (ignore if not New selection)" << std::endl << \
+		std::endl;
+/***
 		numPassSelAndOR << '\t' << "Passed Sel. and OR (ignore if not OR selection)" << std::endl << \
 		passOldAndNewL1 << '\t' << "Passed Sel., Passed Old VBF L1, Passed New VBF L1" << std::endl << \
 		matchedTwiceL1OldNew << '\t' << "Number of Times Leading AOD Jet was Matched in Both L1 Jet and L1 Tau Containers" << std::endl << \
@@ -946,7 +990,7 @@ int main(int argc, char** argv)	{
 		oneJetMatchedAfterRmvOl << '\t' << "At Least One Jet is Matched After Overlap Removal" << std::endl << \
 		bothJetsMatchedAfterRmvOl << '\t' << "Both Jets Matched After Overlap Removal" << std::endl << \
 		viableAfterMjj << '\t' << "Dijet Pair Passing Mjj > 450 GeV" << std::endl;
-
+***/
     std::cout << numMatchedJets << '\t' << "matched jets" << std::endl << \
 		numMatchedTaus << '\t' << "matched taus" << std::endl << \
 		numMatchedBoth << '\t' << "matched both" << std::endl;
@@ -959,7 +1003,6 @@ int main(int argc, char** argv)	{
     min_cutflow->Write();
     sel_cutflow->SetName("SelCutflow");
     sel_cutflow->Write();
-
 
 
     outTree->Write();

@@ -12,32 +12,32 @@ void printCountsDetailed(char* filename){
 
     // old trigger filters and final decision
     double passhltL1VBFDiJetOR = tree->Draw("passhltL1VBFDiJetOR", "passhltL1VBFDiJetOR>0", "goff");
-    double passhltHpsPFTauTrackOld = tree->Draw("passhltHpsPFTauTrack", "passhltL1VBFDiJetOR>0 && passhltHpsPFTauTrack>0", "goff");
-    double passhltHpsDoublePFTauTightOld = tree->Draw("passhltHpsDoublePFTauTight", "passhltL1VBFDiJetOR>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0", "goff");
-    double passhltHpsDoublePFTauAgainstMuonTightOld = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltL1VBFDiJetOR>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
-    double passhltMatchedVBFTwoTight = tree->Draw("passhltMatchedVBFTwoTight", "passhltL1VBFDiJetOR>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltMatchedVBFTwoTight>0", "goff");
-    double passhltMatchedVBFOneTight = tree->Draw("passhltMatchedVBFOneTight", "passhltL1VBFDiJetOR>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltMatchedVBFTwoTight>0 && passhltMatchedVBFOneTight>0", "goff");
+    double passhltHpsDoublePFTau20Old = tree->Draw("passhltHpsDoublePFTau20", "passhltL1VBFDiJetOR>0 && passhltHpsDoublePFTau20>0", "goff");
+    double passhltHpsDoublePFTauTightOld = tree->Draw("passhltHpsDoublePFTauTight", "passhltL1VBFDiJetOR>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0", "goff");
+    double passhltHpsDoublePFTauAgainstMuonTightOld = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltL1VBFDiJetOR>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
+    double passhltMatchedVBFTwoTight = tree->Draw("passhltMatchedVBFTwoTight", "passhltL1VBFDiJetOR>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltMatchedVBFTwoTight>0", "goff");
+    double passhltMatchedVBFOneTight = tree->Draw("passhltMatchedVBFOneTight", "passhltL1VBFDiJetOR>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltMatchedVBFTwoTight>0 && passhltMatchedVBFOneTight>0", "goff");
 
     double passOldTrigTight = tree->Draw("passOldTrigTight", "passOldTrigTight>0", "goff");
 
     // new trigger filters and final decision
     double passhltL1VBFDiJetIsoTau = tree->Draw("passhltL1VBFDiJetIsoTau", "passhltL1VBFDiJetIsoTau>0", "goff");
-    double passhltHpsPFTauTrackNew = tree->Draw("passhltHpsPFTauTrack", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0", "goff");
-    double passhltHpsDoublePFTauTightNew = tree->Draw("passhltHpsDoublePFTauTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0", "goff");
-    double passhltHpsDoublePFTauAgainstMuonTightNew = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
-    double passhltHpsPFTau50Tight = tree->Draw("passhltHpsPFTau50Tight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0", "goff");
-    double passhltMatchedVBFIsoTauTwoTight = tree->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsPFTauTrack>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0 && passhltMatchedVBFIsoTauTwoTight>0", "goff");
+    double passhltHpsDoublePFTau20New = tree->Draw("passhltHpsDoublePFTau20", "passhltL1VBFDiJetIsoTau>0 && passhltHpsDoublePFTau20>0", "goff");
+    double passhltHpsDoublePFTauTightNew = tree->Draw("passhltHpsDoublePFTauTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0", "goff");
+    double passhltHpsDoublePFTauAgainstMuonTightNew = tree->Draw("passhltHpsDoublePFTauAgainstMuonTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0", "goff"); 
+    double passhltHpsPFTau50Tight = tree->Draw("passhltHpsPFTau50Tight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0", "goff");
+    double passhltMatchedVBFIsoTauTwoTight = tree->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltL1VBFDiJetIsoTau>0 && passhltHpsDoublePFTau20>0 && passhltHpsDoublePFTauTight>0 && passhltHpsDoublePFTauAgainstMuonTight>0 && passhltHpsPFTau50Tight>0 && passhltMatchedVBFIsoTauTwoTight>0", "goff");
 
     double passNewTrigTight = tree->Draw("passNewTrigTight", "passNewTrigTight>0", "goff");
 
 
     // arrays holding these values
     // zeros where filters don't match / no counterpart exists
-    double rawOld[] = {nEvents, passhltL1VBFDiJetOR, passhltHpsPFTauTrackOld, \
+    double rawOld[] = {nEvents, passhltL1VBFDiJetOR, passhltHpsDoublePFTau20Old, \
 		passhltHpsDoublePFTauTightOld, passhltHpsDoublePFTauAgainstMuonTightOld, \
 		passhltHpsDoublePFTauAgainstMuonTightOld, passhltMatchedVBFTwoTight, \
 		passhltMatchedVBFOneTight, passOldTrigTight};
-    double rawNew[] = {nEvents, passhltL1VBFDiJetIsoTau, passhltHpsPFTauTrackNew, \
+    double rawNew[] = {nEvents, passhltL1VBFDiJetIsoTau, passhltHpsDoublePFTau20New, \
 		passhltHpsDoublePFTauTightNew, passhltHpsDoublePFTauAgainstMuonTightNew, \
 		passhltHpsPFTau50Tight, passhltMatchedVBFIsoTauTwoTight, \
 		passhltMatchedVBFIsoTauTwoTight, passNewTrigTight};

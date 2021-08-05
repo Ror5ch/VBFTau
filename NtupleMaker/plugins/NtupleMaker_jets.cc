@@ -86,8 +86,8 @@ void NtupleMaker::branchesJets(TTree* tree) {
   tree->Branch("nJet",                &nJet_);
 
   tree->Branch("jetL1PrimitivesPt",  &jetL1PrimitivesPt_);
-  tree->Branch("jetL1PrimitivesPhi", &jetL1PrimitivesEta_);
-  tree->Branch("jetL1PrimitivesEta", &jetL1PrimitivesPhi_);
+  tree->Branch("jetL1PrimitivesEta", &jetL1PrimitivesEta_);
+  tree->Branch("jetL1PrimitivesPhi", &jetL1PrimitivesPhi_);
   tree->Branch("jetL1PrimitivesEnergy",    &jetL1PrimitivesEnergy_);
 
   tree->Branch("jetPt",               &jetPt_);

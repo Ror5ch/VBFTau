@@ -112,7 +112,7 @@ void coutL1objs(std::vector<TLorentzVector> L1ObjContainer, std::vector<TLorentz
     TLorentzVector tempL1Obj;
     for (int iObj = 0; iObj < L1ObjContainer.size(); ++iObj) {
 	tempL1Obj = L1ObjContainer.at(iObj);
-	std::cout << iObj << '\t' << tempL1Obj.Pt() << '\t' << tempL1Obj.Eta() << '\t' << tempL1Obj.Phi() << '\t' \
+	std::cout << iObj << '\t' << std::setprecision(4) << tempL1Obj.Pt() << '\t' << tempL1Obj.Eta() << '\t' << tempL1Obj.Phi() << '\t' \
 		  << tempL1Obj.DeltaR(AODObjContainer.at(0)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(1)) << '\t' << '\t' \
 		  << tempL1Obj.DeltaR(AODObjContainer.at(2)) << '\t' << '\t' << tempL1Obj.DeltaR(AODObjContainer.at(3)) << std::endl;
     }
@@ -151,7 +151,7 @@ bool AODObjInContainer(std::vector<TLorentzVector> L1ObjContainer, std::vector<T
     return AODObjInContainer;
 }
 
-std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string filterName, int objNumber){
+std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string filterName, int objNumber, int ptCut){
     std::vector<float>* branchPt;
     std::vector<float>* branchEta;
     std::vector<float>* branchPhi;
@@ -175,6 +175,37 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 	branchPhi = inTree->hltMatchedVBFIsoTauTwoTight_phi;
 	branchEnergy = inTree->hltMatchedVBFIsoTauTwoTight_energy;
     }
+    if (filterName == "jetL1Primitives") {
+	branchPt = inTree->jetL1PrimitivesPt;
+	branchEta = inTree->jetL1PrimitivesEta;
+	branchPhi = inTree->jetL1PrimitivesPhi;
+	branchEnergy = inTree->jetL1PrimitivesEnergy;
+    }
+    if (filterName == "tauL1Primitives") {
+	branchPt = inTree->tauL1PrimitivesPt;
+	branchEta = inTree->tauL1PrimitivesEta;
+	branchPhi = inTree->tauL1PrimitivesPhi;
+	branchEnergy = inTree->tauL1PrimitivesEnergy;
+    }
+    if (filterName == "hltL1VBFDiJetOR") {
+	branchPt = inTree->hltL1VBFDiJetOR_pt;
+	branchEta = inTree->hltL1VBFDiJetOR_eta;
+	branchPhi = inTree->hltL1VBFDiJetOR_phi;
+	branchEnergy = inTree->hltL1VBFDiJetOR_energy;
+    }
+    if (filterName == "hltL1VBFDiJetIsoTau") {
+	branchPt = inTree->hltL1VBFDiJetIsoTau_tauPt;
+	branchEta = inTree->hltL1VBFDiJetIsoTau_tauEta;
+	branchPhi = inTree->hltL1VBFDiJetIsoTau_tauPhi;
+	branchEnergy = inTree->hltL1VBFDiJetIsoTau_tauEnergy;
+    }
+    if (filterName == "hltL1sDoubleTauBigOR") {
+	branchPt = inTree->hltL1sDoubleTauBigOR_pt;
+	branchEta = inTree->hltL1sDoubleTauBigOR_eta;
+	branchPhi = inTree->hltL1sDoubleTauBigOR_phi;
+	branchEnergy = inTree->hltL1sDoubleTauBigOR_energy;
+    }
+
     std::vector<TLorentzVector> objContainer;
     TLorentzVector tempObj;
     for (int iObj = 0; iObj < objNumber; ++iObj) {
@@ -182,7 +213,7 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 			     branchEta->at(iObj),
 			     branchPhi->at(iObj),
 			     branchEnergy->at(iObj));
-	objContainer.push_back(tempObj);
+	if (tempObj.Pt() > ptCut) objContainer.push_back(tempObj);
     }	
     return objContainer;
 }
@@ -653,46 +684,15 @@ int main(int argc, char** argv)	{
 	if (vecSizeHpsTau >= 2 && ((vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) 
 				|| (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1))  ){
 	    // fill trigger tau candidates for either trigger from 20 GeV tau filter
-	    triggerTauCandidates = hltFillWithCands(inTree, "hltHpsDoublePFTauTight", vecSizeHpsTau);
-	    /***
-	    for (int iTriggerTau = 0; iTriggerTau < vecSizeHpsTau; ++iTriggerTau){
-		TLorentzVector triggerTauCand;
-		triggerTauCand.SetPtEtaPhiE(inTree->hltHpsDoublePFTauTight_pt->at(iTriggerTau),
-					    inTree->hltHpsDoublePFTauTight_eta->at(iTriggerTau),
-					    inTree->hltHpsDoublePFTauTight_phi->at(iTriggerTau),
-					    inTree->hltHpsDoublePFTauTight_energy->at(iTriggerTau));
-		triggerTauCandidates.push_back(triggerTauCand);
-	    }
-***/
-	    TLorentzVector triggerJetCand;
+	    triggerTauCandidates = hltFillWithCands(inTree, "hltHpsDoublePFTauTight", vecSizeHpsTau, 0);
+
 	    // fill trigger jet candidates for old trigger
-	    if (vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) {
-		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFTwoTight", vecSizeVBFTwo);
-/***
-		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFTwo; ++iTriggerJet){
-		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFTwoTight_pt->at(iTriggerJet),
-						inTree->hltMatchedVBFTwoTight_eta->at(iTriggerJet),
-	    					inTree->hltMatchedVBFTwoTight_phi->at(iTriggerJet),
-	    					inTree->hltMatchedVBFTwoTight_energy->at(iTriggerJet));
-		    triggerJetCandidates.push_back(triggerJetCand);
-		}
-***/
-	    }
+	    if (vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) \
+		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFTwoTight", vecSizeVBFTwo, 0);  
 
 	    // fill trigger jet candidates for new trigger
-	    if (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1) {
-
-		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", vecSizeVBFIsoTauTwo);
-/***
-		for (int iTriggerJet = 0; iTriggerJet < vecSizeVBFIsoTauTwo; ++iTriggerJet){
-		    triggerJetCand.SetPtEtaPhiE(inTree->hltMatchedVBFIsoTauTwoTight_pt->at(iTriggerJet),
-						inTree->hltMatchedVBFIsoTauTwoTight_eta->at(iTriggerJet),
-	    					inTree->hltMatchedVBFIsoTauTwoTight_phi->at(iTriggerJet),
-	    					inTree->hltMatchedVBFIsoTauTwoTight_energy->at(iTriggerJet));
-		    triggerJetCandidates.push_back(triggerJetCand);
-		}
-***/
-	    }
+	    if (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1) \
+		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", vecSizeVBFIsoTauTwo, 0);
 
 	    // match AOD and HLT jets and taus
 
@@ -741,6 +741,35 @@ int main(int argc, char** argv)	{
 	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
+
+	if (passNewTrig) {
+
+/***
+	    std::cout << "iso tau size: " << inTree->tauL1PrimitivesIso->size() << std::endl;
+	    std::cout << "iso tau " << "tau pt " << "eta " << "phi " << "energy " << std::endl;
+	    for (int iTau = 0; iTau < inTree->tauL1PrimitivesIso->size(); ++iTau) {
+		std::cout << inTree->tauL1PrimitivesIso->at(iTau) << " ";// << inTree->tauL1PrimitivesPt->at(iTau) <<\
+		" " << inTree->tauL1PrimitivesEta->at(iTau) << " " << inTree->tauL1PrimitivesPhi->at(iTau) <<\
+		" " << inTree->tauL1PrimitivesEnergy->at(iTau) << std::endl;
+	    }
+	    std::cout << std::endl;
+	    std::vector<TLorentzVector> tauL1Primitives;
+	    tauL1Primitives = hltFillWithCands(inTree, "tauL1Primitives", inTree->tauL1PrimitivesIso->size(), 0);
+	    coutL1objs(tauL1Primitives, aodObjs);
+
+	    std::vector<TLorentzVector> tauL1s;
+	    tauL1s = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau", inTree->hltL1VBFDiJetIsoTau_tauPt->size(), 0);
+	    coutL1objs(tauL1s, aodObjs);
+***/
+	    std::vector<TLorentzVector> jetL1Primitives;
+	    jetL1Primitives = hltFillWithCands(inTree, "jetL1Primitives", inTree->jetL1PrimitivesPt->size(), 0);
+	    coutL1objs(jetL1Primitives, aodObjs);
+
+	    std::vector<TLorentzVector> jetL1s;
+	    jetL1s = hltFillWithCands(inTree, "hltL1VBFDiJetOR", inTree->hltL1VBFDiJetOR_pt->size(), 0);
+	    coutL1objs(jetL1s, aodObjs);
+	}
+
 /***
 	// OR pass
 	if (passSel && (passOldTrig || passNewTrig) && (triggerFlag == 0 || triggerFlag == 1)) numPassSelAndOR += 1;
@@ -753,26 +782,13 @@ int main(int argc, char** argv)	{
     	    // get L1Jets from old VBF trigger
     	    // if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
     	    std::vector<TLorentzVector> passL1JetCands;
-    	    TLorentzVector passL1Jet;
-    	    for (int iOldJet = 0; iOldJet < inTree->hltL1VBFDiJetOR_pt->size(); ++iOldJet){
-		passL1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
-    			inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
-    			inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
-    			inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-		if (passL1Jet.Pt() > 35) passL1JetCands.push_back(passL1Jet);
-    	    }
+	    passL1JetCands = hltFillWithCands(inTree, "hltL1VBFDiJetOR", inTree->hltL1VBFDiJetOR_pt->size(), 35);
 
     	    // get L1Taus from new VBF trigger
     	    // if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
     	    std::vector<TLorentzVector> passL1TauCands;
-    	    TLorentzVector passL1Tau;
-    	    for (int iNewTau = 0; iNewTau < inTree->hltL1VBFDiJetIsoTau_tauPt->size(); ++iNewTau){
-    		passL1Tau.SetPtEtaPhiE(inTree->hltL1VBFDiJetIsoTau_tauPt->at(iNewTau),
-    				inTree->hltL1VBFDiJetIsoTau_tauEta->at(iNewTau),
-    				inTree->hltL1VBFDiJetIsoTau_tauPhi->at(iNewTau),
-    				inTree->hltL1VBFDiJetIsoTau_tauEnergy->at(iNewTau));
-		if (passL1Tau.Pt() > 45) passL1TauCands.push_back(passL1Tau);
-	    }
+	    passL1TauCands = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau", inTree->hltL1VBFDiJetIsoTau_tauPt->size(), 45);
+
 	    if (AODObjInContainer(passL1JetCands, aodObjs, 0) && AODObjInContainer(passL1TauCands, aodObjs, 0)) matchedTwiceL1OldNew += 1;
 
 	    //dumpEventKinemInfo(iEntry, "passed old and new L1", aodObjs, passL1JetCands, passL1TauCands);
@@ -794,27 +810,12 @@ int main(int argc, char** argv)	{
 		// get L1Jets from old VBF trigger
 		// if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1JetCands;
-		TLorentzVector L1Jet;
-		for (int iOldJet = 0; iOldJet < jetNum; ++iOldJet){
-		    L1Jet.SetPtEtaPhiE(inTree->hltL1VBFDiJetOR_pt->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_eta->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_phi->at(iOldJet),
-				inTree->hltL1VBFDiJetOR_energy->at(iOldJet));
-		    if (L1Jet.Pt() > 35) L1JetCands.push_back(L1Jet); 
-		}
+		L1JetCands = hltFillWithCands(inTree, "hltL1VBFDiJetOR", jetNum, 35);
 
 		// get L1Taus from ditau trigger
 		// if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1TauCands;
-		TLorentzVector L1Tau;
-		for (int iNewTau = 0; iNewTau < tauNum; ++iNewTau){
-		    L1Tau.SetPtEtaPhiE(inTree->hltL1sDoubleTauBigOR_pt->at(iNewTau),
-				inTree->hltL1sDoubleTauBigOR_eta->at(iNewTau),
-				inTree->hltL1sDoubleTauBigOR_phi->at(iNewTau),
-				inTree->hltL1sDoubleTauBigOR_energy->at(iNewTau));
-		    if (L1Tau.Pt() > 45) L1TauCands.push_back(L1Tau); 
-		}
-
+		L1TauCands = hltFillWithCands(inTree, "hltL1sDoubleTauBigOR", tauNum, 45);
 
 		// if we have at least 2 jets and at least 1 tau passing new VBF L1, event may be viable 
 		if (L1JetCands.size() >= 2 && L1TauCands.size() >= 1) {
@@ -892,6 +893,7 @@ int main(int argc, char** argv)	{
 	    }
 	}
 ***/
+	//----------------------filling remaining filter flags-------------------------------//
 	// old trigger filter cutflow eff flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) {
 	    passL1Old = inTree->passhltL1VBFDiJetOR;

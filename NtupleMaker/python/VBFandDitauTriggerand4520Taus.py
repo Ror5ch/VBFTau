@@ -18344,8 +18344,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(False)#True)
-     , needJets = cms.untracked.bool(False)#True)
+     , needTaus = cms.untracked.bool(True)
+     , needJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -18365,8 +18365,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-        #process.rerunMvaIsolationSequence *
-        #getattr(process,updatedTauName) *
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName) *
         process.demo
 )
 

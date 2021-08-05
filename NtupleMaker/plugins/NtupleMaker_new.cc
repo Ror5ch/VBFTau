@@ -53,14 +53,6 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if(need_taus) fillTaus(iEvent);
     if(need_jets) fillJets(iEvent, iSetup);
 
-    //tree_->Branch("runNumber", &runNumber);
-    //tree_->Branch("lumiBlock", &lumiBlock);
-    //tree_->Branch("eventNumberID", &eventNumberID);
-
-    //runNumber = iEvent.id().run();
-    //lumiBlock = iEvent.id().luminosityBlock();
-    //eventNumberID = iEvent.id().event();
-
     tree_->Fill();
 }
 

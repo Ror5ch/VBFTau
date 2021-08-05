@@ -293,35 +293,29 @@ int main(int argc, char** argv)	{
     float minimal_tau_pt_cut = 20;
     float minimal_jet_pt_cut = 35;
 
-    // hlt vars
-    int vecSizeHpsTau, vecSizeVBFOne, vecSizeVBFTwo, vecSizeVBFIsoTauTwo, vecSizeHpsTau50;
-    
+    // run variables
+    int nEvents, runNumber, lumiBlock, eventNumberID;
+
+    // hlt variables
     float j1_pt, j1_eta, j1_phi, j1_energy; 
     float j2_pt, j2_eta, j2_phi, j2_energy; 
     float mjj;
-
     float t1_pt, t1_eta, t1_phi, t1_energy;
     float t2_pt, t2_eta, t2_phi, t2_energy;
    
-    // AOD vars, A is for AOD
-    int vecSizeAODJet, vecSizeAODTau;
-
+    // AOD variables, A is for AOD
     float j1_pt_A, j1_eta_A, j1_phi_A, j1_energy_A; 
     float j2_pt_A, j2_eta_A, j2_phi_A, j2_energy_A; 
     float mjj_A;
-
     float t1_pt_A, t1_eta_A, t1_phi_A, t1_energy_A;
     float t2_pt_A, t2_eta_A, t2_phi_A, t2_energy_A;
 
     int deepTauVSjet, deepTauVSmu, deepTauVSele, jetID;
 
-    // vars for matching
+    // variables for matching
     float dRj1, dRj2, dRt1, dRt2;
 
-    std::vector<TLorentzVector> tauCandidates, jetCandidates;
-    std::vector<TLorentzVector> triggerTauCandidates, triggerJetCandidates;
-
-    // offline filter eff cutflow flag vars
+    // offline filter eff cutflow flag variables
     int passL1Old;
     int passhltHpsDoublePFTau20Old;
     int passhltHpsDoublePFTauTightOld;
@@ -336,10 +330,7 @@ int main(int argc, char** argv)	{
     int passhltHpsPFTau50Tight;
     int passhltMatchedVBFIsoTauTwoTight;
 
-    // normal offline flag vars
-    // delete these when you have time
-    // basic or "preselection" should never be used as it has no physical meaning.
-    // this is kind of like tying your shoes together from an analysis standpoint
+    // flag variables for selection and trigger
     int passBase;
 
     int passSel;
@@ -350,19 +341,15 @@ int main(int argc, char** argv)	{
     int matchedTaus;
     int matchedJets;
     int matchedBoth;
+
     int passSelOldTrigAndMatchedTaus;
     int passSelOldTrigAndMatchedJets;
     int passSelOldTrigAndMatchedBoth;
     int passSelNewTrigAndMatchedTaus;
     int passSelNewTrigAndMatchedJets;
-    int passSelNewTrigAndMatchedBoth;
-
-    int overlapped;
-   
-    int nEvents, runNumber, lumiBlock, eventNumberID;
+    int passSelNewTrigAndMatchedBoth;   
  
     // filled data branches
-    //
     outTree->Branch("nEvents", &nEvents);
     outTree->Branch("runNumber", &runNumber);
     outTree->Branch("lumiBlock", &lumiBlock);
@@ -398,6 +385,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("deepTauVSjet", &deepTauVSjet);
     outTree->Branch("deepTauVSmu", &deepTauVSmu);
     outTree->Branch("deepTauVSele", &deepTauVSele);
+    outTree->Branch("jetID", &jetID);
     // matched vars
     outTree->Branch("dRj1", &dRj1);
     outTree->Branch("dRj2", &dRj2);
@@ -421,15 +409,14 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightNew", &passhltHpsDoublePFTauAgainstMuonTightNew);
     outTree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
     outTree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
-
     // flag vars
     outTree->Branch("passBase", &passBase);
-
     outTree->Branch("passSel", &passSel);
     outTree->Branch("passOldTrig", &passOldTrig);
     outTree->Branch("passNewTrig", &passNewTrig);
     outTree->Branch("passSelAndOldTrig", &passSelAndOldTrig);
     outTree->Branch("passSelAndNewTrig", &passSelAndNewTrig);
+
     outTree->Branch("passSelOldTrigAndMatchedTaus", &passSelOldTrigAndMatchedTaus);
     outTree->Branch("passSelOldTrigAndMatchedJets", &passSelOldTrigAndMatchedJets);
     outTree->Branch("passSelOldTrigAndMatchedBoth", &passSelOldTrigAndMatchedBoth);
@@ -439,8 +426,6 @@ int main(int argc, char** argv)	{
 
     TH1F *min_cutflow = new TH1F("","",5,0,5);
     TH1F *sel_cutflow = new TH1F("","",7,0,7);
-
-    //int sameTauPassSel = 0; 
 
     int numMatchedJets = 0;
     int numMatchedTaus = 0;
@@ -476,63 +461,14 @@ int main(int argc, char** argv)	{
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
 
-	//--------------------initialize all flags to zero, clear vectors-------------------------//
-
-	dRj1 = 999;
-	dRj2 = 999;
-	dRt1 = 999;
-	dRt2 = 999;	
-	
-	// offline trigger filter cutflow efficiency flags	
-	// old trigger path
-	passL1Old = 0;
-	passhltHpsDoublePFTau20Old = 0;
-        passhltHpsDoublePFTauTightOld = 0;
-	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
-    	passhltMatchedVBFTwoTight = 0;
- 	passhltMatchedVBFOneTight = 0;
-	// new trigger path
-	passL1New = 0;
-	passhltHpsDoublePFTau20New = 0;
-	passhltHpsDoublePFTauTightNew = 0;
-	passhltHpsDoublePFTauAgainstMuonTightNew = 0;
-	passhltHpsPFTau50Tight = 0;
-	passhltMatchedVBFIsoTauTwoTight = 0; 
-	
-	// base selection flags (cuts are arbitrary so they're not physically meaningful)
+	//---------------------apply base selection and fill AOD objects------------------------------//
+	// base selection flag (cuts are arbitrary so they're not physically meaningful)
 	// artifact of trying to decouple matching and selection steps.
 	passBase = 0;
-
-	// full selection + trigger firing + matching flags
-	passSel = 0;
-	passOldTrig = 0;
-	passNewTrig = 0;
-	passSelAndOldTrig = 0;
-	passSelAndNewTrig = 0;
-	matchedTaus = 0;
-	matchedJets = 0;
-	matchedBoth = 0;
-	passSelOldTrigAndMatchedTaus = 0;
-	passSelOldTrigAndMatchedJets = 0;
-	passSelOldTrigAndMatchedBoth = 0;
-	passSelNewTrigAndMatchedTaus = 0;
-	passSelNewTrigAndMatchedJets = 0;
-	passSelNewTrigAndMatchedBoth = 0;
-
-	overlapped = 0;
-
-	tauCandidates.clear();	
-	jetCandidates.clear();
-
-	triggerTauCandidates.clear();
-	triggerJetCandidates.clear();
-
-
-	//---------------------apply base selection and fill AOD objects------------------------------//
 	min_cutflow->Fill(0.0,1.0); // fill cutflow before any selection
 
-	vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
-	vecSizeAODJet = inTree->jetPt->size(); // number of jets in event
+	int vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
+	int vecSizeAODJet = inTree->jetPt->size(); // number of jets in event
 	//minimal selection common to both triggers//
 	// check the number of objects in the event, need at least two of each
 	if (vecSizeAODTau < 2) continue;
@@ -540,6 +476,7 @@ int main(int argc, char** argv)	{
 	if (vecSizeAODJet < 2) continue;
 	min_cutflow->Fill(2.0,1.0); // fill cutflow with events that have 2 taus and 2 jets
 	// check kinematics and ID of tau objects, store good taus
+	std::vector<TLorentzVector> tauCandidates;	
 	for (int iTau = 0; iTau < vecSizeAODTau; ++iTau){
 
 	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
@@ -585,6 +522,7 @@ int main(int argc, char** argv)	{
 	sel_cutflow->Fill(0.0,1.0); // start of smaller cutflow graph (using two for scaling purposes)
 
 	// check kinematics and ID of jet objects, store good jets
+	std::vector<TLorentzVector> jetCandidates;
 	for (int iJet = 0; iJet < vecSizeAODJet; ++iJet){
 
 	    if (inTree->jetID->at(iJet) < 6) continue; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
@@ -622,51 +560,46 @@ int main(int argc, char** argv)	{
 	passBase = 1;
 
         std::vector<TLorentzVector> aodObjs;
-	aodObjs.push_back(aodJet1);
-	aodObjs.push_back(aodJet2);
-	aodObjs.push_back(aodTau1);
-	aodObjs.push_back(aodTau2);
+	aodObjs.insert(end(aodObjs), {aodJet1, aodJet2, aodTau1, aodTau2});
 
 	//-----------------------tighter selection guided by trigger specific cutoffs---------------//
 
-
 	passSel = 1;
 
-	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) passSel = 0; //continue;
-	//else {sel_cutflow->Fill(5.0,1.0);}
-	sel_cutflow->Fill(2.0,1.0);
+	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) passSel = 0;
+	else{sel_cutflow->Fill(2.0,1.0);}
 	
-	if (aodTau1.Pt() < t1_pt_cut) passSel = 0; //continue;
-	//else {sel_cutflow->Fill(6.0,1.0);}
-	sel_cutflow->Fill(3.0,1.0);
+	if (aodTau1.Pt() < t1_pt_cut) passSel = 0;
+	else{sel_cutflow->Fill(3.0,1.0);}
 
-	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) passSel = 0; //continue;
-	//else {sel_cutflow->Fill(7.0,1.0);}
-	sel_cutflow->Fill(4.0,1.0);
+	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) passSel = 0;
+	else{sel_cutflow->Fill(4.0,1.0);}
 
-	if (aodJet1.Pt() < j1_pt_cut) passSel = 0; //continue;
-	//else {sel_cutflow->Fill(8.0,1.0);}
-	sel_cutflow->Fill(5.0,1.0);
+	if (aodJet1.Pt() < j1_pt_cut) passSel = 0;
+	else{sel_cutflow->Fill(5.0,1.0);}
 
-	if (mjj_A < mjj_cut) passSel = 0; //continue;
-	//else {sel_cutflow->Fill(9.0,1.0);}
-	sel_cutflow->Fill(6.0,1.0);
+	if (mjj_A < mjj_cut) passSel = 0;
+	else{sel_cutflow->Fill(6.0,1.0);}
 
 	if (passSel) numPassSel += 1;
 
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
+	// not performed for "tight" or "or" selections because it's not clear which filter to use 
+	// for jets in those cases
 	
 	// get number of objects in tau and jet trigger filters
-	vecSizeHpsTau = inTree->hltHpsDoublePFTauTight_pt->size(); // at least two taus > 20 GeV filter, common to both
-	vecSizeVBFTwo = inTree->hltMatchedVBFTwoTight_pt->size();  // at least two jets > 45 GeV filter, old trigger only
-	vecSizeVBFOne = inTree->hltMatchedVBFOneTight_pt->size();  // one jet > 115 GeV filter, old trigger only
-	vecSizeVBFIsoTauTwo = inTree->hltMatchedVBFIsoTauTwoTight_pt->size(); // at least two jets > 45 GeV filter and iso tau present, new trigger only
-	vecSizeHpsTau50 = inTree->hltHpsPFTau50Tight_pt->size(); // at least one tau > 50 GeV filter, new trigger only
+	int vecSizeHpsTau = inTree->hltHpsDoublePFTauTight_pt->size(); // at least two taus > 20 GeV filter, common to both
+	int vecSizeVBFTwo = inTree->hltMatchedVBFTwoTight_pt->size();  // at least two jets > 45 GeV filter, old trigger only
+	int vecSizeVBFOne = inTree->hltMatchedVBFOneTight_pt->size();  // one jet > 115 GeV filter, old trigger only
+	int vecSizeVBFIsoTauTwo = inTree->hltMatchedVBFIsoTauTwoTight_pt->size(); // at least two jets > 45 GeV filter and iso tau present, new trigger only
+	int vecSizeHpsTau50 = inTree->hltHpsPFTau50Tight_pt->size(); // at least one tau > 50 GeV filter, new trigger only
 
 	// if enough objects are in the correct HLT filters, then match to AOD and compute dRs
 	TLorentzVector trigTau1, trigTau2, trigJet1, trigJet2;
 	if (vecSizeHpsTau >= 2 && ((vecSizeVBFTwo >= 2 && vecSizeVBFOne >= 1 && triggerFlag == 0) 
 				|| (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1))  ){
+
+	    std::vector<TLorentzVector> triggerTauCandidates, triggerJetCandidates;
 	    // fill trigger tau candidates for either trigger from 20 GeV tau filter
 	    triggerTauCandidates = hltFillWithCands(inTree, "hltHpsDoublePFTauTight", vecSizeHpsTau, 0);
 
@@ -679,53 +612,68 @@ int main(int argc, char** argv)	{
 		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", vecSizeVBFIsoTauTwo, 0);
 
 	    // match AOD and HLT jets and taus
+	    dRj1 = 999;
+	    dRj2 = 999;
 	    // tie is a handy method for assigning tuple output
             std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, aodJet1, aodJet2);
             dRj1 = trigJet1.DeltaR(aodJet1);
             dRj2 = trigJet2.DeltaR(aodJet2);
 
+	    dRt1 = 999;
+	    dRt2 = 999;
 	    std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, aodTau1, aodTau2);
 	    dRt1 = trigTau1.DeltaR(aodTau1);
 	    dRt2 = trigTau2.DeltaR(aodTau2);
 
 	    mjj = (trigJet1 + trigJet2).M();
 
+	    int overlapped = 0;
 	    // check that same type objects are not overlapped
 	    if (trigTau1.DeltaR(trigTau2) < 0.5 || trigJet1.DeltaR(trigJet2) < 0.5 ) overlapped = 1;
 	    // check that different objects are not overlapped
 	    if (trigTau1.DeltaR(trigJet1) < 0.5 || trigTau1.DeltaR(trigJet2) < 0.5 ||
 		trigTau2.DeltaR(trigJet1) < 0.5 || trigTau2.DeltaR(trigJet2) < 0.5) overlapped = 1;
+
+	    // matchedObj variables initialization
+	    matchedTaus = matchedJets = matchedBoth = 0;	
+	    // if all the dRs are less than 0.5, then we've matched AOD to reco HLT
+	    if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) {matchedTaus = 1; numMatchedTaus += 1;}
+	    if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) {matchedJets = 1; numMatchedJets += 1;}
+	    if (matchedTaus && matchedJets) {matchedBoth = 1; numMatchedBoth += 1;}
 	}
 
 	//------------------------------fill flags and output tree-----------------------------------//
 
+	// initialize trigger variables before getting new ones from tree
+	passOldTrig = passNewTrig = 0;
 	passOldTrig = inTree->passOldTrigTight->at(0);
 	passNewTrig = inTree->passNewTrigTight->at(0);
 
 	// filling offline selection and pass trigger flags
 	// variables starting with "num" are eventually couted to terminal 
 	// the other variable is a flag that is stored in the output tree
+	passSelAndOldTrig = passSelAndNewTrig = 0;
 	if (passSel && passOldTrig ) {passSelAndOldTrig = 1; numPassSelAndOldTrig += 1;}
 	if (passSel && passNewTrig ) {passSelAndNewTrig = 1; numPassSelAndNewTrig += 1;}
 
-
-	// if all the dRs are less than 0.5, then we've matched AOD to reco HLT
-	if (dRt1 < 0.5 && dRt2 < 0.5 && !overlapped) {matchedTaus = 1; numMatchedTaus += 1;}
-	if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) {matchedJets = 1; numMatchedJets += 1;}
-	if (matchedTaus && matchedJets) {matchedBoth = 1; numMatchedBoth += 1;}
-
 	// further subdivisions of matched objects and passed selection+trigger
+	passSelOldTrigAndMatchedTaus = passSelOldTrigAndMatchedJets = passSelOldTrigAndMatchedBoth = 0;
 	if (matchedTaus && passSelAndOldTrig) passSelOldTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndOldTrig) passSelOldTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndOldTrig) passSelOldTrigAndMatchedBoth = 1;
 
+	passSelNewTrigAndMatchedTaus = passSelNewTrigAndMatchedJets = passSelNewTrigAndMatchedBoth = 0;
 	if (matchedTaus && passSelAndNewTrig) passSelNewTrigAndMatchedTaus = 1;
 	if (matchedJets && passSelAndNewTrig) passSelNewTrigAndMatchedJets = 1;
 	if (matchedBoth && passSelAndNewTrig) passSelNewTrigAndMatchedBoth = 1;
 
+	// OR pass
+	if (passSel && (passOldTrig || passNewTrig) && (triggerFlag == 0 || triggerFlag == 1)) numPassSelAndOR += 1;
+
+	// -----------------------------------------L1 object investigation -----------------------------//
+/***
 	if (passNewTrig) {
 
-/***
 	    std::cout << "iso tau size: " << inTree->tauL1PrimitivesIso->size() << std::endl;
 	    std::cout << "iso tau " << "tau pt " << "eta " << "phi " << "energy " << std::endl;
 	    for (int iTau = 0; iTau < inTree->tauL1PrimitivesIso->size(); ++iTau) {
@@ -741,7 +689,6 @@ int main(int argc, char** argv)	{
 	    std::vector<TLorentzVector> tauL1s;
 	    tauL1s = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau", inTree->hltL1VBFDiJetIsoTau_tauPt->size(), 0);
 	    coutL1objs(tauL1s, aodObjs);
-***/
 	    std::vector<TLorentzVector> jetL1Primitives;
 	    jetL1Primitives = hltFillWithCands(inTree, "jetL1Primitives", inTree->jetL1PrimitivesPt->size(), 0);
 	    coutL1objs(jetL1Primitives, aodObjs);
@@ -751,11 +698,9 @@ int main(int argc, char** argv)	{
 	    coutL1objs(jetL1s, aodObjs);
 	}
 
+***/
 /***
-	// OR pass
-	if (passSel && (passOldTrig || passNewTrig) && (triggerFlag == 0 || triggerFlag == 1)) numPassSelAndOR += 1;
 
-	// -----------------------------------------L1 object investigation -----------------------------//
 	// passes offline selection, passes old L1, passes new L1
 	if (passSel && inTree->hltL1VBFDiJetOR_pt->size() >= 2 && \
 		(inTree->hltL1VBFDiJetIsoTau_tauPt->size() >=1 && inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2)){
@@ -879,7 +824,15 @@ int main(int argc, char** argv)	{
 	// so filling them manually by chaining together if statements gives us a more accurate 
 	// picture of which filters were filled by which paths.
 	
-	// old trigger filter cutflow eff flags
+	// old trigger filter flags initialization
+	passL1Old = 0;
+	passhltHpsDoublePFTau20Old = 0;
+        passhltHpsDoublePFTauTightOld = 0;
+	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
+    	passhltMatchedVBFTwoTight = 0;
+ 	passhltMatchedVBFOneTight = 0;
+
+	// filling old trigger filter flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) passL1Old = inTree->passhltL1VBFDiJetOR;
 
 	if (passL1Old && inTree->hltHpsDoublePFTau20_pt->size() >= 2) passhltHpsDoublePFTau20Old = inTree->passhltHpsDoublePFTau20;
@@ -892,7 +845,15 @@ int main(int argc, char** argv)	{
 
 	if (passhltMatchedVBFTwoTight && inTree->hltMatchedVBFOneTight_pt->size() >= 1) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
 
-	// new trigger filter cutflow eff flags
+	// new trigger filter flags initialization
+	passL1New = 0;
+	passhltHpsDoublePFTau20New = 0;
+	passhltHpsDoublePFTauTightNew = 0;
+	passhltHpsDoublePFTauAgainstMuonTightNew = 0;
+	passhltHpsPFTau50Tight = 0;
+	passhltMatchedVBFIsoTauTwoTight = 0; 
+
+	// filling new trigger filter flags
 	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
 					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) passL1New = inTree->passhltL1VBFDiJetIsoTau;
 
@@ -907,7 +868,7 @@ int main(int argc, char** argv)	{
 	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 	
         // fill kine branches with matched AOD
-        if (passSel){
+        if (passSel) {
 	    t1_pt_A = aodTau1.Pt();
 	    t1_eta_A = aodTau1.Eta();
 	    t1_phi_A = aodTau1.Phi();
@@ -925,7 +886,28 @@ int main(int argc, char** argv)	{
 	    j2_eta_A = aodJet2.Eta();
 	    j2_eta_A = aodJet2.Phi();
 	    j2_energy_A = aodJet2.Energy();
-	}
+
+	    if (matchedJets) {
+		j1_pt = trigJet1.Pt();
+		j1_eta = trigJet1.Eta();
+		j1_phi = trigJet1.Phi();
+		j1_energy = trigJet1.Energy();	
+		j2_pt = trigJet2.Pt();
+		j2_eta = trigJet2.Eta();
+		j2_phi = trigJet2.Phi();
+		j2_energy = trigJet2.Energy();
+	    }
+	    if (matchedTaus) {
+		t1_pt = trigTau1.Pt();
+		t1_eta = trigTau1.Eta();
+		t1_phi = trigTau1.Phi();
+		t1_energy = trigTau1.Energy();
+		t2_pt = trigTau2.Pt();
+		t2_eta = trigTau2.Eta();
+		t2_phi = trigTau2.Phi();
+		t2_energy = trigTau2.Energy();
+	    }
+	} // end if statement to fill kinem variables
 
         outTree->Fill();
     }// end event loop

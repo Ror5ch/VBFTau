@@ -237,34 +237,57 @@ int main(int argc, char** argv)	{
     // vars for AOD selection, which change depending on the trigger being studied
     float t1_pt_cut, t2_pt_cut, j1_pt_cut, j2_pt_cut, mjj_cut;
 
+    if (argc < 4) {
+	std::cout << "specify trigger cuts in third argument (old, new, tight, or)" << std::endl;
+	return 0; // prevents rest of code from running
+    }
+
     std::string whichTrigger = *(argv + 3);
     std::string oldTrigString = "old";
     std::string newTrigString = "new";
+    std::string tightTrigString = "tight";
+    std::string orTrigString = "or";
 
-    int triggerFlag = 2;
-    if (whichTrigger.find(oldTrigString) == std::string::npos && 
-	whichTrigger.find(newTrigString) == std::string::npos) {
-	std::cout << "specify whether this is the new trigger or the old trigger with \"old\" or \"new\" as the 3rd argument" << std::endl;
-	return 0; //prevents rest of code from running
+    int triggerFlag = -1;
+    if ((whichTrigger.find(oldTrigString) == std::string::npos && 
+	whichTrigger.find(newTrigString) == std::string::npos &&
+	whichTrigger.find(tightTrigString) == std::string::npos &&
+	whichTrigger.find(orTrigString) == std::string::npos) || argc < 4) {
+	std::cout << "specify trigger cuts in third argument (old, new, tight, or)" << std::endl;
+	return 0;
     }
     // offline selection should be consistently 5 GeV above HLT thresholds
-    if ( whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;//80;//50;//25;
-	t2_pt_cut = 25;//40;//25;
+    if (whichTrigger.find(oldTrigString) != std::string::npos){
+	t1_pt_cut = 25;
+	t2_pt_cut = 25;
 	j1_pt_cut = 120;
 	j2_pt_cut = 45;
 	mjj_cut = 700;
-	std::cout << "trigger: " << oldTrigString << std::endl;
 	triggerFlag = 0;
     }
-    if ( whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 50;//80;//50;
-	t2_pt_cut = 25;//40;//25;
-	j1_pt_cut = 45;//120;//45;
+    if (whichTrigger.find(newTrigString) != std::string::npos){
+	t1_pt_cut = 50;
+	t2_pt_cut = 25;
+	j1_pt_cut = 45;
 	j2_pt_cut = 45;
-	mjj_cut = 550;//700;//550;
-	std::cout << "trigger: " << newTrigString << std::endl;
+	mjj_cut = 550;
 	triggerFlag = 1;
+    }
+    if (whichTrigger.find(tightTrigString) != std::string::npos){
+	t1_pt_cut = 80;
+	t2_pt_cut = 40;
+	j1_pt_cut = 120;
+	j2_pt_cut = 45;
+	mjj_cut = 700;
+	triggerFlag = 2;
+    }
+    if (whichTrigger.find(orTrigString) != std::string::npos){
+	t1_pt_cut = 25;
+	t2_pt_cut = 25;
+	j1_pt_cut = 45;
+	j2_pt_cut = 45;
+	mjj_cut = 550;
+	triggerFlag = 3;
     }
 
     float minimal_tau_pt_cut = 20;

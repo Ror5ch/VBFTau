@@ -48,7 +48,11 @@ std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVect
 
 // output a tuple of TLorentzVectors that correspond to the jet pair with
 // the highest mjj of a given jet container
-std::tuple<TLorentzVector, TLorentzVector> highestMjjPair(std::vector<TLorentzVector> jetContainer) {
+std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzVector> jetContainer, int firstContainerSize, int secondContainerSize = 0, int objSearchMode = 0) {
+    // objSearchMode:
+    // 0 - no exclusions applied
+    // 1 - only 1 jet and 1 tau combinations are allowed
+    // 2 - double tau combinations are excluded
     int highestMjjCandIndex = -1;
     int mjjCandCounter = -1; //start at -1 so when the first element is added it's element zero
     float tempMjj = -1;
@@ -138,12 +142,12 @@ void dumpEventKinemInfo(int iEntry, std::string label,
 }
 
 // outputs a boolean variable if an AOD object is matched in a container of L1 objects
-int AODObjInContainer(std::vector<TLorentzVector> L1ObjContainer, TLorentzVector AODObj) {
-    int AODObjInContainer = 0;
+int objInContainer(std::vector<TLorentzVector> L1ObjContainer, TLorentzVector Obj) {
+    int objInContainer = 0;
     for (std::vector<TLorentzVector>::const_iterator iObj = L1ObjContainer.begin(); iObj != L1ObjContainer.end(); ++iObj) {
-	if (iObj->DeltaR(AODObj) < 0.5) return AODObjInContainer = 1;
+	if (iObj->DeltaR(Obj) < 0.5) return objInContainer = 1;
     }
-    return AODObjInContainer;
+    return objInContainer;
 }
 
 // fills a std::vector<TLorentzVector> container using input tree and a string identifying the branches to use
@@ -234,11 +238,18 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 }
 
 // increment counters if the AOD object is in the specified container
-void incIfTrue(int &jetCounter, int &tauCounter, int &bothCounter, std::vector<TLorentzVector> jetContainer, std::vector<TLorentzVector> tauContainer, TLorentzVector AODObj) {
-    int AODObjInJetContainer = AODObjInContainer(jetContainer, AODObj);
-    int AODObjInTauContainer = AODObjInContainer(tauContainer, AODObj);
+void incIfMatchOneAODObj(int &jetCounter, int &tauCounter, int &bothCounter, std::vector<TLorentzVector> jetContainer, std::vector<TLorentzVector> tauContainer, TLorentzVector AODObj) {
+    int AODObjInJetContainer = objInContainer(jetContainer, AODObj);
+    int AODObjInTauContainer = objInContainer(tauContainer, AODObj);
     jetCounter += AODObjInJetContainer;
     tauCounter += AODObjInTauContainer;
     bothCounter += (AODObjInJetContainer && AODObjInTauContainer);
 }
-
+// increment counters if the AOD objects are in the specified container
+void incIfMatchAllAODObjs(int &jetCounter, int &tauCounter, int &bothCounter, std::vector<TLorentzVector> jetContainer, std::vector<TLorentzVector> tauContainer, std::vector<TLorentzVector> AODContainer) {
+    int AODJetsInJetContainer = (objInContainer(jetContainer, AODContainer.at(0)) && objInContainer(jetContainer, AODContainer.at(1)));
+    int AODTausInTauContainer = (objInContainer(tauContainer, AODContainer.at(2)) && objInContainer(tauContainer, AODContainer.at(3)));
+    jetCounter += AODJetsInJetContainer;
+    tauCounter += AODTausInTauContainer;
+    bothCounter += (AODJetsInJetContainer && AODTausInTauContainer);
+}

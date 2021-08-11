@@ -234,7 +234,6 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("runNumber", &runNumber);
     fChain->SetBranchAddress("lumiBlock", &lumiBlock);
     fChain->SetBranchAddress("eventNumberID", &eventNumberID);
-
     fChain->SetBranchAddress("nEvents", &nEvents);
 
     fChain->SetBranchAddress("passDitauTrig", &passDitauTrig);
@@ -380,7 +379,6 @@ void trigger_tree::Init(TTree *tree)
 
     // from AOD
     // trigger primitives
-
     fChain->SetBranchAddress("tauL1PrimitivesPt", &tauL1PrimitivesPt);
     fChain->SetBranchAddress("tauL1PrimitivesEta", &tauL1PrimitivesEta);
     fChain->SetBranchAddress("tauL1PrimitivesPhi", &tauL1PrimitivesPhi);

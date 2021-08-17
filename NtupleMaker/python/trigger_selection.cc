@@ -249,7 +249,7 @@ int main(int argc, char** argv)	{
 
     int passSize = 0;
     int passCCSize = 0;
-    int passMjj = 0; //consider renaming to DiObjMass? M2O (mass 2 objects) 
+    int passTwoObjMass = 0; //consider renaming to DiObjMass? M2O (mass 2 objects) 
     int matchedJetAODs = 0;
     int matchedTauAODs = 0;
     int matchedAllAODs = 0;
@@ -361,7 +361,7 @@ int main(int argc, char** argv)	{
 	// fill aod jets with pair of jets that produced the largest mjj value
 	// from cout statements, aodJet1 was verified to be leading jet
 	TLorentzVector aodJet1, aodJet2;
-        std::tie(aodJet1, aodJet2) = highestMassPair(jetCandidates, jetCandsSize);
+        std::tie(aodJet1, aodJet2) = highestMassPair(jetCandidates);
 
 	// calculate mjj of AOD jets, if an mjj pair wasn't found, mjj of the "aod" jets will be zero
 	// the function highestMassPair could be improved so this ad hoc test of mjj is avoided...
@@ -486,21 +486,31 @@ int main(int argc, char** argv)	{
 	// OR pass
 	if (passSel && (passOldTrig || passNewTrig) && (triggerFlag == 0 || triggerFlag == 1)) numPassSelAndOR += 1;
 
-	// -----------------------------------------L1 object investigation -----------------------------//
+	// -----------------------------------------L1 investigation -----------------------------//
 	int oldL1JetSize = inTree->hltL1VBFDiJetOR_pt->size();
 	int newL1JetSize = inTree->hltL1VBFDiJetIsoTau_jetPt->size();
 	int newL1TauSize = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
 	int diTauL1TauSize = inTree->hltL1sDoubleTauBigOR_pt->size();
 	int primL1TauSize = inTree->tauL1PrimitivesPt->size();
 	int primL1JetSize = inTree->jetL1PrimitivesPt->size();
+	TLorentzVector objOne, objTwo; // two objects used for invariant mass, mjj in most cases
+	double twoObjMass;
 
 	printPrimL1 = true;
 	int primL1JetPtCut = 35;
 	int primL1TauPtCut = 35;
 	int primL1IsoTauPtCut = 45;
-	// testing multiple possible L1s, pay attention to the booleans before the start of if statements
-	// there must be a better way to implement this...
+	// testing multiple possible L1s, pay attention to the booleans,,,
+	massL1Testing = true;
+	bool reqDblJet = true;
+	bool normalMjjWithCC = false; // may need to change var name
+	bool normalMjj = true;
+	bool massAnyTwo_DblJetDblIsoTau = true;
+	bool massAnyTwo_DblJetOneIsoTau = false; // excludes two tau case
+	bool objOneIsJet, objTwoIsJet, objOneIsTau, objTwoIsTau;
+
 	if (passSel && printPrimL1) {
+	    // fill standard containers, jet container, tau container, and isoTau container
 	    std::vector<TLorentzVector> jetL1Primitives = hltFillWithCands(inTree, "jetL1Primitives", primL1JetSize, primL1JetPtCut);
 	    int jetPrimSize = jetL1Primitives.size();
 	    std::vector<TLorentzVector> tauL1Primitives = hltFillWithCands(inTree, "tauL1Primitives", primL1TauSize, primL1TauPtCut);
@@ -511,13 +521,11 @@ int main(int argc, char** argv)	{
 			isoTauL1Primitives.push_back(tauL1Primitives.at(iTau));
 	    }
 	    int isoTauPrimSize = isoTauL1Primitives.size();
-	    bool reqDblJet = true;	    
 	    if (reqDblJet && jetPrimSize >= 2 && isoTauPrimSize >= 1) {
 		passL1 += 1;
 		// increment counters
 		incIfMatchOneAODObj(matchedL1Jets, matchedL1Taus, matchedL1Both, jetL1Primitives, isoTauL1Primitives, AODObjs.at(0));
-
-		bool normalMjjWithCC = false;
+		// if not one of the weird mass L1s
 		if (normalMjjWithCC) {
 		    //perform cross cleaning and check matching again
 		    std::vector<TLorentzVector> crossCleanedL1PrimJets = crossCleanJets(jetL1Primitives, isoTauL1Primitives);
@@ -528,13 +536,10 @@ int main(int argc, char** argv)	{
 		        // increment counters
 		        incIfMatchOneAODObj(matchedL1CCJets, matchedL1RemTaus, matchedL1CCBoth, 
 						crossCleanedL1PrimJets, isoTauL1Primitives, AODObjs.at(0));
-                        bool normalMjj = true;
-                        if (normalMjj) {
-                            TLorentzVector ccPrimJet1, ccPrimJet2;
-                            std::tie(ccPrimJet1, ccPrimJet2) = highestMassPair(crossCleanedL1PrimJets, ccL1PrimSize);
-                            if ((ccPrimJet1 + ccPrimJet2).M() > 450) passMjj +=1;
-			} // end normal Mjj if
-			bool anyTwoObjs = false;
+			// check mjj
+                        std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJets);
+			twoObjMass = (objOne + objTwo).M();
+                        if (twoObjMass > 450) passTwoObjMass +=1;
 
 			// see if all 4 AOD objects are present
 			incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs, 
@@ -542,57 +547,41 @@ int main(int argc, char** argv)	{
 		    } // end CC - jet size req if statement
 		} // end CC if statement
 
-		massL1Testing = true;
-		bool massAnyTwo_DblJetDblIsoTau = false;
-		bool massAnyTwo_DblJetOneIsoTau = true; // still do any two mass alg, but exclude two tau case
-		bool objOneIsJet, objTwoIsJet, objOneIsTau, objTwoIsTau;
-		std::vector<TLorentzVector> combinedL1Objs; // filled if either var above is true
-		TLorentzVector objOne, objTwo;
-		if (massAnyTwo_DblJetDblIsoTau || massAnyTwo_DblJetOneIsoTau) {
-		    combinedL1Objs.insert(combinedL1Objs.begin(), jetL1Primitives.begin(), jetL1Primitives.end());
-		    combinedL1Objs.insert(combinedL1Objs.end(), isoTauL1Primitives.begin(), isoTauL1Primitives.end());
-		    std::tie(objOne, objTwo) = highestMassPair(combinedL1Objs, combinedL1Objs.size());
-		    objOneIsJet = objInContainer(jetL1Primitives, objOne);
-		    objTwoIsJet = objInContainer(jetL1Primitives, objTwo);
-		    objOneIsTau = objInContainer(isoTauL1Primitives, objOne);
-		    objTwoIsTau = objInContainer(isoTauL1Primitives, objTwo);
-		}
-
 		if (massAnyTwo_DblJetDblIsoTau && isoTauPrimSize >= 2) {
 		    // check mjj no ovlp
-		    if ((objOne + objTwo).M() > 450) {
-			passMjj += 1;
-		        // increment the type of object pair that passed mass req.
-		    	if (objOneIsJet && objTwoIsJet) numMassAnyTwoBothJets += 1;
-		    	if (objOneIsTau && objTwoIsTau) numMassAnyTwoBothTaus += 1;
-		    	if ((objOneIsJet && objTwoIsTau) || (objTwoIsJet && objOneIsTau)) numMassAnyTwoOneJetOneTau += 1;
-		    	if (objOneIsJet && objOneIsTau) numMassAnyTwoObjOneIsJetAndTau += 1;
-		    	if (objTwoIsJet && objTwoIsTau) numMassAnyTwoObjTwoIsJetAndTau += 1;
-		    	if (objOneIsJet && objOneIsTau && objTwoIsJet && objTwoIsTau) numMassAnyTwoBothObjsAreJetAndTau += 1;
-		    }
+		    std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives, isoTauL1Primitives, "Any");
+		    twoObjMass = (objOne + objTwo).M();
+		    if (twoObjMass > 450) passTwoObjMass += 1;
 		} // end massAnyTwo_DblJetDblIsoTau if statement 
 		
 		if (massAnyTwo_DblJetOneIsoTau) {
-		    // check mjj no ovlp, mass any two except double tau
-		    // as written, this doesn't perform exactly correctly. For cases where 2 taus are the highest mjj,
-		    // the event is simply rejected. What should happen is that the next highest mjj cand is looked at
-		    //
-		    // this and another possible seed prompt the building of a more general mjj finder
-		    // i think it would be best to give it two containers and specify the number of objects from each container it's
-		    // allowed to use? 
-		    // it wouldn't be easier to back-engineer highestMassPair
-		    if ((objOne + objTwo).M() > 450 && !(objOneIsTau && objTwoIsTau)) {
-			passMjj += 1;
-			// increment the type of object pair that passed mass req.
-		    	if (objOneIsJet && objTwoIsJet) numMassAnyTwoBothJets += 1;
-		    	if (objOneIsTau && objTwoIsTau) numMassAnyTwoBothTaus += 1;
-		    	if ((objOneIsJet && objTwoIsTau) || (objTwoIsJet && objOneIsTau)) numMassAnyTwoOneJetOneTau += 1;
-		    	if (objOneIsJet && objOneIsTau) numMassAnyTwoObjOneIsJetAndTau += 1;
-		    	if (objTwoIsJet && objTwoIsTau) numMassAnyTwoObjTwoIsJetAndTau += 1;
-		    	if (objOneIsJet && objOneIsTau && objTwoIsJet && objTwoIsTau) numMassAnyTwoBothObjsAreJetAndTau += 1;
-		    }
+		    // we exclude the two tau case for this seed, but allow the two jet case.
+		    // To do this, we look for the highestMassPair of just jets and then
+		    // the highest mass pair using one tau and one jet. Then we take the larger of the two pairs
+		    TLorentzVector tempObjOne, tempObjTwo;
+		    std::tie(tempObjOne, tempObjTwo) = highestMassPair(jetL1Primitives);
+		    std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives, isoTauL1Primitives, "OneJetOneTau");
+		    double tempTwoObjMass = (tempObjOne + tempObjTwo).M();
+		    twoObjMass = (objOne + objTwo).M();
+		    std::cout << "temp mass: " << tempTwoObjMass << " nontemp mass: " << twoObjMass << std::endl;
+		    if (tempTwoObjMass > twoObjMass) {twoObjMass = tempTwoObjMass; objOne = tempObjOne; objTwo = tempObjTwo;}
+
+		    if (twoObjMass > 400) passTwoObjMass += 1;
+		}
+
+		// find out and then increment the type of object pair that passed mass req.
+		objOneIsJet = objInContainer(jetL1Primitives, objOne);
+		objTwoIsJet = objInContainer(jetL1Primitives, objTwo);
+		objOneIsTau = objInContainer(isoTauL1Primitives, objOne);
+		objTwoIsTau = objInContainer(isoTauL1Primitives, objTwo);
+		if (objOneIsJet && objTwoIsJet) numMassAnyTwoBothJets += 1;
+		if (objOneIsTau && objTwoIsTau) numMassAnyTwoBothTaus += 1;
+		if ((objOneIsJet && objTwoIsTau) || (objTwoIsJet && objOneIsTau)) numMassAnyTwoOneJetOneTau += 1;
+		if (objOneIsJet && objOneIsTau) numMassAnyTwoObjOneIsJetAndTau += 1;
+		if (objTwoIsJet && objTwoIsTau) numMassAnyTwoObjTwoIsJetAndTau += 1;
+		if (objOneIsJet && objOneIsTau && objTwoIsJet && objTwoIsTau) numMassAnyTwoBothObjsAreJetAndTau += 1;
+		
 		    
-		} // end massAnyTwo_DblJetOneIsoTau if statement
 	    } // end jetPrimSize >= 2 if statement
 
 	} // end if statement for L1 prim
@@ -610,9 +599,9 @@ int main(int argc, char** argv)	{
 	    incIfMatchOneAODObj(matchedL1Jets, matchedL1Taus, matchedL1Both, passL1JetCands, passL1TauCands, AODObjs.at(0));
 	    //dumpEventKinemInfo(iEntry, "passed new L1", AODObjs, passL1JetCands, passL1TauCands);
 	   
-	    TLorentzVector newL1Jet1, newL1Jet2;
-	    std::tie(newL1Jet1, newL1Jet2) = highestMassPair(passL1JetCands, passL1JetCands.size()); 
-	    if ((newL1Jet1 + newL1Jet2).M() > 450) passMjj += 1;
+	    std::tie(objOne, objTwo) = highestMassPair(passL1JetCands); 
+	    twoObjMass = (objOne + objTwo).M();
+	    if (twoObjMass > 450) passTwoObjMass += 1;
 	    
 
 	} // end if statement for pass new L1
@@ -631,7 +620,7 @@ int main(int argc, char** argv)	{
 		// if their pT is < 35 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1JetCands = hltFillWithCands(inTree, "hltL1VBFDiJetOR", oldL1JetSize, 35);
 		int L1JetCandsSize = L1JetCands.size();
-		// get L1Taus from ditau trigger
+		// get L1Taus from diTau trigger
 		// if their pT is < 45 don't store them bc they wouldn't pass new VBF L1
 		std::vector<TLorentzVector> L1TauCands = hltFillWithCands(inTree, "hltL1sDoubleTauBigOR", diTauL1TauSize, 45);
 		int L1TauCandsSize = L1TauCands.size();
@@ -650,11 +639,9 @@ int main(int argc, char** argv)	{
 			passCCSize += 1;
 			incIfMatchOneAODObj(matchedL1CCJets, matchedL1RemTaus, matchedL1CCBoth, crossCleanedL1Jets, L1TauCands, AODObjs.at(0));
 
-			TLorentzVector cleanedJet1, cleanedJet2;
-        		std::tie(cleanedJet1, cleanedJet2) = highestMassPair(crossCleanedL1Jets, ccJetsSize);
-
-			// calculate mjj of two highest mjj cleaned jets
-			if ((cleanedJet1 + cleanedJet2).M() > 450) passMjj += 1;
+        		std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1Jets);
+			twoObjMass = (objOne + objTwo).M();
+			if (twoObjMass > 450) passTwoObjMass += 1;
 			
 		    }
 		}// end if statement for pass Old L1 and pass DiTau L1
@@ -786,7 +773,7 @@ int main(int argc, char** argv)	{
 		<< '\t' << matchedL1RemTaus << '\t' << "Leading AOD Jet Matching in Remaining L1 Tau Container" << std::endl \
 		<< '\t' << matchedL1CCBoth << '\t' << "Leading AOD Jet Matched in Both L1 Containers after CC" << std::endl;
 	}
-	if (!massL1Testing) std::cout << passMjj << '\t' << "Passing Mjj Requirement of 450 GeV" << std::endl;
+	if (!massL1Testing) std::cout << passTwoObjMass << '\t' << "Passing Mjj Requirement of 450 GeV" << std::endl;
 
 	if (printPrimL1 && !massL1Testing) {
 	    std::cout << '\t' << matchedJetAODs << '\t' << "Jets Matched in L1 to AOD" << std::endl;
@@ -795,8 +782,8 @@ int main(int argc, char** argv)	{
 	}
 
 	if (massL1Testing) {
-	    std::cout << "No Cross Cleaning Performed, Checking Mass of Any Two L1 Objects" << std::endl;
-	    std::cout << passMjj << '\t' << "Passing Mjj Requirement of 450 GeV" << std::endl;
+	    std::cout << "No Cross Cleaning Performed, Checking Different L1 Mass Requirement than simple mjj" << std::endl;
+	    std::cout << passTwoObjMass << '\t' << "Passing Mjj Requirement of 450 GeV" << std::endl;
 	    std::cout << '\t' << numMassAnyTwoBothJets << '\t' << "Both Objs IDed as Jets" << std::endl;
 	    std::cout << '\t' << numMassAnyTwoBothTaus << '\t' << "Both Objs IDed as Taus" << std::endl;
 	    std::cout << '\t' << numMassAnyTwoOneJetOneTau << '\t' << "Objs IDed as One Jet and One Tau" << std::endl;

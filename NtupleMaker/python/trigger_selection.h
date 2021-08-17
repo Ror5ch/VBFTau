@@ -10,8 +10,7 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector AOD
     float dRObj = 999;
     float dRObj_ = 999;
     for (std::vector<TLorentzVector>::const_iterator iTrigObj = trigContainer.begin(); iTrigObj != trigContainer.end(); ++iTrigObj) {
-    //for (int iTrigObj = 0; iTrigObj < trigContainer.size(); ++iTrigObj){
-	dRObj_ = iTrigObj->DeltaR(AODObj);//aodObj.DeltaR(trigContainer.at(iTrigObj));
+	dRObj_ = iTrigObj->DeltaR(AODObj);
 	if (dRObj_ < dRObj) {dRObj = dRObj_; bestObjIndex = (iTrigObj - trigContainer.begin());}
     }
     return bestObjIndex;
@@ -20,51 +19,48 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector AOD
 // output a tuple of TLorentzVectors that correspond to HLt objects matched to AOD objects
 // using a given HLT object container and two given AOD objects
 // tuple is used instead of pair because the output was easier to manage
-std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVector> objCands, TLorentzVector aodObj1, TLorentzVector aodObj2){
+std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVector> objCands, TLorentzVector aodObjOne, TLorentzVector aodObjTwo){
 
-    int objMatchIndex1 = simpleMatching(objCands, aodObj1);
-    int objMatchIndex2 = simpleMatching(objCands, aodObj2);
-    TLorentzVector tempObj1 = objCands.at(objMatchIndex1);
-    TLorentzVector tempObj2 = objCands.at(objMatchIndex2);
-    double dRtempObj1 = tempObj1.DeltaR(aodObj1);
-    double dRtempObj2 = tempObj2.DeltaR(aodObj2);
+    int objMatchIndexOne = simpleMatching(objCands, aodObjOne);
+    int objMatchIndexTwo = simpleMatching(objCands, aodObjTwo);
+    TLorentzVector tempObjOne = objCands.at(objMatchIndexOne);
+    TLorentzVector tempObjTwo = objCands.at(objMatchIndexTwo);
+    double dRtempObjOne = tempObjOne.DeltaR(aodObjOne);
+    double dRtempObjTwo = tempObjTwo.DeltaR(aodObjTwo);
     // if AODs match to the same object index, check which has a smaller dR
     // then remove that object and rematch
-    if (objMatchIndex1 == objMatchIndex2){
+    if (objMatchIndexOne == objMatchIndexTwo){
 	std::vector<TLorentzVector> tempObjCands = objCands;
-	tempObjCands.erase(tempObjCands.begin() + objMatchIndex1);
-	if (dRtempObj1 < dRtempObj2){
-	    objMatchIndex2 = simpleMatching(tempObjCands, aodObj2);
-	    tempObj2 = tempObjCands.at(objMatchIndex2);
+	tempObjCands.erase(tempObjCands.begin() + objMatchIndexOne);
+	if (dRtempObjOne < dRtempObjTwo){
+	    objMatchIndexTwo = simpleMatching(tempObjCands, aodObjTwo);
+	    tempObjTwo = tempObjCands.at(objMatchIndexTwo);
 	}
-	if (dRtempObj2 < dRtempObj1){
-	    objMatchIndex1 = simpleMatching(tempObjCands, aodObj1);
-	    tempObj1 = tempObjCands.at(objMatchIndex1);
+	if (dRtempObjTwo < dRtempObjOne){
+	    objMatchIndexOne = simpleMatching(tempObjCands, aodObjOne);
+	    tempObjOne = tempObjCands.at(objMatchIndexOne);
 	}
     }
 
-    return std::make_tuple(tempObj1, tempObj2);
+    return std::make_tuple(tempObjOne, tempObjTwo);
 }
 
 // output a tuple of TLorentzVectors that correspond to the jet pair with
 // the highest mjj of a given jet container
-std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzVector> jetContainer, int firstContainerSize, int secondContainerSize = 0, int objSearchMode = 0) {
-    // objSearchMode:
-    // 0 - no exclusions applied
-    // 1 - only 1 jet and 1 tau combinations are allowed
-    // 2 - double tau combinations are excluded
+std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzVector> jetContainer) {
     int highestMjjCandIndex = -1;
     int mjjCandCounter = -1; //start at -1 so when the first element is added it's element zero
     float tempMjj = -1;
     float tempMjj_ = -1;
     std::vector<std::pair<int,int>> jetPairs;
-    for (int iObj = 0; iObj < jetContainer.size(); ++iObj) {
-	for (int jObj = 0; jObj < jetContainer.size(); ++jObj) {
-	    if (jObj >= iObj) continue;
+    int jetContainerSize = jetContainer.size();
+    for (int iJet = 0; iJet < jetContainerSize; ++iJet) {
+	for (int jJet = 0; jJet < jetContainerSize; ++jJet) {
+	    if (jJet >= iJet) continue;
 	    // if TLorentz objects aren't overlapped, store their positions as a pair
-	    if (jetContainer.at(iObj).DeltaR(jetContainer.at(jObj)) > 0.5) {
-		jetPairs.push_back(std::make_pair(jObj, iObj));
-		tempMjj = (jetContainer.at(iObj) + jetContainer.at(jObj)).M();
+	    if (jetContainer.at(iJet).DeltaR(jetContainer.at(jJet)) > 0.5) {
+		jetPairs.push_back(std::make_pair(jJet, iJet));
+		tempMjj = (jetContainer.at(iJet) + jetContainer.at(jJet)).M();
 		mjjCandCounter += 1;
 		if (tempMjj_ < tempMjj) { tempMjj_ = tempMjj;	highestMjjCandIndex = mjjCandCounter;}
 	    }
@@ -74,15 +70,81 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
     // if they aren't filled from the jet pair cands, then the output will be two
     // empty jets, whose mjj will of course be zero which therefore will not pass any
     // enforced selection
-    TLorentzVector outJet1, outJet2;
-    outJet1.SetPtEtaPhiE(0,0,0,0);
-    outJet2.SetPtEtaPhiE(0,0,0,0);
+    TLorentzVector outJetOne, outJetTwo;
+    outJetOne.SetPtEtaPhiE(0,0,0,0);
+    outJetTwo.SetPtEtaPhiE(0,0,0,0);
     if (highestMjjCandIndex != -1) {
-	outJet1 = jetContainer.at(jetPairs.at(highestMjjCandIndex).first);
-	outJet2 = jetContainer.at(jetPairs.at(highestMjjCandIndex).second);
+	outJetOne = jetContainer.at(jetPairs.at(highestMjjCandIndex).first);
+	outJetTwo = jetContainer.at(jetPairs.at(highestMjjCandIndex).second);
     }
-    return std::make_tuple(outJet1, outJet2);
+    return std::make_tuple(outJetOne, outJetTwo);
 }
+
+// overloaded function to use when given two containers 
+// pairing mode can either use both containers combined for unrestricted mass pairs
+// or each container individually such that one object must come from each
+std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzVector> jetContainer, std::vector<TLorentzVector> tauContainer, std::string pairingMode) {
+    // initialize variables
+    int highestMassCandIndex = -1;
+    int massCandCounter = -1; //start at -1 so when the first element is added it's element zero
+    float tempMass = -1;
+    float tempMass_ = -1;
+    std::vector<std::pair<int,int>> objPairs;
+    std::vector<TLorentzVector> combinedContainer;
+
+    TLorentzVector outObjOne, outObjTwo;
+    outObjOne.SetPtEtaPhiE(0,0,0,0);
+    outObjTwo.SetPtEtaPhiE(0,0,0,0);
+
+    if (pairingMode.find("Any") == std::string::npos && 
+	pairingMode.find("OneJetOneTau") == std::string::npos) 
+	std::cout << "specify valid pairingMode for highestMassPair function" << std::endl;
+
+    // decide what to loop over from pairingMode variable
+    if (pairingMode == "OneFromEach") {
+	for (int iJet = 0; iJet < jetContainer.size(); ++iJet) {
+	    for (int iTau = 0; iTau < tauContainer.size(); ++iTau) {
+		// overlap removal?
+		objPairs.push_back(std::make_pair(iJet, iTau));
+		tempMass = (jetContainer.at(iJet) + tauContainer.at(iTau)).M();
+		massCandCounter += 1;
+		if (tempMass_ < tempMass) { tempMass_ = tempMass;	highestMassCandIndex = massCandCounter;}
+	    }
+	}
+	if (highestMassCandIndex != -1) {
+	    outObjOne = jetContainer.at(objPairs.at(highestMassCandIndex).first);  // jet
+	    outObjTwo = tauContainer.at(objPairs.at(highestMassCandIndex).second); // tau
+	}
+    }
+    if (pairingMode == "Any") {
+	combinedContainer.insert(combinedContainer.begin(), jetContainer.begin(), jetContainer.end());
+	combinedContainer.insert(combinedContainer.end(), tauContainer.begin(), tauContainer.end());
+	int combinedContainerSize = combinedContainer.size();
+	for (int iObj = 0; iObj < combinedContainerSize; ++iObj) {
+	    for (int jObj = 0; jObj < combinedContainerSize; ++jObj) {
+		if (jObj >= iObj) continue;
+		// overlap removal? what if two of same type obj are right on top of each other?
+		// should I add the line from the other function to this, or remove that line from
+		// the other function entirely?
+		objPairs.push_back(std::make_pair(jObj, iObj));
+		tempMass = (combinedContainer.at(iObj) + combinedContainer.at(jObj)).M();
+		massCandCounter += 1;
+		if (tempMass_ < tempMass) {tempMass_ = tempMass;	highestMassCandIndex = massCandCounter;}
+	    }
+	}
+	if (highestMassCandIndex != -1) {
+	    outObjOne = combinedContainer.at(objPairs.at(highestMassCandIndex).first);
+	    outObjTwo = combinedContainer.at(objPairs.at(highestMassCandIndex).second);
+	}
+    }
+
+    // if outObjOne & Two aren't filled from the pair cands, then the output will be two
+    // empty objects, whose mjj will of course be zero which therefore will not pass any
+    // enforced selection
+
+    return std::make_tuple(outObjOne, outObjTwo);
+}
+
 
 // outputs a vector of objects from container one cross-cleaned wrt objects from container two
 // names are jets and taus bc I don't think this will be used for any other purpose
@@ -99,10 +161,10 @@ std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, 
 }
 
 // outputs to terminal 2 AOD objects' information
-void coutAODobjs(TLorentzVector AODobj1, TLorentzVector AODobj2) {
+void coutAODobjs(TLorentzVector AODobjOne, TLorentzVector AODobjTwo) {
     std::cout << "obj #" << '\t' << "pt" << '\t' << "eta" << '\t' << "phi" << std::endl;
-    std::cout << "1      " << std::setprecision(4) << AODobj1.Pt() << '\t' << AODobj1.Eta() << '\t' << AODobj1.Phi() << std::endl;
-    std::cout << "2      " << std::setprecision(4) << AODobj2.Pt() << '\t' << AODobj2.Eta() << '\t' << AODobj2.Phi() << std::endl;
+    std::cout << "1      " << std::setprecision(4) << AODobjOne.Pt() << '\t' << AODobjOne.Eta() << '\t' << AODobjOne.Phi() << std::endl;
+    std::cout << "2      " << std::setprecision(4) << AODobjTwo.Pt() << '\t' << AODobjTwo.Eta() << '\t' << AODobjTwo.Phi() << std::endl;
 }
 
 // outputs to terminal all object info in a container of TLorentzVectors,

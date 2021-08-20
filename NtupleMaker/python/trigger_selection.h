@@ -100,11 +100,12 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 	pairingMode.find("OneJetOneTau") == std::string::npos) 
 	std::cout << "specify valid pairingMode for highestMassPair function" << std::endl;
 
+    int jetContainerSize = jetContainer.size();
+    int tauContainerSize = tauContainer.size();
     // decide what to loop over from pairingMode variable
-    if (pairingMode == "OneFromEach") {
-	for (int iJet = 0; iJet < jetContainer.size(); ++iJet) {
-	    for (int iTau = 0; iTau < tauContainer.size(); ++iTau) {
-		// overlap removal?
+    if (pairingMode == "OneJetOneTau") {
+	for (int iJet = 0; iJet < jetContainerSize; ++iJet) {
+	    for (int iTau = 0; iTau < tauContainerSize; ++iTau) {
 		objPairs.push_back(std::make_pair(iJet, iTau));
 		tempMass = (jetContainer.at(iJet) + tauContainer.at(iTau)).M();
 		massCandCounter += 1;
@@ -116,6 +117,7 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 	    outObjTwo = tauContainer.at(objPairs.at(highestMassCandIndex).second); // tau
 	}
     }
+    bool overlapped = false;
     if (pairingMode == "Any") {
 	combinedContainer.insert(combinedContainer.begin(), jetContainer.begin(), jetContainer.end());
 	combinedContainer.insert(combinedContainer.end(), tauContainer.begin(), tauContainer.end());
@@ -123,9 +125,10 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 	for (int iObj = 0; iObj < combinedContainerSize; ++iObj) {
 	    for (int jObj = 0; jObj < combinedContainerSize; ++jObj) {
 		if (jObj >= iObj) continue;
-		// overlap removal? what if two of same type obj are right on top of each other?
-		// should I add the line from the other function to this, or remove that line from
-		// the other function entirely?
+		overlapped = (combinedContainer.at(iObj).DeltaR(combinedContainer.at(jObj)) < 0.5);
+		if (iObj < jetContainerSize && jObj < jetContainerSize && overlapped) continue; // jets overlapped, rarely happens
+		if (iObj >= jetContainerSize && jObj >= jetContainerSize && overlapped) continue; // taus overlapped, rarely happens
+		// if (overlapped) continue; this line would essentially impose overlap removal at L1, do not include
 		objPairs.push_back(std::make_pair(jObj, iObj));
 		tempMass = (combinedContainer.at(iObj) + combinedContainer.at(jObj)).M();
 		massCandCounter += 1;

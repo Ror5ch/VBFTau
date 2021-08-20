@@ -42,15 +42,13 @@ int main(int argc, char** argv)	{
     std::string newTrigString = "new";
     std::string tightTrigString = "tight";
     std::string orTrigString = "or";
-    std::string L1StudyTrigString = "L1";
 
     int triggerFlag = -1;
     if ((whichTrigger.find(oldTrigString) == std::string::npos && 
 	whichTrigger.find(newTrigString) == std::string::npos &&
 	whichTrigger.find(tightTrigString) == std::string::npos &&
-	whichTrigger.find(orTrigString) == std::string::npos &&
-	whichTrigger.find(L1StudyTrigString) == std::string::npos ) || argc < 4) {
-	std::cout << "specify trigger cuts in third argument (old, new, tight, or, L1)" << std::endl;
+	whichTrigger.find(orTrigString) == std::string::npos) || argc < 4) {
+	std::cout << "specify trigger cuts in third argument (old, new, tight, or)" << std::endl;
 	return 0;
     }
 
@@ -88,10 +86,6 @@ int main(int argc, char** argv)	{
 	j2_pt_cut = 45;
 	mjj_cut = 550;
 	triggerFlag = 3;
-    }
-    if (whichTrigger.find(L1StudyTrigString) != std::string::npos) {
-	t1_pt_cut = t2_pt_cut = j1_pt_cut = j2_pt_cut = mjj_cut = 0;
-	triggerFlag = 4;
     }
 
     float minimal_tau_pt_cut = 20;
@@ -330,15 +324,15 @@ int main(int argc, char** argv)	{
 
 	// take first two AOD taus that aren't overlapped
 	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
-	TLorentzVector AODTau1, AODTau2;
-	AODTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
+	TLorentzVector aodTau1, aodTau2;
+	aodTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
 	for (std::vector<TLorentzVector>::const_iterator iTau = tauCandidates.begin()+1; iTau != tauCandidates.end(); ++iTau) {
-	    AODTau2.SetPtEtaPhiE(iTau->Pt(), iTau->Eta(), iTau->Phi(), iTau->Energy());
-	    if (AODTau2.DeltaR(AODTau1) > 0.5) break; // if taus are not overlapped, leave the for-loop
+	    aodTau2.SetPtEtaPhiE(iTau->Pt(), iTau->Eta(), iTau->Phi(), iTau->Energy());
+	    if (aodTau2.DeltaR(aodTau1) > 0.5) break; // if taus are not overlapped, leave the for-loop
 	}
 	// check that the tau didn't make it all the way through the loop without breaking
 	// I think this is unlikely but it's good to be redundant
-	if (AODTau1.DeltaR(AODTau2) < 0.5) continue; 
+	if (aodTau1.DeltaR(aodTau2) < 0.5) continue; 
 
 	min_cutflow->Fill(3.0,1.0); // fill cutflow with events that have 2 or more good taus
 	sel_cutflow->Fill(0.0,1.0); // start of smaller cutflow graph (using two for scaling purposes)
@@ -358,8 +352,8 @@ int main(int argc, char** argv)	{
 				     inTree->jetEn->at(iJet));
 	    // if a jetCandidate looks like it could be either tau we already selected, don't store it
 	    bool jetCandIsTau = false;
-	    if (AODTau1.DeltaR(jetCand) < 0.5) jetCandIsTau = true;
-	    if (AODTau2.DeltaR(jetCand) < 0.5) jetCandIsTau = true;
+	    if (aodTau1.DeltaR(jetCand) < 0.5) jetCandIsTau = true;
+	    if (aodTau2.DeltaR(jetCand) < 0.5) jetCandIsTau = true;
 
 	    if (!jetCandIsTau) jetCandidates.push_back(jetCand);
 	}
@@ -367,14 +361,14 @@ int main(int argc, char** argv)	{
 	int jetCandsSize = jetCandidates.size();
 	if (jetCandsSize < 2) continue;
 
-	// fill AOD jets with pair of jets that produced the largest mjj value
-	// from cout statements, AODJet1 was verified to be leading jet
-	TLorentzVector AODJet1, AODJet2;
-        std::tie(AODJet1, AODJet2) = highestMassPair(jetCandidates);
+	// fill aod jets with pair of jets that produced the largest mjj value
+	// from cout statements, aodJet1 was verified to be leading jet
+	TLorentzVector aodJet1, aodJet2;
+        std::tie(aodJet1, aodJet2) = highestMassPair(jetCandidates);
 
-	// calculate mjj of AOD jets, if an mjj pair wasn't found, mjj of the "AOD" jets will be zero
+	// calculate mjj of AOD jets, if an mjj pair wasn't found, mjj of the "aod" jets will be zero
 	// the function highestMassPair could be improved so this ad hoc test of mjj is avoided...
-	mjj_A = (AODJet1 + AODJet2).M();
+	mjj_A = (aodJet1 + aodJet2).M();
 	if (mjj_A == 0) continue;
 
 	min_cutflow->Fill(4.0,1.0);
@@ -383,28 +377,28 @@ int main(int argc, char** argv)	{
 	passBase = 1;
 
         std::vector<TLorentzVector> AODObjs;
-	AODObjs.insert(end(AODObjs), {AODJet1, AODJet2, AODTau1, AODTau2});
+	AODObjs.insert(end(AODObjs), {aodJet1, aodJet2, aodTau1, aodTau2});
 
 	//-----------------------tighter selection guided by trigger specific cutoffs---------------//
 
 	passSel = 1;
 
-	if (AODTau1.Pt() < t2_pt_cut || AODTau2.Pt() < t2_pt_cut) passSel = 0;
+	if (aodTau1.Pt() < t2_pt_cut || aodTau2.Pt() < t2_pt_cut) passSel = 0;
 	else{sel_cutflow->Fill(2.0,1.0);}
 	
-	if (AODTau1.Pt() < t1_pt_cut) passSel = 0;
+	if (aodTau1.Pt() < t1_pt_cut) passSel = 0;
 	else{sel_cutflow->Fill(3.0,1.0);}
 
-	if (AODJet1.Pt() < j2_pt_cut || AODJet2.Pt() < j2_pt_cut) passSel = 0;
+	if (aodJet1.Pt() < j2_pt_cut || aodJet2.Pt() < j2_pt_cut) passSel = 0;
 	else{sel_cutflow->Fill(4.0,1.0);}
 
-	if (AODJet1.Pt() < j1_pt_cut) passSel = 0;
+	if (aodJet1.Pt() < j1_pt_cut) passSel = 0;
 	else{sel_cutflow->Fill(5.0,1.0);}
 
 	if (mjj_A < mjj_cut) passSel = 0;
 	else{sel_cutflow->Fill(6.0,1.0);}
 
-	//if (passSel) numPassSel += 1;
+	if (passSel) numPassSel += 1;
 
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	// not performed for "tight" or "or" selections because it's not clear which filter to use 
@@ -438,15 +432,15 @@ int main(int argc, char** argv)	{
 	    dRj1 = 999;
 	    dRj2 = 999;
 	    // tie is a handy method for assigning tuple output
-            std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, AODJet1, AODJet2);
-            dRj1 = trigJet1.DeltaR(AODJet1);
-            dRj2 = trigJet2.DeltaR(AODJet2);
+            std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, aodJet1, aodJet2);
+            dRj1 = trigJet1.DeltaR(aodJet1);
+            dRj2 = trigJet2.DeltaR(aodJet2);
 
 	    dRt1 = 999;
 	    dRt2 = 999;
-	    std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, AODTau1, AODTau2);
-	    dRt1 = trigTau1.DeltaR(AODTau1);
-	    dRt2 = trigTau2.DeltaR(AODTau2);
+	    std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, aodTau1, aodTau2);
+	    dRt1 = trigTau1.DeltaR(aodTau1);
+	    dRt2 = trigTau2.DeltaR(aodTau2);
 
 	    mjj = (trigJet1 + trigJet2).M();
 
@@ -505,72 +499,23 @@ int main(int argc, char** argv)	{
 	TLorentzVector objOne, objTwo; // two objects used for invariant mass, mjj in most cases
 	double twoObjMass;
 
-	printNewL1 = false;
-	printOldL1 = false;
-
 	printPrimL1 = true;
 	int primL1JetPtCut = 35;
 	int primL1TauPtCut = 35;
-	int primL1IsoTau40PtCut = 40;
-	int primL1IsoTau45PtCut = 45;
+	int primL1IsoTauPtCut = 45;
 	// testing multiple possible L1s, pay attention to the booleans,,,
 	massL1Testing = true;
-	if (massL1Testing) {printNewL1 = false; printOldL1 = false;}
 	bool smallerContainers = false;
-	bool oldVBFwL1Prim = false;
-	bool newVBFwL1Prim = false;
-	bool massAnyTwo_DblJetDblIsoTau = true;
-	bool massDblJetOrJetTau_DblJetOneIsoTau = false; // excludes two tau case, this seed is most like new vbf seed
+	bool testOldL1Prim = true;
+	bool normalMjjWithCC = false;
+	bool massAnyTwo_DblJetDblIsoTau = false;
+	bool massDblJetOrJetTau_DblJetOneIsoTau = false; // excludes two tau case
 	bool massJetTau_OneIsoTau = false;
-	bool reqDblJet = (oldVBFwL1Prim || newVBFwL1Prim || massAnyTwo_DblJetDblIsoTau || massDblJetOrJetTau_DblJetOneIsoTau) && !massJetTau_OneIsoTau;
+	bool reqDblJet = (testOldL1Prim || normalMjjWithCC || massAnyTwo_DblJetDblIsoTau || massDblJetOrJetTau_DblJetOneIsoTau) && !massJetTau_OneIsoTau;
 	bool objOneIsJet, objTwoIsJet, objOneIsTau, objTwoIsTau;
 	objOneIsJet = objTwoIsJet = objOneIsTau = objTwoIsTau = false;
 
-	// ad hoc pass sel...
-	if (triggerFlag == 4 && massL1Testing) {
-	    // all possible mass pairs to check
-	    double mj1j2 = (AODJet1 + AODJet2).M();
-	    double mj1t1 = (AODJet1 + AODTau1).M(); 
-	    double mj1t2 = (AODJet1 + AODTau2).M();
-	    double mj2t1 = (AODJet2 + AODTau1).M();
-	    double mj2t2 = (AODJet2 + AODTau2).M();
-	    double mt1t2 = (AODTau1 + AODTau2).M();
-
-	// AOD cuts are higher than L1s
-	    if (AODJet1.Pt() < 45 || AODJet2.Pt() < 45 || AODTau2.Pt() < 25) passSel = 0; // common to all
-
-	    if (oldVBFwL1Prim) {
-		if (AODJet1.Pt() < 120) passSel = 0;
-		if (AODTau1.Pt() < 25) passSel = 0;
-		if (mj1j2 < 700) passSel = 0;
-	    }
-
-	    if (newVBFwL1Prim) {
-		if (AODTau1.Pt() < 50) passSel = 0;
-		if (mj1j2 < 550) passSel = 0;
-	    }
-
-	    if (massAnyTwo_DblJetDblIsoTau) {
-		if (AODTau1.Pt() < 45 || AODTau2.Pt() < 45) passSel = 0;
-		// if none of these are satisfied, flip the zero and say the selection doesn't pass
-		// if any are satisfied, the one is flipped to a zero and passSel status is unchanged
-		if (!(mj1j2 > 450 || mj1t1 > 450 || mj1t2 > 450 || mj2t1 > 450 || mj2t2 > 450 || mt1t2 > 450)) passSel = 0;
-	    }
-
-	    if (massDblJetOrJetTau_DblJetOneIsoTau) {
-		if (AODTau1.Pt() < 50) passSel = 0;
-		// same logic as above
-		if (!(mj1j2 > 500 || mj1t1 > 500 || mj1t2 > 500 || mj2t1 > 500 || mj2t2 > 500)) passSel = 0;
-	    }
-
-	    if (massJetTau_OneIsoTau) {
-		if (AODTau1.Pt() < 50 || AODTau2.Pt() < 40) passSel = 0;
-		if (!(mj1t1 > 500 || mj1t2 > 500 || mj2t1 > 500 || mj2t2 > 500)) passSel = 0;
-	    }
-	} // end hacky passSel for L1 study
-
 	if (passSel && printPrimL1) {
-	    numPassSel += 1;
 	    // fill standard containers, jet container, tau container, and isoTau container
 	    std::vector<TLorentzVector> jetL1Primitives = hltFillWithCands(inTree, "jetL1Primitives", primL1JetSize, primL1JetPtCut);
 	    int jetPrimSize = jetL1Primitives.size();
@@ -584,27 +529,14 @@ int main(int argc, char** argv)	{
 		tauPrimSize = tauL1Primitives.size();
 	    }
 
-	    std::vector<TLorentzVector> isoTau40L1Primitives;
+	    std::vector<TLorentzVector> isoTauL1Primitives;
 	    for (int iTau = 0; iTau < tauPrimSize; ++iTau) {
-		if (tauL1Primitives.at(iTau).Pt() > primL1IsoTau40PtCut && inTree->tauL1PrimitivesIso->at(iTau))
-			isoTau40L1Primitives.push_back(tauL1Primitives.at(iTau));
+		if (tauL1Primitives.at(iTau).Pt() > primL1IsoTauPtCut && inTree->tauL1PrimitivesIso->at(iTau)) 
+			isoTauL1Primitives.push_back(tauL1Primitives.at(iTau));
 	    }
-	    int isoTau40PrimSize = isoTau40L1Primitives.size();
+	    int isoTauPrimSize = isoTauL1Primitives.size();
 
-	    std::vector<TLorentzVector> isoTau45L1Primitives;
-	    for (int iTau = 0; iTau < isoTau40PrimSize; ++iTau) {
-		if (isoTau40L1Primitives.at(iTau).Pt() > primL1IsoTau45PtCut) 
-			isoTau45L1Primitives.push_back(isoTau40L1Primitives.at(iTau));
-	    }
-	    int isoTau45PrimSize = isoTau45L1Primitives.size();
-
-	    // perform cross cleaning (cc) (Wrt = with respect to)
-	    std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtIsoTau40 = crossCleanJets(jetL1Primitives, isoTau40L1Primitives);
-	    int ccWrtIsoTau40L1JetPrimSize = crossCleanedL1PrimJetsWrtIsoTau40.size();
-	    std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtIsoTau45 = crossCleanJets(jetL1Primitives, isoTau45L1Primitives);
-	    int ccWrtIsoTau45L1JetPrimSize = crossCleanedL1PrimJetsWrtIsoTau45.size();
-
-	    if (reqDblJet && jetPrimSize >= 2 && oldVBFwL1Prim) {
+	    if (reqDblJet && jetPrimSize >= 2 && testOldL1Prim) {
 		passL1 += 1;
 		std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives);
 		twoObjMass = (objOne + objTwo).M();
@@ -615,107 +547,108 @@ int main(int argc, char** argv)	{
 		    if (jetL1Primitives.at(iJet).Pt() >= 110) someJetGreaterThan110GeV = true;
 		}
 		if (twoObjMass > 620 && (((jetOnePt >= 110 && jetTwoPt >= 35) || (jetOnePt >= 35 && jetTwoPt >= 110))
-				|| (jetOnePt >= 35 && jetTwoPt >= 35 && someJetGreaterThan110GeV)) ){ passTwoObjMass += 1;}
+				|| (jetOnePt >= 35 && jetTwoPt >= 35 && someJetGreaterThan110GeV)) ){ passTwoObjMass += 1;}//TODO
 
 	    }
 
-	    if (reqDblJet && jetPrimSize >= 2 && isoTau45PrimSize >= 1 && !oldVBFwL1Prim) {
+	    if (reqDblJet && jetPrimSize >= 2 && isoTauPrimSize >= 1 && !testOldL1Prim) {
 		passL1 += 1; // should change var name to pass L1 Size and Kinematics because that's what this is, no mass considered...
 		// increment counters
-		incIfMatchOneAODObj(matchedL1Jets, matchedL1Taus, matchedL1Both, jetL1Primitives, isoTau45L1Primitives, AODObjs.at(0));
+		incIfMatchOneAODObj(matchedL1Jets, matchedL1Taus, matchedL1Both, jetL1Primitives, isoTauL1Primitives, AODObjs.at(0));
 
-		if (newVBFwL1Prim) {
+		if (normalMjjWithCC) {
+		    // perform cross cleaning and check matching again
+		    // Wrt = with respect to
+		    std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtIsoTau = crossCleanJets(jetL1Primitives, isoTauL1Primitives);
+		    int ccWrtIsoTauL1JetPrimSize = crossCleanedL1PrimJetsWrtIsoTau.size();
 
-		    if (ccWrtIsoTau45L1JetPrimSize >= 2) {// && ccWrtIsoTauL1JetPrimSize <= 5) {
+		    if (ccWrtIsoTauL1JetPrimSize >= 2) {// && ccWrtIsoTauL1JetPrimSize <= 5) {
 			L1SeedCaseZero = true;
 		        passCCSize += 1;
 		        incIfMatchOneAODObj(matchedL1CCJets, matchedL1RemTaus, matchedL1CCBoth, 
-						crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives, AODObjs.at(0));
+						crossCleanedL1PrimJetsWrtIsoTau, isoTauL1Primitives, AODObjs.at(0));
 			// check mjj
-                        std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
+                        std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau);
 			twoObjMass = (objOne + objTwo).M();
                         if (twoObjMass > 450) {
 			    passTwoObjMass +=1;
 			    incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs, 
-						crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives, AODObjs);
-			    objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau45, objOne);
-			    objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau45, objTwo);
-	    		    objOneIsTau = objInContainer(isoTau45L1Primitives, objOne);
-	    		    objTwoIsTau = objInContainer(isoTau45L1Primitives, objTwo);
+						crossCleanedL1PrimJetsWrtIsoTau, isoTauL1Primitives, AODObjs);
+			    objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau, objOne);
+			    objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau, objTwo);
+	    		    objOneIsTau = objInContainer(isoTauL1Primitives, objOne);
+	    		    objTwoIsTau = objInContainer(isoTauL1Primitives, objTwo);
 			}
 		    } // end CC - jet size req if statement
 		} // end CC if statement
 
 		// if not simple mjj L1 seed, check two object mass for various L1 cases
-		if (massAnyTwo_DblJetDblIsoTau && isoTau40PrimSize >= 2 && ccWrtIsoTau40L1JetPrimSize >= 2) {
+		if (massAnyTwo_DblJetDblIsoTau && isoTauPrimSize >= 2) {
 		    L1SeedCaseOne = true;
-		    passCCSize += 1;
-
 		    // check two object mass
-		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau40, isoTau45L1Primitives, "Any");
+		    std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives, isoTauL1Primitives, "Any");
 		    twoObjMass = (objOne + objTwo).M();
-		    if (twoObjMass > 400) {
+		    if (twoObjMass > 450) {
 			passTwoObjMass += 1;
 			incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs,
-					    jetL1Primitives, isoTau45L1Primitives, AODObjs);
-		    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objOne);
-		    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objTwo);
-	    	    	objOneIsTau = objInContainer(isoTau45L1Primitives, objOne);
-	    	    	objTwoIsTau = objInContainer(isoTau45L1Primitives, objTwo);
+					    jetL1Primitives, isoTauL1Primitives, AODObjs);
+		    	objOneIsJet = objInContainer(jetL1Primitives, objOne);
+		    	objTwoIsJet = objInContainer(jetL1Primitives, objTwo);
+	    	    	objOneIsTau = objInContainer(isoTauL1Primitives, objOne);
+	    	    	objTwoIsTau = objInContainer(isoTauL1Primitives, objTwo);
 		    }
 		} // end massAnyTwo_DblJetDblIsoTau if statement 
 		
-		if (massDblJetOrJetTau_DblJetOneIsoTau && isoTau45PrimSize >= 1 && ccWrtIsoTau45L1JetPrimSize >= 2) {
-		    passCCSize += 1;
+		if (massDblJetOrJetTau_DblJetOneIsoTau) {
 		    L1SeedCaseTwo = true;
 		    // we exclude the two tau case for this seed, but allow the two jet case.
 		    // To do this, we look for the highestMassPair of just jets and then
 		    // the highest mass pair using one tau and one jet. Then we take the larger of the two pairs
 		    TLorentzVector tempObjOne, tempObjTwo;
-		    std::tie(tempObjOne, tempObjTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives, "OneJetOneTau");
+		    std::tie(tempObjOne, tempObjTwo) = highestMassPair(jetL1Primitives, isoTauL1Primitives, "OneJetOneTau");
 		    double tempTwoObjMass = (tempObjOne + tempObjTwo).M();
-		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
+		    std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives);
 		    twoObjMass = (objOne + objTwo).M();
 
 		    if (tempTwoObjMass > twoObjMass) {
 			twoObjMass = tempTwoObjMass; objOne = tempObjOne; objTwo = tempObjTwo;
-			std::cout << "OneJetOneTau heavier than DiJet" << std::endl; // happens about half the time w Rmv Ol.
+			std::cout << "OneJetOneTau heavier than DiJet" << std::endl; // haven't seen this happen yet
 		    }
 
-		    if (twoObjMass > 450) {
+		    if (twoObjMass > 400) {
 			passTwoObjMass += 1;
 			incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs,
-					    jetL1Primitives, isoTau45L1Primitives, AODObjs);
-		    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau45, objOne);
-		    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau45, objTwo);
-	    	    	objOneIsTau = objInContainer(isoTau45L1Primitives, objOne);
-	    	    	objTwoIsTau = objInContainer(isoTau45L1Primitives, objTwo);
+					    jetL1Primitives, isoTauL1Primitives, AODObjs);
+		    	objOneIsJet = objInContainer(jetL1Primitives, objOne);
+		    	objTwoIsJet = objInContainer(jetL1Primitives, objTwo);
+	    	    	objOneIsTau = objInContainer(isoTauL1Primitives, objOne);
+	    	    	objTwoIsTau = objInContainer(isoTauL1Primitives, objTwo);
 		    }
 		}
 
 	    } // end jetPrimSize >= 2 if statement
 
-	    if (!reqDblJet && massJetTau_OneIsoTau && jetPrimSize >= 1 && tauPrimSize >= 1 && isoTau45PrimSize >= 1) {
+	    if (!reqDblJet && massJetTau_OneIsoTau && jetPrimSize >= 1 && tauPrimSize >= 1 && isoTauPrimSize >= 1) {
 		L1SeedCaseThree = true;
 		passL1 += 1;
 		// not clear if i should check in tau or iso tau container... checking tau for now
 		incIfMatchOneAODObj(matchedL1Jets, matchedL1Taus, matchedL1Both, jetL1Primitives, tauL1Primitives, AODObjs.at(0));
 		// perform cross-cleaning and check matching again
-		std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtTau35 = crossCleanJets(jetL1Primitives, tauL1Primitives);
-		int ccWrtTau35L1JetPrimSize = crossCleanedL1PrimJetsWrtTau35.size();
-		if (ccWrtTau35L1JetPrimSize >= 1) {// && ccWrtTauL1JetPrimSize <= 5) {
+		std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtTau = crossCleanJets(jetL1Primitives, tauL1Primitives);
+		int ccWrtTauL1JetPrimSize = crossCleanedL1PrimJetsWrtTau.size();
+		if (ccWrtTauL1JetPrimSize >= 1) {// && ccWrtTauL1JetPrimSize <= 5) {
 		    passCCSize += 1;
 		    incIfMatchOneAODObj(matchedL1CCJets, matchedL1RemTaus, matchedL1CCBoth,
-                                                crossCleanedL1PrimJetsWrtTau35, tauL1Primitives, AODObjs.at(0));   
+                                                crossCleanedL1PrimJetsWrtTau, tauL1Primitives, AODObjs.at(0));   
 		    // check two object mass
-		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtTau35, tauL1Primitives, "OneJetOneTau");
+		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtTau, tauL1Primitives, "OneJetOneTau");
 		    twoObjMass = (objOne + objTwo).M();
 		    if (twoObjMass > 450) {
 			passTwoObjMass += 1;
 			incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs,
-					    crossCleanedL1PrimJetsWrtTau35, tauL1Primitives, AODObjs);
-		    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtTau35, objOne);
-		    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtTau35, objTwo);
+					    crossCleanedL1PrimJetsWrtTau, tauL1Primitives, AODObjs);
+		    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtTau, objOne);
+		    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtTau, objTwo);
 	    	    	objOneIsTau = objInContainer(tauL1Primitives, objOne);
 	    	    	objTwoIsTau = objInContainer(tauL1Primitives, objTwo);
 		    }
@@ -733,6 +666,7 @@ int main(int argc, char** argv)	{
 
 	} // end if statement for L1 prim
 
+	printNewL1 = false;
 	// passes offline selection passes new L1
 	if (printNewL1 && passSel && newL1TauSize >=1 && newL1JetSize >= 2) {
 	    passL1 += 1;
@@ -749,6 +683,7 @@ int main(int argc, char** argv)	{
 	    if (twoObjMass > 450) passTwoObjMass += 1;
 	} // end if statement for pass new L1
 
+	printOldL1 = false;	
 	// passes offline selection, passes Old L1
 	if (printOldL1 && passSel && oldL1JetSize >= 2) {
 	    passL1 += 1;
@@ -841,23 +776,23 @@ int main(int argc, char** argv)	{
 	
         // fill kine branches with matched AOD
         if (passSel) {
-	    t1_pt_A = AODTau1.Pt();
-	    t1_eta_A = AODTau1.Eta();
-	    t1_phi_A = AODTau1.Phi();
-	    t1_energy_A = AODTau1.Energy();
-	    t2_pt_A = AODTau2.Pt();
-	    t2_eta_A = AODTau2.Eta();
-	    t2_phi_A = AODTau2.Phi();
-	    t2_energy_A = AODTau2.Energy();
+	    t1_pt_A = aodTau1.Pt();
+	    t1_eta_A = aodTau1.Eta();
+	    t1_phi_A = aodTau1.Phi();
+	    t1_energy_A = aodTau1.Energy();
+	    t2_pt_A = aodTau2.Pt();
+	    t2_eta_A = aodTau2.Eta();
+	    t2_phi_A = aodTau2.Phi();
+	    t2_energy_A = aodTau2.Energy();
 
-	    j1_pt_A = AODJet1.Pt();
-	    j1_eta_A = AODJet1.Eta();
-	    j1_eta_A = AODJet1.Phi();
-	    j1_energy_A = AODJet1.Energy();
-	    j2_pt_A = AODJet2.Pt();
-	    j2_eta_A = AODJet2.Eta();
-	    j2_eta_A = AODJet2.Phi();
-	    j2_energy_A = AODJet2.Energy();
+	    j1_pt_A = aodJet1.Pt();
+	    j1_eta_A = aodJet1.Eta();
+	    j1_eta_A = aodJet1.Phi();
+	    j1_energy_A = aodJet1.Energy();
+	    j2_pt_A = aodJet2.Pt();
+	    j2_eta_A = aodJet2.Eta();
+	    j2_eta_A = aodJet2.Phi();
+	    j2_energy_A = aodJet2.Energy();
 
 	    if (matchedJets) {
 		j1_pt = trigJet1.Pt();

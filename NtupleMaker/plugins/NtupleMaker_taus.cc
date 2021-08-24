@@ -9,6 +9,10 @@ using namespace std;
 // (local) variables associated with tree branches
 Int_t          nTau_;
 
+int runNumber;
+int lumiBlock;
+unsigned long long eventNumberID;
+
 // decay mode discriminators
 
 // Tau L1 Primitives
@@ -130,6 +134,11 @@ vector<float> taudxy_;
 
 void NtupleMaker::branchesTaus(TTree* tree)
 {
+
+    tree->Branch("runNumber", &runNumber);
+    tree->Branch("lumiBlock", &lumiBlock);
+    tree->Branch("eventNumberID", &eventNumberID);
+
     tree->Branch("nTau", &nTau_);
     
     // Tau L1 Primitives
@@ -252,6 +261,10 @@ void NtupleMaker::branchesTaus(TTree* tree)
 
 void NtupleMaker::fillTaus(const edm::Event& e)
 {
+
+    runNumber = e.id().run();
+    lumiBlock = e.id().luminosityBlock();
+    eventNumberID = e.id().event();
 
     // Tau L1 primitives
     tauL1PrimitivesPt_.clear(); 

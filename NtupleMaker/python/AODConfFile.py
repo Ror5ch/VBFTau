@@ -5,7 +5,7 @@ process = cms.Process("Demo")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -14,7 +14,8 @@ process.source = cms.Source("PoolSource",
 
 	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/002188FF-4E2D-E811-9115-FA163EAD427A.root'
     
-        'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/021DCAE8-242E-E811-B362-02163E01A0CE.root',
+        #'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/021DCAE8-242E-E811-B362-02163E01A0CE.root',
+	'file:root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/MINIAOD/PromptReco-v2/000/320/497/00000/68E2874E-6495-E811-98C2-FA163EE0D32F.root',
 
 	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/00000/1ACE0760-BF84-3F47-A601-29022E50122E.root'
 

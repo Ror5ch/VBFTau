@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'VBFandDitauTriggerand4520Taus.py'#'ditau_and_vbf.py'
+config.JobType.psetName = 'AODConfFile.py'#'VBFandDitauTriggerand4520Taus.py'#'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -24,7 +24,7 @@ config.Site.whitelist = ['T2_US_*']
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
 #config.JobType.numCores = 4
-config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
+#config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
 
 config.Site.storageSite = 'T3_US_FNALLPC' #'T3_KR_KNU'
 
@@ -57,9 +57,10 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_L1TriggerPrimitives_fixedJetLabels'
-    config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
-    config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
+    config.General.requestName = 'VBFHToTauTau_L1SeedRatesNtuple2'
+    config.Data.inputDataset = '/EphemeralZeroBias1/Run2018D-PromptReco-v2/MINIAOD'
+    #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
+    #config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
  
     crabCommand('submit', config = config)

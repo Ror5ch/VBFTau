@@ -14,7 +14,7 @@ public :
     // from HLT
     int runNumber;
     int lumiBlock;
-    int eventNumberID;
+    unsigned long long eventNumberID; // sometimes needs to be int for older samples...
 
     int nEvents;
 

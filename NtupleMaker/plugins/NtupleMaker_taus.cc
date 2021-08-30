@@ -259,20 +259,44 @@ void NtupleMaker::branchesTaus(TTree* tree)
     
 }
 
+void NtupleMaker::fillEventInfo(const edm::Event& iEvent)
+{
+    runNumber = iEvent.id().run();
+    lumiBlock = iEvent.id().luminosityBlock();
+    eventNumberID = iEvent.id().event();
+}
+
+void NtupleMaker::fillL1Taus(const edm::Event& iEvent)
+{
+    tauL1PrimitivesPt_.clear();
+    tauL1PrimitivesEta_.clear();
+    tauL1PrimitivesPhi_.clear();
+    tauL1PrimitivesEnergy_.clear();
+    tauL1PrimitivesIso_.clear();
+
+    edm::Handle<BXVector<l1t::Tau>> tauL1Handle;
+    iEvent.getByToken(tauTriggerPrimitives_, tauL1Handle);
+
+    for(BXVector<l1t::Tau>::const_iterator itau = tauL1Handle->begin(); itau != tauL1Handle->end(); ++itau) {
+        tauL1PrimitivesPt_.push_back(itau->pt());
+        tauL1PrimitivesEta_.push_back(itau->eta());
+        tauL1PrimitivesPhi_.push_back(itau->phi());
+        tauL1PrimitivesEnergy_.push_back(itau->energy());
+        tauL1PrimitivesIso_.push_back(itau->hwIso());
+    }
+
+}
+
 void NtupleMaker::fillTaus(const edm::Event& e)
 {
-
-    runNumber = e.id().run();
-    lumiBlock = e.id().luminosityBlock();
-    eventNumberID = e.id().event();
-
+/***
     // Tau L1 primitives
     tauL1PrimitivesPt_.clear(); 
     tauL1PrimitivesEta_.clear(); 
     tauL1PrimitivesPhi_.clear(); 
     tauL1PrimitivesEnergy_.clear(); 
     tauL1PrimitivesIso_.clear(); 
-   
+   ***/
     // Tau Id & Isolation
     
     taupfTausDiscriminationByDecayModeFinding_.clear();
@@ -386,6 +410,7 @@ void NtupleMaker::fillTaus(const edm::Event& e)
     nTau_ = 0;
     
     //startTaus L1
+/***
     edm::Handle<BXVector<l1t::Tau>> tauL1Handle;
     e.getByToken(tauTriggerPrimitives_, tauL1Handle);
 
@@ -396,7 +421,7 @@ void NtupleMaker::fillTaus(const edm::Event& e)
 	tauL1PrimitivesEnergy_.push_back(itau->energy());
 	tauL1PrimitivesIso_.push_back(itau->hwIso());
     }
-
+***/
     //original Tau lines
 
     edm::Handle<vector<pat::Tau> > tauHandle;

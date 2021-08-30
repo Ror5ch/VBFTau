@@ -224,6 +224,14 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
     std::vector<float>* branchPhi;
     std::vector<float>* branchEnergy;
 
+    double etaCut = 0;
+    if (filterName == "hltHpsDoublePFTauTight" || filterName == "tauL1Primitives" ||
+        filterName == "hltL1VBFDiJetIsoTau_taus" || filterName == "hltL1sDoubleTauBigOR") etaCut = 2.1;
+
+    if (filterName == "hltMatchedVBFTwoTight" || filterName == "hltMatchedVBFIsoTauTwoTight" ||
+        filterName == "jetL1Primitives" || filterName == "hltL1VBFDiJetIsoTau_jets" ||
+        filterName == "hltL1VBFDiJetOR") etaCut = 4.7;
+
     bool found = false;
 
     if (!found && filterName == "hltHpsDoublePFTauTight") {
@@ -297,7 +305,7 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 			     branchEta->at(iObj),
 			     branchPhi->at(iObj),
 			     branchEnergy->at(iObj));
-	if (tempObj.Pt() > ptCut) objContainer.push_back(tempObj);
+	if (tempObj.Pt() >= ptCut && tempObj.Eta() <= etaCut) objContainer.push_back(tempObj);
     }	
     return objContainer;
 }

@@ -153,13 +153,34 @@ void NtupleMaker::branchesJets(TTree* tree) {
 
 }
 
+void NtupleMaker::fillL1Jets(const edm::Event& iEvent) {
+
+  jetL1PrimitivesPt_.clear();
+  jetL1PrimitivesEta_.clear();
+  jetL1PrimitivesPhi_.clear();
+  jetL1PrimitivesEnergy_.clear();
+
+  edm::Handle<BXVector<l1t::Jet>> jetL1Handle;
+  e.getByToken(jetTriggerPrimitives_, jetL1Handle);
+
+
+  for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(); ijet != jetL1Handle->end(); ++ijet) {
+      jetL1PrimitivesPt_.push_back(ijet->pt());
+      jetL1PrimitivesEta_.push_back(ijet->eta());
+      jetL1PrimitivesPhi_.push_back(ijet->phi());
+      jetL1PrimitivesEnergy_.push_back(ijet->energy());
+  }
+
+}
+
 void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
+/***
   jetL1PrimitivesPt_			  .clear();
   jetL1PrimitivesEta_			  .clear();
   jetL1PrimitivesPhi_			  .clear();
   jetL1PrimitivesEnergy_		  .clear();
-
+***/
   jetPt_                                  .clear();
   jetEn_                                  .clear();
   jetEta_                                 .clear();
@@ -222,10 +243,10 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   nJet_ = 0;
 
   // fill L1 Jet trigger primitives
+/***
   edm::Handle<BXVector<l1t::Jet>> jetL1Handle;
   e.getByToken(jetTriggerPrimitives_, jetL1Handle);
 
-  l1t::Jet tempJet;
 
   for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(); ijet != jetL1Handle->end(); ++ijet) {
       jetL1PrimitivesPt_.push_back(ijet->pt());
@@ -233,7 +254,7 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetL1PrimitivesPhi_.push_back(ijet->phi());
       jetL1PrimitivesEnergy_.push_back(ijet->energy());
   }
-
+***/
   // fill jet pat
   edm::Handle<edm::View<pat::Jet> > jetHandle;
   e.getByToken(jetsAK4Label_, jetHandle);

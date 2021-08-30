@@ -115,10 +115,10 @@ int main(int argc, char** argv)	{
 	bool smallerContainers = false;
 
 	bool oldVBFwL1Prim = false; //L1_Jet110_Jet35_Mass_Min620
-	bool newVBFwL1Prim = true; //L1_DoubleJet35_IsoTau45_Mjj450_RmvOl
+	bool newVBFwL1Prim = false; //L1_DoubleJet35_IsoTau45_Mjj450_RmvOl
 	bool L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl = false;
 	bool L1_DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl = false; // this seed is most like new vbf seed
-	bool L1_Jet35_Tau35_MassJetTau450_IsoTau45_RmvOl = false;
+	bool L1_Jet35_Tau35_MassJetTau450_IsoTau45_RmvOl = true;
 
 	passedAnL1 = false;
 
@@ -233,15 +233,15 @@ int main(int argc, char** argv)	{
 
 	if (L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl && ccWrtIsoTau40L1JetPrimSize >= 2 && isoTau40PrimSize >= 2) {
 	    // check two object mass
-	    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau40, isoTau45L1Primitives, "Any");
+	    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau40, isoTau40L1Primitives, "Any");
 	    twoObjMass = (objOne + objTwo).M();
 	    if (twoObjMass > 400) {
 		passedAnL1 = true;
 
 	    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objOne);
 	    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objTwo);
-	    	objOneIsTau = objInContainer(isoTau45L1Primitives, objOne);
-	    	objTwoIsTau = objInContainer(isoTau45L1Primitives, objTwo);
+	    	objOneIsTau = objInContainer(isoTau40L1Primitives, objOne);
+	    	objTwoIsTau = objInContainer(isoTau40L1Primitives, objTwo);
 
 		if (objOneIsJet && !objOneIsTau && !objTwoIsJet && objTwoIsTau) {
 		    L1_Jet1 = objOne; L1_Tau1 = objTwo;
@@ -258,7 +258,7 @@ int main(int argc, char** argv)	{
 			L1_Jet1 = objTwo;
 			L1_Jet2 = objOne;
 		    }
-		    L1_Tau1 = isoTau45L1Primitives.at(0);
+		    L1_Tau1 = isoTau40L1Primitives.at(0);
 		}
 		if (!objOneIsJet && objOneIsTau && !objTwoIsJet && objTwoIsTau) {
 		    L1_Jet1 = crossCleanedL1PrimJetsWrtIsoTau40.at(0); 

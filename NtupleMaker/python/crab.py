@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'AODConfFile.py'#'VBFandDitauTriggerand4520Taus.py'#'ditau_and_vbf.py'
+config.JobType.psetName = 'VBFandDitauTriggerand4520Taus.py'#'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -19,12 +19,12 @@ config.Data.outLFNDirBase = '/store/user/ballmond' #'/store/user/knam'
 config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_US_*', 'T2_RU_JINR', 'T1_RU_JINR']
 #config.Site.whitelist = ['T3_US_FNALLPC']
-config.Site.whitelist = ['T2_US_*']
+config.Site.whitelist = ['T2_US_*','T2_BE_*']
 #config.Site.ignoreGlobalBlacklist = True
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
 #config.JobType.numCores = 4
-#config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
+config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
 
 config.Site.storageSite = 'T3_US_FNALLPC' #'T3_KR_KNU'
 
@@ -47,9 +47,12 @@ if __name__ == '__main__':
     yesno7 = raw_input('y/n? ')
     print("Did you reduce the leading tau cut to 45 in your hlt menu?")
     yesno8 = raw_input('y/n? ')
+    print("Is your whitelist set correctly for the dataset (i.e. is it 100% available where you're asking for it?")
+    yesno9 = raw_input('y/n? ')
 
-    if (yesno1 == 'n' or yesno2 == 'n' or yesno3 == 'n' or yesno4 == 'n' or yesno5 == 'n' or yesno6 == 'n' or yesno7 == 'n' or yesno8 == 'n'\
-	or yesno1 == '' or yesno2 == '' or yesno3 == '' or yesno4 == '' or yesno5 == '' or yesno6 == '' or yesno7 == '' or yesno8 == ''):
+    no = (yesno1=='n' or yesno2=='n' or yesno3=='n' or yesno4=='n' or yesno5=='n' or yesno6=='n' or yesno7=='n' or yesno8=='n' or yesno9=='n')
+    empty = (yesno1=='' or yesno2=='' or yesno3=='' or yesno4=='' or yesno5=='' or yesno6=='' or yesno7=='' or yesno8=='' or yesno9=='')
+    if (no or empty):
 	print("Well, go fix that!")
 	sys.exit()
 
@@ -57,8 +60,9 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_L1SeedRatesNtuple2'
-    config.Data.inputDataset = '/EphemeralZeroBias1/Run2018D-PromptReco-v2/MINIAOD'
+    config.General.requestName = 'VBFHToTauTau_L2SeedRatesNtuple_AODandRAW4'
+    config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'
+    config.Data.secondaryInputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW' 
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
     #config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'

@@ -287,6 +287,7 @@ int main(int argc, char** argv)	{
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
 
+	//if (iEntry != 59251) continue;
 	//---------------------apply base selection and fill AOD objects------------------------------//
 	// base selection flag (cuts are arbitrary so they're not physically meaningful)
 	// artifact of trying to decouple matching and selection steps.
@@ -405,7 +406,6 @@ int main(int argc, char** argv)	{
 	else{sel_cutflow->Fill(6.0,1.0);}
 
 	//if (passSel) numPassSel += 1;
-
 	//-----------------------try to match AOD and HLT objects-----------------------------------//
 	// not performed for "tight" or "or" selections because it's not clear which filter to use 
 	// for jets in those cases
@@ -434,28 +434,28 @@ int main(int argc, char** argv)	{
 	    if (vecSizeVBFIsoTauTwo >= 2 && vecSizeHpsTau50 >= 1 && triggerFlag == 1) \
 		triggerJetCandidates = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", vecSizeVBFIsoTauTwo, 0);
 
-	    // match AOD and HLT jets and taus
-	    dRj1 = 999;
-	    dRj2 = 999;
-	    // tie is a handy method for assigning tuple output
-            std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, AODJet1, AODJet2);
-            dRj1 = trigJet1.DeltaR(AODJet1);
-            dRj2 = trigJet2.DeltaR(AODJet2);
-
-	    dRt1 = 999;
-	    dRt2 = 999;
-	    std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, AODTau1, AODTau2);
-	    dRt1 = trigTau1.DeltaR(AODTau1);
-	    dRt2 = trigTau2.DeltaR(AODTau2);
-
-	    mjj = (trigJet1 + trigJet2).M();
-
+            dRj1 = dRj2 = dRt1 = dRt2 = 999;
 	    int overlapped = 0;
-	    // check that same type objects are not overlapped
-	    if (trigTau1.DeltaR(trigTau2) < 0.5 || trigJet1.DeltaR(trigJet2) < 0.5 ) overlapped = 1;
-	    // check that different objects are not overlapped
-	    if (trigTau1.DeltaR(trigJet1) < 0.5 || trigTau1.DeltaR(trigJet2) < 0.5 ||
-		trigTau2.DeltaR(trigJet1) < 0.5 || trigTau2.DeltaR(trigJet2) < 0.5) overlapped = 1;
+            if (triggerTauCandidates.size() >= 2 && triggerJetCandidates.size() >= 2) {
+
+	        // match AOD and HLT jets and taus
+	        // tie is a handy method for assigning tuple output
+                std::tie(trigJet1, trigJet2) = matchTwoObjs(triggerJetCandidates, AODJet1, AODJet2);
+                dRj1 = trigJet1.DeltaR(AODJet1);
+                dRj2 = trigJet2.DeltaR(AODJet2);
+
+	        std::tie(trigTau1, trigTau2) = matchTwoObjs(triggerTauCandidates, AODTau1, AODTau2);
+	        dRt1 = trigTau1.DeltaR(AODTau1);
+	        dRt2 = trigTau2.DeltaR(AODTau2);
+
+	        mjj = (trigJet1 + trigJet2).M();
+            
+	        // check that same type objects are not overlapped
+	        if (trigTau1.DeltaR(trigTau2) < 0.5 || trigJet1.DeltaR(trigJet2) < 0.5 ) overlapped = 1;
+	        // check that different objects are not overlapped
+	        if (trigTau1.DeltaR(trigJet1) < 0.5 || trigTau1.DeltaR(trigJet2) < 0.5 ||
+		    trigTau2.DeltaR(trigJet1) < 0.5 || trigTau2.DeltaR(trigJet2) < 0.5) overlapped = 1;
+            }
 
 	    // matchedObj variables initialization
 	    matchedTaus = matchedJets = matchedBoth = 0;	
@@ -464,7 +464,6 @@ int main(int argc, char** argv)	{
 	    if (dRj1 < 0.5 && dRj2 < 0.5 && !overlapped) {matchedJets = 1; numMatchedJets += 1;}
 	    if (matchedTaus && matchedJets) {matchedBoth = 1; numMatchedBoth += 1;}
 	}
-
 	//------------------------------fill flags and output tree-----------------------------------//
 
 	// initialize trigger variables before getting new ones from tree
@@ -652,16 +651,16 @@ int main(int argc, char** argv)	{
 		    passCCSize += 1;
 
 		    // check two object mass
-		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau40, isoTau45L1Primitives, "Any");
+		    std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau40, isoTau40L1Primitives, "Any");
 		    twoObjMass = (objOne + objTwo).M();
 		    if (twoObjMass > 400) {
 			passTwoObjMass += 1;
 			incIfMatchAllAODObjs(matchedJetAODs, matchedTauAODs, matchedAllAODs,
-					    jetL1Primitives, isoTau45L1Primitives, AODObjs);
+					    crossCleanedL1PrimJetsWrtIsoTau40, isoTau40L1Primitives, AODObjs);
 		    	objOneIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objOne);
 		    	objTwoIsJet = objInContainer(crossCleanedL1PrimJetsWrtIsoTau40, objTwo);
-	    	    	objOneIsTau = objInContainer(isoTau45L1Primitives, objOne);
-	    	    	objTwoIsTau = objInContainer(isoTau45L1Primitives, objTwo);
+	    	    	objOneIsTau = objInContainer(isoTau40L1Primitives, objOne);
+	    	    	objTwoIsTau = objInContainer(isoTau40L1Primitives, objTwo);
 		    }
 		} // end massAnyTwo_DblJetDblIsoTau if statement 
 		

@@ -6,11 +6,7 @@ If anything goes wrong, try the command 'cmsenv', then repeat whatever step prev
 `cmsrel CMSSW_10_2_16_UL`
 
 and cd into the 'src' directory
-(alternatively: 
-
-`scram pro -n MyWorkingAreaName CMSSW CMSSW_10_2_16_UL`
-
-allows you to name the CMSSW release directory if you like)
+(alternatively: `scram pro -n MyWorkingAreaName CMSSW CMSSW_10_2_16_UL` allows you to name the CMSSW release directory if you like)
 
 # Before downloading this repo, you need to download two other repos which we add two correction files to directly.
 

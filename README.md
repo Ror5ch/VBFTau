@@ -2,7 +2,9 @@
 If anything goes wrong, try the command 'cmsenv', then repeat whatever step previously failed
 
 First we need a CMSSW release, so do
+
 cmsrel CMSSW_10_2_16_UL
+
 and cd into the 'src' directory
 (alternatively: 
 scram pro -n MyWorkingAreaName CMSSW CMSSW_10_2_16_UL

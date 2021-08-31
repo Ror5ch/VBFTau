@@ -130,24 +130,32 @@ vector<float> tauphotonPtSumOutsideSignalCone_;
 vector<float> taudz_;
 vector<float> taudxy_;
 
-
-
-void NtupleMaker::branchesTaus(TTree* tree)
+void NtupleMaker::branchesEventInfo(TTree* tree)
 {
-
     tree->Branch("runNumber", &runNumber);
     tree->Branch("lumiBlock", &lumiBlock);
     tree->Branch("eventNumberID", &eventNumberID);
+}
 
-    tree->Branch("nTau", &nTau_);
-    
-    // Tau L1 Primitives
+void NtupleMaker::branchesL1Taus(TTree* tree) 
+{
     tree->Branch("tauL1PrimitivesPt", &tauL1PrimitivesPt_);
     tree->Branch("tauL1PrimitivesEta", &tauL1PrimitivesEta_);
     tree->Branch("tauL1PrimitivesPhi", &tauL1PrimitivesPhi_);
     tree->Branch("tauL1PrimitivesEnergy", &tauL1PrimitivesEnergy_);
     tree->Branch("tauL1PrimitivesIso", &tauL1PrimitivesIso_);
+}
 
+void NtupleMaker::branchesTaus(TTree* tree)
+{
+
+//    tree->Branch("runNumber", &runNumber);
+//    tree->Branch("lumiBlock", &lumiBlock);
+//    tree->Branch("eventNumberID", &eventNumberID);
+
+    tree->Branch("nTau", &nTau_);
+    
+    // Tau L1 Primitives
     //Tau Id & Isolation
     tree->Branch("taupfTausDiscriminationByDecayModeFinding", &taupfTausDiscriminationByDecayModeFinding_);
     tree->Branch("taupfTausDiscriminationByDecayModeFindingNewDMs", &taupfTausDiscriminationByDecayModeFindingNewDMs_);

@@ -18343,9 +18343,11 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
 
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
-     , needTriggers = cms.untracked.bool(True)
-     , needTaus = cms.untracked.bool(True)
-     , needJets = cms.untracked.bool(True)
+     , fillingTriggers = cms.untracked.bool(True)
+     , fillingEventInfo = cms.untracked.bool(False)
+     , fillingL1 = cms.untracked.bool(False)
+     , fillingTaus = cms.untracked.bool(False)
+     , fillingJets = cms.untracked.bool(False)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -18365,8 +18367,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-        process.rerunMvaIsolationSequence *
-        getattr(process,updatedTauName) *
+#        process.rerunMvaIsolationSequence *
+#        getattr(process,updatedTauName) *
         process.demo
 )
 
@@ -18378,6 +18380,7 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_Do
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
         'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/00178463-CC2C-E811-A937-FA163ECB87AD.root',
+	#'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/MINIAOD/PromptReco-v2/000/320/497/00000/68E2874E-6495-E811-98C2-FA163EE0D32F.root',	
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -18398,12 +18401,12 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 # enable TrigReport, TimeReport and MultiThreading
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool( True ),
-    #numberOfThreads = cms.untracked.uint32( 4 ),
-    numberOfStreams = cms.untracked.uint32( 0 ),
-    #sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
-)
+#process.options = cms.untracked.PSet(
+#    wantSummary = cms.untracked.bool( True ),
+#    #numberOfThreads = cms.untracked.uint32( 4 ),
+#    numberOfStreams = cms.untracked.uint32( 0 ),
+#    #sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
+#)
 
 # override the GlobalTag, connection string and pfnPrefix
 if 'GlobalTag' in process.__dict__:
@@ -18412,10 +18415,10 @@ if 'GlobalTag' in process.__dict__:
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
-    process.MessageLogger.categories.append('L1GtTrigReport')
-    process.MessageLogger.categories.append('L1TGlobalSummary')
+#    process.MessageLogger.categories.append('L1GtTrigReport')
+#    process.MessageLogger.categories.append('L1TGlobalSummary')
     process.MessageLogger.categories.append('HLTrigReport')
-    process.MessageLogger.categories.append('FastReport')
+#    process.MessageLogger.categories.append('FastReport')
 
 # load the DQMStore and DQMRootOutputModule
 process.load( "DQMServices.Core.DQMStore_cfi" )

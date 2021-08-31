@@ -5,7 +5,7 @@ process = cms.Process("Demo")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -35,7 +35,7 @@ tauIdEmbedder.runTauID()
 
 process.demo = cms.EDAnalyzer('NtupleMaker'
      #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
-     , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT")
+     , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT") #change to HLT instead of MYHLT if not rerun 
      , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
      , triggerEventWithRefs = cms.untracked.InputTag("hltTriggerSummaryRAW","","MYHLT")
      #, PFTauCollection = cms.untracked.InputTag("hltHpsPFTauProducer","","MYHLT")
@@ -43,9 +43,11 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
 
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
-     , needTriggers = cms.untracked.bool(False)
-     , needTaus = cms.untracked.bool(True)
-     , needJets = cms.untracked.bool(True)
+     , fillingTriggers = cms.untracked.bool(False)
+     , fillingEventInfo = cms.untracked.bool(True)
+     , fillingL1 = cms.untracked.bool(True)
+     , fillingTaus = cms.untracked.bool(False)
+     , fillingJets = cms.untracked.bool(False)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -65,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-        process.rerunMvaIsolationSequence *
-        getattr(process,updatedTauName) *
+#        process.rerunMvaIsolationSequence *
+#        getattr(process,updatedTauName) *
         process.demo
 )

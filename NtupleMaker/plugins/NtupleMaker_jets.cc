@@ -81,14 +81,18 @@ vector<float>  jetGenEta_;
 vector<float>  jetGenPhi_;
 vector<int>    jetGenPartonMomID_;
 
-void NtupleMaker::branchesJets(TTree* tree) {
-  
-  tree->Branch("nJet",                &nJet_);
+void NtupleMaker::branchesL1Jets(TTree* tree) {
 
   tree->Branch("jetL1PrimitivesPt",  &jetL1PrimitivesPt_);
   tree->Branch("jetL1PrimitivesEta", &jetL1PrimitivesEta_);
   tree->Branch("jetL1PrimitivesPhi", &jetL1PrimitivesPhi_);
   tree->Branch("jetL1PrimitivesEnergy",    &jetL1PrimitivesEnergy_);
+
+}
+
+void NtupleMaker::branchesJets(TTree* tree) {
+  
+  tree->Branch("nJet",                &nJet_);
 
   tree->Branch("jetPt",               &jetPt_);
   tree->Branch("jetEn",               &jetEn_);
@@ -161,7 +165,7 @@ void NtupleMaker::fillL1Jets(const edm::Event& iEvent) {
   jetL1PrimitivesEnergy_.clear();
 
   edm::Handle<BXVector<l1t::Jet>> jetL1Handle;
-  e.getByToken(jetTriggerPrimitives_, jetL1Handle);
+  iEvent.getByToken(jetTriggerPrimitives_, jetL1Handle);
 
 
   for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(); ijet != jetL1Handle->end(); ++ijet) {

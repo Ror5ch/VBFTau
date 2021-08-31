@@ -3,10 +3,11 @@
 //using namespace std;
 
 NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
-    fillTriggers(iConfig.getUntrackedParameter<bool>("fillTriggers")),
-    fillL1(iConfig.getUntrackedParameter<bool>("fillL1")),
-    fillTaus(iConfig.getUntrackedParameter<bool>("fillTaus")),
-    fillJets(iConfig.getUntrackedParameter<bool>("fillJets")),
+    fillingTriggers(iConfig.getUntrackedParameter<bool>("fillingTriggers")),
+    fillingL1(iConfig.getUntrackedParameter<bool>("fillingL1")),
+    fillingEventInfo(iConfig.getUntrackedParameter<bool>("fillingEventInfo")),
+    fillingTaus(iConfig.getUntrackedParameter<bool>("fillingTaus")),
+    fillingJets(iConfig.getUntrackedParameter<bool>("fillingJets")),
 
     development_(iConfig.getUntrackedParameter<bool>("development")),
     doGenParticles_(iConfig.getUntrackedParameter<bool>("doGenParticles")),
@@ -31,9 +32,13 @@ NtupleMaker::NtupleMaker(const edm::ParameterSet& iConfig) :
     edm::Service<TFileService> fs;
     tree_ = fs->make<TTree>("vbf", "vbf");
 
-    if(fillTriggers) branchesTriggers(tree_);
-    if(fillTaus) branchesTaus(tree_);
-    if(fillJets) branchesJets(tree_);
+    if(fillingTriggers) branchesTriggers(tree_);
+    if(fillingEventInfo) branchesEventInfo(tree_);
+    if(fillingL1) branchesL1Taus(tree_);
+    if(fillingL1) branchesL1Jets(tree_);
+    if(fillingTaus) branchesTaus(tree_);
+    if(fillingJets) branchesJets(tree_);
+
 }
 
 NtupleMaker::~NtupleMaker(){
@@ -50,11 +55,12 @@ void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //AK8jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK8PFchs");
     }
 
-    if(fillTriggers) fillTriggers(iEvent);
-    if(fillL1) fillL1Taus(iEvent);
-    if(fillL1) fillL1Jets(iEvent);
-    if(fillTaus) fillTaus(iEvent);
-    if(fillJets) fillJets(iEvent, iSetup);
+    if(fillingTriggers) fillTriggers(iEvent);
+    if(fillingEventInfo) fillEventInfo(iEvent);
+    if(fillingL1) fillL1Taus(iEvent);
+    if(fillingL1) fillL1Jets(iEvent);
+    if(fillingTaus) fillTaus(iEvent);
+    if(fillingJets) fillJets(iEvent, iSetup);
 
     tree_->Fill();
 }

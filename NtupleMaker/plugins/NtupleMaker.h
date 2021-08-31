@@ -95,13 +95,18 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	//virtual void endJob() override;
 	
 	void branchesTriggers(TTree*);
+	void branchesEventInfo(TTree*);
+	void branchesL1Taus(TTree*);
+	void branchesL1Jets(TTree*);
         void branchesTaus(TTree*);
         void branchesJets(TTree*);
+
 	void fillTriggers(const edm::Event&);
-        //void fillTaus(const edm::Event&);
-	//void fillJets(const edm::Event&, const edm::EventSetup&);
+	void fillEventInfo(const edm::Event&);
 	void fillL1Taus(const edm::Event&);
 	void fillL1Jets(const edm::Event&);
+        void fillTaus(const edm::Event&);
+	void fillJets(const edm::Event&, const edm::EventSetup&);
 
 	//-------------member data----------------//
 	TTree* tree_; 
@@ -110,10 +115,11 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	//int lumiBlock;
 	//int eventNumberID;
 
-	bool fillTriggers;
-	bool fillL1;
-	bool fillTaus;
-	bool fillJets;
+	bool fillingTriggers;
+	bool fillingL1;
+	bool fillingEventInfo;
+	bool fillingTaus;
+	bool fillingJets;
 
 	bool development_; //had to add these in so the copied tau/jet files would play nice with my config file
 	bool doGenParticles_;
@@ -121,8 +127,8 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	edm::EDGetTokenT<vector<pat::Tau> >             tauCollection_; 
         //edm::EDGetTokenT<vector<reco::PFTau>>		PFTauCollection_;
         // trigger primitives
-        edm::EDGetTokenT<BXVector<l1t::Jet>>		jetTriggerPrimitives_;
-	edm::EDGetTokenT<BXVector<l1t::Tau>>		tauTriggerPrimitives_;
+        edm::EDGetTokenT<BXVector<l1t::Jet> >		jetTriggerPrimitives_;
+	edm::EDGetTokenT<BXVector<l1t::Tau> >		tauTriggerPrimitives_;
 
 	edm::EDGetTokenT<reco::VertexCollection>        vtxLabel_;
 	edm::EDGetTokenT<double>                        rhoLabel_;

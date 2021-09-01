@@ -531,6 +531,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     iEvent.getByToken(triggerEventToken_, triggerEvent);
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
 
+/***
     // saving trigger results to respective branches
     // just one ditau trigger
     std::string pathNameDitauTrig = "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1";
@@ -561,6 +562,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string pathNameNewTrigLoose = "HLT_VBF_LooseChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1";
     passNewTrigLoose_ = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigLoose));
     passNewTrigLoose.push_back(passNewTrigLoose_);
+***/
 
     // filling branches with triggerObjs information, hltL1VBFDiJetIsoTau object info filled separately since it's a weird trigger
 
@@ -653,6 +655,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	if (filterTag == hltL1VBFDiJetOR_Tag && nObjKeys >= 2) passhltL1VBFDiJetOR = 1;
 	if (filterTag == hltL1VBFDiJetIsoTau_Tag && hltL1VBFDiJetIsoTau_tauPt.size() >= 1
 						 && hltL1VBFDiJetIsoTau_jetPt.size() >= 2) passhltL1VBFDiJetIsoTau = 1;
+/***
 	// hltHpsDoublePFTau20 filter to be replaced by hltHpsDoublePFTau filter
 	if (filterTag == hltHpsDoublePFTau20_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20 = 1; 
 	// hltHpsDoublePFTau working points
@@ -684,6 +687,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	if (filterTag == hltMatchedVBFIsoTauTwoTight_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoTight = 1;
 	if (filterTag == hltMatchedVBFIsoTauTwoMedium_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoMedium = 1;
 	if (filterTag == hltMatchedVBFIsoTauTwoLoose_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoLoose = 1;
+***/
 
 	//loop over trigger objects and store their kinematics to the proper filter branches
 	for(trigger::size_type iKey=0; iKey < nObjKeys; ++iKey){
@@ -706,6 +710,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 		hltL1VBFDiJetOR_phi.push_back(phi_);
 		hltL1VBFDiJetOR_energy.push_back(energy_);
 	    }
+/***
 	// fill hltHpsDoublePFTau20 branches if match
 	    if (filterTag == hltHpsDoublePFTau20_Tag && pt_>0){
 		hltHpsDoublePFTau20_pt.push_back(pt_);
@@ -850,6 +855,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 		hltMatchedVBFIsoTauTwoLoose_phi.push_back(phi_);
 		hltMatchedVBFIsoTauTwoLoose_energy.push_back(energy_);
 	    }
+		***/
 	} // end loop over trigger object keys
     } // end loop over nfilters
 } // end function

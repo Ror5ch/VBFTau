@@ -6610,7 +6610,8 @@ process.hltOnlineBeamSpot = cms.EDProducer( "BeamSpotOnlineProducer",
     maxRadius = cms.double( 2.0 )
 )
 process.hltL1VBFDiJetOR = cms.EDFilter( "HLTL1TSeed",
-    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+    L1SeedsLogicalExpression = cms.string( #"L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR 
+	L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 ),#OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
     L1EGammaInputTag = cms.InputTag( 'hltGtStage2Digis','EGamma' ),
     L1JetInputTag = cms.InputTag( 'hltGtStage2Digis','Jet' ),
     saveTags = cms.bool( True ),
@@ -15271,7 +15272,7 @@ process.hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltVBFIsoTauL1TLooseIDPFJetsMatching = cms.EDProducer( "L1TPFJetsMatching",
     pt3Min = cms.double( 40.0 ),
@@ -15318,7 +15319,7 @@ process.hltHpsPFTau50TrackPt1MediumChargedIsolationL1HLTMatched = cms.EDFilter( 
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackMediumChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleMediumChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon" ),
@@ -15356,7 +15357,7 @@ process.hltHpsPFTau50TrackPt1LooseChargedIsolationL1HLTMatched = cms.EDFilter( "
     inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackLooseChargedIsoAgainstMuonMatching" ),
     MinE = cms.double( -1.0 ),
     triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 50.0 )
+    MinPt = cms.double( 45.0 )
 )
 process.hltMatchedVBFIsoTauTwoPFJetsDoubleLooseChargedIsoPFTauHPS20OverlapRemoval = cms.EDProducer( "PFJetsTauOverlapRemoval",
     TauSrc = cms.InputTag( "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon" ),

@@ -18344,8 +18344,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , fillingTriggers = cms.untracked.bool(True)
-     , fillingEventInfo = cms.untracked.bool(False)
-     , fillingL1 = cms.untracked.bool(False)
+     , fillingEventInfo = cms.untracked.bool(True)
+     , fillingL1 = cms.untracked.bool(True)
      , fillingTaus = cms.untracked.bool(False)
      , fillingJets = cms.untracked.bool(False)
      , development = cms.untracked.bool(False)

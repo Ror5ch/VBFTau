@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'VBFandDitauTriggerand4520Taus.py'#'ditau_and_vbf.py'
+config.JobType.psetName = 'HLTandRAW4520Taus.py'#'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     yesno2 = raw_input('y/n? ')
     print("Have you added the fixed xml file to the crab submission?")
     yesno3 = raw_input('y/n? ')
-    print("Are all variables in your conffile set to true?")
+    print("Did you update the variables in your configuration file?")
     yesno4 = raw_input('y/n? ')
     print("Did you remove the OR conditions on L1 old trigger in hlt paths?")
     yesno5 = raw_input('y/n? ')
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_L2SeedRatesNtuple_AODandRAW4'
+    config.General.requestName = 'VBFHToTauTau_L1SeedRatesNtuple_AODandRAW5'
     config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'
     config.Data.secondaryInputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW' 
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'

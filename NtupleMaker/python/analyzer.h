@@ -656,6 +656,7 @@ Bool_t analyzer::Notify()
    // to the generated code, but the routine can be extended by the
    // user if needed. The return value is currently not used.
 
+   cout << "switched file" << endl;
    return kTRUE;
 }
 

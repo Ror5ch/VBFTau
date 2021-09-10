@@ -23,27 +23,31 @@ void analyzer::Loop()
 
   set<pair<int,int>> lumis;
 
-  int saveLumi = 0;
-  int lumiCount = 0;
-  int saveRun = 0;
-
   int eventCount = 0;
   int runCount = 0;
-  int runCount1, runCount2, runCount3, runCount4;
-  runCount1 = runCount2 = runCount3 = runCount4 = 0;
 
-  int passDiTau = 0;
-  int passOld = 0;
-  int passNew = 0;
+  int passDiTauCount = 0;
+  int passOldCount = 0;
+  int passNewCount = 0;
 
-  int passSeed1 = 0;
-  int passSeed2 = 0;
-  int passSeed3 = 0;
+  int passSeed1Count = 0;
+  int passSeed2Count = 0;
+  int passSeed3Count = 0;
+
+  int olDiTauSeed1 = 0;
+  int olDiTauSeed2 = 0;
+  int olDiTauSeed3 = 0;
+  int olOldSeed1 = 0;
+  int olOldSeed2 = 0;
+  int olOldSeed3 = 0;
+  int olNewSeed1 = 0;
+  int olNewSeed2 = 0;
+  int olNewSeed3 = 0;
 
   // start event loop
-  for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
+  //for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
   //for (Long64_t jentry=0; jentry<4000000; ++jentry) {
-  //for (Long64_t jentry=11100000; jentry<11400000; ++jentry) { // full run 323755
+  for (Long64_t jentry=11100000; jentry<11400000; ++jentry) { // full run 323755
 
     if (jentry%100000 == 0) cout << jentry << endl;
     Long64_t ientry = LoadTree(jentry);
@@ -57,21 +61,20 @@ void analyzer::Loop()
     // save lumi block info for new blocks (using C std::set)
     eventCount += 1;
     //bool validRun = (run == 323755 || run == 324237 || run == 324245 || run == 324293);
-    //cout << run << '\t' << validRun << endl;
     //if (!validRun) continue;
+    if (run != 323755) continue;
+    runCount += 1;
 
-    if (run != saveRun) {runCount += 1;}
-    saveRun = run;
-
-    if (run == 323755) runCount1 += 1; if (run == 324237) runCount2 += 1;
-    if (run == 324245) runCount3 += 1; if (run == 324293) runCount4 += 1;   
-
-    //if (jentry%10000 == 0) cout << jentry << " ";
-   
-    if (lumi != saveLumi) {lumiCount += 1;}
-    saveLumi = lumi;
- 
+    bool restrictLumi = true;
+    if (restrictLumi && (lumi < 44 || lumi > 144)) continue;
     lumis.insert(make_pair(run,lumi));
+
+    int passDiTau = 0;
+    int passOld = 0;
+    int passNew = 0;
+    int passSeed1 = 0;
+    int passSeed2 = 0;
+    int passSeed3 = 0;
 
     // build container of taus (two containers are built here at the same time, one is not req. to be isotau)
     // Branch Crossing (Bx) equals zero
@@ -165,7 +168,7 @@ void analyzer::Loop()
     //------------------------finished making containers, now checking obj numbers and masses and passing triggers----------------------//
    
     // L1_DoubleIsoTau32er2p1
-    if (tauCandsIso32Size >= 2) passDiTau += 1;
+    if (tauCandsIso32Size >= 2) passDiTau = 1;
 
     // L1_Jet110_Jet35_Mass_Min620 (seed 00)
     // find highest mjj pair of jets
@@ -181,7 +184,7 @@ void analyzer::Loop()
           if (tempMjj > mjj_seed00) mjj_seed00 = tempMjj;
         }
       }
-      if (mjj_seed00 >= 620) passOld += 1;
+      if (mjj_seed00 >= 620) passOld = 1;
     }
 
     // L1_DoubleJet35_IsoTau45_Mjj450_RmvOl (seed 0)
@@ -195,7 +198,7 @@ void analyzer::Loop()
           if (tempMjj > mjj_seed0) mjj_seed0 = tempMjj;
         }
       }
-      if (mjj_seed0 >= 450) passNew += 1;
+      if (mjj_seed0 >= 450) passNew = 1;
     }
 
     // L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl (seed 1)
@@ -213,7 +216,7 @@ void analyzer::Loop()
           if (tempMjotjot > mjotjot_seed1) mjotjot_seed1 = tempMjotjot;
         }
       }
-      if (mjotjot_seed1 >= 400) passSeed1 += 1;
+      if (mjotjot_seed1 >= 400) passSeed1 = 1;
     }
 
     // L1_DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl (seed 2, most like new VBF)
@@ -230,7 +233,7 @@ void analyzer::Loop()
           if (tempMjotjot > mjotjot_seed2) mjotjot_seed2 = tempMjotjot;
         }
       } 
-      if (mjotjot_seed2 >= 400) passSeed2 += 1;
+      if (mjotjot_seed2 >= 400) passSeed2 = 1;
     }
 
     // L1_Jet35_Tau35_MassJetTau450_IsoTau45_RmvOl (seed 3)
@@ -242,28 +245,54 @@ void analyzer::Loop()
           if (tempMjt > mjt_seed3) mjt_seed3 = tempMjt;
         }
       }   
-      if (mjt_seed3 >= 450) passSeed3 += 1;
+      if (mjt_seed3 >= 450) passSeed3 = 1;
     }
 
-  }
+  passDiTauCount += passDiTau;
+  passOldCount += passOld;
+  passNewCount += passNew;
+  passSeed1Count += passSeed1;
+  passSeed2Count += passSeed2;
+  passSeed3Count += passSeed3;
+
+  olDiTauSeed1 += (passDiTau && passSeed1);
+  olDiTauSeed2 += (passDiTau && passSeed2);
+  olDiTauSeed3 += (passDiTau && passSeed3);
+
+  olOldSeed1 += (passOld && passSeed1);
+  olOldSeed2 += (passOld && passSeed2);
+  olOldSeed3 += (passOld && passSeed3);
+
+  olNewSeed1 += (passNew && passSeed1);
+  olNewSeed2 += (passNew && passSeed2);
+  olNewSeed3 += (passNew && passSeed3);
+
+  } // end event loop
 
   //------------------------------------print results to terminal-----------------------------------//
+  //for (auto it = lumis.begin(); it != lumis.end(); ++it) {
+  //  cout << it->first << " run " << it->second << " LS " << endl;
+  //}
   cout << eventCount << " Events Scanned" << endl;
-  cout << runCount << " Events in Selected Run Numbers (323755, 324237, 324245, 324293)" << endl;
-  cout << "323755"  << '\t' << "324237"  << '\t' << "324245"  << '\t' << "324293" << '\t' << "events per run" << endl;
-  cout << runCount1 << '\t' << runCount2 << '\t' << runCount3 << '\t' << runCount4 << endl;
-  cout << lumiCount << endl;
-  cout << lumis.size() << " lumi set size" << endl;
-  float factor = 17881*40/(lumis.size() * 23.31); // units of Hz
+  cout << runCount << " Events in Selected Run (323755)" << endl;
+  cout << lumis.size() << " Lumi Sections in Run" << endl;
+  float Kfactor = 17881*40/(lumis.size() * 23.31); // units of Hz
+  float Ofactor = 2544 * 11255.6 * (2.0 / 1.849)*(1/float(runCount)); // inst init lumi from report on OMS, used 44 LS lumi from list of init lumis per LS
 
-  cout << "# Events" << '\t' << "Rate" << endl;
+  cout << "# Pass" << '\t' << "K. Rate" << '\t' << "O. Rate" << endl;
  
-  cout << passDiTau << '\t' << passDiTau*factor << '\t' << "  DiTau (L1_DoubleIsoTau32er2p1)" << endl;
-  cout << passOld << '\t' << passOld*factor <<     '\t' << "  old VBF (L1_Jet110_Jet35_Mass_Min620)" << endl;
-  cout << passNew << '\t' << passNew*factor <<     '\t' << "  new VBF (L1_DoubleJet35_IsoTau45_Mjj450_RmvOl)" << endl;
+  cout << passDiTauCount << '\t' << passDiTauCount*Kfactor << '\t' << passDiTauCount*Ofactor << "  DiTau (L1_DoubleIsoTau32er2p1)" << endl;
+  cout << passOldCount << '\t' << passOldCount*Kfactor <<     '\t' << passOldCount*Ofactor << "  old VBF (L1_Jet110_Jet35_Mass_Min620)" << endl;
+  cout << passNewCount << '\t' << passNewCount*Kfactor <<     '\t' << passNewCount*Ofactor << "  new VBF (L1_DoubleJet35_IsoTau45_Mjj450_RmvOl)" << endl;
 
-  cout << passSeed1 << '\t' << passSeed1*factor << '\t' << "  seed 1 (L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl)" << endl;
-  cout << passSeed2 << '\t' << passSeed2*factor << '\t' << "  seed 2 (L1_DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl)" << endl;
-  cout << passSeed3 << '\t' << passSeed3*factor << '\t' << "  seed 3 (L1_Jet35_Tau35_IsoTau45_MassJetTau450_RmvOl)" << endl; 
+  cout << passSeed1Count << '\t' << passSeed1Count*Kfactor << '\t' << passSeed1Count*Ofactor << "  seed 1 (L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl)" << endl;
+  cout << passSeed2Count << '\t' << passSeed2Count*Kfactor << '\t' << passSeed2Count*Ofactor << "  seed 2 (L1_DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl)" << endl;
+  cout << passSeed3Count << '\t' << passSeed3Count*Kfactor << '\t' << passSeed3Count*Ofactor << "  seed 3 (L1_Jet35_Tau35_IsoTau45_MassJetTau450_RmvOl)" << endl; 
 
+  cout << "Overlap with XXX and Seed 1, 2, 3" << endl;
+  cout << olDiTauSeed1 << '\t' << olDiTauSeed2 << '\t' << olDiTauSeed3 << '\t' << "DiTau ol" << endl;
+  cout << olOldSeed1 << '\t' << olOldSeed2 << '\t' << olOldSeed3 << '\t' << "Old ol" << endl;
+  cout << olNewSeed1 << '\t' << olNewSeed2 << '\t' << olNewSeed3 << '\t' << "New ol" << endl;
+
+  cout << "divide number of \"switched files\" by two because we have two TChains" << endl;
 }

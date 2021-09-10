@@ -153,6 +153,7 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 // names are jets and taus bc I don't think this will be used for any other purpose
 std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, std::vector<TLorentzVector> tauObjs) {
     std::vector<TLorentzVector> crossCleanedJets;
+    std::cout << "check function for bug: crossCleanJets" << std::endl;
     for (int iJet = 0; iJet < jetObjs.size(); ++iJet) {
 	bool clean = true;
 	    for (int iTau = 0; iTau < tauObjs.size(); ++iTau) {

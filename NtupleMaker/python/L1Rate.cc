@@ -72,6 +72,11 @@ int main(int argc, char** argv)	{
     outTree->Branch("t2_phi", &t2_phi);
     outTree->Branch("t2_energy", &t2_energy);
 
+    int passhltL1VBFDiJetIsoTau;
+    outTree->Branch("passhltL1VBFDiJetIsoTau", &passhltL1VBFDiJetIsoTau);
+    int counterForNtupleMakerL1 = 0;
+    int counterForOfflineSelL1 = 0;
+
     outTree->Branch("passedAnL1", &passedAnL1);
 
     // ad hoc variables for testing
@@ -83,16 +88,16 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 1000001; ++iEntry) {
-    int totalEntries = inTree->GetEntries();
-    for (int iEntry = 14100000; iEntry < 14400000; ++iEntry) {
+    for (int iEntry = 0; iEntry < 3000001; ++iEntry) {
+    //int totalEntries = inTree->GetEntries();
+    //for (int iEntry = 14100000; iEntry < 14400000; ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 100000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
 	runNumber = inTree->runNumber;
 
 	//if (runNumber != 323976) continue;
-	if (runNumber != 324077) continue;
+	//if (runNumber != 324077) continue;
 
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
@@ -114,7 +119,7 @@ int main(int argc, char** argv)	{
 	// testing multiple possible L1s, pay attention to the booleans,,,
 	bool smallerContainers = false;
 
-	bool oldVBFwL1Prim = false; //L1_Jet110_Jet35_Mass_Min620
+	bool oldVBFwL1Prim = true; //L1_Jet110_Jet35_Mass_Min620
 	bool newVBFwL1Prim = false; //L1_DoubleJet35_IsoTau45_Mjj450_RmvOl
 	bool L1_DoubleJet35_DoubleIsoTau40_MassAnyTwo400_RmvOl = false;
 	bool L1_DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl = false; // this seed is most like new vbf seed
@@ -359,7 +364,11 @@ int main(int argc, char** argv)	{
 	    if (L1_Jet2.Pt() > 0) {j2_pt = L1_Jet2.Pt(); j2_eta = L1_Jet2.Eta(); j2_phi = L1_Jet2.Phi(); j2_energy = L1_Jet2.Energy();}
 	    if (L1_Tau1.Pt() > 0) {t1_pt = L1_Tau1.Pt(); t1_eta = L1_Tau1.Eta(); t1_phi = L1_Tau1.Phi(); t1_energy = L1_Tau1.Energy();}
 	    if (L1_Tau2.Pt() > 0) {t2_pt = L1_Tau2.Pt(); t2_eta = L1_Tau2.Eta(); t2_phi = L1_Tau2.Phi(); t2_energy = L1_Tau2.Energy();}
+	    counterForOfflineSelL1 += 1;
 	}
+
+	passhltL1VBFDiJetIsoTau = inTree->passhltL1VBFDiJetIsoTau;
+	if (passhltL1VBFDiJetIsoTau) counterForNtupleMakerL1 += 1;
 
         outTree->Fill();
     }// end event loop
@@ -372,6 +381,10 @@ int main(int argc, char** argv)	{
 
     std::cout << "nEvents: " << nEvents << std::endl;
     std::cout << "Lumi Block Set Size: " << lumis.size() << std::endl;
+
+    std::cout << "NtupleMaker L1 Pass: " << counterForNtupleMakerL1 << std::endl;
+    std::cout << "Offline Sel L1 Pass: " << counterForOfflineSelL1 << std::endl;
+
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");
     fOut->cd();

@@ -6611,7 +6611,7 @@ process.hltOnlineBeamSpot = cms.EDProducer( "BeamSpotOnlineProducer",
 )
 process.hltL1VBFDiJetOR = cms.EDFilter( "HLTL1TSeed",
     L1SeedsLogicalExpression = cms.string( #"L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR 
-	L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 ),#OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+	"L1_DoubleJet_110_35_DoubleJet35_Mass_Min620"),#OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
     L1EGammaInputTag = cms.InputTag( 'hltGtStage2Digis','EGamma' ),
     L1JetInputTag = cms.InputTag( 'hltGtStage2Digis','Jet' ),
     saveTags = cms.bool( True ),
@@ -15477,8 +15477,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , fillingTriggers = cms.untracked.bool(True)
-     , fillingEventInfo = cms.untracked.bool(False)
-     , fillingL1 = cms.untracked.bool(False)
+     , fillingEventInfo = cms.untracked.bool(True)
+     , fillingL1 = cms.untracked.bool(True)
      , fillingTaus = cms.untracked.bool(False)
      , fillingJets = cms.untracked.bool(False)
      , development = cms.untracked.bool(False)
@@ -15495,7 +15495,7 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
 )
 #
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("histoAOD.root"),
+    fileName = cms.string("histo.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 

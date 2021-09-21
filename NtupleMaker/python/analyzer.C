@@ -26,11 +26,15 @@ float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVec
 vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jets, vector<TLorentzVector> taus) {
   if (taus.size() == 0 || jets.size() == 0) {cout << "crossclean function used wrong" << endl;} //throws an error 
   vector<TLorentzVector> crossCleanedJets;
+  cout << "jetsSize: " << jets.size() << endl;
+  cout << "tausSize: " << taus.size() << endl;
   for (int iTau = 0; iTau < taus.size(); ++iTau) {
     for (int iJet = 0; iJet < jets.size(); ++iJet) {
+      cout << taus.at(iTau).DeltaR(jets.at(iJet)) << endl;
       if (taus.at(iTau).DeltaR(jets.at(iJet)) > 0.5) crossCleanedJets.push_back(jets.at(iJet));
     }
   }
+  cout << "ccJetsSize: " << crossCleanedJets.size() << endl;
   return crossCleanedJets;
 }
 

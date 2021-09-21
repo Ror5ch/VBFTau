@@ -94,7 +94,7 @@ int main(int argc, char** argv)	{
 	triggerFlag = 4;
     }
 
-    float minimal_tau_pt_cut = 20;
+    float minimal_tau_pt_cut = 32;
     float minimal_jet_pt_cut = 35;
 
     // run variables

@@ -151,7 +151,7 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 
 // outputs a vector of objects from container one cross-cleaned wrt objects from container two
 // names are jets and taus bc I don't think this will be used for any other purpose
-std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, std::vector<TLorentzVector> tauObjs) {
+std::vector<TLorentzVector> crossCleanJetsDep(std::vector<TLorentzVector> jetObjs, std::vector<TLorentzVector> tauObjs) {
     std::vector<TLorentzVector> crossCleanedJets;
     std::cout << "check function for bug: crossCleanJets" << std::endl;
     for (int iJet = 0; iJet < jetObjs.size(); ++iJet) {
@@ -161,6 +161,27 @@ std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, 
 	    }
 	if (clean) crossCleanedJets.push_back(jetObjs.at(iJet));
     }
+    return crossCleanedJets;	
+}
+
+// outputs a vector of objects from container one cross-cleaned wrt objects from container two
+// names are jets and taus bc I don't think this will be used for any other purpose
+std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, std::vector<TLorentzVector> tauObjs) {
+    std::vector<TLorentzVector> crossCleanedJets;
+    int jetObjsSize = jetObjs.size();
+    int tauObjsSize = tauObjs.size();
+    std::cout << "jetObjsSize: " << jetObjsSize << std::endl;
+    std::cout << "tauObjsSize: " << tauObjsSize << std::endl;
+    if (jetObjsSize >= 2 && tauObjsSize >= 1) {
+      for (int iJet = 0; iJet < jetObjs.size(); ++iJet) {
+	for (int iTau = 0; iTau < tauObjs.size(); ++iTau) {
+          std::cout << jetObjs.at(iJet).DeltaR(tauObjs.at(iTau)) << std::endl;
+	  if (jetObjs.at(iJet).DeltaR(tauObjs.at(iTau)) > 0.5) crossCleanedJets.push_back(jetObjs.at(iJet));
+        }
+      }
+    }
+    else {crossCleanedJets = jetObjs;}
+    std::cout << "ccJetsSize: " << crossCleanedJets.size() << std::endl;
     return crossCleanedJets;	
 }
 

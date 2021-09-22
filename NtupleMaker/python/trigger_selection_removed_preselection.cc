@@ -304,8 +304,8 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    for (int iEntry = 0; iEntry < 60001; ++iEntry) {
-    //for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
+    //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
+    for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 10000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
@@ -500,26 +500,50 @@ int main(int argc, char** argv)	{
 
         // old VBF
 	if (jetPrimSize >= 2) {
+/***	
 	  std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives);
 	  twoObjMass = (objOne + objTwo).M();
 	  double jetOnePt = objOne.Pt();
 	  double jetTwoPt = objTwo.Pt();
-	  bool someJetGreaterThan110GeV = false;
+***/
+          bool jet110Present = false;
 	  for (int iJet = 0; iJet < jetPrimSize; ++iJet) {
-	    if (jetL1Primitives.at(iJet).Pt() >= 110) someJetGreaterThan110GeV = true;
+	    if (jetL1Primitives.at(iJet).Pt() >= 110) jet110Present = true;
 	  }
-	  if (twoObjMass >= 620 && (((jetOnePt >= 110 && jetTwoPt >= 35) || (jetOnePt >= 35 && jetTwoPt >= 110))
-			|| (jetOnePt >= 35 && jetTwoPt >= 35 && someJetGreaterThan110GeV)) ){ passOld_L1 = 1;}
-	}
+
+          float mjj_Old = 0; float tempMjj_ = 0;
+          for (int iJet = 0; iJet < jetPrimSize; ++iJet) {
+            for (int jJet = 0; jJet < jetPrimSize; ++jJet) {
+              if (iJet >= jJet) continue;
+              if (jetL1Primitives.at(iJet).Pt() < 110 && jetL1Primitives.at(jJet).Pt() < 110 && !jet110Present) continue;
+              tempMjj_ = (jetL1Primitives.at(iJet) + jetL1Primitives.at(jJet)).M();
+              if (tempMjj_ > mjj_Old) mjj_Old = tempMjj_;
+            }
+          }
+          if (mjj_Old >= 620) passOld_L1 = 1;
+        }
+	  
+	  //if (twoObjMass >= 620 && (((jetOnePt >= 110 && jetTwoPt >= 35) || (jetOnePt >= 35 && jetTwoPt >= 110))
+	//		|| (jetOnePt >= 35 && jetTwoPt >= 35 && someJetGreaterThan110GeV)) ){ passOld_L1 = 1;}
+	//}
 
         //newVBF
 	if (ccWrtIsoTau45L1JetPrimSize >= 2 && isoTau45PrimSize >= 1) {
 	  // check mjj
-          std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
-	  twoObjMass = (objOne + objTwo).M();
-          if (twoObjMass >= 450) {
-	    passNew_L1 = 1;
-	  }
+          //std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
+	  //twoObjMass = (objOne + objTwo).M();
+          //if (twoObjMass >= 450) {
+	  //  passNew_L1 = 1;
+	  //}
+	  float mjj_New = 0; float tempMjj_ = 0;
+          for (int iJet = 0; iJet < ccWrtIsoTau45L1JetPrimSize; ++iJet) {
+            for (int jJet = 0; jJet < ccWrtIsoTau45L1JetPrimSize; ++jJet) {
+              if (iJet >= jJet) continue;
+              tempMjj_ = (crossCleanedL1PrimJetsWrtIsoTau45.at(iJet) + crossCleanedL1PrimJetsWrtIsoTau45.at(jJet)).M();
+              if (tempMjj_ > mjj_New) mjj_New = tempMjj_;
+            }
+          }
+          if (mjj_New >= 450) passNew_L1 = 1;
 	} 
 
         // newVBF2
@@ -527,6 +551,7 @@ int main(int argc, char** argv)	{
 	  // we exclude the two tau case for this seed, but allow the two jet case.
 	  // To do this, we look for the highestMassPair of just jets and then
 	  // the highest mass pair using one tau and one jet. Then we take the larger of the two pairs
+	  /***
 	  TLorentzVector tempObjOne, tempObjTwo;
 	  std::tie(tempObjOne, tempObjTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives, "OneJetOneTau");
 	  double tempTwoObjMass = (tempObjOne + tempObjTwo).M();
@@ -540,6 +565,9 @@ int main(int argc, char** argv)	{
           if (twoObjMass >= 450) {
 	    passNew2_L1 = 1;
           }
+***/
+          float mjj_New2 = highestMassOfPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives);
+          if (mjj_New2 >= 450) passNew2_L1 = 1;
 	}
 
         passDiTau_OffCount += passDiTau_Off;

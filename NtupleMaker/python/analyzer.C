@@ -8,6 +8,7 @@
 
 float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVector> taus) {
   float mjotjot_ = 0; float tempMjotjot_ = 0;
+  int jetSize = jetsRmvOlTaus.size();
   vector<TLorentzVector> combined;
   combined.insert(combined.begin(), jetsRmvOlTaus.begin(), jetsRmvOlTaus.end());
   combined.insert(combined.end(), taus.begin(), taus.end());
@@ -15,6 +16,7 @@ float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVec
   for (int iObj = 0; iObj < combinedSize; ++iObj) {
     for (int jObj = 0; jObj < combinedSize; ++jObj) {
       if (jObj >= iObj) continue;
+      if (iObj >= jetSize && jObj >= jetSize ) continue; // should exclude 2tau case
       tempMjotjot_ = (combined.at(iObj) + combined.at(jObj)).M();
       if (tempMjotjot_ > mjotjot_) mjotjot_ = tempMjotjot_;
     }
@@ -235,6 +237,7 @@ void analyzer::Loop()
     //if (!validRun) continue;
     if (run != 323755) continue;
     //if (jentry > 200000) cout << jentry << endl;
+    //cout <<jentry << endl;
 
     bool restrictLumi = true;
     if (restrictLumi && (lumi < 44 || lumi >= 144)) continue;

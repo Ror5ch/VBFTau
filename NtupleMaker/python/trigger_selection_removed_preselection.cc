@@ -102,7 +102,7 @@ int main(int argc, char** argv)	{
 
 
     float minimal_tau_pt_cut = 32;
-    float minimal_jet_pt_cut = 35;
+    float minimal_jet_pt_cut = 30;
 
     // run variables
     int nEvents, runNumber, lumiBlock, eventNumberID;
@@ -269,6 +269,21 @@ int main(int argc, char** argv)	{
     bool L1SeedCaseZero, L1SeedCaseOne, L1SeedCaseTwo, L1SeedCaseThree;
     L1SeedCaseZero = L1SeedCaseOne = L1SeedCaseTwo = L1SeedCaseThree = false;
 
+    int passHTT = 0;
+    int passHTT350 = 0;
+    int passHTTCount = 0;
+    int passHTT350Count = 0;
+    int passDiTauOffORHTT = 0;
+    int passDiTauOffORHTT350 = 0;
+    int passDiTauOffANDHTT = 0;
+    int passDiTauOffANDHTT350 = 0;
+    int passDiTauL1ORHTT = 0;
+    int passDiTauL1ORHTT350 = 0;
+    int passDiTauL1ANDHTT = 0;
+    int passDiTauL1ANDHTT350 = 0;
+
+
+
     int passDiTau_Off = 0;
     int passOld_Off = 0;
     int passNew_Off = 0;
@@ -301,6 +316,11 @@ int main(int argc, char** argv)	{
     int passDiTauANDNew2_L1 = 0;
     int passDiTauANDOldANDNew2_L1 = 0;
 
+    int passDiTauL1ANDOff = 0;
+    int passOldL1ANDOff = 0;
+    int passNewL1ANDOff = 0;
+    int passNew2L1ANDOff = 0;
+
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
@@ -313,6 +333,9 @@ int main(int argc, char** argv)	{
 	runNumber = inTree->runNumber;
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
+
+        passHTT = 0;
+        passHTT350 = 0;
 
         passDiTau_Off = 0;
         passOld_Off = 0;
@@ -453,6 +476,9 @@ int main(int argc, char** argv)	{
               double AODTau1Pt_ = AODTau1.Pt();
               double AODTau2Pt_ = AODTau2.Pt();
 
+              if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40) passHTT = 1;
+              if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40 && mj1j2 >= 350) passHTT350 = 1;
+
 	      if (AODJet1Pt_ >= 120 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
 	      
               if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && mj1j2 >= 550) passNew_Off = 1;
@@ -485,6 +511,7 @@ int main(int argc, char** argv)	{
 	  if (tempTau_.Pt() > primL1IsoTau40PtCut) isoTau40L1Primitives.push_back(tempTau_);
           if (tempTau_.Pt() > primL1IsoTau45PtCut) isoTau45L1Primitives.push_back(tempTau_);
 	}
+        int isoTau35PrimSize = isoTau35L1Primitives.size();
 	int isoTau40PrimSize = isoTau40L1Primitives.size();
 	int isoTau45PrimSize = isoTau45L1Primitives.size();
 
@@ -570,6 +597,9 @@ int main(int argc, char** argv)	{
           if (mjj_New2 >= 450) passNew2_L1 = 1;
 	}
 
+        passHTTCount += passHTT;
+        passHTT350Count += passHTT;
+
         passDiTau_OffCount += passDiTau_Off;
         passOld_OffCount += passOld_Off;
         passNew_OffCount += passNew_Off;
@@ -579,6 +609,15 @@ int main(int argc, char** argv)	{
         passOld_L1Count += passOld_L1;
         passNew_L1Count += passNew_L1;
         passNew2_L1Count += passNew2_L1;
+
+        passDiTauOffORHTT += (passDiTau_Off || passHTT);
+        passDiTauOffORHTT350 += (passDiTau_Off || passHTT350);
+        passDiTauL1ORHTT += (passDiTau_L1 || passHTT);
+        passDiTauL1ORHTT350 += (passDiTau_L1 || passHTT350);
+        passDiTauOffANDHTT += (passDiTau_Off && passHTT);
+        passDiTauOffANDHTT350 += (passDiTau_Off && passHTT350);
+        passDiTauL1ANDHTT += (passDiTau_L1 && passHTT);
+        passDiTauL1ANDHTT350 += (passDiTau_L1 && passHTT350);
 
         passDiTauOROld_Off += (passDiTau_Off || passOld_Off);
         passDiTauORNew2_Off += (passDiTau_Off || passNew2_Off);
@@ -593,6 +632,11 @@ int main(int argc, char** argv)	{
         passDiTauANDOld_L1 += (passDiTau_L1 && passOld_L1);
         passDiTauANDNew2_L1 += (passDiTau_L1 && passNew2_L1);
         passDiTauANDOldANDNew2_L1 += (passDiTau_L1 && passOld_L1 && passNew2_L1);
+
+        passDiTauL1ANDOff += (passDiTau_L1 && passDiTau_Off);
+        passOldL1ANDOff += (passOld_L1 && passOld_Off);
+        passNewL1ANDOff += (passNew_L1 && passNew_Off);
+        passNew2L1ANDOff += (passNew2_L1 && passNew2_Off);
 
 
 	//----------------------filling filter flags-------------------------------//
@@ -693,10 +737,14 @@ int main(int argc, char** argv)	{
     std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
     std::cout << passDiTau_OffCount << '\t' << passOld_OffCount << '\t' << passNew_OffCount << '\t' << passNew2_OffCount << '\t' << "Event#" << std::endl;
 
+    std::cout << passDiTauOffORHTT << '\t' << "Pass DiTau Offline OR HTT" << std::endl;
+    std::cout << passDiTauOffORHTT350 << '\t' << "Pass DiTau Offline OR HTT350" << std::endl;
     std::cout << passDiTauOROld_Off << '\t' << "Pass DiTau OR Old" << std::endl;
     std::cout << passDiTauORNew2_Off << '\t' << "Pass DiTau OR New2" << std::endl;
     std::cout << passDiTauOROldORNew2_Off << '\t' << "Pass DiTau OR Old OR New2" << std::endl;
 
+    std::cout << passDiTauOffANDHTT << '\t' << "Pass DiTau Offline AND HTT" << std::endl;
+    std::cout << passDiTauOffANDHTT350 << '\t' << "Pass DiTau Offline AND HTT350" << std::endl;
     std::cout << passDiTauANDOld_Off << '\t' << "Pass DiTau AND Old" << std::endl;
     std::cout << passDiTauANDNew2_Off << '\t' << "Pass DiTau AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_Off << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
@@ -705,15 +753,23 @@ int main(int argc, char** argv)	{
     std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
     std::cout << passDiTau_L1Count << '\t' << passOld_L1Count << '\t' << passNew_L1Count << '\t' << passNew2_L1Count << '\t' << "Event#" << std::endl;
 
+    std::cout << passDiTauL1ORHTT << '\t' << "Pass DiTau L1 OR HTT" << std::endl;
+    std::cout << passDiTauL1ORHTT350 << '\t' << "Pass DiTau L1 OR HTT350" << std::endl;
     std::cout << passDiTauOROld_L1 << '\t' << "Pass DiTau OR Old" << std::endl;
     std::cout << passDiTauORNew2_L1 << '\t' << "Pass DiTau OR New2" << std::endl;
     std::cout << passDiTauOROldORNew2_L1 << '\t' << "Pass DiTau OR Old OR New2" << std::endl;
 
+    std::cout << passDiTauL1ANDHTT << '\t' << "Pass DiTau L1 AND HTT" << std::endl;
+    std::cout << passDiTauL1ANDHTT350 << '\t' << "Pass DiTau L1 AND HTT350" << std::endl;
     std::cout << passDiTauANDOld_L1 << '\t' << "Pass DiTau AND Old" << std::endl;
     std::cout << passDiTauANDNew2_L1 << '\t' << "Pass DiTau AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_L1 << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
 
-
+    std::cout << "Passing L1 AND Offline" << std::endl;
+    std::cout << passDiTauL1ANDOff << '\t' << "DiTau" << std::endl;
+    std::cout << passOldL1ANDOff << '\t' << "Old" << std::endl;
+    std::cout << passNewL1ANDOff << '\t' << "New" << std::endl;
+    std::cout << passNew2L1ANDOff << '\t' << "New2" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

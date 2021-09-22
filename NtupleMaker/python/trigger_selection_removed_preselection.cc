@@ -304,8 +304,8 @@ int main(int argc, char** argv)	{
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
-    for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
+    for (int iEntry = 0; iEntry < 60001; ++iEntry) {
+    //for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 10000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 

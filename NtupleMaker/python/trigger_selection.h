@@ -170,18 +170,23 @@ std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, 
     std::vector<TLorentzVector> crossCleanedJets;
     int jetObjsSize = jetObjs.size();
     int tauObjsSize = tauObjs.size();
-    std::cout << "jetObjsSize: " << jetObjsSize << std::endl;
-    std::cout << "tauObjsSize: " << tauObjsSize << std::endl;
+    //std::cout << "jetObjsSize: " << jetObjsSize << std::endl;
+    //std::cout << "tauObjsSize: " << tauObjsSize << std::endl;
     if (jetObjsSize >= 2 && tauObjsSize >= 1) {
-      for (int iJet = 0; iJet < jetObjs.size(); ++iJet) {
-	for (int iTau = 0; iTau < tauObjs.size(); ++iTau) {
-          std::cout << jetObjs.at(iJet).DeltaR(tauObjs.at(iTau)) << std::endl;
-	  if (jetObjs.at(iJet).DeltaR(tauObjs.at(iTau)) > 0.5) crossCleanedJets.push_back(jetObjs.at(iJet));
+      for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
+        bool jetIsNotTau = true;
+        //std::cout << "iJet: " << iJet << std::endl;
+	for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
+          float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
+          //if (dR < 0.5) std::cout << "\033[0;31m" << dR << "\033[0m" << std::endl;
+          //else {std::cout << dR << std::endl;} 
+	  if (dR < 0.5) jetIsNotTau = false;
         }
+        if (jetIsNotTau) crossCleanedJets.push_back(jetObjs.at(iJet));
       }
     }
     else {crossCleanedJets = jetObjs;}
-    std::cout << "ccJetsSize: " << crossCleanedJets.size() << std::endl;
+    //std::cout << "ccJetsSize: " << crossCleanedJets.size() << std::endl;
     return crossCleanedJets;	
 }
 

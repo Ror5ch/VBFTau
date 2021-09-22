@@ -1,6 +1,5 @@
 #define analyzer_cxx
 #include "analyzer.h"
-//#include "smaller_header.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -23,18 +22,27 @@ float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVec
   return mjotjot_;
 }
 
-vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jets, vector<TLorentzVector> taus) {
-  if (taus.size() == 0 || jets.size() == 0) {cout << "crossclean function used wrong" << endl;} //throws an error 
+vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLorentzVector> tauObjs) {
   vector<TLorentzVector> crossCleanedJets;
-  cout << "jetsSize: " << jets.size() << endl;
-  cout << "tausSize: " << taus.size() << endl;
-  for (int iTau = 0; iTau < taus.size(); ++iTau) {
-    for (int iJet = 0; iJet < jets.size(); ++iJet) {
-      cout << taus.at(iTau).DeltaR(jets.at(iJet)) << endl;
-      if (taus.at(iTau).DeltaR(jets.at(iJet)) > 0.5) crossCleanedJets.push_back(jets.at(iJet));
+  int jetObjsSize = jetObjs.size();
+  int tauObjsSize = tauObjs.size();
+  //cout << "jetObjsSize: " << jetObjsSize << endl;
+  //cout << "tauObjsSize: " << tauObjsSize << endl;
+  if (jetObjsSize >= 2 && tauObjsSize >= 1) {
+    for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
+      bool jetIsNotTau = true;
+      //cout << "iJet: " << iJet << endl;
+      for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
+        float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
+        //if (dR < 0.5) cout << "\033[0;31m" << dR << "\033[0m" << endl;
+        //else {cout << dR << endl;}
+        if (dR < 0.5) jetIsNotTau = false;
+      }
+      if (jetIsNotTau) crossCleanedJets.push_back(jetObjs.at(iJet));
     }
   }
-  cout << "ccJetsSize: " << crossCleanedJets.size() << endl;
+  else {crossCleanedJets = jetObjs;}
+  //cout << "ccJetsSize: " << crossCleanedJets.size() << endl;
   return crossCleanedJets;
 }
 
@@ -226,6 +234,7 @@ void analyzer::Loop()
     //bool validRun = (run == 323755 || run == 324237 || run == 324245 || run == 324293);
     //if (!validRun) continue;
     if (run != 323755) continue;
+    //if (jentry > 200000) cout << jentry << endl;
 
     bool restrictLumi = true;
     if (restrictLumi && (lumi < 44 || lumi >= 144)) continue;
@@ -389,22 +398,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso35;
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso35;
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso35;
-    if (tauCandsIso35Size > 0 ) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso35 = crossCleanJets(jetCands35, tauCandsIso35);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso35 = crossCleanJets(jetCands40, tauCandsIso35);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso35 = crossCleanJets(jetCands45, tauCandsIso35);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso35 = crossCleanJets(jetCands50, tauCandsIso35);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso35 = crossCleanJets(jetCands55, tauCandsIso35);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso35 = crossCleanJets(jetCands60, tauCandsIso35);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso35 = jetCands35;
-      jetCands40RmvOlTauCandsIso35 = jetCands40;
-      jetCands45RmvOlTauCandsIso35 = jetCands45;
-      jetCands50RmvOlTauCandsIso35 = jetCands50;
-      jetCands55RmvOlTauCandsIso35 = jetCands55;
-      jetCands60RmvOlTauCandsIso35 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso35 = crossCleanJets(jetCands35, tauCandsIso35);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso35 = crossCleanJets(jetCands40, tauCandsIso35);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso35 = crossCleanJets(jetCands45, tauCandsIso35);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso35 = crossCleanJets(jetCands50, tauCandsIso35);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso35 = crossCleanJets(jetCands55, tauCandsIso35);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso35 = crossCleanJets(jetCands60, tauCandsIso35);
     int jetCands35RmvOlTauCandsIso35Size = jetCands35RmvOlTauCandsIso35.size();
     int jetCands40RmvOlTauCandsIso35Size = jetCands40RmvOlTauCandsIso35.size();
     int jetCands45RmvOlTauCandsIso35Size = jetCands45RmvOlTauCandsIso35.size();
@@ -419,22 +418,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso40;
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso40;
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso40;
-    if (tauCandsIso40Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso40 = crossCleanJets(jetCands35, tauCandsIso40);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso40 = crossCleanJets(jetCands40, tauCandsIso40);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso40 = crossCleanJets(jetCands45, tauCandsIso40);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso40 = crossCleanJets(jetCands50, tauCandsIso40);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso40 = crossCleanJets(jetCands55, tauCandsIso40);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso40 = crossCleanJets(jetCands60, tauCandsIso40);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso40 = jetCands35;
-      jetCands40RmvOlTauCandsIso40 = jetCands40;
-      jetCands45RmvOlTauCandsIso40 = jetCands45;
-      jetCands50RmvOlTauCandsIso40 = jetCands50;
-      jetCands55RmvOlTauCandsIso40 = jetCands55;
-      jetCands60RmvOlTauCandsIso40 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso40 = crossCleanJets(jetCands35, tauCandsIso40);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso40 = crossCleanJets(jetCands40, tauCandsIso40);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso40 = crossCleanJets(jetCands45, tauCandsIso40);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso40 = crossCleanJets(jetCands50, tauCandsIso40);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso40 = crossCleanJets(jetCands55, tauCandsIso40);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso40 = crossCleanJets(jetCands60, tauCandsIso40);
     int jetCands35RmvOlTauCandsIso40Size = jetCands35RmvOlTauCandsIso40.size();
     int jetCands40RmvOlTauCandsIso40Size = jetCands40RmvOlTauCandsIso40.size();
     int jetCands45RmvOlTauCandsIso40Size = jetCands45RmvOlTauCandsIso40.size();
@@ -449,22 +438,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso45;
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso45;
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso45;
-    if (tauCandsIso45Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso45 = crossCleanJets(jetCands35, tauCandsIso45);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso45 = crossCleanJets(jetCands40, tauCandsIso45);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso45 = crossCleanJets(jetCands45, tauCandsIso45);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso45 = crossCleanJets(jetCands50, tauCandsIso45);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso45 = crossCleanJets(jetCands55, tauCandsIso45);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso45 = crossCleanJets(jetCands60, tauCandsIso45);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso45 = jetCands35;
-      jetCands40RmvOlTauCandsIso45 = jetCands40;
-      jetCands45RmvOlTauCandsIso45 = jetCands45;
-      jetCands50RmvOlTauCandsIso45 = jetCands50;
-      jetCands55RmvOlTauCandsIso45 = jetCands55;
-      jetCands60RmvOlTauCandsIso45 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso45 = crossCleanJets(jetCands35, tauCandsIso45);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso45 = crossCleanJets(jetCands40, tauCandsIso45);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso45 = crossCleanJets(jetCands45, tauCandsIso45);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso45 = crossCleanJets(jetCands50, tauCandsIso45);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso45 = crossCleanJets(jetCands55, tauCandsIso45);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso45 = crossCleanJets(jetCands60, tauCandsIso45);
     int jetCands35RmvOlTauCandsIso45Size = jetCands35RmvOlTauCandsIso45.size();
     int jetCands40RmvOlTauCandsIso45Size = jetCands40RmvOlTauCandsIso45.size();
     int jetCands45RmvOlTauCandsIso45Size = jetCands45RmvOlTauCandsIso45.size();
@@ -479,22 +458,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso50; 
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso50; 
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso50; 
-    if (tauCandsIso50Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso50 = crossCleanJets(jetCands35, tauCandsIso50);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso50 = crossCleanJets(jetCands40, tauCandsIso50);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso50 = crossCleanJets(jetCands45, tauCandsIso50);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso50 = crossCleanJets(jetCands50, tauCandsIso50);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso50 = crossCleanJets(jetCands55, tauCandsIso50);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso50 = crossCleanJets(jetCands60, tauCandsIso50);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso50 = jetCands35;
-      jetCands40RmvOlTauCandsIso50 = jetCands40;
-      jetCands45RmvOlTauCandsIso50 = jetCands45;
-      jetCands50RmvOlTauCandsIso50 = jetCands50;
-      jetCands55RmvOlTauCandsIso50 = jetCands55;
-      jetCands60RmvOlTauCandsIso50 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso50 = crossCleanJets(jetCands35, tauCandsIso50);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso50 = crossCleanJets(jetCands40, tauCandsIso50);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso50 = crossCleanJets(jetCands45, tauCandsIso50);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso50 = crossCleanJets(jetCands50, tauCandsIso50);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso50 = crossCleanJets(jetCands55, tauCandsIso50);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso50 = crossCleanJets(jetCands60, tauCandsIso50);
     int jetCands35RmvOlTauCandsIso50Size = jetCands35RmvOlTauCandsIso50.size();
     int jetCands40RmvOlTauCandsIso50Size = jetCands40RmvOlTauCandsIso50.size();
     int jetCands45RmvOlTauCandsIso50Size = jetCands45RmvOlTauCandsIso50.size();
@@ -509,22 +478,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso55; 
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso55; 
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso55; 
-    if (tauCandsIso55Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso55 = crossCleanJets(jetCands35, tauCandsIso55);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso55 = crossCleanJets(jetCands40, tauCandsIso55);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso55 = crossCleanJets(jetCands45, tauCandsIso55);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso55 = crossCleanJets(jetCands50, tauCandsIso55);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso55 = crossCleanJets(jetCands55, tauCandsIso55);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso55 = crossCleanJets(jetCands60, tauCandsIso55);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso55 = jetCands35;
-      jetCands40RmvOlTauCandsIso55 = jetCands40;
-      jetCands45RmvOlTauCandsIso55 = jetCands45;
-      jetCands50RmvOlTauCandsIso55 = jetCands50;
-      jetCands55RmvOlTauCandsIso55 = jetCands55;
-      jetCands60RmvOlTauCandsIso55 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso55 = crossCleanJets(jetCands35, tauCandsIso55);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso55 = crossCleanJets(jetCands40, tauCandsIso55);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso55 = crossCleanJets(jetCands45, tauCandsIso55);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso55 = crossCleanJets(jetCands50, tauCandsIso55);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso55 = crossCleanJets(jetCands55, tauCandsIso55);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso55 = crossCleanJets(jetCands60, tauCandsIso55);
     int jetCands35RmvOlTauCandsIso55Size = jetCands35RmvOlTauCandsIso55.size();
     int jetCands40RmvOlTauCandsIso55Size = jetCands40RmvOlTauCandsIso55.size();
     int jetCands45RmvOlTauCandsIso55Size = jetCands45RmvOlTauCandsIso55.size();
@@ -539,22 +498,12 @@ void analyzer::Loop()
     vector<TLorentzVector> jetCands50RmvOlTauCandsIso60; 
     vector<TLorentzVector> jetCands55RmvOlTauCandsIso60; 
     vector<TLorentzVector> jetCands60RmvOlTauCandsIso60; 
-    if (tauCandsIso60Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso60 = crossCleanJets(jetCands35, tauCandsIso60);
-      if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso60 = crossCleanJets(jetCands40, tauCandsIso60);
-      if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso60 = crossCleanJets(jetCands45, tauCandsIso60);
-      if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso60 = crossCleanJets(jetCands50, tauCandsIso60);
-      if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso60 = crossCleanJets(jetCands55, tauCandsIso60);
-      if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso60 = crossCleanJets(jetCands60, tauCandsIso60);
-    }
-    else {
-      jetCands35RmvOlTauCandsIso60 = jetCands35;
-      jetCands40RmvOlTauCandsIso60 = jetCands40;
-      jetCands45RmvOlTauCandsIso60 = jetCands45;
-      jetCands50RmvOlTauCandsIso60 = jetCands50;
-      jetCands55RmvOlTauCandsIso60 = jetCands55;
-      jetCands60RmvOlTauCandsIso60 = jetCands60;
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso60 = crossCleanJets(jetCands35, tauCandsIso60);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso60 = crossCleanJets(jetCands40, tauCandsIso60);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso60 = crossCleanJets(jetCands45, tauCandsIso60);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso60 = crossCleanJets(jetCands50, tauCandsIso60);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso60 = crossCleanJets(jetCands55, tauCandsIso60);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso60 = crossCleanJets(jetCands60, tauCandsIso60);
     int jetCands35RmvOlTauCandsIso60Size = jetCands35RmvOlTauCandsIso60.size();
     int jetCands40RmvOlTauCandsIso60Size = jetCands40RmvOlTauCandsIso60.size();
     int jetCands45RmvOlTauCandsIso60Size = jetCands45RmvOlTauCandsIso60.size();
@@ -566,9 +515,7 @@ void analyzer::Loop()
 
     // odd duckling for seed 3
     vector<TLorentzVector> jetCands35RmvOlTauCands35;
-    if (tauCands35Size > 0) {
-      if (jetCands35Size >= 2) jetCands35RmvOlTauCands35 = crossCleanJets(jetCands35, tauCands35);
-    }
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCands35 = crossCleanJets(jetCands35, tauCands35);
     int jetCands35RmvOlTauCands35Size = jetCands35RmvOlTauCands35.size();
 
     //------------------------finished making containers, now checking obj numbers and masses and passing triggers----------------------//
@@ -671,7 +618,6 @@ void analyzer::Loop()
   }
 
   if (tauCandsIso50Size >= 1) {
-    // original seed 2 at 400 cut
     if (jetCands35RmvOlTauCandsIso50Size >= 2) setArrayElements(passSeed2_3550All, highestMassOfPair(jetCands35RmvOlTauCandsIso50, tauCandsIso50), mjjCuts);
 
     if (jetCands40RmvOlTauCandsIso50Size >= 2) setArrayElements(passSeed2_4050All, highestMassOfPair(jetCands40RmvOlTauCandsIso50, tauCandsIso50), mjjCuts);
@@ -686,7 +632,6 @@ void analyzer::Loop()
   }
 
   if (tauCandsIso55Size >= 1) {
-    // original seed 2 at 400 cut
     if (jetCands35RmvOlTauCandsIso55Size >= 2) setArrayElements(passSeed2_3555All, highestMassOfPair(jetCands35RmvOlTauCandsIso55, tauCandsIso55), mjjCuts);
 
     if (jetCands40RmvOlTauCandsIso55Size >= 2) setArrayElements(passSeed2_4055All, highestMassOfPair(jetCands40RmvOlTauCandsIso55, tauCandsIso55), mjjCuts);
@@ -701,7 +646,6 @@ void analyzer::Loop()
   }
 
   if (tauCandsIso60Size >= 1) {
-    // original seed 2 at 400 cut
     if (jetCands35RmvOlTauCandsIso60Size >= 2) setArrayElements(passSeed2_3560All, highestMassOfPair(jetCands35RmvOlTauCandsIso60, tauCandsIso60), mjjCuts);
 
     if (jetCands40RmvOlTauCandsIso60Size >= 2) setArrayElements(passSeed2_4060All, highestMassOfPair(jetCands40RmvOlTauCandsIso60, tauCandsIso60), mjjCuts);

@@ -80,6 +80,24 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
     return std::make_tuple(outJetOne, outJetTwo);
 }
 
+float highestMassOfPair(std::vector<TLorentzVector> jetsRmvOlTaus, std::vector<TLorentzVector> taus) {
+  float mjotjot_ = 0; float tempMjotjot_ = 0;
+  int jetSize = jetsRmvOlTaus.size();
+  std::vector<TLorentzVector> combined;
+  combined.insert(combined.begin(), jetsRmvOlTaus.begin(), jetsRmvOlTaus.end());
+  combined.insert(combined.end(), taus.begin(), taus.end());
+  int combinedSize = combined.size();
+  for (int iObj = 0; iObj < combinedSize; ++iObj) {
+    for (int jObj = 0; jObj < combinedSize; ++jObj) {
+      if (jObj >= iObj) continue;
+      if (iObj >= jetSize && jObj >= jetSize ) continue; // should exclude 2tau case
+      tempMjotjot_ = (combined.at(iObj) + combined.at(jObj)).M();
+      if (tempMjotjot_ > mjotjot_) mjotjot_ = tempMjotjot_;
+    }
+  }
+  return mjotjot_;
+}
+
 // overloaded function to use when given two containers 
 // pairing mode can either use both containers combined for unrestricted mass pairs
 // or each container individually such that one object must come from each

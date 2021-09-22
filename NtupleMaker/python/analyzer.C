@@ -237,6 +237,7 @@ void analyzer::Loop()
     //if (!validRun) continue;
     if (run != 323755) continue;
     //if (jentry > 200000) cout << jentry << endl;
+    //cout <<jentry << endl;
 
     bool restrictLumi = true;
     if (restrictLumi && (lumi < 44 || lumi >= 144)) continue;

@@ -321,13 +321,29 @@ int main(int argc, char** argv)	{
     int passNewL1ANDOff = 0;
     int passNew2L1ANDOff = 0;
 
+    int passOldNew2L1ANDOff = 0;
+
+    int passOldORNew2_L1 = 0;
+    int passOldANDNew2_L1 = 0;
+    int passOldORNew2_Off = 0;
+    int passOldANDNew2_Off = 0;
+    int passDiTauL1ANDOldNew2L1ANDOff = 0;
+    int passDiTauOldNew2L1ANDOff = 0;
+
+    int passDiTauL1ANDHTT350ANDOldNew2L1ANDOff = 0;
+    int passDiTauL1ANDHTT350ANDNew2L1ANDOff = 0;
+
+    int passDiTauL1ANDNew2L1ANDOff = 0;
+
+    int passOldORNewL1ANDOff = 0;
+    int passDiTauANDHTT350ANDOldORNewL1ANDOff = 0;
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
     //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
-	if (iEntry % 10000 == 0) std::cout << std::to_string(iEntry) << std::endl;
+	if (iEntry % 100000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
 	nEvents = inTree->nEvents;
 	runNumber = inTree->runNumber;
@@ -626,6 +642,9 @@ int main(int argc, char** argv)	{
         passDiTauANDNew2_Off += (passDiTau_Off && passNew2_Off);
         passDiTauANDOldANDNew2_Off += (passDiTau_Off && passOld_Off && passNew2_Off);
 
+        passOldORNew2_Off += (passOld_Off || passNew2_Off);
+        passOldANDNew2_Off += (passOld_Off && passNew2_Off);
+
         passDiTauOROld_L1 += (passDiTau_L1 || passOld_L1);
         passDiTauORNew2_L1 += (passDiTau_L1 || passNew2_L1);
         passDiTauOROldORNew2_L1 += (passDiTau_L1 || passOld_L1 || passNew2_L1);
@@ -633,10 +652,26 @@ int main(int argc, char** argv)	{
         passDiTauANDNew2_L1 += (passDiTau_L1 && passNew2_L1);
         passDiTauANDOldANDNew2_L1 += (passDiTau_L1 && passOld_L1 && passNew2_L1);
 
+        passOldORNew2_L1 += (passOld_L1 || passNew2_L1);
+        passOldANDNew2_L1 += (passOld_L1 && passNew2_L1);
+
         passDiTauL1ANDOff += (passDiTau_L1 && passDiTau_Off);
         passOldL1ANDOff += (passOld_L1 && passOld_Off);
         passNewL1ANDOff += (passNew_L1 && passNew_Off);
         passNew2L1ANDOff += (passNew2_L1 && passNew2_Off);
+
+        passOldNew2L1ANDOff += (passOld_L1 && passOld_Off && passNew2_L1 && passNew2_Off);
+
+        passDiTauL1ANDNew2L1ANDOff += (passDiTau_L1 && passNew2_L1 && passNew2_Off);
+
+	passDiTauL1ANDOldNew2L1ANDOff += (passDiTau_L1 && passOld_L1 && passOld_Off && passNew2_L1 && passNew2_Off);
+        passDiTauOldNew2L1ANDOff += (passDiTau_L1 && passOld_L1 && passNew2_L1 && passDiTau_Off && passOld_Off && passNew2_Off);
+
+        passDiTauL1ANDHTT350ANDOldNew2L1ANDOff += (passDiTau_L1 && passHTT350 && passOld_L1 && passOld_Off && passNew2_L1 && passNew2_Off);
+        passDiTauL1ANDHTT350ANDNew2L1ANDOff += (passDiTau_L1 && passHTT350 && passNew2_L1 && passNew2_Off);
+
+        passOldORNewL1ANDOff += ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off));
+        passDiTauANDHTT350ANDOldORNewL1ANDOff += ((passDiTau_L1 && passHTT350) && ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off)));
 
 
 	//----------------------filling filter flags-------------------------------//
@@ -736,17 +771,21 @@ int main(int argc, char** argv)	{
     std::cout << "Offline Numbers" << std::endl;
     std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
     std::cout << passDiTau_OffCount << '\t' << passOld_OffCount << '\t' << passNew_OffCount << '\t' << passNew2_OffCount << '\t' << "Event#" << std::endl;
+    std::cout << "HTT" << '\t' << "HTT350" << std::endl;
+    std::cout << passHTTCount << '\t' << passHTT350Count << std::endl;
 
     std::cout << passDiTauOffORHTT << '\t' << "Pass DiTau Offline OR HTT" << std::endl;
     std::cout << passDiTauOffORHTT350 << '\t' << "Pass DiTau Offline OR HTT350" << std::endl;
     std::cout << passDiTauOROld_Off << '\t' << "Pass DiTau OR Old" << std::endl;
     std::cout << passDiTauORNew2_Off << '\t' << "Pass DiTau OR New2" << std::endl;
+    std::cout << passOldORNew2_Off << '\t' << "Pass Old OR New2" << std::endl;
     std::cout << passDiTauOROldORNew2_Off << '\t' << "Pass DiTau OR Old OR New2" << std::endl;
 
     std::cout << passDiTauOffANDHTT << '\t' << "Pass DiTau Offline AND HTT" << std::endl;
     std::cout << passDiTauOffANDHTT350 << '\t' << "Pass DiTau Offline AND HTT350" << std::endl;
     std::cout << passDiTauANDOld_Off << '\t' << "Pass DiTau AND Old" << std::endl;
     std::cout << passDiTauANDNew2_Off << '\t' << "Pass DiTau AND New2" << std::endl;
+    std::cout << passOldANDNew2_Off << '\t' << "Pass Old AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_Off << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
 
     std::cout << "L1 Numbers" << std::endl;
@@ -757,12 +796,14 @@ int main(int argc, char** argv)	{
     std::cout << passDiTauL1ORHTT350 << '\t' << "Pass DiTau L1 OR HTT350" << std::endl;
     std::cout << passDiTauOROld_L1 << '\t' << "Pass DiTau OR Old" << std::endl;
     std::cout << passDiTauORNew2_L1 << '\t' << "Pass DiTau OR New2" << std::endl;
+    std::cout << passOldORNew2_L1 << '\t' << "Pass Old OR New2" << std::endl;
     std::cout << passDiTauOROldORNew2_L1 << '\t' << "Pass DiTau OR Old OR New2" << std::endl;
 
     std::cout << passDiTauL1ANDHTT << '\t' << "Pass DiTau L1 AND HTT" << std::endl;
     std::cout << passDiTauL1ANDHTT350 << '\t' << "Pass DiTau L1 AND HTT350" << std::endl;
     std::cout << passDiTauANDOld_L1 << '\t' << "Pass DiTau AND Old" << std::endl;
     std::cout << passDiTauANDNew2_L1 << '\t' << "Pass DiTau AND New2" << std::endl;
+    std::cout << passOldANDNew2_L1 << '\t' << "Pass Old AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_L1 << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
 
     std::cout << "Passing L1 AND Offline" << std::endl;
@@ -770,6 +811,16 @@ int main(int argc, char** argv)	{
     std::cout << passOldL1ANDOff << '\t' << "Old" << std::endl;
     std::cout << passNewL1ANDOff << '\t' << "New" << std::endl;
     std::cout << passNew2L1ANDOff << '\t' << "New2" << std::endl;
+    std::cout << passOldNew2L1ANDOff << '\t' << "Old AND New2" << std::endl;
+    std::cout << passDiTauL1ANDNew2L1ANDOff << '\t' << "DiTau L1 AND New2 L1 AND Off" << std::endl;
+    std::cout << passDiTauL1ANDOldNew2L1ANDOff << '\t' << "DiTau L1, Old AND New2 Offline AND L1" << std::endl;
+    std::cout << passDiTauOldNew2L1ANDOff << '\t' << "DiTau AND Old AND New2" << std::endl;
+    std::cout << passDiTauL1ANDHTT350ANDOldNew2L1ANDOff << '\t' << "Pass DiTau L1 AND HTT350, Old AND New2 Offline AND L1" << std::endl;
+    std::cout << passDiTauL1ANDHTT350ANDNew2L1ANDOff << '\t' << "Pass DiTau L1 AND HTT350 AND New2 Offline AND L1" << std::endl;
+
+    std::cout << "I'm tired" << std::endl;
+    std::cout << passOldORNewL1ANDOff << '\t' << "Old OR New L1 AND Off" << std::endl;
+    std::cout << passDiTauANDHTT350ANDOldORNewL1ANDOff << '\t' << "DiTau AND HTT350 AND (Old OR New2 L1 AND Offline)" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

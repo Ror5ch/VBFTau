@@ -524,7 +524,8 @@ void analyzer::Loop()
     //------------------------finished making containers, now checking obj numbers and masses and passing triggers----------------------//
    
     // L1_DoubleIsoTau32er2p1
-    if (tauCandsIso32Size >= 2) passDiTau = 1;
+    //if (tauCandsIso32Size >= 2) passDiTau = 1;
+    if (tauCandsIso35Size >= 2) passDiTau = 1;
 
     // L1_Jet110_Jet35_Mass_Min620 (seed 00)
     // find highest mjj pair of jets
@@ -713,6 +714,49 @@ void analyzer::Loop()
     passSeed2_6055All_count[i] += passSeed2_6055All[i];
     passSeed2_6060All_count[i] += passSeed2_6060All[i];
 
+    if (passDiTau) {
+    passSeed2_3535All_count[i]  += 1;
+    passSeed2_3540All_count[i]  += 1;
+    passSeed2_3545All_count[i]  += 1;
+    passSeed2_3550All_count[i]  += 1;
+    passSeed2_3555All_count[i]  += 1;
+    passSeed2_3560All_count[i]  += 1;
+
+    passSeed2_4035All_count[i]  += 1;
+    passSeed2_4040All_count[i]  += 1;
+    passSeed2_4045All_count[i]  += 1;
+    passSeed2_4050All_count[i]  += 1;
+    passSeed2_4055All_count[i]  += 1;
+    passSeed2_4060All_count[i]  += 1;
+
+    passSeed2_4535All_count[i]  += 1;
+    passSeed2_4540All_count[i]  += 1;
+    passSeed2_4545All_count[i]  += 1;
+    passSeed2_4550All_count[i]  += 1;
+    passSeed2_4555All_count[i]  += 1;
+    passSeed2_4560All_count[i]  += 1;
+
+    passSeed2_5035All_count[i]   += 1;
+    passSeed2_5040All_count[i]   += 1;
+    passSeed2_5045All_count[i]   += 1;
+    passSeed2_5050All_count[i]   += 1;
+    passSeed2_5055All_count[i]   += 1;
+    passSeed2_5060All_count[i]   += 1;
+
+    passSeed2_5535All_count[i]   += 1;
+    passSeed2_5540All_count[i]   += 1;
+    passSeed2_5545All_count[i]   += 1;
+    passSeed2_5550All_count[i]   += 1;
+    passSeed2_5555All_count[i]   += 1;
+    passSeed2_5560All_count[i]   += 1;
+
+    passSeed2_6035All_count[i]   += 1;
+    passSeed2_6040All_count[i]   += 1;
+    passSeed2_6045All_count[i]   += 1;
+    passSeed2_6050All_count[i]   += 1;
+    passSeed2_6055All_count[i]   += 1;
+    passSeed2_6060All_count[i]   += 1;
+    } // pass diTau if
   }
 
   // end variations
@@ -776,6 +820,9 @@ void analyzer::Loop()
   orOldNewSeed3 += (passOld || passNew || passSeed3);
 
   orDiTauOldNew += (passDiTau || passOld || passNew);
+
+  //olDiTauOldSeed2 += (passDiTau && passOld && passSeed2_3545All[1]);
+  //orDiTauOldSeed2 += (passDiTau || passOld || passSeed2_3545All[1]);
 
   } // end event loop
 

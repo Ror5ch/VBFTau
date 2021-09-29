@@ -16,9 +16,9 @@ process.source = cms.Source("PoolSource",
     
         #'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/021DCAE8-242E-E811-B362-02163E01A0CE.root',
 	#'file:root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/MINIAOD/PromptReco-v2/000/320/497/00000/68E2874E-6495-E811-98C2-FA163EE0D32F.root',
-	'file:root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias8/MINIAOD/PromptReco-v2/000/320/497/00000/C8FEA71E-6695-E811-8D4D-02163E015309.root',
+	#'file:root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias8/MINIAOD/PromptReco-v2/000/320/497/00000/C8FEA71E-6695-E811-8D4D-02163E015309.root',
 
-	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/00000/1ACE0760-BF84-3F47-A601-29022E50122E.root'
+	'file:root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/00000/1ACE0760-BF84-3F47-A601-29022E50122E.root'
 
 	#'file:root://cms-xrd-global.cern.ch//store/mc/RunIISpring18DR/VBFHToTauTau_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/NZSPU28to70_100X_upgrade2018_realistic_v10-v1/90000/2850E817-202D-E811-8588-FA163E7C479F.root'
 
@@ -47,8 +47,8 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , fillingTriggers = cms.untracked.bool(False)
      , fillingEventInfo = cms.untracked.bool(True)
      , fillingL1 = cms.untracked.bool(True)
-     , fillingTaus = cms.untracked.bool(False)
-     , fillingJets = cms.untracked.bool(False)
+     , fillingTaus = cms.untracked.bool(True)
+     , fillingJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -68,7 +68,7 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-#        process.rerunMvaIsolationSequence *
-#        getattr(process,updatedTauName) *
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName) *
         process.demo
 )

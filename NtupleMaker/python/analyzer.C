@@ -620,7 +620,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso30Size = jetCands55RmvOlTauCandsIso30.size();
     int jetCands60RmvOlTauCandsIso30Size = jetCands60RmvOlTauCandsIso30.size();
 
-    // isoTau30
+    // isoTau32
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso32;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso32;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso32;
@@ -640,7 +640,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso32Size = jetCands55RmvOlTauCandsIso32.size();
     int jetCands60RmvOlTauCandsIso32Size = jetCands60RmvOlTauCandsIso32.size();
 
-    // isoTau30
+    // isoTau34
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso34;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso34;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso34;
@@ -681,7 +681,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso35Size = jetCands55RmvOlTauCandsIso35.size();
     int jetCands60RmvOlTauCandsIso35Size = jetCands60RmvOlTauCandsIso35.size();
 
-    // isoTau30
+    // isoTau36
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso36;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso36;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso36;
@@ -701,7 +701,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso36Size = jetCands55RmvOlTauCandsIso36.size();
     int jetCands60RmvOlTauCandsIso36Size = jetCands60RmvOlTauCandsIso36.size();
 
-    // isoTau30
+    // isoTau38
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso38;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso38;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso38;

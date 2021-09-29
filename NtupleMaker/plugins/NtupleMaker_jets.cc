@@ -167,8 +167,7 @@ void NtupleMaker::fillL1Jets(const edm::Event& iEvent) {
   edm::Handle<BXVector<l1t::Jet>> jetL1Handle;
   iEvent.getByToken(jetTriggerPrimitives_, jetL1Handle);
 
-
-  for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(); ijet != jetL1Handle->end(); ++ijet) {
+  for(BXVector<l1t::Jet>::const_iterator ijet = jetL1Handle->begin(0); ijet != jetL1Handle->end(0); ++ijet) {
       jetL1PrimitivesPt_.push_back(ijet->pt());
       jetL1PrimitivesEta_.push_back(ijet->eta());
       jetL1PrimitivesPhi_.push_back(ijet->phi());
@@ -271,9 +270,9 @@ void NtupleMaker::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
-  edm::Handle<double> rhoHandle;
-  e.getByToken(rhoLabel_, rhoHandle);
-  float rho = *(rhoHandle.product());
+  //edm::Handle<double> rhoHandle;
+  //e.getByToken(rhoLabel_, rhoHandle);
+  //float rho = *(rhoHandle.product());
   
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);

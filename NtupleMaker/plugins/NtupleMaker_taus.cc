@@ -285,7 +285,7 @@ void NtupleMaker::fillL1Taus(const edm::Event& iEvent)
     edm::Handle<BXVector<l1t::Tau>> tauL1Handle;
     iEvent.getByToken(tauTriggerPrimitives_, tauL1Handle);
 
-    for(BXVector<l1t::Tau>::const_iterator itau = tauL1Handle->begin(); itau != tauL1Handle->end(); ++itau) {
+    for(BXVector<l1t::Tau>::const_iterator itau = tauL1Handle->begin(0); itau != tauL1Handle->end(0); ++itau) {
         tauL1PrimitivesPt_.push_back(itau->pt());
         tauL1PrimitivesEta_.push_back(itau->eta());
         tauL1PrimitivesPhi_.push_back(itau->phi());

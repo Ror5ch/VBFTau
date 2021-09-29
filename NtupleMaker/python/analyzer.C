@@ -91,80 +91,152 @@ void analyzer::Loop()
 
   int mjjCuts[6] = {350, 400, 450, 500, 550, 600};
   //jet 35
+  int passSeed2_3525All[6] = {0,0,0,0,0,0};
+  int passSeed2_3530All[6] = {0,0,0,0,0,0};
   int passSeed2_3535All[6] = {0,0,0,0,0,0};
   int passSeed2_3540All[6] = {0,0,0,0,0,0};
+  int passSeed2_3542All[6] = {0,0,0,0,0,0};
+  int passSeed2_3544All[6] = {0,0,0,0,0,0};
   int passSeed2_3545All[6] = {0,0,0,0,0,0};
+  int passSeed2_3546All[6] = {0,0,0,0,0,0};
+  int passSeed2_3548All[6] = {0,0,0,0,0,0};
   int passSeed2_3550All[6] = {0,0,0,0,0,0};
   int passSeed2_3555All[6] = {0,0,0,0,0,0};
   int passSeed2_3560All[6] = {0,0,0,0,0,0};
+  int passSeed2_3525All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_3530All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3535All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3540All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_3542All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_3544All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3545All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_3546All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_3548All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3550All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3555All_count[6] = {0,0,0,0,0,0};
   int passSeed2_3560All_count[6] = {0,0,0,0,0,0};
   //jet 40
+  int passSeed2_4025All[6] = {0,0,0,0,0,0};
+  int passSeed2_4030All[6] = {0,0,0,0,0,0};
   int passSeed2_4035All[6] = {0,0,0,0,0,0};
   int passSeed2_4040All[6] = {0,0,0,0,0,0};
+  int passSeed2_4042All[6] = {0,0,0,0,0,0};
+  int passSeed2_4044All[6] = {0,0,0,0,0,0};
   int passSeed2_4045All[6] = {0,0,0,0,0,0};
+  int passSeed2_4046All[6] = {0,0,0,0,0,0};
+  int passSeed2_4048All[6] = {0,0,0,0,0,0};
   int passSeed2_4050All[6] = {0,0,0,0,0,0};
   int passSeed2_4055All[6] = {0,0,0,0,0,0};
   int passSeed2_4060All[6] = {0,0,0,0,0,0};
+  int passSeed2_4025All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4030All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4035All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4040All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4042All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4044All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4045All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4046All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4048All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4050All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4055All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4060All_count[6] = {0,0,0,0,0,0};
   //jet 45
+  int passSeed2_4525All[6] = {0,0,0,0,0,0};
+  int passSeed2_4530All[6] = {0,0,0,0,0,0};
   int passSeed2_4535All[6] = {0,0,0,0,0,0};
   int passSeed2_4540All[6] = {0,0,0,0,0,0};
+  int passSeed2_4542All[6] = {0,0,0,0,0,0};
+  int passSeed2_4544All[6] = {0,0,0,0,0,0};
   int passSeed2_4545All[6] = {0,0,0,0,0,0};
+  int passSeed2_4546All[6] = {0,0,0,0,0,0};
+  int passSeed2_4548All[6] = {0,0,0,0,0,0};
   int passSeed2_4550All[6] = {0,0,0,0,0,0};
   int passSeed2_4555All[6] = {0,0,0,0,0,0};
   int passSeed2_4560All[6] = {0,0,0,0,0,0};
+  int passSeed2_4525All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4530All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4535All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4540All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4542All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4544All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4545All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4546All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_4548All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4550All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4555All_count[6] = {0,0,0,0,0,0};
   int passSeed2_4560All_count[6] = {0,0,0,0,0,0};
   //jet 50
+  int passSeed2_5025All[6] = {0,0,0,0,0,0};
+  int passSeed2_5030All[6] = {0,0,0,0,0,0};
   int passSeed2_5035All[6] = {0,0,0,0,0,0};
   int passSeed2_5040All[6] = {0,0,0,0,0,0};
+  int passSeed2_5042All[6] = {0,0,0,0,0,0};
+  int passSeed2_5044All[6] = {0,0,0,0,0,0};
   int passSeed2_5045All[6] = {0,0,0,0,0,0};
+  int passSeed2_5046All[6] = {0,0,0,0,0,0};
+  int passSeed2_5048All[6] = {0,0,0,0,0,0};
   int passSeed2_5050All[6] = {0,0,0,0,0,0};
   int passSeed2_5055All[6] = {0,0,0,0,0,0};
   int passSeed2_5060All[6] = {0,0,0,0,0,0};
+  int passSeed2_5025All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5030All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5035All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5040All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5042All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5044All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5045All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5046All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5048All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5050All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5055All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5060All_count[6] = {0,0,0,0,0,0};
   //jet 55
+  int passSeed2_5525All[6] = {0,0,0,0,0,0};
+  int passSeed2_5530All[6] = {0,0,0,0,0,0};
   int passSeed2_5535All[6] = {0,0,0,0,0,0};
   int passSeed2_5540All[6] = {0,0,0,0,0,0};
+  int passSeed2_5542All[6] = {0,0,0,0,0,0};
+  int passSeed2_5544All[6] = {0,0,0,0,0,0};
   int passSeed2_5545All[6] = {0,0,0,0,0,0};
+  int passSeed2_5546All[6] = {0,0,0,0,0,0};
+  int passSeed2_5548All[6] = {0,0,0,0,0,0};
   int passSeed2_5550All[6] = {0,0,0,0,0,0};
   int passSeed2_5555All[6] = {0,0,0,0,0,0};
   int passSeed2_5560All[6] = {0,0,0,0,0,0};
+  int passSeed2_5525All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5530All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5535All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5540All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5542All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5544All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5545All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5546All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5548All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5550All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5555All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5560All_count[6] = {0,0,0,0,0,0};
   //jet 60
+  int passSeed2_6025All[6] = {0,0,0,0,0,0};
+  int passSeed2_6030All[6] = {0,0,0,0,0,0};
   int passSeed2_6035All[6] = {0,0,0,0,0,0};
   int passSeed2_6040All[6] = {0,0,0,0,0,0};
+  int passSeed2_6042All[6] = {0,0,0,0,0,0};
+  int passSeed2_6044All[6] = {0,0,0,0,0,0};
   int passSeed2_6045All[6] = {0,0,0,0,0,0};
+  int passSeed2_6046All[6] = {0,0,0,0,0,0};
+  int passSeed2_6048All[6] = {0,0,0,0,0,0};
   int passSeed2_6050All[6] = {0,0,0,0,0,0};
   int passSeed2_6055All[6] = {0,0,0,0,0,0};
   int passSeed2_6060All[6] = {0,0,0,0,0,0};
+  int passSeed2_6025All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6030All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6035All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6040All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6042All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6044All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6045All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6046All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6048All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6050All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6055All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6060All_count[6] = {0,0,0,0,0,0};
@@ -219,7 +291,7 @@ void analyzer::Loop()
 
   // start event loop
   for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
-  //for (Long64_t jentry=0; jentry<200000; ++jentry) {
+  //for (Long64_t jentry=0; jentry<100000; ++jentry) {
   //for (Long64_t jentry=11100000; jentry<11400000; ++jentry) { // full run 323755
 
     if (jentry%100000 == 0) cout << jentry << endl;
@@ -253,44 +325,80 @@ void analyzer::Loop()
     passSeed3 = 0;
    
     for (int i = 0; i<6; ++i){
+      passSeed2_3525All[i] = 0;
+      passSeed2_3530All[i] = 0;
       passSeed2_3535All[i] = 0;
       passSeed2_3540All[i] = 0;
+      passSeed2_3542All[i] = 0;
+      passSeed2_3544All[i] = 0;
       passSeed2_3545All[i] = 0;
+      passSeed2_3546All[i] = 0;
+      passSeed2_3548All[i] = 0;
       passSeed2_3550All[i] = 0;
       passSeed2_3555All[i] = 0;
       passSeed2_3560All[i] = 0;
 
+      passSeed2_4025All[i] = 0;
+      passSeed2_4030All[i] = 0;
       passSeed2_4035All[i] = 0;
       passSeed2_4040All[i] = 0;
+      passSeed2_4042All[i] = 0;
+      passSeed2_4044All[i] = 0;
       passSeed2_4045All[i] = 0;
+      passSeed2_4046All[i] = 0;
+      passSeed2_4048All[i] = 0;
       passSeed2_4050All[i] = 0;
       passSeed2_4055All[i] = 0;
       passSeed2_4060All[i] = 0;
 
+      passSeed2_4525All[i] = 0;
+      passSeed2_4530All[i] = 0;
       passSeed2_4535All[i] = 0;
       passSeed2_4540All[i] = 0;
+      passSeed2_4542All[i] = 0;
+      passSeed2_4544All[i] = 0;
       passSeed2_4545All[i] = 0;
+      passSeed2_4546All[i] = 0;
+      passSeed2_4548All[i] = 0;
       passSeed2_4550All[i] = 0;
       passSeed2_4555All[i] = 0;
       passSeed2_4560All[i] = 0;
 
+      passSeed2_5025All[i] = 0;
+      passSeed2_5030All[i] = 0;
       passSeed2_5035All[i] = 0;
       passSeed2_5040All[i] = 0;
+      passSeed2_5042All[i] = 0;
+      passSeed2_5044All[i] = 0;
       passSeed2_5045All[i] = 0;
+      passSeed2_5046All[i] = 0;
+      passSeed2_5048All[i] = 0;
       passSeed2_5050All[i] = 0;
       passSeed2_5055All[i] = 0;
       passSeed2_5060All[i] = 0;
 
+      passSeed2_5525All[i] = 0;
+      passSeed2_5530All[i] = 0;
       passSeed2_5535All[i] = 0;
       passSeed2_5540All[i] = 0;
+      passSeed2_5542All[i] = 0;
+      passSeed2_5544All[i] = 0;
       passSeed2_5545All[i] = 0;
+      passSeed2_5546All[i] = 0;
+      passSeed2_5548All[i] = 0;
       passSeed2_5550All[i] = 0;
       passSeed2_5555All[i] = 0;
       passSeed2_5560All[i] = 0;
 
+      passSeed2_6025All[i] = 0;
+      passSeed2_6030All[i] = 0;
       passSeed2_6035All[i] = 0;
       passSeed2_6040All[i] = 0;
+      passSeed2_6042All[i] = 0;
+      passSeed2_6044All[i] = 0;
       passSeed2_6045All[i] = 0;
+      passSeed2_6046All[i] = 0;
+      passSeed2_6048All[i] = 0;
       passSeed2_6050All[i] = 0;
       passSeed2_6055All[i] = 0;
       passSeed2_6060All[i] = 0;
@@ -299,8 +407,8 @@ void analyzer::Loop()
 
     // build container of taus (two containers are built here at the same time, one is not req. to be isotau)
     // Branch Crossing (Bx) equals zero
-    TLorentzVector tempTauIso32;
-    vector<TLorentzVector> tauCandsIso32;
+    TLorentzVector tempTauIso25;
+    vector<TLorentzVector> tauCandsIso25;
     TLorentzVector tempTau35;
     vector<TLorentzVector> tauCands35;
     for (int iTau = 0; iTau < tauBx.size(); ++iTau) {
@@ -311,37 +419,55 @@ void analyzer::Loop()
         tempTau35.SetPtEtaPhiM(tauEt_, tauEta_, tauPhi[iTau], 0);
         tauCands35.push_back(tempTau35);
       }
-      if (tauEt_ >= 32 && fabs(tauEta_) <= 2.1 && tauIso[iTau] > 0) {
-        tempTauIso32.SetPtEtaPhiM(tauEt_, tauEta_, tauPhi[iTau], 0);
-        tauCandsIso32.push_back(tempTauIso32);
+      if (tauEt_ >= 25 && fabs(tauEta_) <= 2.1 && tauIso[iTau] > 0) {
+        tempTauIso25.SetPtEtaPhiM(tauEt_, tauEta_, tauPhi[iTau], 0);
+        tauCandsIso25.push_back(tempTauIso25);
       }
     }
-    int tauCandsIso32Size = tauCandsIso32.size();
+    int tauCandsIso25Size = tauCandsIso25.size();
     int tauCands35Size = tauCands35.size();
 
+    vector<TLorentzVector> tauCandsIso30;
+    vector<TLorentzVector> tauCandsIso32;
     vector<TLorentzVector> tauCandsIso35;
     vector<TLorentzVector> tauCandsIso40;
+    vector<TLorentzVector> tauCandsIso42;
+    vector<TLorentzVector> tauCandsIso44;
     vector<TLorentzVector> tauCandsIso45;
+    vector<TLorentzVector> tauCandsIso46;
+    vector<TLorentzVector> tauCandsIso48;
     vector<TLorentzVector> tauCandsIso50; 
     vector<TLorentzVector> tauCandsIso55;
     vector<TLorentzVector> tauCandsIso60;
     vector<TLorentzVector> tauCandsIso65;
     float tauPt_;
     TLorentzVector tempTau_;
-    for (int iTau = 0; iTau < tauCandsIso32Size; ++iTau) {
-      tempTau_ = tauCandsIso32.at(iTau);
+    for (int iTau = 0; iTau < tauCandsIso25Size; ++iTau) {
+      tempTau_ = tauCandsIso25.at(iTau);
       tauPt_ = tempTau_.Pt();
+      if (tauPt_ >= 30) tauCandsIso30.push_back(tempTau_);
+      if (tauPt_ >= 32) tauCandsIso32.push_back(tempTau_);
       if (tauPt_ >= 35) tauCandsIso35.push_back(tempTau_);
       if (tauPt_ >= 40) tauCandsIso40.push_back(tempTau_);
+      if (tauPt_ >= 42) tauCandsIso42.push_back(tempTau_);
+      if (tauPt_ >= 44) tauCandsIso44.push_back(tempTau_);
       if (tauPt_ >= 45) tauCandsIso45.push_back(tempTau_);
+      if (tauPt_ >= 46) tauCandsIso46.push_back(tempTau_);
+      if (tauPt_ >= 48) tauCandsIso48.push_back(tempTau_);
       if (tauPt_ >= 50) tauCandsIso50.push_back(tempTau_);
       if (tauPt_ >= 55) tauCandsIso55.push_back(tempTau_);
       if (tauPt_ >= 60) tauCandsIso60.push_back(tempTau_);
       if (tauPt_ >= 65) tauCandsIso65.push_back(tempTau_);
     }
+    int tauCandsIso30Size = tauCandsIso30.size();
+    int tauCandsIso32Size = tauCandsIso32.size();
     int tauCandsIso35Size = tauCandsIso35.size();
     int tauCandsIso40Size = tauCandsIso40.size();
+    int tauCandsIso42Size = tauCandsIso42.size();
+    int tauCandsIso44Size = tauCandsIso44.size();
     int tauCandsIso45Size = tauCandsIso45.size();
+    int tauCandsIso46Size = tauCandsIso46.size();
+    int tauCandsIso48Size = tauCandsIso48.size();
     int tauCandsIso50Size = tauCandsIso50.size();
     int tauCandsIso55Size = tauCandsIso55.size();
     int tauCandsIso60Size = tauCandsIso60.size();
@@ -394,6 +520,47 @@ void analyzer::Loop()
     // it makes crosscleaned jet containers by hand for different pt cuts of jets and taus
     // i did it this way because i couldn't figure out how to do it a fancier way in a short amount of time
     //
+
+    // isoTau25
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso25;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso25;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso25;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso25;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso25;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso25;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso25 = crossCleanJets(jetCands35, tauCandsIso25);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso25 = crossCleanJets(jetCands40, tauCandsIso25);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso25 = crossCleanJets(jetCands45, tauCandsIso25);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso25 = crossCleanJets(jetCands50, tauCandsIso25);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso25 = crossCleanJets(jetCands55, tauCandsIso25);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso25 = crossCleanJets(jetCands60, tauCandsIso25);
+    int jetCands35RmvOlTauCandsIso25Size = jetCands35RmvOlTauCandsIso25.size();
+    int jetCands40RmvOlTauCandsIso25Size = jetCands40RmvOlTauCandsIso25.size();
+    int jetCands45RmvOlTauCandsIso25Size = jetCands45RmvOlTauCandsIso25.size();
+    int jetCands50RmvOlTauCandsIso25Size = jetCands50RmvOlTauCandsIso25.size();
+    int jetCands55RmvOlTauCandsIso25Size = jetCands55RmvOlTauCandsIso25.size();
+    int jetCands60RmvOlTauCandsIso25Size = jetCands60RmvOlTauCandsIso25.size();
+
+    // isoTau30
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso30;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso30;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso30;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso30;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso30;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso30;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso30 = crossCleanJets(jetCands35, tauCandsIso30);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso30 = crossCleanJets(jetCands40, tauCandsIso30);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso30 = crossCleanJets(jetCands45, tauCandsIso30);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso30 = crossCleanJets(jetCands50, tauCandsIso30);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso30 = crossCleanJets(jetCands55, tauCandsIso30);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso30 = crossCleanJets(jetCands60, tauCandsIso30);
+    int jetCands35RmvOlTauCandsIso30Size = jetCands35RmvOlTauCandsIso30.size();
+    int jetCands40RmvOlTauCandsIso30Size = jetCands40RmvOlTauCandsIso30.size();
+    int jetCands45RmvOlTauCandsIso30Size = jetCands45RmvOlTauCandsIso30.size();
+    int jetCands50RmvOlTauCandsIso30Size = jetCands50RmvOlTauCandsIso30.size();
+    int jetCands55RmvOlTauCandsIso30Size = jetCands55RmvOlTauCandsIso30.size();
+    int jetCands60RmvOlTauCandsIso30Size = jetCands60RmvOlTauCandsIso30.size();
+
     // isoTau35 
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso35;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso35;
@@ -434,6 +601,46 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso40Size = jetCands55RmvOlTauCandsIso40.size();
     int jetCands60RmvOlTauCandsIso40Size = jetCands60RmvOlTauCandsIso40.size();
 
+    // isoTau42
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso42;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso42;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso42;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso42;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso42;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso42;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso42 = crossCleanJets(jetCands35, tauCandsIso42);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso42 = crossCleanJets(jetCands40, tauCandsIso42);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso42 = crossCleanJets(jetCands45, tauCandsIso42);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso42 = crossCleanJets(jetCands50, tauCandsIso42);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso42 = crossCleanJets(jetCands55, tauCandsIso42);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso42 = crossCleanJets(jetCands60, tauCandsIso42);
+    int jetCands35RmvOlTauCandsIso42Size = jetCands35RmvOlTauCandsIso42.size();
+    int jetCands40RmvOlTauCandsIso42Size = jetCands40RmvOlTauCandsIso42.size();
+    int jetCands45RmvOlTauCandsIso42Size = jetCands45RmvOlTauCandsIso42.size();
+    int jetCands50RmvOlTauCandsIso42Size = jetCands50RmvOlTauCandsIso42.size();
+    int jetCands55RmvOlTauCandsIso42Size = jetCands55RmvOlTauCandsIso42.size();
+    int jetCands60RmvOlTauCandsIso42Size = jetCands60RmvOlTauCandsIso42.size();
+
+    // isoTau44
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso44;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso44;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso44;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso44;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso44;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso44;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso44 = crossCleanJets(jetCands35, tauCandsIso44);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso44 = crossCleanJets(jetCands40, tauCandsIso44);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso44 = crossCleanJets(jetCands45, tauCandsIso44);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso44 = crossCleanJets(jetCands50, tauCandsIso44);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso44 = crossCleanJets(jetCands55, tauCandsIso44);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso44 = crossCleanJets(jetCands60, tauCandsIso44);
+    int jetCands35RmvOlTauCandsIso44Size = jetCands35RmvOlTauCandsIso44.size();
+    int jetCands40RmvOlTauCandsIso44Size = jetCands40RmvOlTauCandsIso44.size();
+    int jetCands45RmvOlTauCandsIso44Size = jetCands45RmvOlTauCandsIso44.size();
+    int jetCands50RmvOlTauCandsIso44Size = jetCands50RmvOlTauCandsIso44.size();
+    int jetCands55RmvOlTauCandsIso44Size = jetCands55RmvOlTauCandsIso44.size();
+    int jetCands60RmvOlTauCandsIso44Size = jetCands60RmvOlTauCandsIso44.size();
+
     // isoTau45
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso45;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso45;
@@ -453,6 +660,46 @@ void analyzer::Loop()
     int jetCands50RmvOlTauCandsIso45Size = jetCands50RmvOlTauCandsIso45.size();
     int jetCands55RmvOlTauCandsIso45Size = jetCands55RmvOlTauCandsIso45.size();
     int jetCands60RmvOlTauCandsIso45Size = jetCands60RmvOlTauCandsIso45.size();
+
+    // isoTau46
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso46;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso46;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso46;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso46;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso46;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso46;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso46 = crossCleanJets(jetCands35, tauCandsIso46);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso46 = crossCleanJets(jetCands40, tauCandsIso46);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso46 = crossCleanJets(jetCands45, tauCandsIso46);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso46 = crossCleanJets(jetCands50, tauCandsIso46);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso46 = crossCleanJets(jetCands55, tauCandsIso46);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso46 = crossCleanJets(jetCands60, tauCandsIso46);
+    int jetCands35RmvOlTauCandsIso46Size = jetCands35RmvOlTauCandsIso46.size();
+    int jetCands40RmvOlTauCandsIso46Size = jetCands40RmvOlTauCandsIso46.size();
+    int jetCands45RmvOlTauCandsIso46Size = jetCands45RmvOlTauCandsIso46.size();
+    int jetCands50RmvOlTauCandsIso46Size = jetCands50RmvOlTauCandsIso46.size();
+    int jetCands55RmvOlTauCandsIso46Size = jetCands55RmvOlTauCandsIso46.size();
+    int jetCands60RmvOlTauCandsIso46Size = jetCands60RmvOlTauCandsIso46.size();
+
+    // isoTau48
+    vector<TLorentzVector> jetCands35RmvOlTauCandsIso48;
+    vector<TLorentzVector> jetCands40RmvOlTauCandsIso48;
+    vector<TLorentzVector> jetCands45RmvOlTauCandsIso48;
+    vector<TLorentzVector> jetCands50RmvOlTauCandsIso48;
+    vector<TLorentzVector> jetCands55RmvOlTauCandsIso48;
+    vector<TLorentzVector> jetCands60RmvOlTauCandsIso48;
+    if (jetCands35Size >= 2) jetCands35RmvOlTauCandsIso48 = crossCleanJets(jetCands35, tauCandsIso48);
+    if (jetCands40Size >= 2) jetCands40RmvOlTauCandsIso48 = crossCleanJets(jetCands40, tauCandsIso48);
+    if (jetCands45Size >= 2) jetCands45RmvOlTauCandsIso48 = crossCleanJets(jetCands45, tauCandsIso48);
+    if (jetCands50Size >= 2) jetCands50RmvOlTauCandsIso48 = crossCleanJets(jetCands50, tauCandsIso48);
+    if (jetCands55Size >= 2) jetCands55RmvOlTauCandsIso48 = crossCleanJets(jetCands55, tauCandsIso48);
+    if (jetCands60Size >= 2) jetCands60RmvOlTauCandsIso48 = crossCleanJets(jetCands60, tauCandsIso48);
+    int jetCands35RmvOlTauCandsIso48Size = jetCands35RmvOlTauCandsIso48.size();
+    int jetCands40RmvOlTauCandsIso48Size = jetCands40RmvOlTauCandsIso48.size();
+    int jetCands45RmvOlTauCandsIso48Size = jetCands45RmvOlTauCandsIso48.size();
+    int jetCands50RmvOlTauCandsIso48Size = jetCands50RmvOlTauCandsIso48.size();
+    int jetCands55RmvOlTauCandsIso48Size = jetCands55RmvOlTauCandsIso48.size();
+    int jetCands60RmvOlTauCandsIso48Size = jetCands60RmvOlTauCandsIso48.size();
 
     // isoTau50
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso50;
@@ -578,6 +825,34 @@ void analyzer::Loop()
 
   //------------------------------seed 2 varying cuts-----------------------//
   //
+   if (tauCandsIso25Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_3525All, highestMassOfPair(jetCands35RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_4025All, highestMassOfPair(jetCands40RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_4525All, highestMassOfPair(jetCands45RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_5025All, highestMassOfPair(jetCands50RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_5525All, highestMassOfPair(jetCands55RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso25Size >= 2) setArrayElements(passSeed2_6025All, highestMassOfPair(jetCands60RmvOlTauCandsIso25, tauCandsIso25), mjjCuts);
+  }
+ 
+  if (tauCandsIso30Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_3530All, highestMassOfPair(jetCands35RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_4030All, highestMassOfPair(jetCands40RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_4530All, highestMassOfPair(jetCands45RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_5030All, highestMassOfPair(jetCands50RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_5530All, highestMassOfPair(jetCands55RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso30Size >= 2) setArrayElements(passSeed2_6030All, highestMassOfPair(jetCands60RmvOlTauCandsIso30, tauCandsIso30), mjjCuts);
+  }
+
   if (tauCandsIso35Size >= 1) {
     if (jetCands35RmvOlTauCandsIso35Size >= 2) setArrayElements(passSeed2_3535All, highestMassOfPair(jetCands35RmvOlTauCandsIso35, tauCandsIso35), mjjCuts);
 
@@ -606,6 +881,35 @@ void analyzer::Loop()
     if (jetCands60RmvOlTauCandsIso40Size >= 2) setArrayElements(passSeed2_6040All, highestMassOfPair(jetCands60RmvOlTauCandsIso40, tauCandsIso40), mjjCuts);
   }
 
+  if (tauCandsIso42Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_3542All, highestMassOfPair(jetCands35RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_4042All, highestMassOfPair(jetCands40RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_4542All, highestMassOfPair(jetCands45RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_5042All, highestMassOfPair(jetCands50RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_5542All, highestMassOfPair(jetCands55RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso42Size >= 2) setArrayElements(passSeed2_6042All, highestMassOfPair(jetCands60RmvOlTauCandsIso42, tauCandsIso42), mjjCuts);
+  }
+
+
+  if (tauCandsIso44Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_3544All, highestMassOfPair(jetCands35RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_4044All, highestMassOfPair(jetCands40RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_4544All, highestMassOfPair(jetCands45RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_5044All, highestMassOfPair(jetCands50RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_5544All, highestMassOfPair(jetCands55RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso44Size >= 2) setArrayElements(passSeed2_6044All, highestMassOfPair(jetCands60RmvOlTauCandsIso44, tauCandsIso44), mjjCuts);
+  }
+
   if (tauCandsIso45Size >= 1) {
     // original seed 2 at 400 cut
     if (jetCands35RmvOlTauCandsIso45Size >= 2) setArrayElements(passSeed2_3545All, highestMassOfPair(jetCands35RmvOlTauCandsIso45, tauCandsIso45), mjjCuts);
@@ -620,6 +924,36 @@ void analyzer::Loop()
 
     if (jetCands60RmvOlTauCandsIso45Size >= 2) setArrayElements(passSeed2_6045All, highestMassOfPair(jetCands60RmvOlTauCandsIso45, tauCandsIso45), mjjCuts);
   }
+
+
+  if (tauCandsIso46Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_3546All, highestMassOfPair(jetCands35RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_4046All, highestMassOfPair(jetCands40RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_4546All, highestMassOfPair(jetCands45RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_5046All, highestMassOfPair(jetCands50RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_5546All, highestMassOfPair(jetCands55RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso46Size >= 2) setArrayElements(passSeed2_6046All, highestMassOfPair(jetCands60RmvOlTauCandsIso46, tauCandsIso46), mjjCuts);
+  }
+
+  if (tauCandsIso48Size >= 1) {
+    if (jetCands35RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_3548All, highestMassOfPair(jetCands35RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+
+    if (jetCands40RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_4048All, highestMassOfPair(jetCands40RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+
+    if (jetCands45RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_4548All, highestMassOfPair(jetCands45RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+
+    if (jetCands50RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_5048All, highestMassOfPair(jetCands50RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+
+    if (jetCands55RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_5548All, highestMassOfPair(jetCands55RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+
+    if (jetCands60RmvOlTauCandsIso48Size >= 2) setArrayElements(passSeed2_6048All, highestMassOfPair(jetCands60RmvOlTauCandsIso48, tauCandsIso48), mjjCuts);
+  }
+
 
   if (tauCandsIso50Size >= 1) {
     if (jetCands35RmvOlTauCandsIso50Size >= 2) setArrayElements(passSeed2_3550All, highestMassOfPair(jetCands35RmvOlTauCandsIso50, tauCandsIso50), mjjCuts);
@@ -672,90 +1006,165 @@ void analyzer::Loop()
 
   // variations of seed 2
   for (int i = 0; i<6; ++i) {
+    if (!passDiTau && !passOld) {
+    passSeed2_3525All_count[i] += passSeed2_3525All[i];
+    passSeed2_3530All_count[i] += passSeed2_3530All[i];
     passSeed2_3535All_count[i] += passSeed2_3535All[i];
     passSeed2_3540All_count[i] += passSeed2_3540All[i];
+    passSeed2_3542All_count[i] += passSeed2_3542All[i];
+    passSeed2_3544All_count[i] += passSeed2_3544All[i];
     passSeed2_3545All_count[i] += passSeed2_3545All[i];
+    passSeed2_3546All_count[i] += passSeed2_3546All[i];
+    passSeed2_3548All_count[i] += passSeed2_3548All[i];
     passSeed2_3550All_count[i] += passSeed2_3550All[i];
     passSeed2_3555All_count[i] += passSeed2_3555All[i];
     passSeed2_3560All_count[i] += passSeed2_3560All[i];
 
+    passSeed2_4025All_count[i] += passSeed2_4025All[i];
+    passSeed2_4030All_count[i] += passSeed2_4030All[i];
     passSeed2_4035All_count[i] += passSeed2_4035All[i];
     passSeed2_4040All_count[i] += passSeed2_4040All[i];
+    passSeed2_4042All_count[i] += passSeed2_4042All[i];
+    passSeed2_4044All_count[i] += passSeed2_4044All[i];
     passSeed2_4045All_count[i] += passSeed2_4045All[i];
+    passSeed2_4046All_count[i] += passSeed2_4046All[i];
+    passSeed2_4048All_count[i] += passSeed2_4048All[i];
     passSeed2_4050All_count[i] += passSeed2_4050All[i];
     passSeed2_4055All_count[i] += passSeed2_4055All[i];
     passSeed2_4060All_count[i] += passSeed2_4060All[i];
 
+    passSeed2_4525All_count[i] += passSeed2_4525All[i];
+    passSeed2_4530All_count[i] += passSeed2_4530All[i];
     passSeed2_4535All_count[i] += passSeed2_4535All[i];
     passSeed2_4540All_count[i] += passSeed2_4540All[i];
+    passSeed2_4542All_count[i] += passSeed2_4542All[i];
+    passSeed2_4544All_count[i] += passSeed2_4544All[i];
     passSeed2_4545All_count[i] += passSeed2_4545All[i];
+    passSeed2_4546All_count[i] += passSeed2_4546All[i];
+    passSeed2_4548All_count[i] += passSeed2_4548All[i];
     passSeed2_4550All_count[i] += passSeed2_4550All[i];
     passSeed2_4555All_count[i] += passSeed2_4555All[i];
     passSeed2_4560All_count[i] += passSeed2_4560All[i];
 
+    passSeed2_5025All_count[i] += passSeed2_5025All[i];
+    passSeed2_5030All_count[i] += passSeed2_5030All[i];
     passSeed2_5035All_count[i] += passSeed2_5035All[i];
     passSeed2_5040All_count[i] += passSeed2_5040All[i];
+    passSeed2_5042All_count[i] += passSeed2_5042All[i];
+    passSeed2_5044All_count[i] += passSeed2_5044All[i];
     passSeed2_5045All_count[i] += passSeed2_5045All[i];
+    passSeed2_5046All_count[i] += passSeed2_5046All[i];
+    passSeed2_5048All_count[i] += passSeed2_5048All[i];
     passSeed2_5050All_count[i] += passSeed2_5050All[i];
     passSeed2_5055All_count[i] += passSeed2_5055All[i];
     passSeed2_5060All_count[i] += passSeed2_5060All[i];
 
+    passSeed2_5525All_count[i] += passSeed2_5525All[i];
+    passSeed2_5530All_count[i] += passSeed2_5530All[i];
     passSeed2_5535All_count[i] += passSeed2_5535All[i];
     passSeed2_5540All_count[i] += passSeed2_5540All[i];
+    passSeed2_5542All_count[i] += passSeed2_5542All[i];
+    passSeed2_5544All_count[i] += passSeed2_5544All[i];
     passSeed2_5545All_count[i] += passSeed2_5545All[i];
+    passSeed2_5546All_count[i] += passSeed2_5546All[i];
+    passSeed2_5548All_count[i] += passSeed2_5548All[i];
     passSeed2_5550All_count[i] += passSeed2_5550All[i];
     passSeed2_5555All_count[i] += passSeed2_5555All[i];
     passSeed2_5560All_count[i] += passSeed2_5560All[i];
 
+    passSeed2_6025All_count[i] += passSeed2_6025All[i];
+    passSeed2_6030All_count[i] += passSeed2_6030All[i];
     passSeed2_6035All_count[i] += passSeed2_6035All[i];
     passSeed2_6040All_count[i] += passSeed2_6040All[i];
+    passSeed2_6042All_count[i] += passSeed2_6042All[i];
+    passSeed2_6044All_count[i] += passSeed2_6044All[i];
     passSeed2_6045All_count[i] += passSeed2_6045All[i];
+    passSeed2_6046All_count[i] += passSeed2_6046All[i];
+    passSeed2_6048All_count[i] += passSeed2_6048All[i];
     passSeed2_6050All_count[i] += passSeed2_6050All[i];
     passSeed2_6055All_count[i] += passSeed2_6055All[i];
     passSeed2_6060All_count[i] += passSeed2_6060All[i];
+    }
 
-    if (passDiTau) {
-    passSeed2_3535All_count[i]  += 1;
-    passSeed2_3540All_count[i]  += 1;
-    passSeed2_3545All_count[i]  += 1;
-    passSeed2_3550All_count[i]  += 1;
-    passSeed2_3555All_count[i]  += 1;
-    passSeed2_3560All_count[i]  += 1;
+    if (passDiTau || passOld) {
+    passSeed2_3525All_count[i] += 1;
+    passSeed2_3530All_count[i] += 1;
+    passSeed2_3535All_count[i] += 1;
+    passSeed2_3540All_count[i] += 1;
+    passSeed2_3542All_count[i] += 1;
+    passSeed2_3544All_count[i] += 1;
+    passSeed2_3545All_count[i] += 1;
+    passSeed2_3546All_count[i] += 1;
+    passSeed2_3548All_count[i] += 1;
+    passSeed2_3550All_count[i] += 1;
+    passSeed2_3555All_count[i] += 1;
+    passSeed2_3560All_count[i] += 1;
 
-    passSeed2_4035All_count[i]  += 1;
-    passSeed2_4040All_count[i]  += 1;
-    passSeed2_4045All_count[i]  += 1;
-    passSeed2_4050All_count[i]  += 1;
-    passSeed2_4055All_count[i]  += 1;
-    passSeed2_4060All_count[i]  += 1;
+    passSeed2_4025All_count[i] += 1;
+    passSeed2_4030All_count[i] += 1;
+    passSeed2_4035All_count[i] += 1;
+    passSeed2_4040All_count[i] += 1;
+    passSeed2_4042All_count[i] += 1;
+    passSeed2_4044All_count[i] += 1;
+    passSeed2_4045All_count[i] += 1;
+    passSeed2_4046All_count[i] += 1;
+    passSeed2_4048All_count[i] += 1;
+    passSeed2_4050All_count[i] += 1;
+    passSeed2_4055All_count[i] += 1;
+    passSeed2_4060All_count[i] += 1;
 
-    passSeed2_4535All_count[i]  += 1;
-    passSeed2_4540All_count[i]  += 1;
-    passSeed2_4545All_count[i]  += 1;
-    passSeed2_4550All_count[i]  += 1;
-    passSeed2_4555All_count[i]  += 1;
-    passSeed2_4560All_count[i]  += 1;
+    passSeed2_4525All_count[i] += 1;
+    passSeed2_4530All_count[i] += 1;
+    passSeed2_4535All_count[i] += 1;
+    passSeed2_4540All_count[i] += 1;
+    passSeed2_4542All_count[i] += 1;
+    passSeed2_4544All_count[i] += 1;
+    passSeed2_4545All_count[i] += 1;
+    passSeed2_4546All_count[i] += 1;
+    passSeed2_4548All_count[i] += 1;
+    passSeed2_4550All_count[i] += 1;
+    passSeed2_4555All_count[i] += 1;
+    passSeed2_4560All_count[i] += 1;
 
-    passSeed2_5035All_count[i]   += 1;
-    passSeed2_5040All_count[i]   += 1;
-    passSeed2_5045All_count[i]   += 1;
-    passSeed2_5050All_count[i]   += 1;
-    passSeed2_5055All_count[i]   += 1;
-    passSeed2_5060All_count[i]   += 1;
+    passSeed2_5025All_count[i] += 1;
+    passSeed2_5030All_count[i] += 1;
+    passSeed2_5035All_count[i] += 1;
+    passSeed2_5040All_count[i] += 1;
+    passSeed2_5042All_count[i] += 1;
+    passSeed2_5044All_count[i] += 1;
+    passSeed2_5045All_count[i] += 1;
+    passSeed2_5046All_count[i] += 1;
+    passSeed2_5048All_count[i] += 1;
+    passSeed2_5050All_count[i] += 1;
+    passSeed2_5055All_count[i] += 1;
+    passSeed2_5060All_count[i] += 1;
 
-    passSeed2_5535All_count[i]   += 1;
-    passSeed2_5540All_count[i]   += 1;
-    passSeed2_5545All_count[i]   += 1;
-    passSeed2_5550All_count[i]   += 1;
-    passSeed2_5555All_count[i]   += 1;
-    passSeed2_5560All_count[i]   += 1;
+    passSeed2_5525All_count[i] += 1;
+    passSeed2_5530All_count[i] += 1;
+    passSeed2_5535All_count[i] += 1;
+    passSeed2_5540All_count[i] += 1;
+    passSeed2_5542All_count[i] += 1;
+    passSeed2_5544All_count[i] += 1;
+    passSeed2_5545All_count[i] += 1;
+    passSeed2_5546All_count[i] += 1;
+    passSeed2_5548All_count[i] += 1;
+    passSeed2_5550All_count[i] += 1;
+    passSeed2_5555All_count[i] += 1;
+    passSeed2_5560All_count[i] += 1;
 
-    passSeed2_6035All_count[i]   += 1;
-    passSeed2_6040All_count[i]   += 1;
-    passSeed2_6045All_count[i]   += 1;
-    passSeed2_6050All_count[i]   += 1;
-    passSeed2_6055All_count[i]   += 1;
-    passSeed2_6060All_count[i]   += 1;
+    passSeed2_6025All_count[i] += 1;
+    passSeed2_6030All_count[i] += 1;
+    passSeed2_6035All_count[i] += 1;
+    passSeed2_6040All_count[i] += 1;
+    passSeed2_6042All_count[i] += 1;
+    passSeed2_6044All_count[i] += 1;
+    passSeed2_6045All_count[i] += 1;
+    passSeed2_6046All_count[i] += 1;
+    passSeed2_6048All_count[i] += 1;
+    passSeed2_6050All_count[i] += 1;
+    passSeed2_6055All_count[i] += 1;
+    passSeed2_6060All_count[i] += 1;
+
     } // pass diTau if
   }
 
@@ -885,49 +1294,252 @@ void analyzer::Loop()
   cout << olDiTauOldNew << '\t' << "DiTau AND Old AND New" << endl;
   cout << orDiTauOldNew << '\t' << "DiTau OR Old OR New" << endl;
 
+  bool subtractOverlap = true;
+  if (subtractOverlap) {
+    for (int i = 0; i<6; ++i) {
+    passSeed2_3525All_count[i] -= orDiTauOld;
+    passSeed2_3530All_count[i] -= orDiTauOld;
+    passSeed2_3535All_count[i] -= orDiTauOld;
+    passSeed2_3540All_count[i] -= orDiTauOld;
+    passSeed2_3542All_count[i] -= orDiTauOld;
+    passSeed2_3544All_count[i] -= orDiTauOld;
+    passSeed2_3545All_count[i] -= orDiTauOld;
+    passSeed2_3546All_count[i] -= orDiTauOld;
+    passSeed2_3548All_count[i] -= orDiTauOld;
+    passSeed2_3550All_count[i] -= orDiTauOld;
+    passSeed2_3555All_count[i] -= orDiTauOld;
+    passSeed2_3560All_count[i] -= orDiTauOld;
+
+    passSeed2_4025All_count[i] -= orDiTauOld;
+    passSeed2_4030All_count[i] -= orDiTauOld;
+    passSeed2_4035All_count[i] -= orDiTauOld;
+    passSeed2_4040All_count[i] -= orDiTauOld;
+    passSeed2_4042All_count[i] -= orDiTauOld;
+    passSeed2_4044All_count[i] -= orDiTauOld;
+    passSeed2_4045All_count[i] -= orDiTauOld;
+    passSeed2_4046All_count[i] -= orDiTauOld;
+    passSeed2_4048All_count[i] -= orDiTauOld;
+    passSeed2_4050All_count[i] -= orDiTauOld;
+    passSeed2_4055All_count[i] -= orDiTauOld;
+    passSeed2_4060All_count[i] -= orDiTauOld;
+
+    passSeed2_4525All_count[i] -= orDiTauOld;
+    passSeed2_4530All_count[i] -= orDiTauOld;
+    passSeed2_4535All_count[i] -= orDiTauOld;
+    passSeed2_4540All_count[i] -= orDiTauOld;
+    passSeed2_4542All_count[i] -= orDiTauOld;
+    passSeed2_4544All_count[i] -= orDiTauOld;
+    passSeed2_4545All_count[i] -= orDiTauOld;
+    passSeed2_4546All_count[i] -= orDiTauOld;
+    passSeed2_4548All_count[i] -= orDiTauOld;
+    passSeed2_4550All_count[i] -= orDiTauOld;
+    passSeed2_4555All_count[i] -= orDiTauOld;
+    passSeed2_4560All_count[i] -= orDiTauOld;
+
+    passSeed2_5025All_count[i] -= orDiTauOld;
+    passSeed2_5030All_count[i] -= orDiTauOld;
+    passSeed2_5035All_count[i] -= orDiTauOld;
+    passSeed2_5040All_count[i] -= orDiTauOld;
+    passSeed2_5042All_count[i] -= orDiTauOld;
+    passSeed2_5044All_count[i] -= orDiTauOld;
+    passSeed2_5045All_count[i] -= orDiTauOld;
+    passSeed2_5046All_count[i] -= orDiTauOld;
+    passSeed2_5048All_count[i] -= orDiTauOld;
+    passSeed2_5050All_count[i] -= orDiTauOld;
+    passSeed2_5055All_count[i] -= orDiTauOld;
+    passSeed2_5060All_count[i] -= orDiTauOld;
+
+    passSeed2_5525All_count[i] -= orDiTauOld;
+    passSeed2_5530All_count[i] -= orDiTauOld;
+    passSeed2_5535All_count[i] -= orDiTauOld;
+    passSeed2_5540All_count[i] -= orDiTauOld;
+    passSeed2_5542All_count[i] -= orDiTauOld;
+    passSeed2_5544All_count[i] -= orDiTauOld;
+    passSeed2_5545All_count[i] -= orDiTauOld;
+    passSeed2_5546All_count[i] -= orDiTauOld;
+    passSeed2_5548All_count[i] -= orDiTauOld;
+    passSeed2_5550All_count[i] -= orDiTauOld;
+    passSeed2_5555All_count[i] -= orDiTauOld;
+    passSeed2_5560All_count[i] -= orDiTauOld;
+
+    passSeed2_6025All_count[i] -= orDiTauOld;
+    passSeed2_6030All_count[i] -= orDiTauOld;
+    passSeed2_6035All_count[i] -= orDiTauOld;
+    passSeed2_6040All_count[i] -= orDiTauOld;
+    passSeed2_6042All_count[i] -= orDiTauOld;
+    passSeed2_6044All_count[i] -= orDiTauOld;
+    passSeed2_6045All_count[i] -= orDiTauOld;
+    passSeed2_6046All_count[i] -= orDiTauOld;
+    passSeed2_6048All_count[i] -= orDiTauOld;
+    passSeed2_6050All_count[i] -= orDiTauOld;
+    passSeed2_6055All_count[i] -= orDiTauOld;
+    passSeed2_6060All_count[i] -= orDiTauOld;   
+    }
+  }
+
 
   cout << "Varying params for Seed 2" << endl;
   cout << "xxxx number is jet pt then tau pt (using Et as Pt currently)" << endl;
-  cout << "3535" << '\t' << "3540" << '\t' << "3545" << '\t' << "3550" << '\t' << "3555" << '\t' << "3560" << endl;
+  cout << "3520" << '\t' 
+  << "3530" << '\t' 
+  << "3535" << '\t' 
+  << "3540" << '\t' 
+  << "3542" << '\t' 
+  << "3544" << '\t' 
+  << "3545" << '\t' 
+  << "3546" << '\t' 
+  << "3548" << '\t' 
+  << "3550" << '\t' 
+  << "3555" << '\t' 
+  << "3560" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_3535All_count[i] << '\t' << passSeed2_3540All_count[i] << '\t' \
-    << passSeed2_3545All_count[i] << '\t' << passSeed2_3550All_count[i] << '\t' \
-    << passSeed2_3555All_count[i] << '\t' << passSeed2_3560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_3525All_count[i] << '\t' 
+    << passSeed2_3530All_count[i] << '\t' 
+    << passSeed2_3535All_count[i] << '\t' 
+    << passSeed2_3540All_count[i] << '\t' 
+    << passSeed2_3542All_count[i] << '\t' 
+    << passSeed2_3544All_count[i] << '\t' 
+    << passSeed2_3545All_count[i] << '\t' 
+    << passSeed2_3546All_count[i] << '\t' 
+    << passSeed2_3548All_count[i] << '\t' 
+    << passSeed2_3550All_count[i] << '\t' 
+    << passSeed2_3555All_count[i] << '\t' 
+    << passSeed2_3560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
 
-  cout << "4035" << '\t' << "4040" << '\t' << "4045" << '\t' << "4050" << '\t' << "4055" << '\t' << "4060" << endl;
+  cout << "4020" << '\t' 
+  << "4030" << '\t' 
+  << "4035" << '\t' 
+  << "4040" << '\t' 
+  << "4042" << '\t' 
+  << "4044" << '\t' 
+  << "4045" << '\t' 
+  << "4046" << '\t' 
+  << "4048" << '\t' 
+  << "4050" << '\t' 
+  << "4055" << '\t' 
+  << "4060" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_4035All_count[i] << '\t' << passSeed2_4040All_count[i] << '\t' \
-    << passSeed2_4045All_count[i] << '\t' << passSeed2_4050All_count[i] << '\t' \
-    << passSeed2_4055All_count[i] << '\t' << passSeed2_4060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_4025All_count[i] << '\t' 
+    << passSeed2_4030All_count[i] << '\t' 
+    << passSeed2_4035All_count[i] << '\t' 
+    << passSeed2_4040All_count[i] << '\t' 
+    << passSeed2_4042All_count[i] << '\t' 
+    << passSeed2_4044All_count[i] << '\t' 
+    << passSeed2_4045All_count[i] << '\t' 
+    << passSeed2_4046All_count[i] << '\t' 
+    << passSeed2_4048All_count[i] << '\t' 
+    << passSeed2_4050All_count[i] << '\t' 
+    << passSeed2_4055All_count[i] << '\t' 
+    << passSeed2_4060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
 
-  cout << "4535" << '\t' << "4540" << '\t' << "4545" << '\t' << "4550" << '\t' << "4555" << '\t' << "4560" << endl;
+
+  cout << "4520" << '\t' 
+  << "4530" << '\t' 
+  << "4535" << '\t' 
+  << "4540" << '\t' 
+  << "4542" << '\t' 
+  << "4544" << '\t' 
+  << "4545" << '\t' 
+  << "4546" << '\t' 
+  << "4548" << '\t' 
+  << "4550" << '\t' 
+  << "4555" << '\t' 
+  << "4560" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_4535All_count[i] << '\t' << passSeed2_4540All_count[i] << '\t' \
-    << passSeed2_4545All_count[i] << '\t' << passSeed2_4550All_count[i] << '\t' \
-    << passSeed2_4555All_count[i] << '\t' << passSeed2_4560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_4525All_count[i] << '\t' 
+    << passSeed2_4530All_count[i] << '\t' 
+    << passSeed2_4535All_count[i] << '\t' 
+    << passSeed2_4540All_count[i] << '\t' 
+    << passSeed2_4542All_count[i] << '\t' 
+    << passSeed2_4544All_count[i] << '\t' 
+    << passSeed2_4545All_count[i] << '\t' 
+    << passSeed2_4546All_count[i] << '\t' 
+    << passSeed2_4548All_count[i] << '\t' 
+    << passSeed2_4550All_count[i] << '\t' 
+    << passSeed2_4555All_count[i] << '\t' 
+    << passSeed2_4560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
 
-  cout << "5035" << '\t' << "5040" << '\t' << "5045" << '\t' << "5050" << '\t' << "5055" << '\t' << "5060" << endl;
+  cout << "5020" << '\t' 
+  << "5030" << '\t' 
+  << "5035" << '\t' 
+  << "5040" << '\t' 
+  << "5042" << '\t' 
+  << "5044" << '\t' 
+  << "5045" << '\t' 
+  << "5046" << '\t' 
+  << "5048" << '\t' 
+  << "5050" << '\t' 
+  << "5055" << '\t' 
+  << "5060" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_5035All_count[i] << '\t' << passSeed2_5040All_count[i] << '\t' \
-    << passSeed2_5045All_count[i] << '\t' << passSeed2_5050All_count[i] << '\t' \
-    << passSeed2_5055All_count[i] << '\t' << passSeed2_5060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_5025All_count[i] << '\t' 
+    << passSeed2_5030All_count[i] << '\t' 
+    << passSeed2_5035All_count[i] << '\t' 
+    << passSeed2_5040All_count[i] << '\t' 
+    << passSeed2_5042All_count[i] << '\t' 
+    << passSeed2_5044All_count[i] << '\t' 
+    << passSeed2_5045All_count[i] << '\t' 
+    << passSeed2_5046All_count[i] << '\t' 
+    << passSeed2_5048All_count[i] << '\t' 
+    << passSeed2_5050All_count[i] << '\t' 
+    << passSeed2_5055All_count[i] << '\t' 
+    << passSeed2_5060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
 
-  cout << "5535" << '\t' << "5540" << '\t' << "5545" << '\t' << "5550" << '\t' << "5555" << '\t' << "5560" << endl;
+  cout << "5520" << '\t' 
+  << "5530" << '\t' 
+  << "5535" << '\t' 
+  << "5540" << '\t' 
+  << "5542" << '\t' 
+  << "5544" << '\t' 
+  << "5545" << '\t' 
+  << "5546" << '\t' 
+  << "5548" << '\t' 
+  << "5550" << '\t' 
+  << "5555" << '\t' 
+  << "5560" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_5535All_count[i] << '\t' << passSeed2_5540All_count[i] << '\t' \
-    << passSeed2_5545All_count[i] << '\t' << passSeed2_5550All_count[i] << '\t' \
-    << passSeed2_5555All_count[i] << '\t' << passSeed2_5560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_5525All_count[i] << '\t' 
+    << passSeed2_5530All_count[i] << '\t' 
+    << passSeed2_5535All_count[i] << '\t' 
+    << passSeed2_5540All_count[i] << '\t' 
+    << passSeed2_5542All_count[i] << '\t' 
+    << passSeed2_5544All_count[i] << '\t' 
+    << passSeed2_5545All_count[i] << '\t' 
+    << passSeed2_5546All_count[i] << '\t' 
+    << passSeed2_5548All_count[i] << '\t' 
+    << passSeed2_5550All_count[i] << '\t' 
+    << passSeed2_5555All_count[i] << '\t' 
+    << passSeed2_5560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
 
-  cout << "6035" << '\t' << "6040" << '\t' << "6045" << '\t' << "6050" << '\t' << "6055" << '\t' << "6060" << endl;
+  cout << "6020" << '\t' 
+  << "6030" << '\t' 
+  << "6035" << '\t' 
+  << "6040" << '\t' 
+  << "6042" << '\t' 
+  << "6044" << '\t' 
+  << "6045" << '\t' 
+  << "6046" << '\t' 
+  << "6048" << '\t' 
+  << "6050" << '\t' 
+  << "6055" << '\t' 
+  << "6060" << endl;
   for (int i = 0; i<6; ++i) {
-    cout << passSeed2_6035All_count[i] << '\t' << passSeed2_6040All_count[i] << '\t' \
-    << passSeed2_6045All_count[i] << '\t' << passSeed2_6050All_count[i] << '\t' \
-    << passSeed2_6055All_count[i] << '\t' << passSeed2_6060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    cout << passSeed2_6025All_count[i] << '\t' 
+    << passSeed2_6030All_count[i] << '\t' 
+    << passSeed2_6035All_count[i] << '\t' 
+    << passSeed2_6040All_count[i] << '\t' 
+    << passSeed2_6042All_count[i] << '\t' 
+    << passSeed2_6044All_count[i] << '\t' 
+    << passSeed2_6045All_count[i] << '\t' 
+    << passSeed2_6046All_count[i] << '\t' 
+    << passSeed2_6048All_count[i] << '\t' 
+    << passSeed2_6050All_count[i] << '\t' 
+    << passSeed2_6055All_count[i] << '\t' 
+    << passSeed2_6060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
   }
-
 }

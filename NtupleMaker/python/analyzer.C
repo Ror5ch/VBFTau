@@ -28,25 +28,48 @@ vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLo
   vector<TLorentzVector> crossCleanedJets;
   int jetObjsSize = jetObjs.size();
   int tauObjsSize = tauObjs.size();
-  //cout << "jetObjsSize: " << jetObjsSize << endl;
-  //cout << "tauObjsSize: " << tauObjsSize << endl;
+  int counter = 0;
   if (jetObjsSize >= 2 && tauObjsSize >= 1) {
     for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
       bool jetIsNotTau = true;
       //cout << "iJet: " << iJet << endl;
-      for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
-        float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
-        //if (dR < 0.5) cout << "\033[0;31m" << dR << "\033[0m" << endl;
-        //else {cout << dR << endl;}
-        if (dR < 0.5) jetIsNotTau = false;
+      if (counter < 2) { // jet is no longer checked once two matched taus are found
+        for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
+          float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
+          //if (dR < 0.5) cout << "\033[0;31m" << dR << "\033[0m" << endl;
+          //else {cout << dR << endl;}
+          if (dR < 0.5) jetIsNotTau = false;
+        }
       }
+      if (!jetIsNotTau) counter += 1; // if jet matches a tau (or two taus) inc counter
       if (jetIsNotTau) crossCleanedJets.push_back(jetObjs.at(iJet));
     }
   }
   else {crossCleanedJets = jetObjs;}
-  //cout << "ccJetsSize: " << crossCleanedJets.size() << endl;
+
+      if (counter >= 2 && tauObjsSize >=3 && jetObjsSize >= 3) {
+
+      //if (tauObjsSize >= 3) cout << "\033[0;31m" << "tauObjsSize: " << tauObjsSize << "\033[0m" << endl;
+      //else {cout << "tauObjsSize: " << tauObjsSize << endl;}
+      //cout << "jetObjsSize: " << jetObjsSize << endl;
+      //cout << "ccJetsSize: " << crossCleanedJets.size() << endl;
+        if (jetObjsSize - crossCleanedJets.size() == 1) {
+          cout << "tauObjsSize: " << tauObjsSize << " jetObjsSize: " << jetObjsSize << " ccJetsSize: " << crossCleanedJets.size() << endl;
+          for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
+            cout << "iJet: " << iJet << endl;
+            for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
+              cout << jetObjs.at(iJet).DeltaR(tauObjs.at(iTau)) << endl;
+            }
+          }
+        }
+
+
+      }
+
+
   return crossCleanedJets;
 }
+
 
 void setArrayElements(int array[], float value, const int cutoffs[]) {
   int arraySize = 6; // not pretty
@@ -222,11 +245,15 @@ void analyzer::Loop()
   int passSeed2_5050All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5055All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5060All_count[6] = {0,0,0,0,0,0};
-  // don't need to check 55 and 60 jets any finer for now
+
   //jet 55
   int passSeed2_5525All[6] = {0,0,0,0,0,0};
   int passSeed2_5530All[6] = {0,0,0,0,0,0};
+  int passSeed2_5532All[6] = {0,0,0,0,0,0};
+  int passSeed2_5534All[6] = {0,0,0,0,0,0};
   int passSeed2_5535All[6] = {0,0,0,0,0,0};
+  int passSeed2_5536All[6] = {0,0,0,0,0,0};
+  int passSeed2_5538All[6] = {0,0,0,0,0,0};
   int passSeed2_5540All[6] = {0,0,0,0,0,0};
   int passSeed2_5542All[6] = {0,0,0,0,0,0};
   int passSeed2_5544All[6] = {0,0,0,0,0,0};
@@ -238,7 +265,11 @@ void analyzer::Loop()
   int passSeed2_5560All[6] = {0,0,0,0,0,0};
   int passSeed2_5525All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5530All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5532All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5534All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5535All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5536All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_5538All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5540All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5542All_count[6] = {0,0,0,0,0,0};
   int passSeed2_5544All_count[6] = {0,0,0,0,0,0};
@@ -251,7 +282,11 @@ void analyzer::Loop()
   //jet 60
   int passSeed2_6025All[6] = {0,0,0,0,0,0};
   int passSeed2_6030All[6] = {0,0,0,0,0,0};
+  int passSeed2_6032All[6] = {0,0,0,0,0,0};
+  int passSeed2_6034All[6] = {0,0,0,0,0,0};
   int passSeed2_6035All[6] = {0,0,0,0,0,0};
+  int passSeed2_6036All[6] = {0,0,0,0,0,0};
+  int passSeed2_6038All[6] = {0,0,0,0,0,0};
   int passSeed2_6040All[6] = {0,0,0,0,0,0};
   int passSeed2_6042All[6] = {0,0,0,0,0,0};
   int passSeed2_6044All[6] = {0,0,0,0,0,0};
@@ -263,7 +298,11 @@ void analyzer::Loop()
   int passSeed2_6060All[6] = {0,0,0,0,0,0};
   int passSeed2_6025All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6030All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6032All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6034All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6035All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6036All_count[6] = {0,0,0,0,0,0};
+  int passSeed2_6038All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6040All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6042All_count[6] = {0,0,0,0,0,0};
   int passSeed2_6044All_count[6] = {0,0,0,0,0,0};
@@ -426,10 +465,13 @@ void analyzer::Loop()
       passSeed2_5055All[i] = 0;
       passSeed2_5060All[i] = 0;
 
-      // don't need finer granularity for 55 60 jets for now
       passSeed2_5525All[i] = 0;
       passSeed2_5530All[i] = 0;
+      passSeed2_5532All[i] = 0;
+      passSeed2_5534All[i] = 0;
       passSeed2_5535All[i] = 0;
+      passSeed2_5536All[i] = 0;
+      passSeed2_5538All[i] = 0;
       passSeed2_5540All[i] = 0;
       passSeed2_5542All[i] = 0;
       passSeed2_5544All[i] = 0;
@@ -442,7 +484,11 @@ void analyzer::Loop()
 
       passSeed2_6025All[i] = 0;
       passSeed2_6030All[i] = 0;
+      passSeed2_6032All[i] = 0;
+      passSeed2_6034All[i] = 0;
       passSeed2_6035All[i] = 0;
+      passSeed2_6036All[i] = 0;
+      passSeed2_6038All[i] = 0;
       passSeed2_6040All[i] = 0;
       passSeed2_6042All[i] = 0;
       passSeed2_6044All[i] = 0;
@@ -620,7 +666,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso30Size = jetCands55RmvOlTauCandsIso30.size();
     int jetCands60RmvOlTauCandsIso30Size = jetCands60RmvOlTauCandsIso30.size();
 
-    // isoTau30
+    // isoTau32
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso32;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso32;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso32;
@@ -640,7 +686,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso32Size = jetCands55RmvOlTauCandsIso32.size();
     int jetCands60RmvOlTauCandsIso32Size = jetCands60RmvOlTauCandsIso32.size();
 
-    // isoTau30
+    // isoTau34
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso34;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso34;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso34;
@@ -681,7 +727,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso35Size = jetCands55RmvOlTauCandsIso35.size();
     int jetCands60RmvOlTauCandsIso35Size = jetCands60RmvOlTauCandsIso35.size();
 
-    // isoTau30
+    // isoTau36
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso36;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso36;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso36;
@@ -701,7 +747,7 @@ void analyzer::Loop()
     int jetCands55RmvOlTauCandsIso36Size = jetCands55RmvOlTauCandsIso36.size();
     int jetCands60RmvOlTauCandsIso36Size = jetCands60RmvOlTauCandsIso36.size();
 
-    // isoTau30
+    // isoTau38
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso38;
     vector<TLorentzVector> jetCands40RmvOlTauCandsIso38;
     vector<TLorentzVector> jetCands45RmvOlTauCandsIso38;
@@ -1003,9 +1049,9 @@ void analyzer::Loop()
 
     if (jetCands50RmvOlTauCandsIso32Size >= 2) setArrayElements(passSeed2_5032All, highestMassOfPair(jetCands50RmvOlTauCandsIso32, tauCandsIso32), mjjCuts);
 
-   // if (jetCands55RmvOlTauCandsIso32Size >= 2) setArrayElements(passSeed2_5532All, highestMassOfPair(jetCands55RmvOlTauCandsIso32, tauCandsIso32), mjjCuts);
+    if (jetCands55RmvOlTauCandsIso32Size >= 2) setArrayElements(passSeed2_5532All, highestMassOfPair(jetCands55RmvOlTauCandsIso32, tauCandsIso32), mjjCuts);
 
-   // if (jetCands60RmvOlTauCandsIso32Size >= 2) setArrayElements(passSeed2_6032All, highestMassOfPair(jetCands60RmvOlTauCandsIso32, tauCandsIso32), mjjCuts);
+    if (jetCands60RmvOlTauCandsIso32Size >= 2) setArrayElements(passSeed2_6032All, highestMassOfPair(jetCands60RmvOlTauCandsIso32, tauCandsIso32), mjjCuts);
   }
 
   if (tauCandsIso34Size >= 1) {
@@ -1017,9 +1063,9 @@ void analyzer::Loop()
 
     if (jetCands50RmvOlTauCandsIso34Size >= 2) setArrayElements(passSeed2_5034All, highestMassOfPair(jetCands50RmvOlTauCandsIso34, tauCandsIso34), mjjCuts);
 
-   // if (jetCands55RmvOlTauCandsIso34Size >= 2) setArrayElements(passSeed2_5534All, highestMassOfPair(jetCands55RmvOlTauCandsIso34, tauCandsIso34), mjjCuts);
+    if (jetCands55RmvOlTauCandsIso34Size >= 2) setArrayElements(passSeed2_5534All, highestMassOfPair(jetCands55RmvOlTauCandsIso34, tauCandsIso34), mjjCuts);
 
-   // if (jetCands60RmvOlTauCandsIso34Size >= 2) setArrayElements(passSeed2_6034All, highestMassOfPair(jetCands60RmvOlTauCandsIso34, tauCandsIso34), mjjCuts);
+    if (jetCands60RmvOlTauCandsIso34Size >= 2) setArrayElements(passSeed2_6034All, highestMassOfPair(jetCands60RmvOlTauCandsIso34, tauCandsIso34), mjjCuts);
   }
 
   if (tauCandsIso35Size >= 1) {
@@ -1045,9 +1091,9 @@ void analyzer::Loop()
 
     if (jetCands50RmvOlTauCandsIso36Size >= 2) setArrayElements(passSeed2_5036All, highestMassOfPair(jetCands50RmvOlTauCandsIso36, tauCandsIso36), mjjCuts);
 
-   // if (jetCands55RmvOlTauCandsIso36Size >= 2) setArrayElements(passSeed2_5536All, highestMassOfPair(jetCands55RmvOlTauCandsIso36, tauCandsIso36), mjjCuts);
+    if (jetCands55RmvOlTauCandsIso36Size >= 2) setArrayElements(passSeed2_5536All, highestMassOfPair(jetCands55RmvOlTauCandsIso36, tauCandsIso36), mjjCuts);
 
-   // if (jetCands60RmvOlTauCandsIso36Size >= 2) setArrayElements(passSeed2_6036All, highestMassOfPair(jetCands60RmvOlTauCandsIso36, tauCandsIso36), mjjCuts);
+    if (jetCands60RmvOlTauCandsIso36Size >= 2) setArrayElements(passSeed2_6036All, highestMassOfPair(jetCands60RmvOlTauCandsIso36, tauCandsIso36), mjjCuts);
   }
 
   if (tauCandsIso38Size >= 1) {
@@ -1059,9 +1105,9 @@ void analyzer::Loop()
 
     if (jetCands50RmvOlTauCandsIso38Size >= 2) setArrayElements(passSeed2_5038All, highestMassOfPair(jetCands50RmvOlTauCandsIso38, tauCandsIso38), mjjCuts);
 
-  //  if (jetCands55RmvOlTauCandsIso38Size >= 2) setArrayElements(passSeed2_5538All, highestMassOfPair(jetCands55RmvOlTauCandsIso38, tauCandsIso38), mjjCuts);
+    if (jetCands55RmvOlTauCandsIso38Size >= 2) setArrayElements(passSeed2_5538All, highestMassOfPair(jetCands55RmvOlTauCandsIso38, tauCandsIso38), mjjCuts);
 
-   // if (jetCands60RmvOlTauCandsIso38Size >= 2) setArrayElements(passSeed2_6038All, highestMassOfPair(jetCands60RmvOlTauCandsIso38, tauCandsIso38), mjjCuts);
+    if (jetCands60RmvOlTauCandsIso38Size >= 2) setArrayElements(passSeed2_6038All, highestMassOfPair(jetCands60RmvOlTauCandsIso38, tauCandsIso38), mjjCuts);
   }
 
   if (tauCandsIso40Size >= 1) {
@@ -1276,7 +1322,11 @@ void analyzer::Loop()
     // 55 and 60 jets dont need finer granularity for now
     passSeed2_5525All_count[i] += passSeed2_5525All[i];
     passSeed2_5530All_count[i] += passSeed2_5530All[i];
+    passSeed2_5532All_count[i] += passSeed2_5532All[i];
+    passSeed2_5534All_count[i] += passSeed2_5534All[i];
     passSeed2_5535All_count[i] += passSeed2_5535All[i];
+    passSeed2_5536All_count[i] += passSeed2_5536All[i];
+    passSeed2_5538All_count[i] += passSeed2_5538All[i];
     passSeed2_5540All_count[i] += passSeed2_5540All[i];
     passSeed2_5542All_count[i] += passSeed2_5542All[i];
     passSeed2_5544All_count[i] += passSeed2_5544All[i];
@@ -1289,7 +1339,11 @@ void analyzer::Loop()
 
     passSeed2_6025All_count[i] += passSeed2_6025All[i];
     passSeed2_6030All_count[i] += passSeed2_6030All[i];
+    passSeed2_6032All_count[i] += passSeed2_6032All[i];
+    passSeed2_6034All_count[i] += passSeed2_6034All[i];
     passSeed2_6035All_count[i] += passSeed2_6035All[i];
+    passSeed2_6036All_count[i] += passSeed2_6036All[i];
+    passSeed2_6038All_count[i] += passSeed2_6038All[i];
     passSeed2_6040All_count[i] += passSeed2_6040All[i];
     passSeed2_6042All_count[i] += passSeed2_6042All[i];
     passSeed2_6044All_count[i] += passSeed2_6044All[i];
@@ -1371,10 +1425,13 @@ void analyzer::Loop()
     passSeed2_5060All_count[i] +=1;
 
 
-    // 55 and 60 jets dont need finer granularity for now
     passSeed2_5525All_count[i] +=1;
     passSeed2_5530All_count[i] +=1;
+    passSeed2_5532All_count[i] +=1;
+    passSeed2_5534All_count[i] +=1;
     passSeed2_5535All_count[i] +=1;
+    passSeed2_5536All_count[i] +=1;
+    passSeed2_5538All_count[i] +=1;
     passSeed2_5540All_count[i] +=1;
     passSeed2_5542All_count[i] +=1;
     passSeed2_5544All_count[i] +=1;
@@ -1387,7 +1444,11 @@ void analyzer::Loop()
 
     passSeed2_6025All_count[i] +=1;
     passSeed2_6030All_count[i] +=1;
+    passSeed2_6032All_count[i] +=1;
+    passSeed2_6034All_count[i] +=1;
     passSeed2_6035All_count[i] +=1;
+    passSeed2_6036All_count[i] +=1;
+    passSeed2_6038All_count[i] +=1;
     passSeed2_6040All_count[i] +=1;
     passSeed2_6042All_count[i] +=1;
     passSeed2_6044All_count[i] +=1;
@@ -1599,10 +1660,13 @@ void analyzer::Loop()
     passSeed2_5060All_count[i] -= orDiTauOld;
 
 
-    // 55 and 60 jets dont need finer granularity for now
     passSeed2_5525All_count[i] -= orDiTauOld;
     passSeed2_5530All_count[i] -= orDiTauOld;
+    passSeed2_5532All_count[i] -= orDiTauOld;
+    passSeed2_5534All_count[i] -= orDiTauOld;
     passSeed2_5535All_count[i] -= orDiTauOld;
+    passSeed2_5536All_count[i] -= orDiTauOld;
+    passSeed2_5538All_count[i] -= orDiTauOld;
     passSeed2_5540All_count[i] -= orDiTauOld;
     passSeed2_5542All_count[i] -= orDiTauOld;
     passSeed2_5544All_count[i] -= orDiTauOld;
@@ -1615,7 +1679,11 @@ void analyzer::Loop()
 
     passSeed2_6025All_count[i] -= orDiTauOld;
     passSeed2_6030All_count[i] -= orDiTauOld;
+    passSeed2_6032All_count[i] -= orDiTauOld;
+    passSeed2_6034All_count[i] -= orDiTauOld;
     passSeed2_6035All_count[i] -= orDiTauOld;
+    passSeed2_6036All_count[i] -= orDiTauOld;
+    passSeed2_6038All_count[i] -= orDiTauOld;
     passSeed2_6040All_count[i] -= orDiTauOld;
     passSeed2_6042All_count[i] -= orDiTauOld;
     passSeed2_6044All_count[i] -= orDiTauOld;
@@ -1631,25 +1699,27 @@ void analyzer::Loop()
 
 
   cout << "Varying params for Seed 2" << endl;
-  cout << "xxxx number is jet pt then tau pt (using Et as Pt currently)" << endl;
-  cout << "3525" << '\t' 
-  << "3530" << '\t' 
-  << "3532" << '\t' 
-  << "3534" << '\t' 
-  << "3535" << '\t' 
-  << "3536" << '\t' 
-  << "3538" << '\t' 
-  << "3540" << '\t' 
-  << "3542" << '\t' 
-  << "3544" << '\t' 
-  << "3545" << '\t' 
-  << "3546" << '\t' 
-  << "3548" << '\t' 
-  << "3550" << '\t' 
-  << "3555" << '\t' 
-  << "3560" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_3525All_count[i] << '\t' 
+  cout << "using Et as Pt currently" << endl;
+  cout << "JetPt=35, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t'
+    << passSeed2_3525All_count[i] << '\t' 
     << passSeed2_3530All_count[i] << '\t' 
     << passSeed2_3532All_count[i] << '\t' 
     << passSeed2_3534All_count[i] << '\t' 
@@ -1664,27 +1734,29 @@ void analyzer::Loop()
     << passSeed2_3548All_count[i] << '\t' 
     << passSeed2_3550All_count[i] << '\t' 
     << passSeed2_3555All_count[i] << '\t' 
-    << passSeed2_3560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_3560All_count[i] << endl;
   }
 
-  cout << "4025" << '\t' 
-  << "4030" << '\t' 
-  << "4032" << '\t' 
-  << "4034" << '\t' 
-  << "4035" << '\t' 
-  << "4036" << '\t' 
-  << "4038" << '\t' 
-  << "4040" << '\t' 
-  << "4042" << '\t' 
-  << "4044" << '\t' 
-  << "4045" << '\t' 
-  << "4046" << '\t' 
-  << "4048" << '\t' 
-  << "4050" << '\t' 
-  << "4055" << '\t' 
-  << "4060" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_4025All_count[i] << '\t' 
+  cout << "JetPt=40, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t' 
+    << passSeed2_4025All_count[i] << '\t' 
     << passSeed2_4030All_count[i] << '\t' 
     << passSeed2_4032All_count[i] << '\t' 
     << passSeed2_4034All_count[i] << '\t' 
@@ -1699,28 +1771,29 @@ void analyzer::Loop()
     << passSeed2_4048All_count[i] << '\t' 
     << passSeed2_4050All_count[i] << '\t' 
     << passSeed2_4055All_count[i] << '\t' 
-    << passSeed2_4060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_4060All_count[i] << endl;
   }
 
-
-  cout << "4525" << '\t' 
-  << "4530" << '\t' 
-  << "4532" << '\t' 
-  << "4534" << '\t' 
-  << "4535" << '\t' 
-  << "4536" << '\t' 
-  << "4538" << '\t' 
-  << "4540" << '\t' 
-  << "4542" << '\t' 
-  << "4544" << '\t' 
-  << "4545" << '\t' 
-  << "4546" << '\t' 
-  << "4548" << '\t' 
-  << "4550" << '\t' 
-  << "4555" << '\t' 
-  << "4560" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_4525All_count[i] << '\t' 
+  cout << "JetPt=45, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t'
+    << passSeed2_4525All_count[i] << '\t' 
     << passSeed2_4530All_count[i] << '\t' 
     << passSeed2_4532All_count[i] << '\t' 
     << passSeed2_4534All_count[i] << '\t' 
@@ -1735,27 +1808,29 @@ void analyzer::Loop()
     << passSeed2_4548All_count[i] << '\t' 
     << passSeed2_4550All_count[i] << '\t' 
     << passSeed2_4555All_count[i] << '\t' 
-    << passSeed2_4560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_4560All_count[i] << endl;
   }
 
-  cout << "5025" << '\t' 
-  << "5030" << '\t' 
-  << "5032" << '\t' 
-  << "5034" << '\t' 
-  << "5035" << '\t' 
-  << "5036" << '\t' 
-  << "5038" << '\t' 
-  << "5040" << '\t' 
-  << "5042" << '\t' 
-  << "5044" << '\t' 
-  << "5045" << '\t' 
-  << "5046" << '\t' 
-  << "5048" << '\t' 
-  << "5050" << '\t' 
-  << "5055" << '\t' 
-  << "5060" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_5025All_count[i] << '\t' 
+  cout << "JetPt=50, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t' 
+    << passSeed2_5025All_count[i] << '\t' 
     << passSeed2_5030All_count[i] << '\t' 
     << passSeed2_5032All_count[i] << '\t' 
     << passSeed2_5034All_count[i] << '\t' 
@@ -1770,25 +1845,35 @@ void analyzer::Loop()
     << passSeed2_5048All_count[i] << '\t' 
     << passSeed2_5050All_count[i] << '\t' 
     << passSeed2_5055All_count[i] << '\t' 
-    << passSeed2_5060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_5060All_count[i] << endl;
   }
-  // don't need finer granularity in high jets for now
-  cout << "5525" << '\t' 
-  << "5530" << '\t' 
-  << "5535" << '\t' 
-  << "5540" << '\t' 
-  << "5542" << '\t' 
-  << "5544" << '\t' 
-  << "5545" << '\t' 
-  << "5546" << '\t' 
-  << "5548" << '\t' 
-  << "5550" << '\t' 
-  << "5555" << '\t' 
-  << "5560" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_5525All_count[i] << '\t' 
+  
+  cout << "JetPt=55, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t' 
+    << passSeed2_5525All_count[i] << '\t' 
     << passSeed2_5530All_count[i] << '\t' 
+    << passSeed2_5532All_count[i] << '\t' 
+    << passSeed2_5534All_count[i] << '\t' 
     << passSeed2_5535All_count[i] << '\t' 
+    << passSeed2_5536All_count[i] << '\t' 
+    << passSeed2_5538All_count[i] << '\t' 
     << passSeed2_5540All_count[i] << '\t' 
     << passSeed2_5542All_count[i] << '\t' 
     << passSeed2_5544All_count[i] << '\t' 
@@ -1797,25 +1882,35 @@ void analyzer::Loop()
     << passSeed2_5548All_count[i] << '\t' 
     << passSeed2_5550All_count[i] << '\t' 
     << passSeed2_5555All_count[i] << '\t' 
-    << passSeed2_5560All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_5560All_count[i] << endl;
   }
 
-  cout << "6025" << '\t' 
-  << "6030" << '\t' 
-  << "6035" << '\t' 
-  << "6040" << '\t' 
-  << "6042" << '\t' 
-  << "6044" << '\t' 
-  << "6045" << '\t' 
-  << "6046" << '\t' 
-  << "6048" << '\t' 
-  << "6050" << '\t' 
-  << "6055" << '\t' 
-  << "6060" << endl;
-  for (int i = 0; i<6; ++i) {
-    cout << passSeed2_6025All_count[i] << '\t' 
+  cout << "JetPt=60, TauPt [25,60], 2MassOnLeft" << endl;
+  cout << '\t' << "25" << '\t' 
+  << "30" << '\t' 
+  << "32" << '\t' 
+  << "34" << '\t' 
+  << "35" << '\t' 
+  << "36" << '\t' 
+  << "38" << '\t' 
+  << "40" << '\t' 
+  << "42" << '\t' 
+  << "44" << '\t' 
+  << "45" << '\t' 
+  << "46" << '\t' 
+  << "48" << '\t' 
+  << "50" << '\t' 
+  << "55" << '\t' 
+  << "60" << endl;
+  for (int i = 1; i<6; ++i) {
+    cout << mjjCuts[i] << '\t' 
+    << passSeed2_6025All_count[i] << '\t' 
     << passSeed2_6030All_count[i] << '\t' 
+    << passSeed2_6032All_count[i] << '\t' 
+    << passSeed2_6034All_count[i] << '\t' 
     << passSeed2_6035All_count[i] << '\t' 
+    << passSeed2_6036All_count[i] << '\t' 
+    << passSeed2_6038All_count[i] << '\t' 
     << passSeed2_6040All_count[i] << '\t' 
     << passSeed2_6042All_count[i] << '\t' 
     << passSeed2_6044All_count[i] << '\t' 
@@ -1824,6 +1919,6 @@ void analyzer::Loop()
     << passSeed2_6048All_count[i] << '\t' 
     << passSeed2_6050All_count[i] << '\t' 
     << passSeed2_6055All_count[i] << '\t' 
-    << passSeed2_6060All_count[i] << '\t' << "mjj cut " << mjjCuts[i] << endl;
+    << passSeed2_6060All_count[i] << endl;
   }
 }

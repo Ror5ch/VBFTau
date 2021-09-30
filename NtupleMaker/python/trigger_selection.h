@@ -188,18 +188,22 @@ std::vector<TLorentzVector> crossCleanJets(std::vector<TLorentzVector> jetObjs, 
     std::vector<TLorentzVector> crossCleanedJets;
     int jetObjsSize = jetObjs.size();
     int tauObjsSize = tauObjs.size();
+    int counter = 0;
     //std::cout << "jetObjsSize: " << jetObjsSize << std::endl;
     //std::cout << "tauObjsSize: " << tauObjsSize << std::endl;
     if (jetObjsSize >= 2 && tauObjsSize >= 1) {
       for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
         bool jetIsNotTau = true;
         //std::cout << "iJet: " << iJet << std::endl;
-	for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
-          float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
-          //if (dR < 0.5) std::cout << "\033[0;31m" << dR << "\033[0m" << std::endl;
-          //else {std::cout << dR << std::endl;} 
-	  if (dR < 0.5) jetIsNotTau = false;
+        if (counter < 2) { //jet is no longer checked once two matched taus are found
+	  for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
+            float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
+            //if (dR < 0.5) std::cout << "\033[0;31m" << dR << "\033[0m" << std::endl;
+            //else {std::cout << dR << std::endl;} 
+	    if (dR < 0.5) jetIsNotTau = false;
+          }
         }
+        if (!jetIsNotTau) counter += 1;
         if (jetIsNotTau) crossCleanedJets.push_back(jetObjs.at(iJet));
       }
     }

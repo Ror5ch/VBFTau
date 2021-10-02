@@ -10,8 +10,8 @@ float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVec
   float mjotjot_ = 0; float tempMjotjot_ = 0;
   int jetSize = jetsRmvOlTaus.size();
   vector<TLorentzVector> combined;
-  combined.insert(combined.begin(), jetsRmvOlTaus.begin(), jetsRmvOlTaus.end());
-  combined.insert(combined.end(), taus.begin(), taus.end());
+  combined.insert(combined.begin(), jetsRmvOlTaus.begin(), jetsRmvOlTaus.begin() + 2);//jetsRmvOlTaus.end());
+  combined.insert(combined.end(), taus.begin(), taus.begin() +2); //taus.end());
   int combinedSize = combined.size();
   for (int iObj = 0; iObj < combinedSize; ++iObj) {
     for (int jObj = 0; jObj < combinedSize; ++jObj) {

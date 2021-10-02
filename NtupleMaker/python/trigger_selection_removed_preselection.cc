@@ -32,74 +32,6 @@ int main(int argc, char** argv)	{
     TTree *outTree = new TTree("outTree", "outTree");
     outTree->SetDirectory(0);
 
-    if (argc < 4) {
-	std::cout << "specify trigger cuts in third argument (old, new, tight, or)" << std::endl;
-	return 0; // prevents rest of code from running
-    }
-
-    std::string whichTrigger = *(argv + 3);
-    std::string oldTrigString = "old";
-    std::string newTrigString = "new";
-    std::string tightTrigString = "tight";
-    std::string orTrigString = "or";
-    std::string L1StudyTrigString = "L1";
-    std::string diTauTrigString = "diTau";
-
-    int triggerFlag = -1;
-    if ((whichTrigger.find(oldTrigString) == std::string::npos && 
-	whichTrigger.find(newTrigString) == std::string::npos &&
-	whichTrigger.find(tightTrigString) == std::string::npos &&
-	whichTrigger.find(orTrigString) == std::string::npos &&
-	whichTrigger.find(L1StudyTrigString) == std::string::npos ) || argc < 4) {
-	std::cout << "specify trigger cuts in third argument (old, new, tight, or, L1)" << std::endl;
-	return 0;
-    }
-
-    // vars for AOD selection, which change depending on the trigger being studied
-    float t1_pt_cut, t2_pt_cut, j1_pt_cut, j2_pt_cut, mjj_cut;
-    // offline selection should be consistently 5 GeV above HLT thresholds
-    if (whichTrigger.find(oldTrigString) != std::string::npos){
-	t1_pt_cut = 25;
-	t2_pt_cut = 25;
-	j1_pt_cut = 120;
-	j2_pt_cut = 45;
-	mjj_cut = 700;
-	triggerFlag = 0;
-    }
-    if (whichTrigger.find(newTrigString) != std::string::npos){
-	t1_pt_cut = 50;
-	t2_pt_cut = 25;
-	j1_pt_cut = 45;
-	j2_pt_cut = 45;
-	mjj_cut = 550;
-	triggerFlag = 1;
-    }
-    if (whichTrigger.find(tightTrigString) != std::string::npos){
-	t1_pt_cut = 80;
-	t2_pt_cut = 40;
-	j1_pt_cut = 120;
-	j2_pt_cut = 45;
-	mjj_cut = 700;
-	triggerFlag = 2;
-    }
-    if (whichTrigger.find(orTrigString) != std::string::npos){
-	t1_pt_cut = 25;
-	t2_pt_cut = 25;
-	j1_pt_cut = 45;
-	j2_pt_cut = 45;
-	mjj_cut = 550;
-	triggerFlag = 3;
-    }
-    if (whichTrigger.find(L1StudyTrigString) != std::string::npos) {
-	t1_pt_cut = t2_pt_cut = j1_pt_cut = j2_pt_cut = mjj_cut = 0;
-	triggerFlag = 4;
-    }
-    if (whichTrigger.find(diTauTrigString) != std::string::npos) {
-        t1_pt_cut = t2_pt_cut = 32;
-        j1_pt_cut = j2_pt_cut = mjj_cut = 0;
-        triggerFlag = 5;
-    }
-
 
     float minimal_tau_pt_cut = 32;
     float minimal_jet_pt_cut = 30;
@@ -338,6 +270,9 @@ int main(int argc, char** argv)	{
     int passOldORNewL1ANDOff = 0;
     int passDiTauANDHTT350ANDOldORNewL1ANDOff = 0;
 
+    int passL1ANDOffDiTauOROldORNew2ANDHTT350 = 0;
+    int passL1ANDOffDiTauOROldANDHTT350 = 0;
+
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
     //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
@@ -365,8 +300,6 @@ int main(int argc, char** argv)	{
 
 
 	//---------------------apply base selection and fill AOD objects------------------------------//
-	// base selection flag (cuts are arbitrary so they're not physically meaningful)
-	// artifact of trying to decouple matching and selection steps.
 	min_cutflow->Fill(0.0,1.0); // fill cutflow before any selection
 
 	int vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
@@ -448,32 +381,17 @@ int main(int argc, char** argv)	{
 	sel_cutflow->Fill(1.0,1.0);
 
 	// -----------------------------------------L1 investigation -----------------------------//
-	int oldL1JetSize = inTree->hltL1VBFDiJetOR_pt->size();
-	int newL1JetSize = inTree->hltL1VBFDiJetIsoTau_jetPt->size();
-	int newL1TauSize = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
-	int diTauL1TauSize = inTree->hltL1sDoubleTauBigOR_pt->size();
 	int primL1TauSize = inTree->tauL1PrimitivesPt->size();
 	int primL1JetSize = inTree->jetL1PrimitivesPt->size();
-	TLorentzVector objOne, objTwo; // two objects used for invariant mass, mjj in most cases
-	double twoObjMass;
 
-	printNewL1 = false;
-	printOldL1 = false;
-
-	printPrimL1 = true;
 	int primL1JetPtCut = 35;
         int primL1IsoTau32PtCut = 32;
 	int primL1TauPtCut = 35;
 	int primL1IsoTau40PtCut = 40;
 	int primL1IsoTau45PtCut = 45;
-	// testing multiple possible L1s, pay attention to the booleans,,,
-	massL1Testing = true;
-	bool oldVBFwL1Prim = false;
-	bool newVBFwL1Prim = false;
-	bool massDblJetOrJetTau_DblJetOneIsoTau = true;
 
 	// ad hoc pass sel...
-	if (triggerFlag == 4) {
+	if (true) { //triggerFlag == 4) {
             if (tauCandsSize >= 2) passDiTau_Off = 1;
 	    if (jetCandsSize >= 2) {
               // common to all
@@ -543,12 +461,7 @@ int main(int argc, char** argv)	{
 
         // old VBF
 	if (jetPrimSize >= 2) {
-/***	
-	  std::tie(objOne, objTwo) = highestMassPair(jetL1Primitives);
-	  twoObjMass = (objOne + objTwo).M();
-	  double jetOnePt = objOne.Pt();
-	  double jetTwoPt = objTwo.Pt();
-***/
+
           bool jet110Present = false;
 	  for (int iJet = 0; iJet < jetPrimSize; ++iJet) {
 	    if (jetL1Primitives.at(iJet).Pt() >= 110) jet110Present = true;
@@ -565,19 +478,10 @@ int main(int argc, char** argv)	{
           }
           if (mjj_Old >= 620) passOld_L1 = 1;
         }
-	  
-	  //if (twoObjMass >= 620 && (((jetOnePt >= 110 && jetTwoPt >= 35) || (jetOnePt >= 35 && jetTwoPt >= 110))
-	//		|| (jetOnePt >= 35 && jetTwoPt >= 35 && someJetGreaterThan110GeV)) ){ passOld_L1 = 1;}
-	//}
 
         //newVBF
 	if (ccWrtIsoTau45L1JetPrimSize >= 2 && isoTau45PrimSize >= 1) {
 	  // check mjj
-          //std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
-	  //twoObjMass = (objOne + objTwo).M();
-          //if (twoObjMass >= 450) {
-	  //  passNew_L1 = 1;
-	  //}
 	  float mjj_New = 0; float tempMjj_ = 0;
           for (int iJet = 0; iJet < ccWrtIsoTau45L1JetPrimSize; ++iJet) {
             for (int jJet = 0; jJet < ccWrtIsoTau45L1JetPrimSize; ++jJet) {
@@ -594,21 +498,7 @@ int main(int argc, char** argv)	{
 	  // we exclude the two tau case for this seed, but allow the two jet case.
 	  // To do this, we look for the highestMassPair of just jets and then
 	  // the highest mass pair using one tau and one jet. Then we take the larger of the two pairs
-	  /***
-	  TLorentzVector tempObjOne, tempObjTwo;
-	  std::tie(tempObjOne, tempObjTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives, "OneJetOneTau");
-	  double tempTwoObjMass = (tempObjOne + tempObjTwo).M();
-	  std::tie(objOne, objTwo) = highestMassPair(crossCleanedL1PrimJetsWrtIsoTau45);
-	  twoObjMass = (objOne + objTwo).M();
-          if (tempTwoObjMass > twoObjMass) {
-            twoObjMass = tempTwoObjMass; objOne = tempObjOne; objTwo = tempObjTwo;
-	    //std::cout << "OneJetOneTau heavier than DiJet" << std::endl; // happens about half the time w Rmv Ol.
-	  }
 
-          if (twoObjMass >= 450) {
-	    passNew2_L1 = 1;
-          }
-***/
           float mjj_New2 = highestMassOfPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives);
           if (mjj_New2 >= 450) passNew2_L1 = 1;
 	}
@@ -673,12 +563,18 @@ int main(int argc, char** argv)	{
         passOldORNewL1ANDOff += ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off));
         passDiTauANDHTT350ANDOldORNewL1ANDOff += ((passDiTau_L1 && passHTT350) && ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off)));
 
+        //numerator
+        passL1ANDOffDiTauOROldORNew2ANDHTT350 += (((passDiTau_L1 && passDiTau_Off) || (passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off)) && passHTT350);
+        //denominator
+        passL1ANDOffDiTauOROldANDHTT350 += (((passDiTau_L1 && passDiTau_Off) || (passOld_L1 && passOld_Off)) && passHTT350);
+
 
 	//----------------------filling filter flags-------------------------------//
 	// at the Ntuple level, it's possible some filters are filled by both trigger paths,
 	// so filling them manually by chaining together if statements gives us a more accurate 
 	// picture of which filters were filled by which paths.
 	
+/***
 	// old trigger filter flags initialization
 	passL1Old = 0;
 	passhltHpsDoublePFTau20Old = 0;
@@ -686,7 +582,6 @@ int main(int argc, char** argv)	{
 	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
     	passhltMatchedVBFTwoTight = 0;
  	passhltMatchedVBFOneTight = 0;
-
 	// filling old trigger filter flags
 	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) passL1Old = inTree->passhltL1VBFDiJetOR;
 
@@ -721,6 +616,7 @@ int main(int argc, char** argv)	{
 	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->hltHpsPFTau50Tight_pt->size() >= 1) passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight;
 
 	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
+***/
 /***	
         // fill kine branches with matched AOD
         if (passSel) {
@@ -774,6 +670,7 @@ int main(int argc, char** argv)	{
     std::cout << "HTT" << '\t' << "HTT350" << std::endl;
     std::cout << passHTTCount << '\t' << passHTT350Count << std::endl;
 
+/***
     std::cout << passDiTauOffORHTT << '\t' << "Pass DiTau Offline OR HTT" << std::endl;
     std::cout << passDiTauOffORHTT350 << '\t' << "Pass DiTau Offline OR HTT350" << std::endl;
     std::cout << passDiTauOROld_Off << '\t' << "Pass DiTau OR Old" << std::endl;
@@ -787,11 +684,12 @@ int main(int argc, char** argv)	{
     std::cout << passDiTauANDNew2_Off << '\t' << "Pass DiTau AND New2" << std::endl;
     std::cout << passOldANDNew2_Off << '\t' << "Pass Old AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_Off << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
-
+***/
     std::cout << "L1 Numbers" << std::endl;
     std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
     std::cout << passDiTau_L1Count << '\t' << passOld_L1Count << '\t' << passNew_L1Count << '\t' << passNew2_L1Count << '\t' << "Event#" << std::endl;
 
+/***
     std::cout << passDiTauL1ORHTT << '\t' << "Pass DiTau L1 OR HTT" << std::endl;
     std::cout << passDiTauL1ORHTT350 << '\t' << "Pass DiTau L1 OR HTT350" << std::endl;
     std::cout << passDiTauOROld_L1 << '\t' << "Pass DiTau OR Old" << std::endl;
@@ -805,22 +703,23 @@ int main(int argc, char** argv)	{
     std::cout << passDiTauANDNew2_L1 << '\t' << "Pass DiTau AND New2" << std::endl;
     std::cout << passOldANDNew2_L1 << '\t' << "Pass Old AND New2" << std::endl;
     std::cout << passDiTauANDOldANDNew2_L1 << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
-
+***/
     std::cout << "Passing L1 AND Offline" << std::endl;
-    std::cout << passDiTauL1ANDOff << '\t' << "DiTau" << std::endl;
-    std::cout << passOldL1ANDOff << '\t' << "Old" << std::endl;
-    std::cout << passNewL1ANDOff << '\t' << "New" << std::endl;
-    std::cout << passNew2L1ANDOff << '\t' << "New2" << std::endl;
+    std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
+    std::cout << passDiTauL1ANDOff << '\t' << passOldL1ANDOff << '\t' << passNewL1ANDOff << '\t' << passNew2L1ANDOff << '\t' << "Event#" << std::endl;
+/***
     std::cout << passOldNew2L1ANDOff << '\t' << "Old AND New2" << std::endl;
     std::cout << passDiTauL1ANDNew2L1ANDOff << '\t' << "DiTau L1 AND New2 L1 AND Off" << std::endl;
     std::cout << passDiTauL1ANDOldNew2L1ANDOff << '\t' << "DiTau L1, Old AND New2 Offline AND L1" << std::endl;
     std::cout << passDiTauOldNew2L1ANDOff << '\t' << "DiTau AND Old AND New2" << std::endl;
     std::cout << passDiTauL1ANDHTT350ANDOldNew2L1ANDOff << '\t' << "Pass DiTau L1 AND HTT350, Old AND New2 Offline AND L1" << std::endl;
     std::cout << passDiTauL1ANDHTT350ANDNew2L1ANDOff << '\t' << "Pass DiTau L1 AND HTT350 AND New2 Offline AND L1" << std::endl;
-
-    std::cout << "I'm tired" << std::endl;
-    std::cout << passOldORNewL1ANDOff << '\t' << "Old OR New L1 AND Off" << std::endl;
-    std::cout << passDiTauANDHTT350ANDOldORNewL1ANDOff << '\t' << "DiTau AND HTT350 AND (Old OR New2 L1 AND Offline)" << std::endl;
+***/
+    //std::cout << "I'm tired" << std::endl;
+    //std::cout << passOldORNewL1ANDOff << '\t' << "Old OR New L1 AND Off" << std::endl;
+    //std::cout << passDiTauANDHTT350ANDOldORNewL1ANDOff << '\t' << "DiTau AND HTT350 AND (Old OR New2 L1 AND Offline)" << std::endl;
+    std::cout << passL1ANDOffDiTauOROldORNew2ANDHTT350 << " num = pass L1 and Off for (DiTau or Old or New2) and Htt" << std::endl;
+    std::cout << passL1ANDOffDiTauOROldANDHTT350 << " denom = pass L1 and Off for (DiTau or Old) and Htt" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

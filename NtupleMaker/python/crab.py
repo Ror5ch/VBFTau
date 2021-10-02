@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'zeroBiasHLT.py'#'HLTandRAW4520Taus.py'#'ditau_and_vbf.py'
+config.JobType.psetName = 'AODConfFile.py'#'zeroBiasHLT.py'#'HLTandRAW4520Taus.py'#'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -19,7 +19,7 @@ config.Data.outLFNDirBase = '/store/user/ballmond' #'/store/user/knam'
 config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_US_*', 'T2_RU_JINR', 'T1_RU_JINR']
 #config.Site.whitelist = ['T3_US_FNALLPC']
-config.Site.whitelist = ['T2_US_*','T2_BE_*']
+config.Site.whitelist = ['T2_US_*']
 #config.Site.ignoreGlobalBlacklist = True
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
@@ -60,9 +60,11 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBFHToTauTau_L1SeedRatesNtuple_AODandRAW7'
-    config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'
-    config.Data.secondaryInputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW' 
+    config.General.requestName = 'GluGluHToTauTau_RecoAndL1Primitives'
+    config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'
+    #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v1/MINIAODSIM'
+    #config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'
+    #config.Data.secondaryInputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW' 
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18MiniAOD-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/MINIAODSIM'
     #config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring18DR-NZSPU28to70_100X_upgrade2018_realistic_v10-v1/GEN-SIM-RAW'

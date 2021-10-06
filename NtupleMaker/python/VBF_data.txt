@@ -1,0 +1,38 @@
+Offline Numbers
+DiTau32	DiTau35	Old	New	New2	Passing
+25348	20280	15099	27048	23774	Event#
+HTT	HTT350
+35327	27816
+L1 Numbers
+DiTau32	DiTau35	Old	New	New2	Passing
+70121	63814	32808	34772	48739	Event#
+Passing L1 AND Offline
+DiTau32	DiTau35	Old	New	New2	Passing
+23353	18817	14534	17039	21501	Event#
+20981 num = pass L1 and Off for (DiTau35 or New2) and Htt
+22819 denom = pass L1 and Off for (DiTau32) and Htt
+New2 DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl
+L1	Off.	Both	Both & DiTau35
+48739	23774	21501	9320	from 35 45 400 L1, add 10 15 50 for offline
+variations passing
+L1	Off.	Both	Both & DiTau35
+48739	23774	21501	9320	 from 35 45 400 L1, add 10 15 50 for offline (STANDARD)
+48155	23267	21071	9159	 from 35 46 400 L1, add 10 15 50 for offline
+46642	24076	21443	9405	 from 35 42 450 L1, add 10 15 50 for offline 
+44435	24685	21595	9417	 from 35 38 500 L1, add 10 15 50 for offline 
+36591	18761	16389	7638	 from 35 48 550 L1, add 10 15 50 for offline 
+38630	23237	19758	8681	 from 35 35 600 L1, add 10 15 50 for offline 
+----------------------------------------------
+46243	22903	20307	8855	 from 40 40 400 L1, add 10 15 50 for offline 
+43566	23536	20494	8930	 from 40 36 450 L1, add 10 15 50 for offline 
+40404	23081	19770	8573	 from 40 34 500 L1, add 10 15 50 for offline 
+37348	22533	19010	8105	 from 40 32 550 L1, add 10 15 50 for offline 
+34465	22694	18756	7665	 from 40 28 600 L1, add 10 15 50 for offline 
+----------------------------------------------
+41132	17837	16170	7316	 from 45 34 400 L1, add 10 15 50 for offline 
+37380	19595	17438	7268	 from 45 28 450 L1, add 10 15 50 for offline 
+34531	19595	17086	7179	 from 45 28 500 L1, add 10 15 50 for offline 
+31862	19595	16481	6970	 from 45 28 550 L1, add 10 15 50 for offline 
+----------------------------------------------
+33164	16673	14323	6352	 from 50 28 400 L1, add 10 15 50 for offline 
+31988	17393	14995	6341	 from 50 25 450 L1, add 10 15 50 for offline

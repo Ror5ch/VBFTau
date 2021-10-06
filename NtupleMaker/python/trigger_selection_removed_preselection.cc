@@ -32,10 +32,6 @@ int main(int argc, char** argv)	{
     TTree *outTree = new TTree("outTree", "outTree");
     outTree->SetDirectory(0);
 
-
-    float minimal_tau_pt_cut = 32;
-    float minimal_jet_pt_cut = 30;
-
     // run variables
     int nEvents, runNumber, lumiBlock, eventNumberID;
 
@@ -205,35 +201,54 @@ int main(int argc, char** argv)	{
     int passHTT350 = 0;
     int passHTTCount = 0;
     int passHTT350Count = 0;
-    int passDiTauOffORHTT = 0;
-    int passDiTauOffORHTT350 = 0;
-    int passDiTauOffANDHTT = 0;
-    int passDiTauOffANDHTT350 = 0;
-    int passDiTauL1ORHTT = 0;
-    int passDiTauL1ORHTT350 = 0;
-    int passDiTauL1ANDHTT = 0;
-    int passDiTauL1ANDHTT350 = 0;
+    //int passDiTauOffORHTT = 0;
+    //int passDiTauOffORHTT350 = 0;
+    //int passDiTauOffANDHTT = 0;
+    //int passDiTauOffANDHTT350 = 0;
+    //int passDiTauL1ORHTT = 0;
+    //int passDiTauL1ORHTT350 = 0;
+    //int passDiTauL1ANDHTT = 0;
+    //int passDiTauL1ANDHTT350 = 0;
 
 
 
-    int passDiTau_Off = 0;
+    int passDiTau32_Off = 0;
+    int passDiTau35_Off = 0;
     int passOld_Off = 0;
     int passNew_Off = 0;
     int passNew2_Off = 0;
-    int passDiTau_OffCount = 0;
+
+    int passDiTau32_OffCount = 0;
+    int passDiTau35_OffCount = 0;
     int passOld_OffCount = 0;
     int passNew_OffCount = 0;
     int passNew2_OffCount = 0;
 
-    int passDiTau_L1 = 0;
+    int passDiTau32_L1 = 0;
+    int passDiTau35_L1 = 0;
     int passOld_L1 = 0;
     int passNew_L1 = 0;
     int passNew2_L1 = 0;
-    int passDiTau_L1Count = 0;
+
+    int passDiTau32_L1Count = 0;
+    int passDiTau35_L1Count = 0;
     int passOld_L1Count = 0;
     int passNew_L1Count = 0;
     int passNew2_L1Count = 0;
 
+    int passDiTau32L1ANDOff = 0;
+    int passDiTau35L1ANDOff = 0;
+    int passOldL1ANDOff = 0;
+    int passNewL1ANDOff = 0;
+    int passNew2L1ANDOff = 0;
+
+    // {L1, Off., Both}
+    int passDiTau32_Counter[3] = {0, 0, 0};
+    int passDiTau35_Counter[3] = {0, 0, 0};
+    int passOld_Counter[3] = {0, 0, 0};
+    int passNew_Counter[3] = {0, 0, 0};
+    int passNew2_Counter[4] = {0, 0, 0, 0};
+/***
     int passDiTauOROld_Off = 0;
     int passDiTauORNew2_Off = 0;
     int passDiTauOROldORNew2_Off = 0;
@@ -269,16 +284,56 @@ int main(int argc, char** argv)	{
 
     int passOldORNewL1ANDOff = 0;
     int passDiTauANDHTT350ANDOldORNewL1ANDOff = 0;
+***/
 
-    int passL1ANDOffDiTauOROldORNew2ANDHTT350 = 0;
-    int passL1ANDOffDiTauOROldANDHTT350 = 0;
+    int passL1ANDOffDiTau35ORNew2ANDHTT350 = 0;
+    int passL1ANDOffDiTau32ANDHTT350 = 0;
+
+    // {L1, Offline, Both, Both AND DiTau35}
+    // jet35, tauYY
+    int passJet35_Tau46_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
+
+    int passJet35_Tau45_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
+
+    int passJet35_Tau42_MassAnyTwo450_Counter[4] = {0, 0, 0, 0};
+
+    int passJet35_Tau38_MassAnyTwo500_Counter[4] = {0, 0, 0, 0};
+
+    int passJet35_Tau48_MassAnyTwo550_Counter[4] = {0, 0, 0, 0};
+
+    int passJet35_Tau35_MassAnyTwo600_Counter[4] = {0, 0, 0, 0};
+    // jet40, tauYY
+    int passJet40_Tau40_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
+
+    int passJet40_Tau36_MassAnyTwo450_Counter[4] = {0, 0, 0, 0};
+
+    int passJet40_Tau34_MassAnyTwo500_Counter[4] = {0, 0, 0, 0};
+
+    int passJet40_Tau32_MassAnyTwo550_Counter[4] = {0, 0, 0, 0};
+
+    int passJet40_Tau28_MassAnyTwo600_Counter[4] = {0, 0, 0, 0};
+    // jet45, tauYY
+    int passJet45_Tau34_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
+
+    int passJet45_Tau28_MassAnyTwo450_Counter[4] = {0, 0, 0, 0};
+
+    int passJet45_Tau28_MassAnyTwo500_Counter[4] = {0, 0, 0, 0};
+
+    int passJet45_Tau28_MassAnyTwo550_Counter[4] = {0, 0, 0, 0};
+    // jet50, tauYY
+    int passJet50_Tau28_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
+
+    int passJet50_Tau25_MassAnyTwo450_Counter[4] = {0, 0, 0, 0};
+
+
+
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
     //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
-	if (iEntry % 100000 == 0) std::cout << std::to_string(iEntry) << std::endl;
+	if (iEntry % 1000000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
 	nEvents = inTree->nEvents;
 	runNumber = inTree->runNumber;
@@ -288,12 +343,14 @@ int main(int argc, char** argv)	{
         passHTT = 0;
         passHTT350 = 0;
 
-        passDiTau_Off = 0;
+        passDiTau32_Off = 0;
+        passDiTau35_Off = 0;
         passOld_Off = 0;
         passNew_Off = 0;
         passNew2_Off = 0;
 
-        passDiTau_L1 = 0;
+        passDiTau32_L1 = 0;
+        passDiTau35_L1 = 0;
         passOld_L1 = 0;
         passNew_L1 = 0;
         passNew2_L1 = 0;
@@ -304,13 +361,11 @@ int main(int argc, char** argv)	{
 
 	int vecSizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int vecSizeAODJet = inTree->jetPt->size(); // number of jets in event
-	//minimal selection common to both triggers//
-	// check the number of objects in the event, need at least two of each
 	min_cutflow->Fill(1.0,1.0);
 	min_cutflow->Fill(2.0,1.0); 
 	// fill cutflow with events that have 2 taus and 2 jets
 	// check kinematics and ID of tau objects, store good taus
-	std::vector<TLorentzVector> tauCandidates;	
+	std::vector<TLorentzVector> isoTau25AODCands;	
 	for (int iTau = 0; iTau < vecSizeAODTau; ++iTau) {
             bool passTauID = false;
 	    deepTauVSjet = inTree->tauByMediumDeepTau2017v2p1VSjet->at(iTau) > 0.5;
@@ -319,23 +374,27 @@ int main(int argc, char** argv)	{
 	
 	    if (deepTauVSjet && deepTauVSmu && deepTauVSele) passTauID = true;
 
-	    if (passTauID && inTree->tauPt->at(iTau) >= minimal_tau_pt_cut && fabs(inTree->tauEta->at(iTau) <= 2.1)) {
+	    if (passTauID && inTree->tauPt->at(iTau) >= 25 && fabs(inTree->tauEta->at(iTau) <= 2.1)) {
 	      TLorentzVector tauCand;
 	      tauCand.SetPtEtaPhiE(inTree->tauPt->at(iTau),
 				     inTree->tauEta->at(iTau), 
 				     inTree->tauPhi->at(iTau), 
 				     inTree->tauEnergy->at(iTau));
-	      tauCandidates.push_back(tauCand);
+	      isoTau25AODCands.push_back(tauCand);
             }
 	}
-        int tauCandsSize = tauCandidates.size();
-        if (tauCandsSize < 2) continue; // need two taus minimum
+        int isoTau25AODCandsSize = isoTau25AODCands.size();
+        if (isoTau25AODCandsSize < 2) continue; // need two taus minimum
+
 
 	// take first two AOD taus that aren't overlapped
-	// tauCandidates are already ordered by pt (this was checked with simple cout statements)
+	// isoTau25AODCands are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector AODTau1, AODTau2;
-	AODTau1.SetPtEtaPhiE(tauCandidates.at(0).Pt(), tauCandidates.at(0).Eta(), tauCandidates.at(0).Phi(), tauCandidates.at(0).Energy());
-	for (std::vector<TLorentzVector>::const_iterator iTau = tauCandidates.begin()+1; iTau != tauCandidates.end(); ++iTau) {
+	AODTau1.SetPtEtaPhiE(isoTau25AODCands.at(0).Pt(), 
+                             isoTau25AODCands.at(0).Eta(), 
+                             isoTau25AODCands.at(0).Phi(), 
+                             isoTau25AODCands.at(0).Energy());
+	for (std::vector<TLorentzVector>::const_iterator iTau = isoTau25AODCands.begin()+1; iTau != isoTau25AODCands.end(); ++iTau) {
 	    AODTau2.SetPtEtaPhiE(iTau->Pt(), iTau->Eta(), iTau->Phi(), iTau->Energy());
 	    if (AODTau2.DeltaR(AODTau1) > 0.5) break; // if taus are not overlapped, leave the for-loop
 	}
@@ -348,13 +407,13 @@ int main(int argc, char** argv)	{
 	sel_cutflow->Fill(0.0,1.0); // start of smaller cutflow graph (using two for scaling purposes)
 
 	// check kinematics and ID of jet objects, store good jets
-	std::vector<TLorentzVector> jetCandidates;
+	std::vector<TLorentzVector> jet30Cands;
 	for (int iJet = 0; iJet < vecSizeAODJet; ++iJet){
 
             bool passJetID = false;
 	    if (inTree->jetID->at(iJet) >= 6) passJetID = true; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 
-	    if (passJetID && inTree->jetPt->at(iJet) >= minimal_jet_pt_cut && fabs(inTree->jetEta->at(iJet) <= 4.7)) {
+	    if (passJetID && inTree->jetPt->at(iJet) >= 30 && fabs(inTree->jetEta->at(iJet) <= 4.7)) {
 	      TLorentzVector jetCand;
 	      jetCand.SetPtEtaPhiE(inTree->jetPt->at(iJet), 
 				     inTree->jetEta->at(iJet), 
@@ -364,158 +423,551 @@ int main(int argc, char** argv)	{
 	      bool jetCandIsTau = false;
 	      if (AODTau1.DeltaR(jetCand) < 0.5 || AODTau2.DeltaR(jetCand) < 0.5) jetCandIsTau = true;
 
-	      if (!jetCandIsTau) jetCandidates.push_back(jetCand);
+	      if (!jetCandIsTau) jet30Cands.push_back(jetCand);
             }
 	}
 	// check that we have at least two good jets
-	int jetCandsSize = jetCandidates.size(); //ideally we now have at least 2 jets
+	int jet30CandsSize = jet30Cands.size(); 
+        if (jet30CandsSize < 2) continue;
 
 	// fill AOD jets with pair of jets that produced the largest mjj value
 	// from cout statements, AODJet1 was verified to be leading jet
 	TLorentzVector AODJet1, AODJet2;
-	if (jetCandsSize >= 2) {
-          std::tie(AODJet1, AODJet2) = highestMassPair(jetCandidates);
-        }
+        std::tie(AODJet1, AODJet2) = highestMassPair(jet30Cands);
 
 	min_cutflow->Fill(4.0,1.0);
 	sel_cutflow->Fill(1.0,1.0);
 
-	// -----------------------------------------L1 investigation -----------------------------//
-	int primL1TauSize = inTree->tauL1PrimitivesPt->size();
-	int primL1JetSize = inTree->jetL1PrimitivesPt->size();
-
-	int primL1JetPtCut = 35;
-        int primL1IsoTau32PtCut = 32;
-	int primL1TauPtCut = 35;
-	int primL1IsoTau40PtCut = 40;
-	int primL1IsoTau45PtCut = 45;
 
 	// ad hoc pass sel...
-	if (true) { //triggerFlag == 4) {
-            if (tauCandsSize >= 2) passDiTau_Off = 1;
-	    if (jetCandsSize >= 2) {
-              // common to all
-              // all possible mass pairs to check
-	      double mj1j2 = (AODJet1 + AODJet2).M();
-	      double mj1t1 = (AODJet1 + AODTau1).M(); 
-	      double mj1t2 = (AODJet1 + AODTau2).M();
-	      double mj2t1 = (AODJet2 + AODTau1).M();
-	      double mj2t2 = (AODJet2 + AODTau2).M();
-	      //double mt1t2 = (AODTau1 + AODTau2).M();
+        // common to all
+        // all possible mass pairs to check
+	double mj1j2 = (AODJet1 + AODJet2).M();
+	double mj1t1 = (AODJet1 + AODTau1).M(); 
+	double mj1t2 = (AODJet1 + AODTau2).M();
+	double mj2t1 = (AODJet2 + AODTau1).M();
+	double mj2t2 = (AODJet2 + AODTau2).M();
+	//double mt1t2 = (AODTau1 + AODTau2).M();
 
-              int pass2Mass = (mj1j2 >= 450 || mj1t1 >= 450 || mj1t2 >= 450 || mj2t1 >= 450 || mj2t2 >= 450);
+        int pass2Mass400 = (mj1j2 >= 400 || mj1t1 >= 400 || mj1t2 >= 400 || mj2t1 >= 400 || mj2t2 >= 400);
+        int pass2Mass450 = (mj1j2 >= 450 || mj1t1 >= 450 || mj1t2 >= 450 || mj2t1 >= 450 || mj2t2 >= 450);
+        int pass2Mass500 = (mj1j2 >= 500 || mj1t1 >= 500 || mj1t2 >= 500 || mj2t1 >= 500 || mj2t2 >= 500);
+        int pass2Mass550 = (mj1j2 >= 550 || mj1t1 >= 550 || mj1t2 >= 550 || mj2t1 >= 550 || mj2t2 >= 550);
+        int pass2Mass600 = (mj1j2 >= 600 || mj1t1 >= 600 || mj1t2 >= 600 || mj2t1 >= 600 || mj2t2 >= 600);
+        int pass2Mass650 = (mj1j2 >= 650 || mj1t1 >= 650 || mj1t2 >= 650 || mj2t1 >= 650 || mj2t2 >= 650);
 
-              double AODJet1Pt_ = AODJet1.Pt();	
-              double AODJet2Pt_ = AODJet2.Pt();	
-              double AODTau1Pt_ = AODTau1.Pt();
-              double AODTau2Pt_ = AODTau2.Pt();
+        double AODJet1Pt_ = AODJet1.Pt();	
+        double AODJet2Pt_ = AODJet2.Pt();	
+        double AODTau1Pt_ = AODTau1.Pt();
+        double AODTau2Pt_ = AODTau2.Pt();
 
-              if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40) passHTT = 1;
-              if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40 && mj1j2 >= 350) passHTT350 = 1;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40) passHTT = 1;
+        passHTTCount += passHTT;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40 && mj1j2 >= 350) passHTT350 = 1;
+        passHTT350Count += passHTT350;
 
-	      if (AODJet1Pt_ >= 120 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
-	      
-              if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && mj1j2 >= 550) passNew_Off = 1;
+        int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 40 && dEtajj >= 2.5) passDiTau32_Off = 1;
+        passDiTau32_Counter[1] += passDiTau32_Off;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 53 && AODTau2Pt_ >= 43 && dEtajj >= 2.5) passDiTau35_Off = 1;
+        passDiTau35_Counter[1] += passDiTau35_Off;
 
-              if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && pass2Mass) passNew2_Off = 1;
+	if (AODJet1Pt_ >= 120 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
+        passOld_Counter[1] += passOld_Off;
+	
+        if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && mj1j2 >= 550) passNew_Off = 1;
+        passNew_Counter[1] += passNew_Off;
 
-            }
+        if (AODJet1Pt_ >= (35+10) && AODJet2Pt_ >= (35+10) && AODTau1Pt_ >= (45+18) && AODTau2Pt_ >= 25 && pass2Mass450) passNew2_Off = 1;
+        passNew2_Counter[1] += passNew2_Off;
 
-	} // end pass[Tag]_L1 loop
+        // new vbf seed variations
+        // define L1 then see if the offline version is passed (+10 jets, +15 taus, +50 MassAnyTwo)
+        // do literally one variation 35 46 400
+        int offJetInc = 10;
+	int offTauInc = 18;
+        int offM2Inc = 50;
 
-	// fill standard containers, jet container, tau container, and isoTau container
-	std::vector<TLorentzVector> jetL1Primitives = hltFillWithCands(inTree, "jetL1Primitives", primL1JetSize, primL1JetPtCut);
-	int jetPrimSize = jetL1Primitives.size();
-	std::vector<TLorentzVector> tauL1Primitives = hltFillWithCands(inTree, "tauL1Primitives", primL1TauSize, primL1TauPtCut);
-	int tauPrimSize = tauL1Primitives.size();
+        // jet 35 variations
+        int passJet35_Tau45_MassAnyTwo400_L1[4] = {35, 45, 400, 0};
+        int passJet35_Tau45_MassAnyTwo400_Off[4] = {35+offJetInc, 45+offTauInc, 400+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau45_MassAnyTwo400_Off[0] && AODJet2Pt_ >= passJet35_Tau45_MassAnyTwo400_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau45_MassAnyTwo400_Off[1] && AODTau2Pt_ >= 25 && pass2Mass450) passJet35_Tau45_MassAnyTwo400_Off[3] = 1;
+        passJet35_Tau45_MassAnyTwo400_Counter[1] += passJet35_Tau45_MassAnyTwo400_Off[3];
 
-	std::vector<TLorentzVector> isoTau32L1Primitives;
-        for (int iTau = 0; iTau < tauPrimSize; ++iTau) {
-          TLorentzVector tempTau_ = tauL1Primitives.at(iTau);
-          if (tempTau_.Pt() >= primL1IsoTau32PtCut && inTree->tauL1PrimitivesIso->at(iTau)) isoTau32L1Primitives.push_back(tempTau_);
+        int passJet35_Tau46_MassAnyTwo400_L1[4] = {35, 46, 400, 0};
+        int passJet35_Tau46_MassAnyTwo400_Off[4] = {35+offJetInc, 46+offTauInc, 400+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau46_MassAnyTwo400_Off[0] && AODJet2Pt_ >= passJet35_Tau46_MassAnyTwo400_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau46_MassAnyTwo400_Off[1] && AODTau2Pt_ >= 25 && pass2Mass450) passJet35_Tau46_MassAnyTwo400_Off[3] = 1;
+        passJet35_Tau46_MassAnyTwo400_Counter[1] += passJet35_Tau46_MassAnyTwo400_Off[3];
+
+        int passJet35_Tau42_MassAnyTwo450_L1[4] = {35, 42, 450, 0};
+        int passJet35_Tau42_MassAnyTwo450_Off[4] = {35+offJetInc, 42+offTauInc, 450+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau42_MassAnyTwo450_Off[0] && AODJet2Pt_ >= passJet35_Tau42_MassAnyTwo450_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau42_MassAnyTwo450_Off[1] && AODTau2Pt_ >= 25 && pass2Mass500) passJet35_Tau42_MassAnyTwo450_Off[3] = 1;
+        passJet35_Tau42_MassAnyTwo450_Counter[1] += passJet35_Tau42_MassAnyTwo450_Off[3];
+
+        int passJet35_Tau38_MassAnyTwo500_L1[4] = {35, 38, 500, 0}; 
+        int passJet35_Tau38_MassAnyTwo500_Off[4] = {35+offJetInc, 38+offTauInc, 500+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau38_MassAnyTwo500_Off[0] && AODJet2Pt_ >= passJet35_Tau38_MassAnyTwo500_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau38_MassAnyTwo500_Off[1] && AODTau2Pt_ >= 25 && pass2Mass550) passJet35_Tau38_MassAnyTwo500_Off[3] = 1;
+        passJet35_Tau38_MassAnyTwo500_Counter[1] += passJet35_Tau38_MassAnyTwo500_Off[3];
+
+        int passJet35_Tau48_MassAnyTwo550_L1[4] = {35, 48, 550, 0};
+        int passJet35_Tau48_MassAnyTwo550_Off[4] = {35+offJetInc, 48+offTauInc, 550+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau48_MassAnyTwo550_Off[0] && AODJet2Pt_ >= passJet35_Tau48_MassAnyTwo550_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau48_MassAnyTwo550_Off[1] && AODTau2Pt_ >= 25 && pass2Mass600) passJet35_Tau48_MassAnyTwo550_Off[3] = 1;
+        passJet35_Tau48_MassAnyTwo550_Counter[1] += passJet35_Tau48_MassAnyTwo550_Off[3];
+
+        int passJet35_Tau35_MassAnyTwo600_L1[4] = {35, 35, 600, 0};
+        int passJet35_Tau35_MassAnyTwo600_Off[4] = {35+offJetInc, 35+offTauInc, 600+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet35_Tau35_MassAnyTwo600_Off[0] && AODJet2Pt_ >= passJet35_Tau35_MassAnyTwo600_Off[0] &&
+            AODTau1Pt_ >= passJet35_Tau35_MassAnyTwo600_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet35_Tau35_MassAnyTwo600_Off[3] = 1;
+        passJet35_Tau35_MassAnyTwo600_Counter[1] += passJet35_Tau35_MassAnyTwo600_Off[3];
+
+        // jet 40 variations
+        int passJet40_Tau40_MassAnyTwo400_L1[4] = {40, 40, 400, 0};
+        int passJet40_Tau40_MassAnyTwo400_Off[4] = {40+offJetInc, 40+offTauInc, 400+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet40_Tau40_MassAnyTwo400_Off[0] && AODJet2Pt_ >= passJet40_Tau40_MassAnyTwo400_Off[0] &&
+            AODTau1Pt_ >= passJet40_Tau40_MassAnyTwo400_Off[1] && AODTau2Pt_ >= 25 && pass2Mass450) passJet40_Tau40_MassAnyTwo400_Off[3] = 1;
+        passJet40_Tau40_MassAnyTwo400_Counter[1] += passJet40_Tau40_MassAnyTwo400_Off[3];
+
+        int passJet40_Tau36_MassAnyTwo450_L1[4] = {40, 36, 450, 0};
+        int passJet40_Tau36_MassAnyTwo450_Off[4] = {40+offJetInc, 36+offTauInc, 450+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet40_Tau36_MassAnyTwo450_Off[0] && AODJet2Pt_ >= passJet40_Tau36_MassAnyTwo450_Off[0] &&
+            AODTau1Pt_ >= passJet40_Tau36_MassAnyTwo450_Off[1] && AODTau2Pt_ >= 25 && pass2Mass500) passJet40_Tau36_MassAnyTwo450_Off[3] = 1;
+        passJet40_Tau36_MassAnyTwo450_Counter[1] += passJet40_Tau36_MassAnyTwo450_Off[3];
+
+        int passJet40_Tau34_MassAnyTwo500_L1[4] = {40, 34, 500, 0};
+        int passJet40_Tau34_MassAnyTwo500_Off[4] = {40+offJetInc, 34+offTauInc, 500+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet40_Tau34_MassAnyTwo500_Off[0] && AODJet2Pt_ >= passJet40_Tau34_MassAnyTwo500_Off[0] &&
+            AODTau1Pt_ >= passJet40_Tau34_MassAnyTwo500_Off[1] && AODTau2Pt_ >= 25 && pass2Mass550) passJet40_Tau34_MassAnyTwo500_Off[3] = 1;
+        passJet40_Tau34_MassAnyTwo500_Counter[1] += passJet40_Tau34_MassAnyTwo500_Off[3];
+
+        int passJet40_Tau32_MassAnyTwo550_L1[4] = {40, 32, 550, 0};
+        int passJet40_Tau32_MassAnyTwo550_Off[4] = {40+offJetInc, 32+offTauInc, 550+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet40_Tau32_MassAnyTwo550_Off[0] && AODJet2Pt_ >= passJet40_Tau32_MassAnyTwo550_Off[0] &&
+            AODTau1Pt_ >= passJet40_Tau32_MassAnyTwo550_Off[1] && AODTau2Pt_ >= 25 && pass2Mass600) passJet40_Tau32_MassAnyTwo550_Off[3] = 1;
+        passJet40_Tau32_MassAnyTwo550_Counter[1] += passJet40_Tau32_MassAnyTwo550_Off[3];
+
+        int passJet40_Tau28_MassAnyTwo600_L1[4] = {40, 28, 600, 0};
+        int passJet40_Tau28_MassAnyTwo600_Off[4] = {40+offJetInc, 28+offTauInc, 600+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet40_Tau28_MassAnyTwo600_Off[0] && AODJet2Pt_ >= passJet40_Tau28_MassAnyTwo600_Off[0] &&
+            AODTau1Pt_ >= passJet40_Tau28_MassAnyTwo600_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet40_Tau28_MassAnyTwo600_Off[3] = 1;
+        passJet40_Tau28_MassAnyTwo600_Counter[1] += passJet40_Tau28_MassAnyTwo600_Off[3];
+
+        // jet45 variations
+        int passJet45_Tau34_MassAnyTwo400_L1[4] = {45, 34, 400, 0};
+        int passJet45_Tau34_MassAnyTwo400_Off[4] = {45+offJetInc, 34+offTauInc, 400+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet45_Tau34_MassAnyTwo400_Off[0] && AODJet2Pt_ >= passJet45_Tau34_MassAnyTwo400_Off[0] &&
+            AODTau1Pt_ >= passJet45_Tau34_MassAnyTwo400_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet45_Tau34_MassAnyTwo400_Off[3] = 1;
+        passJet45_Tau34_MassAnyTwo400_Counter[1] += passJet45_Tau34_MassAnyTwo400_Off[3];
+
+        int passJet45_Tau28_MassAnyTwo450_L1[4] = {45, 28, 450, 0};
+        int passJet45_Tau28_MassAnyTwo450_Off[4] = {45+offJetInc, 28+offTauInc, 450+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet45_Tau28_MassAnyTwo450_Off[0] && AODJet2Pt_ >= passJet45_Tau28_MassAnyTwo450_Off[0] &&
+            AODTau1Pt_ >= passJet45_Tau28_MassAnyTwo450_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet45_Tau28_MassAnyTwo450_Off[3] = 1;
+        passJet45_Tau28_MassAnyTwo450_Counter[1] += passJet45_Tau28_MassAnyTwo450_Off[3];
+
+        int passJet45_Tau28_MassAnyTwo500_L1[4] = {45, 28, 500, 0};
+        int passJet45_Tau28_MassAnyTwo500_Off[4] = {45+offJetInc, 28+offTauInc, 500+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet45_Tau28_MassAnyTwo500_Off[0] && AODJet2Pt_ >= passJet45_Tau28_MassAnyTwo500_Off[0] &&
+            AODTau1Pt_ >= passJet45_Tau28_MassAnyTwo500_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet45_Tau28_MassAnyTwo500_Off[3] = 1;
+        passJet45_Tau28_MassAnyTwo500_Counter[1] += passJet45_Tau28_MassAnyTwo500_Off[3];
+
+        int passJet45_Tau28_MassAnyTwo550_L1[4] = {45, 28, 550, 0};
+        int passJet45_Tau28_MassAnyTwo550_Off[4] = {45+offJetInc, 28+offTauInc, 550+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet45_Tau28_MassAnyTwo550_Off[0] && AODJet2Pt_ >= passJet45_Tau28_MassAnyTwo550_Off[0] &&
+            AODTau1Pt_ >= passJet45_Tau28_MassAnyTwo550_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet45_Tau28_MassAnyTwo550_Off[3] = 1;
+        passJet45_Tau28_MassAnyTwo550_Counter[1] += passJet45_Tau28_MassAnyTwo550_Off[3];
+
+        // jet50 variations
+        int passJet50_Tau28_MassAnyTwo400_L1[4] = {50, 28, 400, 0};
+        int passJet50_Tau28_MassAnyTwo400_Off[4] = {50+offJetInc, 28+offTauInc, 400+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet50_Tau28_MassAnyTwo400_Off[0] && AODJet2Pt_ >= passJet50_Tau28_MassAnyTwo400_Off[0] &&
+            AODTau1Pt_ >= passJet50_Tau28_MassAnyTwo400_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet50_Tau28_MassAnyTwo400_Off[3] = 1;
+        passJet50_Tau28_MassAnyTwo400_Counter[1] += passJet50_Tau28_MassAnyTwo400_Off[3];
+
+        int passJet50_Tau25_MassAnyTwo450_L1[4] = {50, 25, 450, 0};
+        int passJet50_Tau25_MassAnyTwo450_Off[4] = {50+offJetInc, 25+offTauInc, 450+offM2Inc, 0};
+        if (AODJet1Pt_ >= passJet50_Tau25_MassAnyTwo450_Off[0] && AODJet2Pt_ >= passJet50_Tau25_MassAnyTwo450_Off[0] &&
+            AODTau1Pt_ >= passJet50_Tau25_MassAnyTwo450_Off[1] && AODTau2Pt_ >= 25 && pass2Mass650) passJet50_Tau25_MassAnyTwo450_Off[3] = 1;
+        passJet50_Tau25_MassAnyTwo450_Counter[1] += passJet50_Tau25_MassAnyTwo450_Off[3];
+
+
+	//---------------------L1----------------------------//
+
+	// fill object containers
+	int primL1JetSize = inTree->jetL1PrimitivesPt->size();
+	std::vector<TLorentzVector> jet30L1Cands = hltFillWithCands(inTree, "jetL1Primitives", primL1JetSize, 30);
+	int jet30L1Size = jet30L1Cands.size();
+
+        std::vector<TLorentzVector> jet35L1Cands;
+        std::vector<TLorentzVector> jet40L1Cands;
+        std::vector<TLorentzVector> jet45L1Cands;
+        std::vector<TLorentzVector> jet50L1Cands;
+        for (int iJet = 0; iJet < jet30L1Size; ++iJet) {
+          TLorentzVector tempJet_ = jet30L1Cands.at(iJet);
+          if (tempJet_.Pt() >= 35) jet35L1Cands.push_back(tempJet_);
+          if (tempJet_.Pt() >= 40) jet40L1Cands.push_back(tempJet_);
+          if (tempJet_.Pt() >= 45) jet45L1Cands.push_back(tempJet_);
+          if (tempJet_.Pt() >= 50) jet50L1Cands.push_back(tempJet_);
         }
-        int isoTau32PrimSize = isoTau32L1Primitives.size();
+        int jet35L1Size = jet35L1Cands.size();
+        int jet40L1Size = jet40L1Cands.size();
+        int jet45L1Size = jet45L1Cands.size();
+        int jet50L1Size = jet50L1Cands.size();
 
-        std::vector<TLorentzVector> isoTau35L1Primitives;
-	std::vector<TLorentzVector> isoTau40L1Primitives;
-        std::vector<TLorentzVector> isoTau45L1Primitives;
-	for (int iTau = 0; iTau < isoTau32PrimSize; ++iTau) {
-          TLorentzVector tempTau_ = tauL1Primitives.at(iTau);
-          if (tempTau_.Pt() > 35) isoTau35L1Primitives.push_back(tempTau_);
-	  if (tempTau_.Pt() > primL1IsoTau40PtCut) isoTau40L1Primitives.push_back(tempTau_);
-          if (tempTau_.Pt() > primL1IsoTau45PtCut) isoTau45L1Primitives.push_back(tempTau_);
+	int primL1TauSize = inTree->tauL1PrimitivesPt->size();
+
+	std::vector<TLorentzVector> tau25L1Cands = hltFillWithCands(inTree, "tauL1Primitives", primL1TauSize, 25);
+	int tau25L1Size = tau25L1Cands.size();
+
+	std::vector<TLorentzVector> isoTau25L1Cands;
+        for (int iTau = 0; iTau < tau25L1Size; ++iTau) {
+          TLorentzVector tempTau_ = tau25L1Cands.at(iTau);
+          if (tempTau_.Pt() >= 25 && inTree->tauL1PrimitivesIso->at(iTau)) isoTau25L1Cands.push_back(tempTau_);
+        }
+        int isoTau25L1Size = isoTau25L1Cands.size();
+
+        std::vector<TLorentzVector> isoTau28L1Cands;
+        std::vector<TLorentzVector> isoTau30L1Cands;
+        std::vector<TLorentzVector> isoTau32L1Cands;
+        std::vector<TLorentzVector> isoTau34L1Cands;
+        std::vector<TLorentzVector> isoTau35L1Cands;
+        std::vector<TLorentzVector> isoTau36L1Cands;
+        std::vector<TLorentzVector> isoTau38L1Cands;
+	std::vector<TLorentzVector> isoTau40L1Cands;
+	std::vector<TLorentzVector> isoTau42L1Cands;
+        std::vector<TLorentzVector> isoTau45L1Cands;
+	std::vector<TLorentzVector> isoTau46L1Cands;
+	std::vector<TLorentzVector> isoTau48L1Cands;
+	for (int iTau = 0; iTau < isoTau25L1Size; ++iTau) {
+          TLorentzVector tempTau_ = tau25L1Cands.at(iTau);
+          if (tempTau_.Pt() > 28) isoTau28L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 30) isoTau30L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 32) isoTau32L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 34) isoTau34L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 35) isoTau35L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 36) isoTau36L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 38) isoTau38L1Cands.push_back(tempTau_);
+	  if (tempTau_.Pt() > 40) isoTau40L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 42) isoTau42L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 45) isoTau45L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 46) isoTau46L1Cands.push_back(tempTau_);
+          if (tempTau_.Pt() > 48) isoTau48L1Cands.push_back(tempTau_);
 	}
-        int isoTau35PrimSize = isoTau35L1Primitives.size();
-	int isoTau40PrimSize = isoTau40L1Primitives.size();
-	int isoTau45PrimSize = isoTau45L1Primitives.size();
+        int isoTau28L1Size = isoTau28L1Cands.size();
+        int isoTau30L1Size = isoTau30L1Cands.size();
+        int isoTau32L1Size = isoTau32L1Cands.size();
+        int isoTau34L1Size = isoTau34L1Cands.size();
+        int isoTau35L1Size = isoTau35L1Cands.size();
+        int isoTau36L1Size = isoTau36L1Cands.size();
+        int isoTau38L1Size = isoTau38L1Cands.size();
+	int isoTau40L1Size = isoTau40L1Cands.size();
+        int isoTau42L1Size = isoTau42L1Cands.size();
+	int isoTau45L1Size = isoTau45L1Cands.size();
+        int isoTau46L1Size = isoTau46L1Cands.size();
+        int isoTau48L1Size = isoTau48L1Cands.size();
 
 	// perform cross-cleaning (cc) (Wrt = with respect to)
-	std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtIsoTau40 = crossCleanJets(jetL1Primitives, isoTau40L1Primitives);
-	int ccWrtIsoTau40L1JetPrimSize = crossCleanedL1PrimJetsWrtIsoTau40.size();
+	// standard
+	std::vector<TLorentzVector> jet30CandsRmvOlTauCandsIso40 = crossCleanJets(jet30L1Cands, isoTau40L1Cands);
+        int jet30CandsRmvOlTauCandsIso40Size = jet30CandsRmvOlTauCandsIso40.size();
 
-	std::vector<TLorentzVector> crossCleanedL1PrimJetsWrtIsoTau45 = crossCleanJets(jetL1Primitives, isoTau45L1Primitives);
-	int ccWrtIsoTau45L1JetPrimSize = crossCleanedL1PrimJetsWrtIsoTau45.size();
+        std::vector<TLorentzVector> jet30CandsRmvOlTauCandsIso45 = crossCleanJets(jet30L1Cands, isoTau45L1Cands);
+        int jet30CandsRmvOlTauCandsIso45Size = jet30CandsRmvOlTauCandsIso45.size();
 
-        // DiTau
-        if (isoTau32PrimSize >= 2) passDiTau_L1 = 1;
+        // for variations
+        // jet 35, tau YY
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso35 = crossCleanJets(jet35L1Cands, isoTau35L1Cands);
+        int jet35CandsRmvOlTauCandsIso35Size = jet35CandsRmvOlTauCandsIso35.size();
+
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso38 = crossCleanJets(jet35L1Cands, isoTau38L1Cands);
+        int jet35CandsRmvOlTauCandsIso38Size = jet35CandsRmvOlTauCandsIso38.size();
+
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso42 = crossCleanJets(jet35L1Cands, isoTau42L1Cands);
+        int jet35CandsRmvOlTauCandsIso42Size = jet35CandsRmvOlTauCandsIso42.size();
+
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso45 = crossCleanJets(jet35L1Cands, isoTau45L1Cands);
+        int jet35CandsRmvOlTauCandsIso45Size = jet35CandsRmvOlTauCandsIso45.size();
+
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso46 = crossCleanJets(jet35L1Cands, isoTau46L1Cands);
+        int jet35CandsRmvOlTauCandsIso46Size = jet35CandsRmvOlTauCandsIso46.size();
+
+	std::vector<TLorentzVector> jet35CandsRmvOlTauCandsIso48 = crossCleanJets(jet35L1Cands, isoTau48L1Cands);
+        int jet35CandsRmvOlTauCandsIso48Size = jet35CandsRmvOlTauCandsIso48.size();
+
+        //jet 40, tau YY
+        std::vector<TLorentzVector> jet40CandsRmvOlTauCandsIso40 = crossCleanJets(jet40L1Cands, isoTau40L1Cands);
+        int jet40CandsRmvOlTauCandsIso40Size = jet40CandsRmvOlTauCandsIso40.size();
+
+        std::vector<TLorentzVector> jet40CandsRmvOlTauCandsIso36 = crossCleanJets(jet40L1Cands, isoTau36L1Cands);
+        int jet40CandsRmvOlTauCandsIso36Size = jet40CandsRmvOlTauCandsIso36.size();
+
+        std::vector<TLorentzVector> jet40CandsRmvOlTauCandsIso34 = crossCleanJets(jet40L1Cands, isoTau34L1Cands);
+        int jet40CandsRmvOlTauCandsIso34Size = jet40CandsRmvOlTauCandsIso34.size();
+
+        std::vector<TLorentzVector> jet40CandsRmvOlTauCandsIso32 = crossCleanJets(jet40L1Cands, isoTau32L1Cands);
+        int jet40CandsRmvOlTauCandsIso32Size = jet40CandsRmvOlTauCandsIso32.size();
+
+        std::vector<TLorentzVector> jet40CandsRmvOlTauCandsIso28 = crossCleanJets(jet40L1Cands, isoTau28L1Cands);
+        int jet40CandsRmvOlTauCandsIso28Size = jet40CandsRmvOlTauCandsIso28.size();
+
+        //jet 45, tau YY
+        std::vector<TLorentzVector> jet45CandsRmvOlTauCandsIso34 = crossCleanJets(jet45L1Cands, isoTau34L1Cands);
+        int jet45CandsRmvOlTauCandsIso34Size = jet45CandsRmvOlTauCandsIso34.size();
+
+        std::vector<TLorentzVector> jet45CandsRmvOlTauCandsIso28 = crossCleanJets(jet45L1Cands, isoTau28L1Cands);
+        int jet45CandsRmvOlTauCandsIso28Size = jet45CandsRmvOlTauCandsIso28.size();
+
+        //jet50, tau YY
+        std::vector<TLorentzVector> jet50CandsRmvOlTauCandsIso28 = crossCleanJets(jet50L1Cands, isoTau28L1Cands);
+        int jet50CandsRmvOlTauCandsIso28Size = jet50CandsRmvOlTauCandsIso28.size();
+
+        std::vector<TLorentzVector> jet50CandsRmvOlTauCandsIso25 = crossCleanJets(jet50L1Cands, isoTau25L1Cands);
+        int jet50CandsRmvOlTauCandsIso25Size = jet50CandsRmvOlTauCandsIso25.size();
+
+
+        // all necessary collections are built, now see if they pass trigger thresholds
+
+        // DiTaus
+        if (isoTau32L1Size >= 2) passDiTau32_L1 = 1;
+        passDiTau32_Counter[0] += passDiTau32_L1;
+        int passBothDiTau32 = (passDiTau32_L1 && passDiTau32_Off);
+        passDiTau32_Counter[2] += passBothDiTau32;
+
+        if (isoTau35L1Size >= 2) passDiTau35_L1 = 1;
+        passDiTau35_Counter[0] += passDiTau35_L1;
+        int passBothDiTau35 = (passDiTau35_L1 && passDiTau35_Off);
+        passDiTau35_Counter[2] += passBothDiTau35;
+
 
         // old VBF
-	if (jetPrimSize >= 2) {
+	if (jet30L1Size >= 2) {
 
           bool jet110Present = false;
-	  for (int iJet = 0; iJet < jetPrimSize; ++iJet) {
-	    if (jetL1Primitives.at(iJet).Pt() >= 110) jet110Present = true;
+	  for (int iJet = 0; iJet < jet30L1Size; ++iJet) {
+	    if (jet30L1Cands.at(iJet).Pt() >= 110) jet110Present = true;
 	  }
 
           float mjj_Old = 0; float tempMjj_ = 0;
-          for (int iJet = 0; iJet < jetPrimSize; ++iJet) {
-            for (int jJet = 0; jJet < jetPrimSize; ++jJet) {
+          for (int iJet = 0; iJet < jet30L1Size; ++iJet) {
+            for (int jJet = 0; jJet < jet30L1Size; ++jJet) {
               if (iJet >= jJet) continue;
-              if (jetL1Primitives.at(iJet).Pt() < 110 && jetL1Primitives.at(jJet).Pt() < 110 && !jet110Present) continue;
-              tempMjj_ = (jetL1Primitives.at(iJet) + jetL1Primitives.at(jJet)).M();
+              if (jet30L1Cands.at(iJet).Pt() < 110 && jet30L1Cands.at(jJet).Pt() < 110 && !jet110Present) continue;
+              tempMjj_ = (jet30L1Cands.at(iJet) + jet30L1Cands.at(jJet)).M();
               if (tempMjj_ > mjj_Old) mjj_Old = tempMjj_;
             }
           }
           if (mjj_Old >= 620) passOld_L1 = 1;
+          passOld_Counter[0] += passOld_L1;
         }
+        int passBothOld = (passOld_L1 && passOld_Off);
+        passOld_Counter[2] += passBothOld;
 
         //newVBF
-	if (ccWrtIsoTau45L1JetPrimSize >= 2 && isoTau45PrimSize >= 1) {
+	if (jet30CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
 	  // check mjj
 	  float mjj_New = 0; float tempMjj_ = 0;
-          for (int iJet = 0; iJet < ccWrtIsoTau45L1JetPrimSize; ++iJet) {
-            for (int jJet = 0; jJet < ccWrtIsoTau45L1JetPrimSize; ++jJet) {
+          for (int iJet = 0; iJet < jet30CandsRmvOlTauCandsIso45Size; ++iJet) {
+            for (int jJet = 0; jJet < jet30CandsRmvOlTauCandsIso45Size; ++jJet) {
               if (iJet >= jJet) continue;
-              tempMjj_ = (crossCleanedL1PrimJetsWrtIsoTau45.at(iJet) + crossCleanedL1PrimJetsWrtIsoTau45.at(jJet)).M();
+              tempMjj_ = (jet30CandsRmvOlTauCandsIso45.at(iJet) + jet30CandsRmvOlTauCandsIso45.at(jJet)).M();
               if (tempMjj_ > mjj_New) mjj_New = tempMjj_;
             }
           }
           if (mjj_New >= 450) passNew_L1 = 1;
+          passNew_Counter[0] += passNew_L1;
 	} 
+        int passBothNew = (passNew_L1 && passNew_Off);
+        passNew_Counter[2] += passBothNew;
 
         // newVBF2
-	if (ccWrtIsoTau45L1JetPrimSize >= 2 && isoTau45PrimSize >= 1) {
-	  // we exclude the two tau case for this seed, but allow the two jet case.
-	  // To do this, we look for the highestMassPair of just jets and then
-	  // the highest mass pair using one tau and one jet. Then we take the larger of the two pairs
-
-          float mjj_New2 = highestMassOfPair(crossCleanedL1PrimJetsWrtIsoTau45, isoTau45L1Primitives);
-          if (mjj_New2 >= 450) passNew2_L1 = 1;
+	if (jet35CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
+          float mjotjot_New2 = highestMassOfPair(jet35CandsRmvOlTauCandsIso45, isoTau45L1Cands);
+          if (mjotjot_New2 >= 400) passNew2_L1 = 1;
+          passNew2_Counter[0] += passNew2_L1;
 	}
+        int passBothNew2 = (passNew2_L1 && passNew2_Off);
+        passNew2_Counter[2] += passBothNew2;
+        passNew2_Counter[3] += (passBothNew2 && passBothDiTau35);
 
-        passHTTCount += passHTT;
-        passHTT350Count += passHTT;
 
-        passDiTau_OffCount += passDiTau_Off;
-        passOld_OffCount += passOld_Off;
-        passNew_OffCount += passNew_Off;
-        passNew2_OffCount += passNew2_Off;
+        // variations of newVBFSeed2
+        // check if size criteria are passed, then check mass req, then increment L1 counter, 
+        // then increment Both counter if L1 and Off are both passed
 
-        passDiTau_L1Count += passDiTau_L1;
-        passOld_L1Count += passOld_L1;
-        passNew_L1Count += passNew_L1;
-        passNew2_L1Count += passNew2_L1;
+        // jet 35, Tau YY
+        if (jet35CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
+          float mjotjot_3545400 = highestMassOfPair(jet35CandsRmvOlTauCandsIso45, isoTau45L1Cands);
+          if (mjotjot_3545400 >= passJet35_Tau45_MassAnyTwo400_L1[2]) passJet35_Tau45_MassAnyTwo400_L1[3] = 1;
+        }
+	passJet35_Tau45_MassAnyTwo400_Counter[0] += passJet35_Tau45_MassAnyTwo400_L1[3];
+        int passBoth3545400 = (passJet35_Tau45_MassAnyTwo400_L1[3] && passJet35_Tau45_MassAnyTwo400_Off[3]);
+	passJet35_Tau45_MassAnyTwo400_Counter[2] += passBoth3545400;
+	passJet35_Tau45_MassAnyTwo400_Counter[3] += (passBoth3545400 && passBothDiTau35);
 
+        if (jet35CandsRmvOlTauCandsIso46Size >= 2 && isoTau46L1Size >= 1) {
+          float mjotjot_3546400 = highestMassOfPair(jet35CandsRmvOlTauCandsIso46, isoTau46L1Cands);
+          if (mjotjot_3546400 >= passJet35_Tau46_MassAnyTwo400_L1[2]) passJet35_Tau46_MassAnyTwo400_L1[3] = 1;
+        }
+	passJet35_Tau46_MassAnyTwo400_Counter[0] += passJet35_Tau46_MassAnyTwo400_L1[3];
+        int passBoth3546400 = (passJet35_Tau46_MassAnyTwo400_L1[3] && passJet35_Tau46_MassAnyTwo400_Off[3]);
+	passJet35_Tau46_MassAnyTwo400_Counter[2] += passBoth3546400;
+	passJet35_Tau46_MassAnyTwo400_Counter[3] += (passBoth3546400 && passBothDiTau35);
+
+        if (jet35CandsRmvOlTauCandsIso42Size >= 2 && isoTau42L1Size >= 1) {
+          float mjotjot_3542450 = highestMassOfPair(jet35CandsRmvOlTauCandsIso42, isoTau42L1Cands);
+          if (mjotjot_3542450 >= passJet35_Tau42_MassAnyTwo450_L1[2]) passJet35_Tau42_MassAnyTwo450_L1[3] = 1;
+        }
+	passJet35_Tau42_MassAnyTwo450_Counter[0] += passJet35_Tau42_MassAnyTwo450_L1[3];
+	int passBoth3542450 = (passJet35_Tau42_MassAnyTwo450_L1[3] && passJet35_Tau42_MassAnyTwo450_Off[3]);
+	passJet35_Tau42_MassAnyTwo450_Counter[2] += passBoth3542450;
+	passJet35_Tau42_MassAnyTwo450_Counter[3] += (passBoth3542450 && passBothDiTau35);
+
+        if (jet35CandsRmvOlTauCandsIso38Size >= 2 && isoTau38L1Size >= 1) {
+          float mjotjot_3538500 = highestMassOfPair(jet35CandsRmvOlTauCandsIso38, isoTau38L1Cands);
+          if (mjotjot_3538500 >= passJet35_Tau38_MassAnyTwo500_L1[2]) passJet35_Tau38_MassAnyTwo500_L1[3] = 1;
+        }
+	passJet35_Tau38_MassAnyTwo500_Counter[0] += passJet35_Tau38_MassAnyTwo500_L1[3];
+	int passBoth3538500 = (passJet35_Tau38_MassAnyTwo500_L1[3] && passJet35_Tau38_MassAnyTwo500_Off[3]);
+	passJet35_Tau38_MassAnyTwo500_Counter[2] += passBoth3538500;
+	passJet35_Tau38_MassAnyTwo500_Counter[3] += (passBoth3538500 && passBothDiTau35);
+
+        if (jet35CandsRmvOlTauCandsIso48Size >= 2 && isoTau48L1Size >= 1) {
+          float mjotjot_3548550 = highestMassOfPair(jet35CandsRmvOlTauCandsIso48, isoTau48L1Cands);
+          if (mjotjot_3548550 >= passJet35_Tau48_MassAnyTwo550_L1[2]) passJet35_Tau48_MassAnyTwo550_L1[3] = 1;
+        }
+	passJet35_Tau48_MassAnyTwo550_Counter[0] += passJet35_Tau48_MassAnyTwo550_L1[3];
+	int passBoth3548550 = (passJet35_Tau48_MassAnyTwo550_L1[3] && passJet35_Tau48_MassAnyTwo550_Off[3]);
+	passJet35_Tau48_MassAnyTwo550_Counter[2] += passBoth3548550;
+	passJet35_Tau48_MassAnyTwo550_Counter[3] += (passBoth3548550 && passBothDiTau35);
+
+        if (jet35CandsRmvOlTauCandsIso35Size >= 2 && isoTau35L1Size >= 1) {
+          float mjotjot_3535600 = highestMassOfPair(jet35CandsRmvOlTauCandsIso35, isoTau35L1Cands);
+          if (mjotjot_3535600 >= passJet35_Tau35_MassAnyTwo600_L1[2]) passJet35_Tau35_MassAnyTwo600_L1[3] = 1;
+        }
+	passJet35_Tau35_MassAnyTwo600_Counter[0] += passJet35_Tau35_MassAnyTwo600_L1[3];
+	int passBoth3535600 = (passJet35_Tau35_MassAnyTwo600_L1[3] && passJet35_Tau35_MassAnyTwo600_Off[3]);
+	passJet35_Tau35_MassAnyTwo600_Counter[2] += passBoth3535600;
+	passJet35_Tau35_MassAnyTwo600_Counter[3] += (passBoth3535600 && passBothDiTau35);
+
+        // jet 40, tau YY
+        if (jet40CandsRmvOlTauCandsIso40Size >= 2 && isoTau40L1Size >= 1) {
+          float mjotjot_4040400 = highestMassOfPair(jet40CandsRmvOlTauCandsIso40, isoTau40L1Cands);
+          if (mjotjot_4040400 >= passJet40_Tau40_MassAnyTwo400_L1[2]) passJet40_Tau40_MassAnyTwo400_L1[3] = 1;
+        }
+	passJet40_Tau40_MassAnyTwo400_Counter[0] += passJet40_Tau40_MassAnyTwo400_L1[3];
+	int passBoth4040400 = (passJet40_Tau40_MassAnyTwo400_L1[3] && passJet40_Tau40_MassAnyTwo400_Off[3]);
+	passJet40_Tau40_MassAnyTwo400_Counter[2] += passBoth4040400;
+	passJet40_Tau40_MassAnyTwo400_Counter[3] += (passBoth4040400 && passBothDiTau35);
+
+        if (jet40CandsRmvOlTauCandsIso36Size >= 2 && isoTau36L1Size >= 1) {
+          float mjotjot_4036450 = highestMassOfPair(jet40CandsRmvOlTauCandsIso36, isoTau36L1Cands);
+          if (mjotjot_4036450 >= passJet40_Tau36_MassAnyTwo450_L1[2]) passJet40_Tau36_MassAnyTwo450_L1[3] = 1;
+        }
+	passJet40_Tau36_MassAnyTwo450_Counter[0] += passJet40_Tau36_MassAnyTwo450_L1[3];
+	int passBoth4036450 = (passJet40_Tau36_MassAnyTwo450_L1[3] && passJet40_Tau36_MassAnyTwo450_Off[3]);
+	passJet40_Tau36_MassAnyTwo450_Counter[2] += passBoth4036450;
+	passJet40_Tau36_MassAnyTwo450_Counter[3] += (passBoth4036450 && passBothDiTau35);
+
+        if (jet40CandsRmvOlTauCandsIso34Size >= 2 && isoTau34L1Size >= 1) {
+          float mjotjot_4034500 = highestMassOfPair(jet40CandsRmvOlTauCandsIso34, isoTau34L1Cands);
+          if (mjotjot_4034500 >= passJet40_Tau34_MassAnyTwo500_L1[2]) passJet40_Tau34_MassAnyTwo500_L1[3] = 1;
+        }
+	passJet40_Tau34_MassAnyTwo500_Counter[0] += passJet40_Tau34_MassAnyTwo500_L1[3];
+	int passBoth4034500 = (passJet40_Tau34_MassAnyTwo500_L1[3] && passJet40_Tau34_MassAnyTwo500_Off[3]);
+	passJet40_Tau34_MassAnyTwo500_Counter[2] += passBoth4034500;
+	passJet40_Tau34_MassAnyTwo500_Counter[3] += (passBoth4034500 && passBothDiTau35);
+
+        if (jet40CandsRmvOlTauCandsIso32Size >= 2 && isoTau32L1Size >= 1) {
+          float mjotjot_4032550 = highestMassOfPair(jet40CandsRmvOlTauCandsIso32, isoTau32L1Cands);
+          if (mjotjot_4032550 >= passJet40_Tau32_MassAnyTwo550_L1[2]) passJet40_Tau32_MassAnyTwo550_L1[3] = 1;
+        }
+	passJet40_Tau32_MassAnyTwo550_Counter[0] += passJet40_Tau32_MassAnyTwo550_L1[3];
+	int passBoth4032550 = (passJet40_Tau32_MassAnyTwo550_L1[3] && passJet40_Tau32_MassAnyTwo550_Off[3]);
+	passJet40_Tau32_MassAnyTwo550_Counter[2] += passBoth4032550;
+	passJet40_Tau32_MassAnyTwo550_Counter[3] += (passBoth4032550 && passBothDiTau35);
+
+        if (jet40CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+          float mjotjot_4028600 = highestMassOfPair(jet40CandsRmvOlTauCandsIso28, isoTau28L1Cands);
+          if (mjotjot_4028600 >= passJet40_Tau28_MassAnyTwo600_L1[2]) passJet40_Tau28_MassAnyTwo600_L1[3] = 1;
+        }
+	passJet40_Tau28_MassAnyTwo600_Counter[0] += passJet40_Tau28_MassAnyTwo600_L1[3];
+	int passBoth4028600 = (passJet40_Tau28_MassAnyTwo600_L1[3] && passJet40_Tau28_MassAnyTwo600_Off[3]);
+	passJet40_Tau28_MassAnyTwo600_Counter[2] += passBoth4028600;
+	passJet40_Tau28_MassAnyTwo600_Counter[3] += (passBoth4028600 && passBothDiTau35);
+
+        //jet45, tau YY
+        if (jet45CandsRmvOlTauCandsIso34Size >= 2 && isoTau34L1Size >= 1) {
+          float mjotjot_4534400 = highestMassOfPair(jet45CandsRmvOlTauCandsIso34, isoTau34L1Cands);
+          if (mjotjot_4534400 >= passJet45_Tau34_MassAnyTwo400_L1[2]) passJet45_Tau34_MassAnyTwo400_L1[3] = 1;
+        }
+	passJet45_Tau34_MassAnyTwo400_Counter[0] += passJet45_Tau34_MassAnyTwo400_L1[3];
+	int passBoth4534400 = (passJet45_Tau34_MassAnyTwo400_L1[3] && passJet45_Tau34_MassAnyTwo400_Off[3]);
+	passJet45_Tau34_MassAnyTwo400_Counter[2] += passBoth4534400;
+	passJet45_Tau34_MassAnyTwo400_Counter[3] += (passBoth4534400 && passBothDiTau35);
+
+       if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+          float mjotjot_4528450 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
+          if (mjotjot_4528450 >= passJet45_Tau28_MassAnyTwo450_L1[2]) passJet45_Tau28_MassAnyTwo450_L1[3] = 1;
+        }
+	passJet45_Tau28_MassAnyTwo450_Counter[0] += passJet45_Tau28_MassAnyTwo450_L1[3];
+	int passBoth4528450 = (passJet45_Tau28_MassAnyTwo450_L1[3] && passJet45_Tau28_MassAnyTwo450_Off[3]);
+	passJet45_Tau28_MassAnyTwo450_Counter[2] += passBoth4528450;
+	passJet45_Tau28_MassAnyTwo450_Counter[3] += (passBoth4528450 && passBothDiTau35);
+
+        if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+          float mjotjot_4528500 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
+          if (mjotjot_4528500 >= passJet45_Tau28_MassAnyTwo500_L1[2]) passJet45_Tau28_MassAnyTwo500_L1[3] = 1;
+        }
+	passJet45_Tau28_MassAnyTwo500_Counter[0] += passJet45_Tau28_MassAnyTwo500_L1[3];
+	int passBoth4528500 = (passJet45_Tau28_MassAnyTwo500_L1[3] && passJet45_Tau28_MassAnyTwo500_Off[3]);
+	passJet45_Tau28_MassAnyTwo500_Counter[2] += passBoth4528500;
+	passJet45_Tau28_MassAnyTwo500_Counter[3] += (passBoth4528500 && passBothDiTau35);
+
+       if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+          float mjotjot_4528550 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
+          if (mjotjot_4528550 >= passJet45_Tau28_MassAnyTwo550_L1[2]) passJet45_Tau28_MassAnyTwo550_L1[3] = 1;
+        }
+	passJet45_Tau28_MassAnyTwo550_Counter[0] += passJet45_Tau28_MassAnyTwo550_L1[3];
+	int passBoth4528550 = (passJet45_Tau28_MassAnyTwo550_L1[3] && passJet45_Tau28_MassAnyTwo550_Off[3]);
+	passJet45_Tau28_MassAnyTwo550_Counter[2] += passBoth4528550;
+	passJet45_Tau28_MassAnyTwo550_Counter[3] += (passBoth4528550 && passBothDiTau35);
+
+        //jet50, tau YY
+        if (jet50CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+          float mjotjot_5028400 = highestMassOfPair(jet50CandsRmvOlTauCandsIso28, isoTau28L1Cands);
+          if (mjotjot_5028400 >= passJet50_Tau28_MassAnyTwo400_L1[2]) passJet50_Tau28_MassAnyTwo400_L1[3] = 1;
+        }
+	passJet50_Tau28_MassAnyTwo400_Counter[0] += passJet50_Tau28_MassAnyTwo400_L1[3];
+	int passBoth5028400 = (passJet50_Tau28_MassAnyTwo400_L1[3] && passJet50_Tau28_MassAnyTwo400_Off[3]);
+	passJet50_Tau28_MassAnyTwo400_Counter[2] += passBoth5028400;
+	passJet50_Tau28_MassAnyTwo400_Counter[3] += (passBoth5028400 && passBothDiTau35);
+
+        if (jet50CandsRmvOlTauCandsIso25Size >= 2 && isoTau25L1Size >= 1) {
+          float mjotjot_5025450 = highestMassOfPair(jet50CandsRmvOlTauCandsIso25, isoTau25L1Cands);
+          if (mjotjot_5025450 >= passJet50_Tau25_MassAnyTwo450_L1[2]) passJet50_Tau25_MassAnyTwo450_L1[3] = 1;
+        }
+	passJet50_Tau25_MassAnyTwo450_Counter[0] += passJet50_Tau25_MassAnyTwo450_L1[3];
+	int passBoth5025450 = (passJet50_Tau25_MassAnyTwo450_L1[3] && passJet50_Tau25_MassAnyTwo450_Off[3]);
+	passJet50_Tau25_MassAnyTwo450_Counter[2] += passBoth5025450;
+	passJet50_Tau25_MassAnyTwo450_Counter[3] += (passBoth5025450 && passBothDiTau35);
+
+
+
+        // I think Olivier wants the HTT350?
+        //numerator
+        passL1ANDOffDiTau35ORNew2ANDHTT350 += (((passBothDiTau35) || (passBothOld) || (passBothNew2)) && passHTT350);
+        //denominator
+        passL1ANDOffDiTau32ANDHTT350 += (((passBothDiTau32) || (passBothOld)) && passHTT350);
+
+        // Keti does not want the HTT350, so all the variations we've made don't have that
+        // and we just use passBothDiTau32 as the denominator
+
+
+/***
         passDiTauOffORHTT += (passDiTau_Off || passHTT);
         passDiTauOffORHTT350 += (passDiTau_Off || passHTT350);
         passDiTauL1ORHTT += (passDiTau_L1 || passHTT);
@@ -562,61 +1014,9 @@ int main(int argc, char** argv)	{
 
         passOldORNewL1ANDOff += ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off));
         passDiTauANDHTT350ANDOldORNewL1ANDOff += ((passDiTau_L1 && passHTT350) && ((passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off)));
-
-        //numerator
-        passL1ANDOffDiTauOROldORNew2ANDHTT350 += (((passDiTau_L1 && passDiTau_Off) || (passOld_L1 && passOld_Off) || (passNew2_L1 && passNew2_Off)) && passHTT350);
-        //denominator
-        passL1ANDOffDiTauOROldANDHTT350 += (((passDiTau_L1 && passDiTau_Off) || (passOld_L1 && passOld_Off)) && passHTT350);
-
-
-	//----------------------filling filter flags-------------------------------//
-	// at the Ntuple level, it's possible some filters are filled by both trigger paths,
-	// so filling them manually by chaining together if statements gives us a more accurate 
-	// picture of which filters were filled by which paths.
-	
-/***
-	// old trigger filter flags initialization
-	passL1Old = 0;
-	passhltHpsDoublePFTau20Old = 0;
-        passhltHpsDoublePFTauTightOld = 0;
-	passhltHpsDoublePFTauAgainstMuonTightOld = 0;
-    	passhltMatchedVBFTwoTight = 0;
- 	passhltMatchedVBFOneTight = 0;
-	// filling old trigger filter flags
-	if (passSel && triggerFlag == 0 && inTree->hltL1VBFDiJetOR_pt->size() >= 2) passL1Old = inTree->passhltL1VBFDiJetOR;
-
-	if (passL1Old && inTree->hltHpsDoublePFTau20_pt->size() >= 2) passhltHpsDoublePFTau20Old = inTree->passhltHpsDoublePFTau20;
-
-	if (passhltHpsDoublePFTau20Old && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight;
-
-	if (passhltHpsDoublePFTauTightOld && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight;
-
-	if (passhltHpsDoublePFTauAgainstMuonTightOld && inTree->hltMatchedVBFTwoTight_pt->size() >= 2) passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight;
-
-	if (passhltMatchedVBFTwoTight && inTree->hltMatchedVBFOneTight_pt->size() >= 1) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
-
-	// new trigger filter flags initialization
-	passL1New = 0;
-	passhltHpsDoublePFTau20New = 0;
-	passhltHpsDoublePFTauTightNew = 0;
-	passhltHpsDoublePFTauAgainstMuonTightNew = 0;
-	passhltHpsPFTau50Tight = 0;
-	passhltMatchedVBFIsoTauTwoTight = 0; 
-
-	// filling new trigger filter flags
-	if (passSel && triggerFlag == 1 && inTree->hltL1VBFDiJetIsoTau_tauPt->size() >= 1
-					&& inTree->hltL1VBFDiJetIsoTau_jetPt->size() >= 2) passL1New = inTree->passhltL1VBFDiJetIsoTau;
-
-	if (passL1New && inTree->hltHpsDoublePFTau20_pt->size() >= 2) passhltHpsDoublePFTau20New = inTree->passhltHpsDoublePFTau20;
-
-	if (passhltHpsDoublePFTau20New && inTree->hltHpsDoublePFTauTight_pt->size() >= 2) passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight;
-
-	if (passhltHpsDoublePFTauTightNew && inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size() >= 2) passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight;
-
-	if (passhltHpsDoublePFTauAgainstMuonTightNew && inTree->hltHpsPFTau50Tight_pt->size() >= 1) passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight;
-
-	if (passhltHpsPFTau50Tight && inTree->hltMatchedVBFIsoTauTwoTight_pt->size() >= 2) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 ***/
+
+	
 /***	
         // fill kine branches with matched AOD
         if (passSel) {
@@ -665,8 +1065,8 @@ int main(int argc, char** argv)	{
 
 
     std::cout << "Offline Numbers" << std::endl;
-    std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
-    std::cout << passDiTau_OffCount << '\t' << passOld_OffCount << '\t' << passNew_OffCount << '\t' << passNew2_OffCount << '\t' << "Event#" << std::endl;
+    std::cout << "DiTau32" << '\t' << "DiTau35" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
+    std::cout << passDiTau32_Counter[1] << '\t' << passDiTau35_Counter[1] << '\t' << passOld_Counter[1] << '\t' << passNew_Counter[1] << '\t' << passNew2_Counter[1] << '\t' << "Event#" << std::endl;
     std::cout << "HTT" << '\t' << "HTT350" << std::endl;
     std::cout << passHTTCount << '\t' << passHTT350Count << std::endl;
 
@@ -686,8 +1086,8 @@ int main(int argc, char** argv)	{
     std::cout << passDiTauANDOldANDNew2_Off << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
 ***/
     std::cout << "L1 Numbers" << std::endl;
-    std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
-    std::cout << passDiTau_L1Count << '\t' << passOld_L1Count << '\t' << passNew_L1Count << '\t' << passNew2_L1Count << '\t' << "Event#" << std::endl;
+    std::cout << "DiTau32" << '\t' << "DiTau35" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
+    std::cout << passDiTau32_Counter[0] << '\t' << passDiTau35_Counter[0] << '\t' << passOld_Counter[0] << '\t' << passNew_Counter[0] << '\t' << passNew2_Counter[0] << '\t' << "Event#" << std::endl;
 
 /***
     std::cout << passDiTauL1ORHTT << '\t' << "Pass DiTau L1 OR HTT" << std::endl;
@@ -705,8 +1105,8 @@ int main(int argc, char** argv)	{
     std::cout << passDiTauANDOldANDNew2_L1 << '\t' << "Pass DiTau AND Old AND New2" << std::endl;
 ***/
     std::cout << "Passing L1 AND Offline" << std::endl;
-    std::cout << "DiTau" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
-    std::cout << passDiTauL1ANDOff << '\t' << passOldL1ANDOff << '\t' << passNewL1ANDOff << '\t' << passNew2L1ANDOff << '\t' << "Event#" << std::endl;
+    std::cout << "DiTau32" << '\t' << "DiTau35" << '\t' << "Old" << '\t' << "New" << '\t' << "New2" << '\t' << "Passing" << std::endl;
+    std::cout << passDiTau32_Counter[2] << '\t' << passDiTau35_Counter[2] << '\t' << passOld_Counter[2] << '\t' << passNew_Counter[2] << '\t' << passNew2_Counter[2] << '\t' << "Event#" << std::endl;
 /***
     std::cout << passOldNew2L1ANDOff << '\t' << "Old AND New2" << std::endl;
     std::cout << passDiTauL1ANDNew2L1ANDOff << '\t' << "DiTau L1 AND New2 L1 AND Off" << std::endl;
@@ -718,8 +1118,107 @@ int main(int argc, char** argv)	{
     //std::cout << "I'm tired" << std::endl;
     //std::cout << passOldORNewL1ANDOff << '\t' << "Old OR New L1 AND Off" << std::endl;
     //std::cout << passDiTauANDHTT350ANDOldORNewL1ANDOff << '\t' << "DiTau AND HTT350 AND (Old OR New2 L1 AND Offline)" << std::endl;
-    std::cout << passL1ANDOffDiTauOROldORNew2ANDHTT350 << " num = pass L1 and Off for (DiTau or Old or New2) and Htt" << std::endl;
-    std::cout << passL1ANDOffDiTauOROldANDHTT350 << " denom = pass L1 and Off for (DiTau or Old) and Htt" << std::endl;
+    std::cout << passL1ANDOffDiTau35ORNew2ANDHTT350 << " num = pass L1 and Off for (DiTau35 or New2) and Htt" << std::endl;
+    std::cout << passL1ANDOffDiTau32ANDHTT350 << " denom = pass L1 and Off for (DiTau32) and Htt" << std::endl;
+    std::cout << "New2 DoubleJet35_IsoTau45_MassAnyTwo400_RmvOl" << std::endl;
+    std::cout << "L1" << '\t' << "Off." << '\t' << "Both" << '\t' << "Both & DiTau35" << std::endl;
+    std::cout << passNew2_Counter[0]
+              << '\t' << passNew2_Counter[1] 
+              << '\t' << passNew2_Counter[2]
+              << '\t' << passNew2_Counter[3] 
+              << '\t' << "from 35 45 400 L1, add 10 15 50 for offline" << std::endl;
+    std::cout << "variations passing" << std::endl;
+    std::cout << "L1" << '\t' << "Off." << '\t' << "Both" << '\t' << "Both & DiTau35" << std::endl;
+    std::cout << passJet35_Tau45_MassAnyTwo400_Counter[0] 
+              << '\t' << passJet35_Tau45_MassAnyTwo400_Counter[1] 
+              << '\t' << passJet35_Tau45_MassAnyTwo400_Counter[2] 
+              << '\t' << passJet35_Tau45_MassAnyTwo400_Counter[3] 
+              << '\t' << " from 35 45 400 L1, add 10 15 50 for offline (STANDARD)" << std::endl;
+    std::cout << passJet35_Tau46_MassAnyTwo400_Counter[0] 
+              << '\t' << passJet35_Tau46_MassAnyTwo400_Counter[1] 
+              << '\t' << passJet35_Tau46_MassAnyTwo400_Counter[2] 
+              << '\t' << passJet35_Tau46_MassAnyTwo400_Counter[3] 
+              << '\t' << " from 35 46 400 L1, add 10 15 50 for offline" << std::endl;
+    std::cout << passJet35_Tau42_MassAnyTwo450_Counter[0] 
+              << '\t' << passJet35_Tau42_MassAnyTwo450_Counter[1] 
+              << '\t' << passJet35_Tau42_MassAnyTwo450_Counter[2] 
+              << '\t' << passJet35_Tau42_MassAnyTwo450_Counter[3] 
+              << '\t' << " from 35 42 450 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet35_Tau38_MassAnyTwo500_Counter[0] 
+              << '\t' << passJet35_Tau38_MassAnyTwo500_Counter[1] 
+              << '\t' << passJet35_Tau38_MassAnyTwo500_Counter[2] 
+              << '\t' << passJet35_Tau38_MassAnyTwo500_Counter[3] 
+              << '\t' << " from 35 38 500 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet35_Tau48_MassAnyTwo550_Counter[0] 
+              << '\t' << passJet35_Tau48_MassAnyTwo550_Counter[1] 
+              << '\t' << passJet35_Tau48_MassAnyTwo550_Counter[2] 
+              << '\t' << passJet35_Tau48_MassAnyTwo550_Counter[3] 
+              << '\t' << " from 35 48 550 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet35_Tau35_MassAnyTwo600_Counter[0] 
+              << '\t' << passJet35_Tau35_MassAnyTwo600_Counter[1] 
+              << '\t' << passJet35_Tau35_MassAnyTwo600_Counter[2] 
+              << '\t' << passJet35_Tau35_MassAnyTwo600_Counter[3] 
+              << '\t' << " from 35 35 600 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << passJet40_Tau40_MassAnyTwo400_Counter[0] 
+              << '\t' << passJet40_Tau40_MassAnyTwo400_Counter[1] 
+              << '\t' << passJet40_Tau40_MassAnyTwo400_Counter[2] 
+              << '\t' << passJet40_Tau40_MassAnyTwo400_Counter[3] 
+              << '\t' << " from 40 40 400 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet40_Tau36_MassAnyTwo450_Counter[0] 
+              << '\t' << passJet40_Tau36_MassAnyTwo450_Counter[1] 
+              << '\t' << passJet40_Tau36_MassAnyTwo450_Counter[2] 
+              << '\t' << passJet40_Tau36_MassAnyTwo450_Counter[3] 
+              << '\t' << " from 40 36 450 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet40_Tau34_MassAnyTwo500_Counter[0] 
+              << '\t' << passJet40_Tau34_MassAnyTwo500_Counter[1] 
+              << '\t' << passJet40_Tau34_MassAnyTwo500_Counter[2] 
+              << '\t' << passJet40_Tau34_MassAnyTwo500_Counter[3] 
+              << '\t' << " from 40 34 500 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet40_Tau32_MassAnyTwo550_Counter[0] 
+              << '\t' << passJet40_Tau32_MassAnyTwo550_Counter[1] 
+              << '\t' << passJet40_Tau32_MassAnyTwo550_Counter[2] 
+              << '\t' << passJet40_Tau32_MassAnyTwo550_Counter[3] 
+              << '\t' << " from 40 32 550 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet40_Tau28_MassAnyTwo600_Counter[0] 
+              << '\t' << passJet40_Tau28_MassAnyTwo600_Counter[1] 
+              << '\t' << passJet40_Tau28_MassAnyTwo600_Counter[2] 
+              << '\t' << passJet40_Tau28_MassAnyTwo600_Counter[3] 
+              << '\t' << " from 40 28 600 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << passJet45_Tau34_MassAnyTwo400_Counter[0] 
+              << '\t' << passJet45_Tau34_MassAnyTwo400_Counter[1] 
+              << '\t' << passJet45_Tau34_MassAnyTwo400_Counter[2] 
+              << '\t' << passJet45_Tau34_MassAnyTwo400_Counter[3] 
+              << '\t' << " from 45 34 400 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet45_Tau28_MassAnyTwo450_Counter[0] 
+              << '\t' << passJet45_Tau28_MassAnyTwo450_Counter[1] 
+              << '\t' << passJet45_Tau28_MassAnyTwo450_Counter[2] 
+              << '\t' << passJet45_Tau28_MassAnyTwo450_Counter[3] 
+              << '\t' << " from 45 28 450 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet45_Tau28_MassAnyTwo500_Counter[0] 
+              << '\t' << passJet45_Tau28_MassAnyTwo500_Counter[1] 
+              << '\t' << passJet45_Tau28_MassAnyTwo500_Counter[2] 
+              << '\t' << passJet45_Tau28_MassAnyTwo500_Counter[3] 
+              << '\t' << " from 45 28 500 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << passJet45_Tau28_MassAnyTwo550_Counter[0] 
+              << '\t' << passJet45_Tau28_MassAnyTwo550_Counter[1] 
+              << '\t' << passJet45_Tau28_MassAnyTwo550_Counter[2] 
+              << '\t' << passJet45_Tau28_MassAnyTwo550_Counter[3] 
+              << '\t' << " from 45 28 550 L1, add 10 15 50 for offline " << std::endl;
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << passJet50_Tau28_MassAnyTwo400_Counter[0] 
+              << '\t' << passJet50_Tau28_MassAnyTwo400_Counter[1] 
+              << '\t' << passJet50_Tau28_MassAnyTwo400_Counter[2] 
+              << '\t' << passJet50_Tau28_MassAnyTwo400_Counter[3] 
+              << '\t' << " from 50 28 400 L1, add 10 15 50 for offline " << std::endl;
+     std::cout << passJet50_Tau25_MassAnyTwo450_Counter[0] 
+              << '\t' << passJet50_Tau25_MassAnyTwo450_Counter[1] 
+              << '\t' << passJet50_Tau25_MassAnyTwo450_Counter[2] 
+              << '\t' << passJet50_Tau25_MassAnyTwo450_Counter[3] 
+              << '\t' << " from 50 25 450 L1, add 10 15 50 for offline " << std::endl;
+ 
+
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

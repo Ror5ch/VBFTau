@@ -289,7 +289,7 @@ int main(int argc, char** argv)	{
     int passL1ANDOffDiTau35ORNew2ANDHTT350 = 0;
     int passL1ANDOffDiTau32ANDHTT350 = 0;
 
-    // {L1, Offline, Both, Both AND DiTau35}
+    // {L1, Offline, Both, Both OR DiTau35}
     // jet35, tauYY
     int passJet35_Tau46_MassAnyTwo400_Counter[4] = {0, 0, 0, 0};
 
@@ -466,10 +466,10 @@ int main(int argc, char** argv)	{
         if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 40 && AODTau2Pt_ >= 40 && mj1j2 >= 350) passHTT350 = 1;
         passHTT350Count += passHTT350;
 
-        int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
-        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 40 && dEtajj >= 2.5) passDiTau32_Off = 1;
+        //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 40 && pass2Mass600) passDiTau32_Off = 1;
         passDiTau32_Counter[1] += passDiTau32_Off;
-        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 53 && AODTau2Pt_ >= 43 && dEtajj >= 2.5) passDiTau35_Off = 1;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 53 && AODTau2Pt_ >= 43 && pass2Mass600) passDiTau35_Off = 1;
         passDiTau35_Counter[1] += passDiTau35_Off;
 
 	if (AODJet1Pt_ >= 120 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
@@ -791,7 +791,7 @@ int main(int argc, char** argv)	{
 	}
         int passBothNew2 = (passNew2_L1 && passNew2_Off);
         passNew2_Counter[2] += passBothNew2;
-        passNew2_Counter[3] += (passBothNew2 && passBothDiTau35);
+        passNew2_Counter[3] += (passBothNew2 || passBothDiTau35);
 
 
         // variations of newVBFSeed2
@@ -806,7 +806,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau45_MassAnyTwo400_Counter[0] += passJet35_Tau45_MassAnyTwo400_L1[3];
         int passBoth3545400 = (passJet35_Tau45_MassAnyTwo400_L1[3] && passJet35_Tau45_MassAnyTwo400_Off[3]);
 	passJet35_Tau45_MassAnyTwo400_Counter[2] += passBoth3545400;
-	passJet35_Tau45_MassAnyTwo400_Counter[3] += (passBoth3545400 && passBothDiTau35);
+	passJet35_Tau45_MassAnyTwo400_Counter[3] += (passBoth3545400 || passBothDiTau35);
 
         if (jet35CandsRmvOlTauCandsIso46Size >= 2 && isoTau46L1Size >= 1) {
           float mjotjot_3546400 = highestMassOfPair(jet35CandsRmvOlTauCandsIso46, isoTau46L1Cands);
@@ -815,7 +815,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau46_MassAnyTwo400_Counter[0] += passJet35_Tau46_MassAnyTwo400_L1[3];
         int passBoth3546400 = (passJet35_Tau46_MassAnyTwo400_L1[3] && passJet35_Tau46_MassAnyTwo400_Off[3]);
 	passJet35_Tau46_MassAnyTwo400_Counter[2] += passBoth3546400;
-	passJet35_Tau46_MassAnyTwo400_Counter[3] += (passBoth3546400 && passBothDiTau35);
+	passJet35_Tau46_MassAnyTwo400_Counter[3] += (passBoth3546400 || passBothDiTau35);
 
         if (jet35CandsRmvOlTauCandsIso42Size >= 2 && isoTau42L1Size >= 1) {
           float mjotjot_3542450 = highestMassOfPair(jet35CandsRmvOlTauCandsIso42, isoTau42L1Cands);
@@ -824,7 +824,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau42_MassAnyTwo450_Counter[0] += passJet35_Tau42_MassAnyTwo450_L1[3];
 	int passBoth3542450 = (passJet35_Tau42_MassAnyTwo450_L1[3] && passJet35_Tau42_MassAnyTwo450_Off[3]);
 	passJet35_Tau42_MassAnyTwo450_Counter[2] += passBoth3542450;
-	passJet35_Tau42_MassAnyTwo450_Counter[3] += (passBoth3542450 && passBothDiTau35);
+	passJet35_Tau42_MassAnyTwo450_Counter[3] += (passBoth3542450 || passBothDiTau35);
 
         if (jet35CandsRmvOlTauCandsIso38Size >= 2 && isoTau38L1Size >= 1) {
           float mjotjot_3538500 = highestMassOfPair(jet35CandsRmvOlTauCandsIso38, isoTau38L1Cands);
@@ -833,7 +833,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau38_MassAnyTwo500_Counter[0] += passJet35_Tau38_MassAnyTwo500_L1[3];
 	int passBoth3538500 = (passJet35_Tau38_MassAnyTwo500_L1[3] && passJet35_Tau38_MassAnyTwo500_Off[3]);
 	passJet35_Tau38_MassAnyTwo500_Counter[2] += passBoth3538500;
-	passJet35_Tau38_MassAnyTwo500_Counter[3] += (passBoth3538500 && passBothDiTau35);
+	passJet35_Tau38_MassAnyTwo500_Counter[3] += (passBoth3538500 || passBothDiTau35);
 
         if (jet35CandsRmvOlTauCandsIso48Size >= 2 && isoTau48L1Size >= 1) {
           float mjotjot_3548550 = highestMassOfPair(jet35CandsRmvOlTauCandsIso48, isoTau48L1Cands);
@@ -842,7 +842,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau48_MassAnyTwo550_Counter[0] += passJet35_Tau48_MassAnyTwo550_L1[3];
 	int passBoth3548550 = (passJet35_Tau48_MassAnyTwo550_L1[3] && passJet35_Tau48_MassAnyTwo550_Off[3]);
 	passJet35_Tau48_MassAnyTwo550_Counter[2] += passBoth3548550;
-	passJet35_Tau48_MassAnyTwo550_Counter[3] += (passBoth3548550 && passBothDiTau35);
+	passJet35_Tau48_MassAnyTwo550_Counter[3] += (passBoth3548550 || passBothDiTau35);
 
         if (jet35CandsRmvOlTauCandsIso35Size >= 2 && isoTau35L1Size >= 1) {
           float mjotjot_3535600 = highestMassOfPair(jet35CandsRmvOlTauCandsIso35, isoTau35L1Cands);
@@ -851,7 +851,7 @@ int main(int argc, char** argv)	{
 	passJet35_Tau35_MassAnyTwo600_Counter[0] += passJet35_Tau35_MassAnyTwo600_L1[3];
 	int passBoth3535600 = (passJet35_Tau35_MassAnyTwo600_L1[3] && passJet35_Tau35_MassAnyTwo600_Off[3]);
 	passJet35_Tau35_MassAnyTwo600_Counter[2] += passBoth3535600;
-	passJet35_Tau35_MassAnyTwo600_Counter[3] += (passBoth3535600 && passBothDiTau35);
+	passJet35_Tau35_MassAnyTwo600_Counter[3] += (passBoth3535600 || passBothDiTau35);
 
         // jet 40, tau YY
         if (jet40CandsRmvOlTauCandsIso40Size >= 2 && isoTau40L1Size >= 1) {
@@ -861,7 +861,7 @@ int main(int argc, char** argv)	{
 	passJet40_Tau40_MassAnyTwo400_Counter[0] += passJet40_Tau40_MassAnyTwo400_L1[3];
 	int passBoth4040400 = (passJet40_Tau40_MassAnyTwo400_L1[3] && passJet40_Tau40_MassAnyTwo400_Off[3]);
 	passJet40_Tau40_MassAnyTwo400_Counter[2] += passBoth4040400;
-	passJet40_Tau40_MassAnyTwo400_Counter[3] += (passBoth4040400 && passBothDiTau35);
+	passJet40_Tau40_MassAnyTwo400_Counter[3] += (passBoth4040400 || passBothDiTau35);
 
         if (jet40CandsRmvOlTauCandsIso36Size >= 2 && isoTau36L1Size >= 1) {
           float mjotjot_4036450 = highestMassOfPair(jet40CandsRmvOlTauCandsIso36, isoTau36L1Cands);
@@ -870,7 +870,7 @@ int main(int argc, char** argv)	{
 	passJet40_Tau36_MassAnyTwo450_Counter[0] += passJet40_Tau36_MassAnyTwo450_L1[3];
 	int passBoth4036450 = (passJet40_Tau36_MassAnyTwo450_L1[3] && passJet40_Tau36_MassAnyTwo450_Off[3]);
 	passJet40_Tau36_MassAnyTwo450_Counter[2] += passBoth4036450;
-	passJet40_Tau36_MassAnyTwo450_Counter[3] += (passBoth4036450 && passBothDiTau35);
+	passJet40_Tau36_MassAnyTwo450_Counter[3] += (passBoth4036450 || passBothDiTau35);
 
         if (jet40CandsRmvOlTauCandsIso34Size >= 2 && isoTau34L1Size >= 1) {
           float mjotjot_4034500 = highestMassOfPair(jet40CandsRmvOlTauCandsIso34, isoTau34L1Cands);
@@ -879,7 +879,7 @@ int main(int argc, char** argv)	{
 	passJet40_Tau34_MassAnyTwo500_Counter[0] += passJet40_Tau34_MassAnyTwo500_L1[3];
 	int passBoth4034500 = (passJet40_Tau34_MassAnyTwo500_L1[3] && passJet40_Tau34_MassAnyTwo500_Off[3]);
 	passJet40_Tau34_MassAnyTwo500_Counter[2] += passBoth4034500;
-	passJet40_Tau34_MassAnyTwo500_Counter[3] += (passBoth4034500 && passBothDiTau35);
+	passJet40_Tau34_MassAnyTwo500_Counter[3] += (passBoth4034500 || passBothDiTau35);
 
         if (jet40CandsRmvOlTauCandsIso32Size >= 2 && isoTau32L1Size >= 1) {
           float mjotjot_4032550 = highestMassOfPair(jet40CandsRmvOlTauCandsIso32, isoTau32L1Cands);
@@ -888,7 +888,7 @@ int main(int argc, char** argv)	{
 	passJet40_Tau32_MassAnyTwo550_Counter[0] += passJet40_Tau32_MassAnyTwo550_L1[3];
 	int passBoth4032550 = (passJet40_Tau32_MassAnyTwo550_L1[3] && passJet40_Tau32_MassAnyTwo550_Off[3]);
 	passJet40_Tau32_MassAnyTwo550_Counter[2] += passBoth4032550;
-	passJet40_Tau32_MassAnyTwo550_Counter[3] += (passBoth4032550 && passBothDiTau35);
+	passJet40_Tau32_MassAnyTwo550_Counter[3] += (passBoth4032550 || passBothDiTau35);
 
         if (jet40CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
           float mjotjot_4028600 = highestMassOfPair(jet40CandsRmvOlTauCandsIso28, isoTau28L1Cands);
@@ -897,7 +897,7 @@ int main(int argc, char** argv)	{
 	passJet40_Tau28_MassAnyTwo600_Counter[0] += passJet40_Tau28_MassAnyTwo600_L1[3];
 	int passBoth4028600 = (passJet40_Tau28_MassAnyTwo600_L1[3] && passJet40_Tau28_MassAnyTwo600_Off[3]);
 	passJet40_Tau28_MassAnyTwo600_Counter[2] += passBoth4028600;
-	passJet40_Tau28_MassAnyTwo600_Counter[3] += (passBoth4028600 && passBothDiTau35);
+	passJet40_Tau28_MassAnyTwo600_Counter[3] += (passBoth4028600 || passBothDiTau35);
 
         //jet45, tau YY
         if (jet45CandsRmvOlTauCandsIso34Size >= 2 && isoTau34L1Size >= 1) {
@@ -907,7 +907,7 @@ int main(int argc, char** argv)	{
 	passJet45_Tau34_MassAnyTwo400_Counter[0] += passJet45_Tau34_MassAnyTwo400_L1[3];
 	int passBoth4534400 = (passJet45_Tau34_MassAnyTwo400_L1[3] && passJet45_Tau34_MassAnyTwo400_Off[3]);
 	passJet45_Tau34_MassAnyTwo400_Counter[2] += passBoth4534400;
-	passJet45_Tau34_MassAnyTwo400_Counter[3] += (passBoth4534400 && passBothDiTau35);
+	passJet45_Tau34_MassAnyTwo400_Counter[3] += (passBoth4534400 || passBothDiTau35);
 
        if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
           float mjotjot_4528450 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
@@ -916,7 +916,7 @@ int main(int argc, char** argv)	{
 	passJet45_Tau28_MassAnyTwo450_Counter[0] += passJet45_Tau28_MassAnyTwo450_L1[3];
 	int passBoth4528450 = (passJet45_Tau28_MassAnyTwo450_L1[3] && passJet45_Tau28_MassAnyTwo450_Off[3]);
 	passJet45_Tau28_MassAnyTwo450_Counter[2] += passBoth4528450;
-	passJet45_Tau28_MassAnyTwo450_Counter[3] += (passBoth4528450 && passBothDiTau35);
+	passJet45_Tau28_MassAnyTwo450_Counter[3] += (passBoth4528450 || passBothDiTau35);
 
         if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
           float mjotjot_4528500 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
@@ -925,16 +925,16 @@ int main(int argc, char** argv)	{
 	passJet45_Tau28_MassAnyTwo500_Counter[0] += passJet45_Tau28_MassAnyTwo500_L1[3];
 	int passBoth4528500 = (passJet45_Tau28_MassAnyTwo500_L1[3] && passJet45_Tau28_MassAnyTwo500_Off[3]);
 	passJet45_Tau28_MassAnyTwo500_Counter[2] += passBoth4528500;
-	passJet45_Tau28_MassAnyTwo500_Counter[3] += (passBoth4528500 && passBothDiTau35);
+	passJet45_Tau28_MassAnyTwo500_Counter[3] += (passBoth4528500 || passBothDiTau35);
 
-       if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
+        if (jet45CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
           float mjotjot_4528550 = highestMassOfPair(jet45CandsRmvOlTauCandsIso28, isoTau28L1Cands);
           if (mjotjot_4528550 >= passJet45_Tau28_MassAnyTwo550_L1[2]) passJet45_Tau28_MassAnyTwo550_L1[3] = 1;
         }
 	passJet45_Tau28_MassAnyTwo550_Counter[0] += passJet45_Tau28_MassAnyTwo550_L1[3];
 	int passBoth4528550 = (passJet45_Tau28_MassAnyTwo550_L1[3] && passJet45_Tau28_MassAnyTwo550_Off[3]);
 	passJet45_Tau28_MassAnyTwo550_Counter[2] += passBoth4528550;
-	passJet45_Tau28_MassAnyTwo550_Counter[3] += (passBoth4528550 && passBothDiTau35);
+	passJet45_Tau28_MassAnyTwo550_Counter[3] += (passBoth4528550 || passBothDiTau35);
 
         //jet50, tau YY
         if (jet50CandsRmvOlTauCandsIso28Size >= 2 && isoTau28L1Size >= 1) {
@@ -944,7 +944,7 @@ int main(int argc, char** argv)	{
 	passJet50_Tau28_MassAnyTwo400_Counter[0] += passJet50_Tau28_MassAnyTwo400_L1[3];
 	int passBoth5028400 = (passJet50_Tau28_MassAnyTwo400_L1[3] && passJet50_Tau28_MassAnyTwo400_Off[3]);
 	passJet50_Tau28_MassAnyTwo400_Counter[2] += passBoth5028400;
-	passJet50_Tau28_MassAnyTwo400_Counter[3] += (passBoth5028400 && passBothDiTau35);
+	passJet50_Tau28_MassAnyTwo400_Counter[3] += (passBoth5028400 || passBothDiTau35);
 
         if (jet50CandsRmvOlTauCandsIso25Size >= 2 && isoTau25L1Size >= 1) {
           float mjotjot_5025450 = highestMassOfPair(jet50CandsRmvOlTauCandsIso25, isoTau25L1Cands);
@@ -953,7 +953,7 @@ int main(int argc, char** argv)	{
 	passJet50_Tau25_MassAnyTwo450_Counter[0] += passJet50_Tau25_MassAnyTwo450_L1[3];
 	int passBoth5025450 = (passJet50_Tau25_MassAnyTwo450_L1[3] && passJet50_Tau25_MassAnyTwo450_Off[3]);
 	passJet50_Tau25_MassAnyTwo450_Counter[2] += passBoth5025450;
-	passJet50_Tau25_MassAnyTwo450_Counter[3] += (passBoth5025450 && passBothDiTau35);
+	passJet50_Tau25_MassAnyTwo450_Counter[3] += (passBoth5025450 || passBothDiTau35);
 
 
 

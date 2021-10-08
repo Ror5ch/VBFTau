@@ -16,7 +16,7 @@ float highestMassOfPair(vector<TLorentzVector> jetsRmvOlTaus, vector<TLorentzVec
   for (int iObj = 0; iObj < combinedSize; ++iObj) {
     for (int jObj = 0; jObj < combinedSize; ++jObj) {
       if (jObj >= iObj) continue;
-      if (iObj >= jetSize && jObj >= jetSize ) continue; // should exclude 2tau case
+      //if (iObj >= jetSize && jObj >= jetSize ) continue; // should exclude 2tau case
       tempMjotjot_ = (combined.at(iObj) + combined.at(jObj)).M();
       if (tempMjotjot_ > mjotjot_) mjotjot_ = tempMjotjot_;
     }
@@ -28,25 +28,28 @@ vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLo
   vector<TLorentzVector> crossCleanedJets;
   int jetObjsSize = jetObjs.size();
   int tauObjsSize = tauObjs.size();
-  int counter = 0;
+  //cout << jetObjsSize << " jetObjsSize" << endl;
+  //cout << tauObjsSize << " tauObjsSize" << endl;
+  //int counter = 0;
   if (jetObjsSize >= 2 && tauObjsSize >= 1) {
     for (int iJet = 0; iJet < jetObjsSize; ++iJet) {
       bool jetIsNotTau = true;
       //cout << "iJet: " << iJet << endl;
-      if (counter < 2) { // jet is no longer checked once two matched taus are found
+      //if (counter < 2) { // jet is no longer checked once two matched taus are found
         for (int iTau = 0; iTau < tauObjsSize; ++iTau) {
           float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
           //if (dR < 0.5) cout << "\033[0;31m" << dR << "\033[0m" << endl;
           //else {cout << dR << endl;}
           if (dR < 0.5) jetIsNotTau = false;
         }
-      }
-      if (!jetIsNotTau) counter += 1; // if jet matches a tau (or two taus) inc counter
+      //}
+      //if (!jetIsNotTau) counter += 1; // if jet matches a tau (or two taus) inc counter
       if (jetIsNotTau) crossCleanedJets.push_back(jetObjs.at(iJet));
     }
   }
   else {crossCleanedJets = jetObjs;}
-
+  //cout << crossCleanedJets.size() << " ccJetsSize" << endl;
+/***
       if (counter >= 2 && tauObjsSize >=3 && jetObjsSize >= 3) {
 
       //if (tauObjsSize >= 3) cout << "\033[0;31m" << "tauObjsSize: " << tauObjsSize << "\033[0m" << endl;
@@ -65,7 +68,7 @@ vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLo
 
 
       }
-
+***/
 
   return crossCleanedJets;
 }

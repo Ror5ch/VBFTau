@@ -1,4 +1,5 @@
 #define analyzer_cxx
+#include <stdio.h>
 #include "analyzer.h"
 #include <TH2.h>
 #include <TStyle.h>
@@ -86,6 +87,13 @@ void analyzer::Loop()
     return;
   }
 
+  FILE *out_file = fopen("output.txt", "w");
+  if (out_file == NULL) {
+    fprintf(out_file, "Error, couldn't open file\n");
+    return;
+    //exit(-1);
+  }
+
   Long64_t nentries1 = fChain1->GetEntriesFast();
   Long64_t nentries2 = fChain2->GetEntriesFast();
 
@@ -114,6 +122,9 @@ void analyzer::Loop()
   int passSeed1Count = 0;
   int passSeed2Count = 0;
   int passSeed3Count = 0;
+
+  int passTripJets = 0;
+  int passTripJetsCount = 0;
 
   int mjjCuts[6] = {350, 400, 450, 500, 550, 600};
   //jet 35
@@ -382,6 +393,10 @@ void analyzer::Loop()
   int orOldNew = 0;
   int orDiTauOldNew = 0;
 
+  int orNewVBFTripJets = 0;
+  int orDiTauTripJets = 0;
+  int orDiTauNewVBFTripJets = 0;
+
 
   // start event loop
   for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
@@ -417,6 +432,8 @@ void analyzer::Loop()
     passSeed1 = 0;
     passSeed2 = 0;
     passSeed3 = 0;
+
+    passTripJets = 0;
    
     for (int i = 0; i<6; ++i){
       passSeed2_3525All[i] = 0;
@@ -998,6 +1015,17 @@ void analyzer::Loop()
     int jetCands50RmvOlTauCandsIso28Size = jetCands50RmvOlTauCandsIso28.size();
 
     // end containers for seed 2 variations
+    if ((jetCands35Size + tauCandsIso45Size) >= 3 && tauCandsIso45Size >= 1) {
+      //cout << "----------------------" << endl;
+      //cout << jetCands35Size << '\t' << "jet 35 size" << endl;
+      //cout << tauCandsIso45Size << '\t' << "tau 45 size" << endl;
+      //cout << jetCands35RmvOlTauCandsIso45Size << '\t' << "cc jets 35 size" << endl;
+      //cout << jetCands35Size << tauCandsIso45Size << jetCands35RmvOlTauCandsIso45Size << "#" << endl;
+      int output_value = jetCands35Size*100 + tauCandsIso45Size*10 + jetCands35RmvOlTauCandsIso45Size;
+      //char output_char = output_value;
+      fprintf(out_file, " %d ", output_value);
+    }
+    
 
     // odd duckling for seed 3
     vector<TLorentzVector> jetCands35RmvOlTauCands35;
@@ -1007,8 +1035,8 @@ void analyzer::Loop()
     //------------------------finished making containers, now checking obj numbers and masses and passing triggers----------------------//
    
     // L1_DoubleIsoTau32er2p1
-    if (tauCandsIso32Size >= 2) passDiTau = 1;
-    //if (tauCandsIso35Size >= 2) passDiTau = 1;
+    //if (tauCandsIso32Size >= 2) passDiTau = 1;
+    if (tauCandsIso35Size >= 2) passDiTau = 1;
 
     // L1_Jet110_Jet35_Mass_Min620 (seed 00)
     // find highest mjj pair of jets
@@ -1057,6 +1085,19 @@ void analyzer::Loop()
         }
       }   
       if (mjt_seed3 >= 450) passSeed3 = 1;
+    }
+
+    // L1_TripleJet35_IsoTau45_Mass_Min400 (Note how there is no rmvol) seed idea from Andrew B
+    if (jetCands35Size >= 3 && tauCandsIso45Size >= 1) {
+      float mjj_threeJets = 0; float tempMjj_ = 0;
+      for (int iJet = 0; iJet < jetCands35Size; ++iJet) {
+        for (int jJet = 0; jJet < jetCands35Size; ++jJet) {
+          if (iJet >= jJet) continue;
+          tempMjj_ = (jetCands35.at(iJet) + jetCands35.at(jJet)).M();
+          if (tempMjj_ > mjj_threeJets) mjj_threeJets = tempMjj_;
+        }
+      }
+      if (mjj_threeJets >= 400) passTripJets = 1;
     }
 
   //------------------------------seed 2 varying cuts-----------------------//
@@ -1612,6 +1653,11 @@ void analyzer::Loop()
 
   orDiTauOldNew += (passDiTau || passOld || passNew);
 
+  passTripJetsCount += passTripJets;
+  orNewVBFTripJets += (passTripJets || passNew);
+  orDiTauTripJets += (passTripJets || passDiTau);
+  orDiTauNewVBFTripJets += (passTripJets || passNew || passDiTau);
+
   //olDiTauOldSeed2 += (passDiTau && passOld && passSeed2_3545All[1]);
   //orDiTauOldSeed2 += (passDiTau || passOld || passSeed2_3545All[1]);
 
@@ -2028,4 +2074,12 @@ void analyzer::Loop()
   cout << passSeed2_4528450All_count[4] << '\t' << "4528550" << endl;
   cout << passSeed2_5028400All_count[1] << '\t' << "5028400" << endl;
   cout << passSeed2_5025450All_count[2] << '\t' << "5025450" << endl;
+
+  cout << endl;
+  cout << "new hotness" << endl;
+  cout << endl;
+  cout << passTripJetsCount << " pass TripJet35 etc" << endl;
+  cout << orNewVBFTripJets << " pass TripJet35 OR New VBF (except new vbf is still at 450" << endl;
+  cout << orDiTauTripJets << " pass TripJets35 OR DiTau (35 should be)" << endl;
+  cout << orDiTauNewVBFTripJets << " pass TripJets35 OR DiTau OR New VBF" << endl;
 }

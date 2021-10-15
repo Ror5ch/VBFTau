@@ -1,5 +1,13 @@
 hltGetConfig prints modules to rerun triggers on mc raw data. miniAOD is raw data that had real triggers ran on it and made it all the way to the miniAOD step, where there are identified physics objects. So, you wouldn't run triggers again on miniAOD since they've already been run. 
 
+addpackage with
+git cms-addpkg HLTrigger/Configuration
+
+# Dependencies and Compilation
+git cms-checkdeps -A -a
+scram b -j 6
+rehash
+
 edmDumpEventContent addedhltVBF.root will show you every EDM format products and their classes inside addedhltVBF.root
 
 globaltag and l1 are important to get correct. obviously it's all important, but using the wrong one of those leads to unexpected results with hard to place errors

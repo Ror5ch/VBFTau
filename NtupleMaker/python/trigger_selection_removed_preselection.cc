@@ -742,7 +742,7 @@ int main(int argc, char** argv)	{
         int passBothDiTau35 = (passDiTau35_L1 && passDiTau35_Off);
         passDiTau35_Counter[2] += passBothDiTau35;
 
-	if ((jet35L1Size + isoTau45L1Size) >= 1 && isoTau45L1Size >= 1) {
+	if ((jet35L1Size + isoTau45L1Size) >= 3 && isoTau45L1Size >= 1) {
           std::cout << " " << jet35L1Size*100 + isoTau45L1Size*10 + jet35CandsRmvOlTauCandsIso45Size << " ";
         }
 

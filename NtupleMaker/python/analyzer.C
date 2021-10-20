@@ -74,6 +74,30 @@ vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLo
   return crossCleanedJets;
 }
 
+int ManfredLogic(vector<TLorentzVector> jets, vector<TLorentzVector> taus) {
+  int tausSize = taus.size();
+  int jetsSize = jets.size();
+
+  //cout << "TauSize: " << tausSize << " JetSize: " << jetsSize << endl;
+  for (int iTau = 0; iTau < tausSize; ++iTau) {
+    for (int iJet = 0; iJet < jetsSize; ++iJet) {
+      float dR_iJet = jets.at(iJet).DeltaR(taus.at(iTau));
+      if (dR_iJet < 0.5) continue; // if overlapped, go to next jet
+      for (int jJet = iJet+1; jJet < jetsSize; ++jJet) {
+        //if ( iJet >= jJet ) continue; // don't look at same jet, or repeat combinations
+        //cout << "Tau: " << iTau << " Jet1: " << iJet << " Jet2: " << jJet << endl;     
+        float dR_jJet = jets.at(jJet).DeltaR(taus.at(iTau));
+        if (dR_jJet < 0.5) continue; // if overlapped, go to next jet
+        //cout << dR_iJet << " dR_iJet " << dR_jJet << " dR_jJet " << endl; 
+        float mjj = (jets.at(iJet) + jets.at(jJet)).M();
+        cout << mjj << " mjj" << endl;
+        if (mjj >= 450) return 1;
+      }
+    }
+  }
+  return 0;
+
+}
 
 void setArrayElements(int array[], float value, const int cutoffs[]) {
   int arraySize = 6; // not pretty
@@ -397,13 +421,22 @@ void analyzer::Loop()
   int orDiTauTripJets = 0;
   int orDiTauNewVBFTripJets = 0;
 
+  int passManfredLogic = 0;
+  int passManfredLogicCount = 0;
+  int orDiTauOldVBFManfredLogic = 0;
+
+  int passSeed2Testing = 0;
+  int passSeed2TestingCount = 0;
+  int orDiTauOldSeed2Testing = 0;
+  int overlapManfredNew = 0;
 
   // start event loop
-  for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
-  //for (Long64_t jentry=0; jentry<100000; ++jentry) {
+  //for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
+  for (Long64_t jentry=0; jentry<500001; ++jentry) {
   //for (Long64_t jentry=11100000; jentry<11400000; ++jentry) { // full run 323755
 
-    if (jentry%100000 == 0) cout << jentry << endl;
+    if (jentry%100000 == 0 && jentry != 0) cout << jentry << endl;
+    //if (jentry == 50000) return;
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
 
@@ -414,11 +447,7 @@ void analyzer::Loop()
     // reject events not in selected run number
     // save lumi block info for new blocks (using C std::set)
     eventCount += 1;
-    //bool validRun = (run == 323755 || run == 324237 || run == 324245 || run == 324293);
-    //if (!validRun) continue;
     if (run != 323755) continue;
-    //if (jentry > 200000) cout << jentry << endl;
-    //cout <<jentry << endl;
 
     bool restrictLumi = true;
     if (restrictLumi && (lumi < 44 || lumi >= 144)) continue;
@@ -434,7 +463,10 @@ void analyzer::Loop()
     passSeed3 = 0;
 
     passTripJets = 0;
-   
+    passManfredLogic = 0;
+    passSeed2Testing = 0;
+  
+    //initialize variations 
     for (int i = 0; i<6; ++i){
       passSeed2_3525All[i] = 0;
       passSeed2_3530All[i] = 0;
@@ -677,6 +709,8 @@ void analyzer::Loop()
     // it makes crosscleaned jet containers by hand for different pt cuts of jets and taus
     // i did it this way because i couldn't figure out how to do it a fancier way in a short amount of time
     //
+    // i want to say Yurii told me one time "nice code is nice, but we really care about results"
+    // so this is in the spirit of that sentiment
 
     // isoTau25
     vector<TLorentzVector> jetCands35RmvOlTauCandsIso25;
@@ -1015,25 +1049,28 @@ void analyzer::Loop()
     int jetCands50RmvOlTauCandsIso28Size = jetCands50RmvOlTauCandsIso28.size();
 
     // end containers for seed 2 variations
-    if ((jetCands35Size + tauCandsIso45Size) >= 3 && tauCandsIso45Size >= 1) {
-      //cout << "----------------------" << endl;
-      //cout << jetCands35Size << '\t' << "jet 35 size" << endl;
-      //cout << tauCandsIso45Size << '\t' << "tau 45 size" << endl;
-      //cout << jetCands35RmvOlTauCandsIso45Size << '\t' << "cc jets 35 size" << endl;
-      //cout << jetCands35Size << tauCandsIso45Size << jetCands35RmvOlTauCandsIso45Size << "#" << endl;
-      int output_value = jetCands35Size*100 + tauCandsIso45Size*10 + jetCands35RmvOlTauCandsIso45Size;
-      //char output_char = output_value;
-      fprintf(out_file, " %d ", output_value);
-    }
-    
-
+     
     // odd duckling for seed 3
     vector<TLorentzVector> jetCands35RmvOlTauCands35;
     if (jetCands35Size >= 2) jetCands35RmvOlTauCands35 = crossCleanJets(jetCands35, tauCands35);
     int jetCands35RmvOlTauCands35Size = jetCands35RmvOlTauCands35.size();
 
     //------------------------finished making containers, now checking obj numbers and masses and passing triggers----------------------//
-   
+ 
+    // small counting "study" to see the number of different types of events passing size reqs
+    /***
+    if ((jetCands35Size + tauCandsIso45Size) >= 3 && tauCandsIso45Size >= 1) {
+      int output_value = jetCands35Size*100 + tauCandsIso45Size*10 + jetCands35RmvOlTauCandsIso45Size;
+      fprintf(out_file, " %d ", output_value);
+    }***/
+    
+
+    // ManfredLogic testing
+    if (jetCands35Size >= 2 && tauCandsIso45Size >= 1) {
+      passManfredLogic = ManfredLogic(jetCands35, tauCandsIso45);
+    }
+
+  
     // L1_DoubleIsoTau32er2p1
     //if (tauCandsIso32Size >= 2) passDiTau = 1;
     if (tauCandsIso35Size >= 2) passDiTau = 1;
@@ -1350,6 +1387,7 @@ void analyzer::Loop()
   }
    
 
+  // counting up events for output
 
   passDiTauCount += passDiTau;
   passOldCount += passOld;
@@ -1357,6 +1395,10 @@ void analyzer::Loop()
   passSeed1Count += passSeed1;
   passSeed2Count += passSeed2_3545All[1];
   passSeed3Count += passSeed3;
+
+  // variable for testing/using one specific seed and doing overlap removal by hand in a way that's
+  // consistent with overlap removal for New VBF and Manfred Logic
+  passSeed2Testing = passSeed2_3545All[2]; //DoubleJet35_IsoTau45_MassAnyTwo450_RmvOl;
 
   // variations of seed 2
   for (int i = 0; i<6; ++i) {
@@ -1475,6 +1517,7 @@ void analyzer::Loop()
 
     }
 
+    // two blocks to remove overlap of ditau and old vbf from seed 2 variations to get pure rate
     if (passDiTau || passOld) {
     passSeed2_3525All_count[i] +=1;
     passSeed2_3530All_count[i] +=1;
@@ -1592,6 +1635,7 @@ void analyzer::Loop()
   }
 
   // end variations
+  // counting up overlaps (ANDs) and ORs
 
   olDiTauSeed1 += (passDiTau && passSeed1);
   olDiTauSeed2 += (passDiTau && passSeed2_3545All[1]);
@@ -1653,10 +1697,20 @@ void analyzer::Loop()
 
   orDiTauOldNew += (passDiTau || passOld || passNew);
 
+  // additional logics/funny seeds that needed rate testing
+
   passTripJetsCount += passTripJets;
   orNewVBFTripJets += (passTripJets || passNew);
   orDiTauTripJets += (passTripJets || passDiTau);
   orDiTauNewVBFTripJets += (passTripJets || passNew || passDiTau);
+
+  passManfredLogicCount += passManfredLogic;
+  orDiTauOldVBFManfredLogic += (passManfredLogic || passOld || passDiTau);
+
+  passSeed2TestingCount += passSeed2Testing;
+  orDiTauOldSeed2Testing += (passSeed2Testing || passOld || passDiTau);
+
+  overlapManfredNew += (passManfredLogic && passNew);
 
   //olDiTauOldSeed2 += (passDiTau && passOld && passSeed2_3545All[1]);
   //orDiTauOldSeed2 += (passDiTau || passOld || passSeed2_3545All[1]);
@@ -2082,4 +2136,14 @@ void analyzer::Loop()
   cout << orNewVBFTripJets << " pass TripJet35 OR New VBF (except new vbf is still at 450" << endl;
   cout << orDiTauTripJets << " pass TripJets35 OR DiTau (35 should be)" << endl;
   cout << orDiTauNewVBFTripJets << " pass TripJets35 OR DiTau OR New VBF" << endl;
+
+  cout << "comparing 3 rates and pure rates" << endl;
+  cout << "Events" << '\t' << "orDiTauOld[SEED]" << '\t' << "Pure Events" << endl;
+  int pureManfred = orDiTauOldVBFManfredLogic - orDiTauOld;
+  cout << passManfredLogicCount << '\t' << orDiTauOldVBFManfredLogic << '\t' << pureManfred << '\t' << "DoubleJet35_Mass_Min450_IsoTau45_RmvOl_Minimal (Manfred)" << endl;
+  int pureNew = orDiTauOldNew - orDiTauOld;
+  cout << passNewCount << '\t' << orDiTauOldNew << '\t' << pureNew << '\t' << "DoubleJet35_Mass_Min450_IsoTau45_RmvOl (NewVBF, original)" << endl;
+  int pureMassAnyTwo3545450 = orDiTauOldSeed2Testing - orDiTauOld; 
+  cout << passSeed2TestingCount << '\t' << orDiTauOldSeed2Testing << '\t' << pureMassAnyTwo3545450 << '\t' << "DoubleJet35_MassAnyTwo450_IsoTau45_RmvOl (MassAnyTwo)" << endl;
+  cout << overlapManfredNew << '\t' << "overlap Manfred New" << endl;
 }

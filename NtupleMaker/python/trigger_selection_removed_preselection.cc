@@ -326,12 +326,53 @@ int main(int argc, char** argv)	{
     int passJet50_Tau25_MassAnyTwo450_Counter[4] = {0, 0, 0, 0};
 
 
+    // Manfred (should really switch to calling this minimal remove overlap
+    // it's awkward calling it his name
+    int passManfredLogic = 0;
+    int passManfredLogicCount = 0;
+    int passManfredBoth = 0;
 
+    // 2 ORs
+    int orDiTau35OldL1 = 0;
+    int orDiTau35OldBoth = 0;
+    int orDiTau35NewL1 = 0;
+    int orDiTau35NewBoth = 0;
+    int orDiTau35ManfredL1 = 0;
+    int orDiTau35ManfredBoth = 0;
+    int orDiTau35New2L1 = 0; //mass any two
+    int orDiTau35New2Both = 0;
+    int orManfredNewL1 = 0;
+    int orManfredNewBoth = 0;
+
+    // 3 ORs
+    int orDiTau35OldNewL1 = 0;
+    int orDiTau35OldNewBoth = 0;
+    int orDiTau35OldManfredL1 = 0;
+    int orDiTau35OldManfredBoth = 0;
+    int orDiTau35OldMassAnyTwoL1 = 0;
+    int orDiTau35OldMassAnyTwoBoth = 0;
+
+    // investigating subset
+    int andManfredNewL1 = 0;
+    int andDiTau35ManfredL1 = 0;
+    int andDiTau35NewL1 = 0;
+    int andManfredNewBoth = 0;
+    int andDiTau35ManfredBoth = 0;
+    int andDiTau35NewBoth = 0;
+
+    int andManfredNewNotDiTau35L1 = 0;
+    // investigating difference in events at offline
+    int missingCase = 0;
+    int complementCase = 0;
+    int ManfredBothNotDiTau35Both = 0;
+    int NewBothNotDiTau35Both = 0;
+
+    int ManfredNewBothNotDiTau35Both = 0;
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 60001; ++iEntry) {
-    for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
+    for (int iEntry = 0; iEntry < 10001; ++iEntry) {
+    //for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 1000000 == 0) std::cout << std::to_string(iEntry) << std::endl;
 
@@ -354,6 +395,8 @@ int main(int argc, char** argv)	{
         passOld_L1 = 0;
         passNew_L1 = 0;
         passNew2_L1 = 0;
+
+        passManfredLogic = 0;
 
 
 	//---------------------apply base selection and fill AOD objects------------------------------//
@@ -435,6 +478,31 @@ int main(int argc, char** argv)	{
 	TLorentzVector AODJet1, AODJet2;
         std::tie(AODJet1, AODJet2) = highestMassPair(jet30Cands);
 
+        // revisit for matching...about25% of all events have multiple possible jet pairs
+        // and about 20% of those actually have more than one pair passing mjj
+        // although the jets aren't overlapped with the tau, it's possible we could have jets
+        // that match our L1 jets but aren't selecting them. Obviously if they're there and they match
+        // L1 then we'd like to use them.
+        /*
+        if (jet30CandsSize >= 2) {
+          std::cout << jet30CandsSize << " jetCandsAfterCleaningSize" << std::endl;
+          std::cout << vecSizeAODJet << " AOD jet size" << std::endl;
+          int tempCounter = 0;
+          TLorentzVector testJet1, testJet2;
+          for (int iJet = 0; iJet < jet30CandsSize; ++iJet) {
+            testJet1 = jet30Cands.at(iJet);
+            for (int jJet = iJet + 1; jJet < jet30CandsSize; ++jJet) {
+              testJet2 = jet30Cands.at(jJet);
+              float tempMjj = (testJet1 + testJet2).M();
+              if (tempMjj >= 450) tempCounter += 1;
+            }
+          }
+          if (tempCounter >= 2) {
+            std::cout << "twofer!" << std::endl;
+          }
+        }
+        */
+
 	min_cutflow->Fill(4.0,1.0);
 	sel_cutflow->Fill(1.0,1.0);
 
@@ -447,7 +515,7 @@ int main(int argc, char** argv)	{
 	double mj1t2 = (AODJet1 + AODTau2).M();
 	double mj2t1 = (AODJet2 + AODTau1).M();
 	double mj2t2 = (AODJet2 + AODTau2).M();
-	//double mt1t2 = (AODTau1 + AODTau2).M();
+	double mt1t2 = (AODTau1 + AODTau2).M();
 
         int pass2Mass400 = (mj1j2 >= 400 || mj1t1 >= 400 || mj1t2 >= 400 || mj2t1 >= 400 || mj2t2 >= 400);
         int pass2Mass450 = (mj1j2 >= 450 || mj1t1 >= 450 || mj1t2 >= 450 || mj2t1 >= 450 || mj2t2 >= 450);
@@ -467,23 +535,24 @@ int main(int argc, char** argv)	{
         passHTT350Count += passHTT350;
 
         //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
-        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 40 && pass2Mass600) passDiTau32_Off = 1;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 40 && mj1j2 >= 600) passDiTau32_Off = 1;
         passDiTau32_Counter[1] += passDiTau32_Off;
-        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 53 && AODTau2Pt_ >= 43 && pass2Mass600) passDiTau35_Off = 1;
+        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && AODTau1Pt_ >= 53 && AODTau2Pt_ >= 43 && mj1j2 >= 600) passDiTau35_Off = 1;
         passDiTau35_Counter[1] += passDiTau35_Off;
 
 	if (AODJet1Pt_ >= 120 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
         passOld_Counter[1] += passOld_Off;
-	
-        if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && mj1j2 >= 550) passNew_Off = 1;
+        // change back to 45 45, 45+18 25 500	
+        if (AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && AODTau1Pt_ >= (45+18) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNew_Off = 1;//AODTau1Pt used to be 50, but should be 45+18 for straight comparison with other triggers, mjj is 450 for L1, so make it 500 for offline
         passNew_Counter[1] += passNew_Off;
 
-        if (AODJet1Pt_ >= (35+10) && AODJet2Pt_ >= (35+10) && AODTau1Pt_ >= (45+18) && AODTau2Pt_ >= 25 && pass2Mass450) passNew2_Off = 1;
+        // kyungwook says don't use massanytwo offline because we're sure our taus aren't jet fakes,
+        // so mjj is all that's necessary,,, this makes New VBF offline the same as New2 VBF (massanytwo) offline the same 
+        if (AODJet1Pt_ >= (35+10) && AODJet2Pt_ >= (35+10) && AODTau1Pt_ >= (45+18) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNew2_Off = 1; //previously used pass2Mass450, but since this is offline it should be higher by 50 than L1
         passNew2_Counter[1] += passNew2_Off;
 
         // new vbf seed variations
         // define L1 then see if the offline version is passed (+10 jets, +15 taus, +50 MassAnyTwo)
-        // do literally one variation 35 46 400
         int offJetInc = 10;
 	int offTauInc = 18;
         int offM2Inc = 50;
@@ -742,9 +811,9 @@ int main(int argc, char** argv)	{
         int passBothDiTau35 = (passDiTau35_L1 && passDiTau35_Off);
         passDiTau35_Counter[2] += passBothDiTau35;
 
-	if ((jet35L1Size + isoTau45L1Size) >= 3 && isoTau45L1Size >= 1) {
-          std::cout << " " << jet35L1Size*100 + isoTau45L1Size*10 + jet35CandsRmvOlTauCandsIso45Size << " ";
-        }
+	//if ((jet35L1Size + isoTau45L1Size) >= 3 && isoTau45L1Size >= 1) {
+        //  std::cout << " " << jet35L1Size*100 + isoTau45L1Size*10 + jet35CandsRmvOlTauCandsIso45Size << " ";
+        //}
 
         // old VBF
 	if (jet30L1Size >= 2) {
@@ -754,13 +823,13 @@ int main(int argc, char** argv)	{
 	    if (jet30L1Cands.at(iJet).Pt() >= 110) jet110Present = true;
 	  }
 
-          float mjj_Old = 0; float tempMjj_ = 0;
+          float mjj_Old = 0; float tempMjj_Old = 0;
           for (int iJet = 0; iJet < jet30L1Size; ++iJet) {
             for (int jJet = 0; jJet < jet30L1Size; ++jJet) {
               if (iJet >= jJet) continue;
               if (jet30L1Cands.at(iJet).Pt() < 110 && jet30L1Cands.at(jJet).Pt() < 110 && !jet110Present) continue;
-              tempMjj_ = (jet30L1Cands.at(iJet) + jet30L1Cands.at(jJet)).M();
-              if (tempMjj_ > mjj_Old) mjj_Old = tempMjj_;
+              tempMjj_Old = (jet30L1Cands.at(iJet) + jet30L1Cands.at(jJet)).M();
+              if (tempMjj_Old > mjj_Old) mjj_Old = tempMjj_Old;
             }
           }
           if (mjj_Old >= 620) passOld_L1 = 1;
@@ -770,14 +839,14 @@ int main(int argc, char** argv)	{
         passOld_Counter[2] += passBothOld;
 
         //newVBF
-	if (jet30CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
+	if (jet35CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
 	  // check mjj
-	  float mjj_New = 0; float tempMjj_ = 0;
-          for (int iJet = 0; iJet < jet30CandsRmvOlTauCandsIso45Size; ++iJet) {
-            for (int jJet = 0; jJet < jet30CandsRmvOlTauCandsIso45Size; ++jJet) {
+	  float mjj_New = 0; float tempMjj_New = 0;
+          for (int iJet = 0; iJet < jet35CandsRmvOlTauCandsIso45Size; ++iJet) {
+            for (int jJet = 0; jJet < jet35CandsRmvOlTauCandsIso45Size; ++jJet) {
               if (iJet >= jJet) continue;
-              tempMjj_ = (jet30CandsRmvOlTauCandsIso45.at(iJet) + jet30CandsRmvOlTauCandsIso45.at(jJet)).M();
-              if (tempMjj_ > mjj_New) mjj_New = tempMjj_;
+              tempMjj_New = (jet35CandsRmvOlTauCandsIso45.at(iJet) + jet35CandsRmvOlTauCandsIso45.at(jJet)).M();
+              if (tempMjj_New > mjj_New) mjj_New = tempMjj_New;
             }
           }
           if (mjj_New >= 450) passNew_L1 = 1;
@@ -789,13 +858,24 @@ int main(int argc, char** argv)	{
         // newVBF2
 	if (jet35CandsRmvOlTauCandsIso45Size >= 2 && isoTau45L1Size >= 1) {
           float mjotjot_New2 = highestMassOfPair(jet35CandsRmvOlTauCandsIso45, isoTau45L1Cands);
-          if (mjotjot_New2 >= 400) passNew2_L1 = 1;
+          if (mjotjot_New2 >= 450) passNew2_L1 = 1;
           passNew2_Counter[0] += passNew2_L1;
 	}
         int passBothNew2 = (passNew2_L1 && passNew2_Off);
         passNew2_Counter[2] += passBothNew2;
         passNew2_Counter[3] += (passBothNew2 || passBothDiTau35);
+        //ssBothDiTau35;
 
+        // Manfred Logic
+        if (jet35L1Size >= 2 && isoTau45L1Size == 1) std::cout << iEntry << "-------------------------------one iso tau" << std::endl; 
+        if (jet35L1Size >= 2 && isoTau45L1Size >= 1) {
+          passManfredLogic = ManfredLogic(jet35L1Cands, isoTau45L1Cands);
+        }
+        passManfredLogicCount += passManfredLogic;
+        int passManfredL1AndNewOffline = (passManfredLogic && passNew_Off);
+        passManfredBoth += passManfredL1AndNewOffline;
+        if (jet35L1Size >= 2 && isoTau45L1Size == 1) std::cout << "end one iso tau----------------------------" << std::endl;
+        //passDiTauOROldORNewBoth;
 
         // variations of newVBFSeed2
         // check if size criteria are passed, then check mass req, then increment L1 counter, 
@@ -828,6 +908,7 @@ int main(int argc, char** argv)	{
 	int passBoth3542450 = (passJet35_Tau42_MassAnyTwo450_L1[3] && passJet35_Tau42_MassAnyTwo450_Off[3]);
 	passJet35_Tau42_MassAnyTwo450_Counter[2] += passBoth3542450;
 	passJet35_Tau42_MassAnyTwo450_Counter[3] += (passBoth3542450 || passBothDiTau35);
+
 
         if (jet35CandsRmvOlTauCandsIso38Size >= 2 && isoTau38L1Size >= 1) {
           float mjotjot_3538500 = highestMassOfPair(jet35CandsRmvOlTauCandsIso38, isoTau38L1Cands);
@@ -962,13 +1043,60 @@ int main(int argc, char** argv)	{
 
         // I think Olivier wants the HTT350?
         //numerator
-        passL1ANDOffDiTau35ORNew2ANDHTT350 += (((passBothDiTau35) || (passBothOld) || (passBothNew2)) && passHTT350);
+        //passL1ANDOffDiTau35ORNew2ANDHTT350 += (((passBothDiTau35) || (passBothOld) || (passBothNew2)) && passHTT350);
         //denominator
-        passL1ANDOffDiTau32ANDHTT350 += (((passBothDiTau32) || (passBothOld)) && passHTT350);
+        //passL1ANDOffDiTau32ANDHTT350 += (((passBothDiTau32) || (passBothOld)) && passHTT350);
 
         // Keti does not want the HTT350, so all the variations we've made don't have that
         // and we just use passBothDiTau32 as the denominator
+        
+        // 2 ORs
+        orDiTau35NewL1 += (passDiTau35_L1 || passNew_L1);
+        orDiTau35NewBoth += (passBothDiTau35 || passBothNew);
 
+        orDiTau35ManfredL1 += (passDiTau35_L1 || passManfredLogic);
+        orDiTau35ManfredBoth += (passBothDiTau35 || passManfredL1AndNewOffline);
+
+        orDiTau35New2L1 += (passDiTau35_L1 || passNew2_L1);
+        orDiTau35New2Both += (passBothDiTau35 || passBothNew2);
+
+        orManfredNewL1 += (passManfredLogic || passNew_L1);
+        orManfredNewBoth += (passManfredL1AndNewOffline || passBothNew);
+
+        // baseline 2 OR of DiTau35 and Old (pretty much what is currently used for run2 htt analysis, except ditau32
+        orDiTau35OldL1 += (passDiTau35_L1 || passOld_L1);
+        orDiTau35OldBoth += (passBothDiTau35 || passBothOld);
+
+        // 3 ORs
+        orDiTau35OldNewL1 += (passDiTau35_L1 || passOld_L1 || passNew_L1);
+        orDiTau35OldNewBoth += (passBothDiTau35 || passBothOld || passBothNew);
+
+        orDiTau35OldManfredL1 += (passDiTau35_L1 || passOld_L1 || passManfredLogic);
+        orDiTau35OldManfredBoth += (passBothDiTau35 || passBothOld || passManfredL1AndNewOffline);
+
+        orDiTau35OldMassAnyTwoL1 += (passDiTau35_L1 || passOld_L1 || passNew2_L1);
+        orDiTau35OldMassAnyTwoBoth += (passBothDiTau35 || passBothOld || passBothNew2); //new2 is 35_45_450
+
+        // sanity check that regular is a subset of manfred
+        // only done at L1 bc manfred rmv ol isn't done at offline level
+        andManfredNewL1 += (passManfredLogic && passNew_L1);
+
+        andDiTau35ManfredL1 += (passManfredLogic && passDiTau35_L1);
+        andDiTau35NewL1 += (passDiTau35_L1 && passNew_L1);
+
+        andDiTau35ManfredBoth += (passBothDiTau35 && passManfredL1AndNewOffline);
+        andDiTau35NewBoth += (passBothDiTau35 && passBothNew);
+        andManfredNewBoth += (passManfredL1AndNewOffline && passBothNew);
+
+        andManfredNewNotDiTau35L1 += (!passDiTau35_L1 && passManfredLogic && passNew_L1);
+
+        ManfredBothNotDiTau35Both += (passManfredL1AndNewOffline && !passBothDiTau35);
+        NewBothNotDiTau35Both += (passBothNew && !passBothDiTau35);
+        ManfredNewBothNotDiTau35Both += (passManfredL1AndNewOffline && passBothNew && !passBothDiTau35);
+
+        // investigating why Manfred and Regular L1 OR DiTau35 OR Old is same at L1 but different Offline
+        missingCase += ((passNew_Off) || (passBothDiTau35));//(!passNew_L1 && passDiTau35_L1 && !passDiTau35_Off);
+        //complementCase += ((pa)); //(!passNew_L1 && passManfredLogic && passNew_Off);
 
 /***
         passDiTauOffORHTT += (passDiTau_Off || passHTT);
@@ -1221,7 +1349,42 @@ int main(int argc, char** argv)	{
               << '\t' << passJet50_Tau25_MassAnyTwo450_Counter[3] 
               << '\t' << " from 50 25 450 L1, add 10 15 50 for offline " << std::endl;
  
+    std::cout << "2 ORs" << '\n' 
+              << "L1" << '\t' << "Offline" << std::endl;
+    std::cout << orDiTau35OldL1 << '\t' << orDiTau35OldBoth << '\t' << "pass DiTau35 OR OldVBF" << '\n'
+              << orDiTau35NewL1 << '\t' << orDiTau35NewBoth << '\t' << "pass DiTau35 OR NewVBF" << '\n'
+              << orDiTau35ManfredL1 << '\t' << orDiTau35ManfredBoth << '\t' << "pass DiTau35 OR Manfred" << '\n'
+              << orManfredNewL1 << '\t' << orManfredNewBoth << '\t' << "pass Manfred OR New" << '\n'
+              << orDiTau35New2L1 << '\t' << orDiTau35New2Both << '\t' << "pass DiTau35 OR MassAnyTwo" << std::endl;
 
+    std::cout << "3 ORs" << '\n'
+              << "L1" << '\t' << "Offline" << std::endl;
+    std::cout << orDiTau35OldNewL1 << '\t' << orDiTau35OldNewBoth << '\t' << "pass DiTau35 OR OldVBF OR NewVBF" << '\n'
+              << orDiTau35OldManfredL1 << '\t' << orDiTau35OldManfredBoth << '\t' << "pass DiTau35 OR OldVBF OR Manfred" << '\n'
+              << orDiTau35OldMassAnyTwoL1 << '\t' << orDiTau35OldMassAnyTwoBoth << '\t' << "pass DiTau35 OR OldVBF OR MassAnyTwo" << std::endl;
+
+    std::cout << "---------------------------------------------" << std::endl;
+    std::cout << "singles" << std::endl;
+    std::cout << "L1" << '\t' << "Offline" << std::endl;
+    std::cout << passDiTau35_Counter[0] << '\t' << passDiTau35_Counter[2] << '\t' << "pass DiTau35 at L1 AND Offline" << '\n'
+              << passNew_Counter[0] << '\t' << passNew_Counter[2] << '\t' << "pass NewVBF" << '\n'
+              << passManfredLogicCount << '\t' << passManfredBoth << '\t' << "pass Manfred logic at L1 AND NewVBF Offline" << '\n'
+              << "----------------------------------------------------" << '\n'
+              << "ANDs" << '\n'
+              << "L1" << '\t' << "Offline" << '\n'
+              << andDiTau35NewL1 << '\t' << andDiTau35NewBoth << '\t' << "AND of DiTau35 and New" << '\n'
+              << andDiTau35ManfredL1 << '\t' << andDiTau35ManfredBoth << '\t' << "AND of DiTau35 and Manfred" << '\n'
+              << andManfredNewL1 << '\t' << andManfredNewBoth << '\t' << "AND of Manfred and New" << '\n'
+              << "------" << '\n'
+              << andManfredNewNotDiTau35L1 << '\t' << "AND of Manfred and New NOT of DiTau35" << '\n'
+              << ManfredBothNotDiTau35Both << '\t' << "Manfred Both AND NOT DiTau35 Both" << '\n'
+              << NewBothNotDiTau35Both << '\t' << "New Both AND NOT DiTau35 Both" << '\n'
+              << ManfredNewBothNotDiTau35Both << '\t' << "Manfred Both AND New Both AND NOT DiTau35 Both" << '\n'
+              << std::endl;
+           
+
+    std::cout << missingCase << '\t' << "1 floating" << std::endl;
+    std::cout << complementCase << '\t' << "2 floating" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

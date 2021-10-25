@@ -375,3 +375,27 @@ void incIfMatchAllAODObjs(int &jetCounter, int &tauCounter, int &bothCounter, st
     tauCounter += AODTausInTauContainer;
     bothCounter += (AODJetsInJetContainer && AODTausInTauContainer);
 }
+
+int ManfredLogic(std::vector<TLorentzVector> jets, std::vector<TLorentzVector> taus) {
+  int tausSize = taus.size();
+  int jetsSize = jets.size();
+
+  //std::cout << "TauSize: " << tausSize << " JetSize: " << jetsSize << std::endl;
+  for (int iTau = 0; iTau < tausSize; ++iTau) {
+    for (int iJet = 0; iJet < jetsSize; ++iJet) {
+      float dR_iJet = jets.at(iJet).DeltaR(taus.at(iTau));
+      if (dR_iJet < 0.5) continue;
+      for (int jJet = iJet+1; jJet < jetsSize; ++jJet) {
+        //std::cout << "Tau: " << iTau << " Jet1: " << iJet << " Jet2: " << jJet << std::endl;
+        float dR_jJet = jets.at(jJet).DeltaR(taus.at(iTau));
+        if (dR_jJet < 0.5) continue;
+        //std::cout << dR_iJet << " dR_iJet " << dR_jJet << " dR_jJet " << std::endl;
+        float mjj = (jets.at(iJet) + jets.at(jJet)).M();
+        //std::cout << mjj << " mjj" << std::endl;
+        if (mjj >= 450) return 1;
+      }
+    }
+  }
+  return 0;
+
+}

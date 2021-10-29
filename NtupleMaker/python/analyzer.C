@@ -41,7 +41,7 @@ vector<TLorentzVector> crossCleanJets(vector<TLorentzVector> jetObjs, vector<TLo
           float dR = jetObjs.at(iJet).DeltaR(tauObjs.at(iTau));
           //if (dR < 0.5) cout << "\033[0;31m" << dR << "\033[0m" << endl;
           //else {cout << dR << endl;}
-          if (dR < 0.5) jetIsNotTau = false;
+          if (dR < 0.2) jetIsNotTau = false;
         }
       //}
       //if (!jetIsNotTau) counter += 1; // if jet matches a tau (or two taus) inc counter
@@ -82,15 +82,15 @@ int ManfredLogic(vector<TLorentzVector> jets, vector<TLorentzVector> taus) {
   for (int iTau = 0; iTau < tausSize; ++iTau) {
     for (int iJet = 0; iJet < jetsSize; ++iJet) {
       float dR_iJet = jets.at(iJet).DeltaR(taus.at(iTau));
-      if (dR_iJet < 0.5) continue; // if overlapped, go to next jet
+      if (dR_iJet < 0.2) continue; // if overlapped, go to next jet
       for (int jJet = iJet+1; jJet < jetsSize; ++jJet) {
         //if ( iJet >= jJet ) continue; // don't look at same jet, or repeat combinations
         //cout << "Tau: " << iTau << " Jet1: " << iJet << " Jet2: " << jJet << endl;     
         float dR_jJet = jets.at(jJet).DeltaR(taus.at(iTau));
-        if (dR_jJet < 0.5) continue; // if overlapped, go to next jet
+        if (dR_jJet < 0.2) continue; // if overlapped, go to next jet
         //cout << dR_iJet << " dR_iJet " << dR_jJet << " dR_jJet " << endl; 
         float mjj = (jets.at(iJet) + jets.at(jJet)).M();
-        cout << mjj << " mjj" << endl;
+        //cout << mjj << " mjj" << endl;
         if (mjj >= 450) return 1;
       }
     }
@@ -431,8 +431,8 @@ void analyzer::Loop()
   int overlapManfredNew = 0;
 
   // start event loop
-  //for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
-  for (Long64_t jentry=0; jentry<500001; ++jentry) {
+  for (Long64_t jentry=0; jentry<nentries1; ++jentry) { // full dataset
+  //for (Long64_t jentry=0; jentry<500001; ++jentry) {
   //for (Long64_t jentry=11100000; jentry<11400000; ++jentry) { // full run 323755
 
     if (jentry%100000 == 0 && jentry != 0) cout << jentry << endl;
@@ -1072,8 +1072,8 @@ void analyzer::Loop()
 
   
     // L1_DoubleIsoTau32er2p1
-    //if (tauCandsIso32Size >= 2) passDiTau = 1;
-    if (tauCandsIso35Size >= 2) passDiTau = 1;
+    if (tauCandsIso32Size >= 2) passDiTau = 1;
+    //if (tauCandsIso35Size >= 2) passDiTau = 1;
 
     // L1_Jet110_Jet35_Mass_Min620 (seed 00)
     // find highest mjj pair of jets
@@ -1733,6 +1733,9 @@ void analyzer::Loop()
   cout << "this makes the avg lumi = 1.812E34, which is what is used as the denom. lumi in the scaling" << endl;
   float Kfactor = 17881 * 40 * (2.0 / 1.812) / (lumis.size() * 23.31 * 8); // units of Hz
   float Ofactor = 2544 * 11255.6 * (2.0 / 1.812) * (1 / float(runCount)); // inst init lumi from report on OMS, used 44 LS lumi from list of init lumis per LS
+
+  cout << Kfactor << '\t' << "Rate factor from eqn Kyungwook gave me" << endl;
+  cout << Ofactor << '\t' << "Rate factor from eqn Olivier gave me" << endl;
 
   cout << "# Pass" << '\t' << "Eqn 1" << '\t' << "Eqn 2 " << endl;
  

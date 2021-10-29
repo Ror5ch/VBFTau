@@ -1,0 +1,64 @@
+# Braden Allmond notes on making an hlt menu using hltGetConfiguration
+# hltGetConfiguration command at the bottom for mc of recent VBF sample
+
+####### this step isn't necessary but it's the repo you'd need for more advanced testing
+# add package with
+# git cms-addpkg HLTrigger/Configuration
+
+# Dependencies and Compilation
+# git cms-checkdeps -A -a
+# scram b -j 6
+# rehash
+#######
+
+# edmDumpEventContent addedhltVBF.root will show you every EDM format products and their classes inside addedhltVBF.root
+
+# --l1 and --l1Xml are different options. --l1 points to files it should already know exist, --l1Xml are more specific usually user files
+# we'll need the second kind to test our seed idea directly since we have to customise the L1 xml file
+# to include DoubleJet35_Mass_Min450_IsoTau45_RmvOl's Tau Eta cut and make the dR cut 0p5 instead of 0p2
+
+# test input file from hltGetConfig webpage
+# use for testing if you don't have a testing file,
+# otherwise use your own testing file but give this option in hltGetConfig to limit the number of events
+--max-events 100 \
+--input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralHLTPhysics7/RAW/v1/000/323/790/00000/B543D251-40F1-CB46-A6A1-046CF3D78D6D.root \
+
+# from Kyungwook October 27th
+# new VBFHToTauTau sample 
+# /VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW
+
+# first argument is the path in ConfDB that we'd like to make our config file from
+# Copy_CMSSW_11_3_GRun_wNewVBF/V1 is the most recent menu for CMSSW_11_3 with our NewVBF path added in
+# timing studies run on DATA so we use --data \ and --timing \
+# we have to re-emulate L1 for our seed so we use --l1-emulator uGT \ and a custom l1XML file that we direct hltGetConfiguration to
+# the --customise ... business is necessary for all Run3 testing, which is what anything >= CMSSW_11_3 is accroding to the
+# hltGetConfiguration twiki (which may or may not be outdated by now...)
+# normally you'd also specify an input file, but it seems this isn't done by us in timing studies (need to update when we figure this out)
+# --globaltag auto:run3_hlt \ configures our run automatically, --unprescale removes prescales, --output none \ reduces output to terminal
+# the last line of the command directs the config to a file that we'll then use cmsRun on 
+# final thing, "\" is a line continuation character and just makes this easier to read. If you run this command 
+# and then arrow up to it in terminal, all the options will be mushed together but it'll still run
+
+# for --data, global tag is auto:run3_hlt
+# for --mc, global tag is auto:phase1_2021_realistic
+
+# all data must be run with this customise option (something about pixel tracking changing btwn runs 2 and 3)
+# --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+
+# --path argument reruns only the lines we care about, so you can use it to run just ditau, old vbf, and new vbf paths of HLT
+# this is very necesary because HLT is heavy, so we should only rerun the parts we need
+
+hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 5000 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hlt_NewVBF.py

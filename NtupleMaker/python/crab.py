@@ -33,19 +33,19 @@ if __name__ == '__main__':
     print("Submission checks...")
     print("Have you compiled your plugins recently?")
     yesno1 = raw_input('y/n? ')
-    print("Have you added/compiled the 2 correction files?")
+    print("Have you added and compiled the Overlap Removal hotfix?")
     yesno2 = raw_input('y/n? ')
-    print("Have you added the fixed xml file to the crab submission?")
+    print("Have you added the correct L1 Menu to the crab submission?")
     yesno3 = raw_input('y/n? ')
-    print("Did you update the variables in your configuration file?")
+    print("Did you update the variables in your configuration file from true to false?")
     yesno4 = raw_input('y/n? ')
     print("Did you remove the OR conditions on L1 old trigger in hlt paths?")
     yesno5 = raw_input('y/n? ')
-    print("Did you add the L1 ditau trigger?")
+    print("Did you add the L1 DiTau trigger?")
     yesno6 = raw_input('y/n? ')
-    print("Did you remove the OR conditions on L1 ditau trigger in hlt paths?")
+    print("Did you remove the OR conditions on L1 DiTau trigger in hlt paths?")
     yesno7 = raw_input('y/n? ')
-    print("Did you reduce the leading tau cut to 45 in your hlt menu?")
+    print("Did you reduce the leading tau cut to 45 in your hlt menu for New VBF HLT?")
     yesno8 = raw_input('y/n? ')
     print("Is your whitelist set correctly for the dataset (i.e. is it 100% available where you're asking for it?")
     yesno9 = raw_input('y/n? ')
@@ -60,8 +60,8 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'GluGluHToTauTau_RecoAndL1Primitives'
-    config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'
+    #config.General.requestName = 'GluGluHToTauTau_RecoAndL1Primitives'
+    #config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v1/MINIAODSIM'
     #config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'
     #config.Data.secondaryInputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW' 

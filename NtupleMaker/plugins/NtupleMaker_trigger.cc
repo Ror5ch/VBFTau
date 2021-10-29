@@ -66,6 +66,7 @@ vector<float> 	hltHpsDoublePFTau20_phi;
 vector<float>	hltHpsDoublePFTau20_energy;
 //
 //filter has 3 working points
+//remove loose and medium?
 //hltHpsDoublePFTau20TrackTightChargedIso
 int	passhltHpsDoublePFTauTight;
 vector<float>	hltHpsDoublePFTauTight_pt;

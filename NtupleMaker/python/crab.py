@@ -8,7 +8,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'AODConfFile.py'#'zeroBiasHLT.py'#'HLTandRAW4520Taus.py'#'ditau_and_vbf.py'
+config.JobType.psetName = 'hlt_NewVBF.py'#'AODConfFile.py'#'zeroBiasHLT.py'#'HLTandRAW4520Taus.py'#'ditau_and_vbf.py'
 # config.JobType.maxJobRuntimeMin = 120
 
 config.Data.inputDBS = 'global'
@@ -19,12 +19,14 @@ config.Data.outLFNDirBase = '/store/user/ballmond' #'/store/user/knam'
 config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_US_*', 'T2_RU_JINR', 'T1_RU_JINR']
 #config.Site.whitelist = ['T3_US_FNALLPC']
-config.Site.whitelist = ['T2_US_*']
+#config.Site.whitelist = ['T2_US_*']
+config.Site.whitelist = ['T2_US_*', 'T2_DE_*', 'T2_FR_*', 'T2_PL_*']
 #config.Site.ignoreGlobalBlacklist = True
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
 #config.JobType.numCores = 4
-config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
+#config.JobType.inputFiles = ['L1Menu_Collisions2018_v1_0_0-d1_fixed.xml']
+config.JobType.inputFiles = ['L1Menu_Collisions2020_v0_1_8_fixed.xml']
 
 config.Site.storageSite = 'T3_US_FNALLPC' #'T3_KR_KNU'
 
@@ -43,7 +45,7 @@ if __name__ == '__main__':
     yesno5 = raw_input('y/n? ')
     print("Did you add the L1 DiTau trigger?")
     yesno6 = raw_input('y/n? ')
-    print("Did you remove the OR conditions on L1 DiTau trigger in hlt paths?")
+    print("Did you remove the OR conditions on L1 DiTau trigger in hlt paths? (not necessary in CMSSW_11+)")
     yesno7 = raw_input('y/n? ')
     print("Did you reduce the leading tau cut to 45 in your hlt menu for New VBF HLT?")
     yesno8 = raw_input('y/n? ')
@@ -60,7 +62,9 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    #config.General.requestName = 'GluGluHToTauTau_RecoAndL1Primitives'
+    config.General.requestName = 'VBF_HLT_CorrectedRmvOl'
+    config.Data.inputDataset = '/store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/'
+    config.Data.secondaryInputDataset = '/store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/MINIAODSIM/'
     #config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v1/MINIAODSIM'
     #config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'

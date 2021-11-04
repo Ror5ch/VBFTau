@@ -20,7 +20,7 @@ config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_US_*', 'T2_RU_JINR', 'T1_RU_JINR']
 #config.Site.whitelist = ['T3_US_FNALLPC']
 #config.Site.whitelist = ['T2_US_*']
-config.Site.whitelist = ['T2_US_*', 'T2_DE_*', 'T2_FR_*', 'T2_PL_*']
+config.Site.whitelist = ['T2_RU_JINR', 'T2_FR_GRIF_LLR']
 #config.Site.ignoreGlobalBlacklist = True
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBF_HLT_CorrectedRmvOl_5'
+    config.General.requestName = 'VBF_HLT_CorrectedRmvOl_8'
     config.Data.inputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'
     config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
     #config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'

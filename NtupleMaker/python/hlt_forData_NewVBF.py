@@ -1,4 +1,4 @@
-# hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process MYHLT --full --offline --max-events 5000 --l1-emulator uGT --l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/320/497/00000/00C024D9-C893-E811-BE8B-FA163E085754.root
+# hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process MYHLT --full --offline --max-events 5000 --l1-emulator uGT --l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/098/00000/B11474B6-7775-D54D-805E-5FFE0391D401.root
 
 # /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 (CMSSW_11_3_0)
 
@@ -18319,59 +18319,11 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_Do
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/320/497/00000/00C024D9-C893-E811-BE8B-FA163E085754.root',
+        'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/098/00000/B11474B6-7775-D54D-805E-5FFE0391D401.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
     )
-)
-
-updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
-import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
-tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, #debug = False,
-                    updatedTauName = updatedTauName,
-                    toKeep = ["deepTau2017v2p1", #deepTau TauIDs
-                               ])
-tauIdEmbedder.runTauID()
-# Path and EndPath definitions
-
-process.demo = cms.EDAnalyzer('NtupleMaker'
-     #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
-     , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT") #change to HLT instead of MYHLT if not rerun 
-     , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
-     , triggerEventWithRefs = cms.untracked.InputTag("hltTriggerSummaryRAW","","MYHLT")
-     #, PFTauCollection = cms.untracked.InputTag("hltHpsPFTauProducer","","MYHLT")
-     #, hltHpsTracks = cms.untracked.InputTag("hltHpsPFTauTrack", "","MYHLT")
-
-     , SkipEvent = cms.untracked.vstring('ProductNotFound')
-
-     , fillingTriggers = cms.untracked.bool(True)
-     , fillingEventInfo = cms.untracked.bool(False)
-     , fillingL1 = cms.untracked.bool(False)
-     , fillingTaus = cms.untracked.bool(False)
-     , fillingJets = cms.untracked.bool(False)
-     , development = cms.untracked.bool(False)
-     , doGenParticles = cms.untracked.bool(False)
-
-     , jetTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Jet", "RECO")
-     , tauTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Tau", "RECO")
-
-     , genParticleSrc = cms.untracked.InputTag("prunedGenParticles")
-     , VtxLabel = cms.untracked.InputTag("offlineSlimmedPrimaryVertices")
-     , rhoLabel = cms.untracked.InputTag("fixedGridRhoFastjetAll")
-     , tauSrc = cms.untracked.InputTag("slimmedTausNewID")
-     , ak4JetSrc = cms.untracked.InputTag("slimmedJets")
-)
-
-process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("histo.root"),
-    closeFileFast = cms.untracked.bool(True)
-)
-
-process.demoPath = cms.EndPath(
-#        process.rerunMvaIsolationSequence *
-#        getattr(process,updatedTauName) *
-        process.demo
 )
 
 # override the GlobalTag's L1T menu from an Xml file
@@ -18427,7 +18379,7 @@ _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
 _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
 _customInfo['maxEvents' ]=  5000
 _customInfo['globalTag' ]= "auto:run3_hlt"
-_customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/320/497/00000/00C024D9-C893-E811-BE8B-FA163E085754.root']
+_customInfo['inputFile' ]=  ['root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/098/00000/B11474B6-7775-D54D-805E-5FFE0391D401.root']
 _customInfo['realData'  ]=  True
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 process = customizeHLTforAll(process,"GRun",_customInfo)

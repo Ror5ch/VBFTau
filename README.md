@@ -64,9 +64,9 @@ You should be good to go now!
 Examples of configuration files for CMSSW_10_2_16_UL and CMSSW_11_3_4_patch1 are already available at hltConf_CMSSW10_L1Studies.py and hlt_NewVBF.py, respectively. The CMSSW10 configuration was made primarily to figure out an issue at L1. The CMSSW11 configuration is being used to ensure the fix works and to provide results for HLT efficiency and rate studies. Eventually, we'll need to repeat this for a configuration in CMSSW_12. All the info you need about how to make a new configuration is in the file `hltGetConfiguration.txt` in the `WorkingFiles` directory of this repo. 
 
 # XML menu correction
-The L1 seed we're working on, L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp, didn't have a tau eta cut applied in its original expression for the L1 emulator
+The L1 seed we're working on, L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp, didn't have a tau eta cut applied in its original expression for the L1 emulator (also the dR is 0p2; we've used 0p5 in all our studies)
 
-`mass_inv_orm{JET35,JET35,TAU45[TAU-ISO_0xE]}[MASS_MIN_450,ORMDR_0p5]`
+`mass_inv_orm{JET35,JET35,TAU45[TAU-ISO_0xE]}[MASS_MIN_450,ORMDR_0p2]`
 
 So we just add it by hand. You can download the latest and greatest L1 menu directly from here https://github.com/cms-l1-dpg/L1MenuRun3, under the official directory click "download" and then scp whatever you downloaded to wherever you need it. Alternatively, you could use wget like this
 
@@ -90,5 +90,19 @@ We've added "TAU-ETA_2p13" next to the tau isolation requirement. This tau eta i
       <data/>
     </cut>
 ```
+
+We've also changed the dR cone for overlap removal from 0p2 to 0p5, so we need to update the related cut (change the 2's to 5's like so)
+
+```
+    <cut>
+      <name>ORMDR_0p5</name>
+      <object/>
+      <type>ORMDR</type>
+      <minimum>+0.0000000000000000E+00</minimum>
+      <maximum>+5.0000000000000001E-01</maximum>
+      <data/>
+    </cut>
+```
+
 
 Great, that's all for L1 XML!

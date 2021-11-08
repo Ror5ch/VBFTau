@@ -87,7 +87,14 @@ hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
 > hlt_NewVBF.py
 
-# input for data needs to be a good run, which you can check this way (thank you Kyungwook!!)
+# input for data needs to be a good run number. You can find the run number in the output of an interactive cmsRun, and then
+# search that job number in OMS like this (https://cmsoms.cern.ch/cms/runs/report?cms_run=324097&cms_run_sequence=GLOBAL-RUN)
+# there's no data for the run shown (324097), which means it's a bad run. Instead, try https://cmsoms.cern.ch/cms/runs/report?cms_run=325098&cms_run_sequence=GLOBAL-RUN
+# There's clearly data here, and when you do an interactive cmsRun the output looks more normal (multiple L1s fired)
+# You can find input files corresponding to that run number using CMS DAS like this
+# file dataset=/EphemeralZeroBias1/Run2018D-v1/RAW run=325098
+# link to file: https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod%2Fglobal&input=file+dataset%3D%2FEphemeralZeroBias1%2FRun2018D-v1%2FRAW+run%3D325098
+# Thanks Kyungwook for showing me how!
 
 hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
 --globaltag auto:run3_hlt \

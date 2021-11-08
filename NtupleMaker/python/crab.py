@@ -20,7 +20,7 @@ config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_US_*', 'T2_RU_JINR', 'T1_RU_JINR']
 #config.Site.whitelist = ['T3_US_FNALLPC']
 #config.Site.whitelist = ['T2_US_*']
-config.Site.whitelist = ['T2_RU_JINR', 'T2_FR_GRIF_LLR']
+config.Site.whitelist = ['T1_US_FNAL', 'T2_FR_GRIF_LLR']
 #config.Site.ignoreGlobalBlacklist = True
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
@@ -51,9 +51,11 @@ if __name__ == '__main__':
     yesno8 = raw_input('y/n? ')
     print("Is your whitelist set correctly for the dataset (i.e. is it 100% available where you're asking for it?")
     yesno9 = raw_input('y/n? ')
+    print("If you're using 2 datasets, is your primary input dataset a parent of the secondary dataset (i.e. is the secondary dataset its child?")
+    yesno10 = raw_input('y/n? ')
 
-    no = (yesno1=='n' or yesno2=='n' or yesno3=='n' or yesno4=='n' or yesno5=='n' or yesno6=='n' or yesno7=='n' or yesno8=='n' or yesno9=='n')
-    empty = (yesno1=='' or yesno2=='' or yesno3=='' or yesno4=='' or yesno5=='' or yesno6=='' or yesno7=='' or yesno8=='' or yesno9=='')
+    no = (yesno1=='n' or yesno2=='n' or yesno3=='n' or yesno4=='n' or yesno5=='n' or yesno6=='n' or yesno7=='n' or yesno8=='n' or yesno9=='n' or yesno10=='n')
+    empty = (yesno1=='' or yesno2=='' or yesno3=='' or yesno4=='' or yesno5=='' or yesno6=='' or yesno7=='' or yesno8=='' or yesno9=='' or yesno10 =='')
     if (no or empty):
 	print("Well, go fix that!")
 	sys.exit()
@@ -62,9 +64,9 @@ if __name__ == '__main__':
 
     from CRABAPI.RawCommand import crabCommand
 
-    config.General.requestName = 'VBF_HLT_CorrectedRmvOl_8'
-    config.Data.inputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'
-    config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
+    config.General.requestName = 'VBF_HLT_CorrectedRmvOl_11'
+    config.Data.inputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
+    config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'
     #config.Data.inputDataset = '/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM'
     #config.Data.inputDataset = '/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v1/MINIAODSIM'
     #config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-PromptReco-v2/MINIAOD'

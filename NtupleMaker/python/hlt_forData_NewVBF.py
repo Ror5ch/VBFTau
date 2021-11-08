@@ -13902,7 +13902,8 @@ process.hltBoolEnd = cms.EDFilter( "HLTBool",
     result = cms.bool( True )
 )
 process.hltL1VBFDiJetOR = cms.EDFilter( "HLTL1TSeed",
-    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+    L1SeedsLogicalExpression = cms.string( #"L1_DoubleJet_90_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_100_30_DoubleJet30_Mass_Min620 OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620" ),
+    'L1_DoubleJet_110_35_DoubleJet35_Mass_Min620'),
     L1EGammaInputTag = cms.InputTag( 'hltGtStage2Digis','EGamma' ),
     L1JetInputTag = cms.InputTag( 'hltGtStage2Digis','Jet' ),
     saveTags = cms.bool( True ),
@@ -18181,7 +18182,7 @@ process.hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching = cms.EDP
 )
 process.hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched = cms.EDFilter( "HLT1PFTau",
     saveTags = cms.bool( True ),
-    MinPt = cms.double( 50.0 ),
+    MinPt = cms.double( 45.0 ),
     MinN = cms.int32( 1 ),
     MaxEta = cms.double( 2.1 ),
     MinEta = cms.double( -1.0 ),
@@ -18326,6 +18327,54 @@ process.source = cms.Source( "PoolSource",
     )
 )
 
+updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
+import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, #debug = False,
+                    updatedTauName = updatedTauName,
+                    toKeep = ["deepTau2017v2p1", #deepTau TauIDs
+                               ])
+tauIdEmbedder.runTauID()
+# Path and EndPath definitions
+
+process.demo = cms.EDAnalyzer('NtupleMaker'
+     #, tracks = cms.untracked.InputTag('ctfWithMaterialTracks')
+     , triggerResults = cms.untracked.InputTag("TriggerResults","","MYHLT") #change to HLT instead of MYHLT if not rerun 
+     , triggerEvent = cms.untracked.InputTag("hltTriggerSummaryAOD","","MYHLT")
+     , triggerEventWithRefs = cms.untracked.InputTag("hltTriggerSummaryRAW","","MYHLT")
+     #, PFTauCollection = cms.untracked.InputTag("hltHpsPFTauProducer","","MYHLT")
+     #, hltHpsTracks = cms.untracked.InputTag("hltHpsPFTauTrack", "","MYHLT")
+
+     , SkipEvent = cms.untracked.vstring('ProductNotFound')
+
+     , fillingTriggers = cms.untracked.bool(True)
+     , fillingEventInfo = cms.untracked.bool(False)
+     , fillingL1 = cms.untracked.bool(False)
+     , fillingTaus = cms.untracked.bool(False)
+     , fillingJets = cms.untracked.bool(False)
+     , development = cms.untracked.bool(False)
+     , doGenParticles = cms.untracked.bool(False)
+
+     , jetTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Jet", "RECO")
+     , tauTriggerPrimitives = cms.untracked.InputTag("caloStage2Digis", "Tau", "RECO")
+
+     , genParticleSrc = cms.untracked.InputTag("prunedGenParticles")
+     , VtxLabel = cms.untracked.InputTag("offlineSlimmedPrimaryVertices")
+     , rhoLabel = cms.untracked.InputTag("fixedGridRhoFastjetAll")
+     , tauSrc = cms.untracked.InputTag("slimmedTausNewID")
+     , ak4JetSrc = cms.untracked.InputTag("slimmedJets")
+)
+
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("histo.root"),
+    closeFileFast = cms.untracked.bool(True)
+)
+
+process.demoPath = cms.EndPath(
+#        process.rerunMvaIsolationSequence *
+#        getattr(process,updatedTauName) *
+        process.demo
+)
+
 # override the GlobalTag's L1T menu from an Xml file
 from HLTrigger.Configuration.CustomConfigs import L1XML
 process = L1XML(process,"L1Menu_Collisions2020_v0_1_8_fixed.xml")
@@ -18340,11 +18389,11 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 # enable TrigReport, TimeReport and MultiThreading
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool( True ),
-    numberOfThreads = cms.untracked.uint32( 4 ),
-    numberOfStreams = cms.untracked.uint32( 0 ),
-)
+#process.options = cms.untracked.PSet(
+#    wantSummary = cms.untracked.bool( True ),
+#    numberOfThreads = cms.untracked.uint32( 4 ),
+#    numberOfStreams = cms.untracked.uint32( 0 ),
+#)
 
 # override the GlobalTag, connection string and pfnPrefix
 if 'GlobalTag' in process.__dict__:
@@ -18360,13 +18409,13 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.ThroughputService = cms.untracked.PSet()
 
 # load the DQMStore and DQMRootOutputModule
-process.load( "DQMServices.Core.DQMStore_cfi" )
+#process.load( "DQMServices.Core.DQMStore_cfi" )
 
-process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
-    fileName = cms.untracked.string("DQMIO.root")
-)
+#process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+#    fileName = cms.untracked.string("DQMIO.root")
+#)
 
-process.DQMOutput = cms.EndPath( process.dqmOutput )
+#process.DQMOutput = cms.EndPath( process.dqmOutput )
 
 # add specific customizations
 _customInfo = {}

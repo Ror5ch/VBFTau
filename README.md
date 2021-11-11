@@ -63,6 +63,8 @@ You should be good to go now!
 # Making an hlt configuration
 Examples of configuration files for CMSSW_10_2_16_UL and CMSSW_11_3_4_patch1 are already available at hltConf_CMSSW10_L1Studies.py and hlt_NewVBF.py, respectively. The CMSSW10 configuration was made primarily to figure out an issue at L1. The CMSSW11 configuration is being used to ensure the fix works and to provide results for HLT efficiency and rate studies. Eventually, we'll need to repeat this for a configuration in CMSSW_12. All the info you need about how to make a new configuration is in the file `hltGetConfiguration.txt` in the `WorkingFiles` directory of this repo. 
 
+Important note on hlt configs: there are two corrections to an hlt configuration you must make *by hand* and they're described in the file `hltConfigHandCorrections` in the `WorkingFiles` directory.
+
 # XML menu correction
 The L1 seed we're working on, L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp, didn't have a tau eta cut applied in its original expression for the L1 emulator (also the dR is 0p2; we've used 0p5 in all our studies)
 

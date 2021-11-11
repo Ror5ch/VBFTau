@@ -685,6 +685,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	//if (filterTag == hltMatchedVBFIsoTauTwoMedium_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoMedium = 1;
 	//if (filterTag == hltMatchedVBFIsoTauTwoLoose_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoLoose = 1;
 
+// should change to only filling kinematic branches if the flag for passing the filter is set to true as well
+
 	//loop over trigger objects and store their kinematics to the proper filter branches
 	for(trigger::size_type iKey=0; iKey < nObjKeys; ++iKey){
 	    trigger::size_type objKey = objectKeys.at(iKey);

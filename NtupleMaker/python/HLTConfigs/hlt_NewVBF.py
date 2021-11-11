@@ -18347,10 +18347,10 @@ process.demo = cms.EDAnalyzer('NtupleMaker'
      , SkipEvent = cms.untracked.vstring('ProductNotFound')
 
      , fillingTriggers = cms.untracked.bool(True)
-     , fillingEventInfo = cms.untracked.bool(False)
-     , fillingL1 = cms.untracked.bool(False)
-     , fillingTaus = cms.untracked.bool(False)
-     , fillingJets = cms.untracked.bool(False)
+     , fillingEventInfo = cms.untracked.bool(True)
+     , fillingL1 = cms.untracked.bool(True)
+     , fillingTaus = cms.untracked.bool(True)
+     , fillingJets = cms.untracked.bool(True)
      , development = cms.untracked.bool(False)
      , doGenParticles = cms.untracked.bool(False)
 
@@ -18370,8 +18370,8 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demoPath = cms.EndPath(
-#        process.rerunMvaIsolationSequence *
-#        getattr(process,updatedTauName) *
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName) *
         process.demo
 )
 

@@ -10,7 +10,7 @@
 // .x MakeCutflowFromOuttree("filename.root")
 //
 
-void MakeCutflowFromOuttree(char* filename){
+void MakeCutflowFromOuttree(char* filename, int plotting){
 
     TFile *_file0 = TFile::Open(filename);
 
@@ -18,7 +18,7 @@ void MakeCutflowFromOuttree(char* filename){
 
     double nEvents = tree->Draw("nEvents", "nEvents>0", "goff");
 
-    std:: cout << nEvents << '\t' << "nEvents" << std::endl;
+    std:: cout << nEvents << '\t' << "nEvents" << '\n' << std::endl;
 
     // Old VBF path and variables for cutflow
     double passhltL1VBFDiJetOR = tree->Draw("passhltL1VBFDiJetOR", "passhltL1VBFDiJetOR>0", "goff");
@@ -49,6 +49,8 @@ void MakeCutflowFromOuttree(char* filename){
     double passhltMatchedVBFIsoTauTwoTight = tree->Draw("passhltMatchedVBFIsoTauTwoTight", "passhltMatchedVBFIsoTauTwoTight>0", "goff");
     double passNewVBFHLT = tree->Draw("passNewVBFHLT", "passNewVBFHLT>0", "goff");
 
+    // vertical lists are easier to copy and paste
+    std::cout << "New VBF HLT Filter Counts" << std::endl;
     std::cout << passhltL1VBFDiJetIsoTau << '\t' << "passhltL1VBFDiJetIsoTau" << '\n'
               << passhltHpsDoublePFTau20New << '\t' << "passhltHpsDoublePFTau20New" << '\n'
               << passhltHpsDoublePFTauTightNew << '\t' << "passhltHpsDoublePFTauTightNew" << '\n'
@@ -58,8 +60,10 @@ void MakeCutflowFromOuttree(char* filename){
               << passNewVBFHLT << '\t' << "passNewVBFHLT" << '\n'
               << std::endl;
 
-    // arrays holding these values
-    // zeros where filters don't match / no counterpart exists
+    if (plotting) {
+
+    // arrays holding above values
+    // repeated where filters don't match / no counterpart exists
 
     double rawOld[] = {passhltL1VBFDiJetOR, passhltHpsDoublePFTau20Old, \
 		passhltHpsDoublePFTauTightOld, passhltHpsDoublePFTauAgainstMuonTightOld, \
@@ -71,7 +75,7 @@ void MakeCutflowFromOuttree(char* filename){
 		passhltMatchedVBFIsoTauTwoTight, passNewVBFHLT};
 
     const char *names[8] = {"L1", "Req. 1 Tau", "Req. 2nd Tau", \
-			"TauID vs Muon", "50 GeV Tau (New)", "Req. 2 Jets", \
+			"TauID vs Muon", "45 GeV Tau (New)", "Req. 2 Jets", \
 			"115 GeV Jet (Old)", "Passed All Filters"};
 
     TH1F* oldHLTAbsEff = new TH1F("oldHLTAbsEff","", 8, 0.0, 8.0);
@@ -153,5 +157,6 @@ void MakeCutflowFromOuttree(char* filename){
 
     //c2->Print("cutflowRelEffLog.png", "png");
     c2->Print("cutflowRelEff.png", "png");
+    } // end if statement for plotting
 
 }

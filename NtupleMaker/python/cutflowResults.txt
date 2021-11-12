@@ -1,0 +1,187 @@
+root [2] MakeCutflowFromOuttree("outtreeVBFPartial.root", 0)
+ROOT_prompt_2:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("outtreeVBFPartial.root", 0)
+                       ^
+92000	nEvents
+
+Old VBF HLT Filter Counts
+24360	passhltL1VBFDiJetOR
+9071	passhltHpsDoublePFTau20Old
+4446	passhltHpsDoublePFTauTightOld
+4062	passhltHpsDoublePFTauAgainstMuonTightOld
+1118	passhltMatchedVBFTwoTight
+1118	passhltMatchedVBFOneTight
+1118	passOldVBFHLT
+
+New VBF HLT Filter Counts
+26939	passhltL1VBFDiJetIsoTau
+11941	passhltHpsDoublePFTau20New
+6082	passhltHpsDoublePFTauTightNew
+5670	passhltHpsDoublePFTauAgainstMuonTightNew
+4756	passhltHpsPFTau50Tight
+1929	passhltMatchedVBFIsoTauTwoTight
+1929	passNewVBFHLT
+
+root [3] MakeCutflowFromOuttree("outtreeggHPartial.root", 0)
+ROOT_prompt_3:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("outtreeggHPartial.root", 0)
+                       ^
+40000	nEvents
+
+Old VBF HLT Filter Counts
+1640	passhltL1VBFDiJetOR
+555	passhltHpsDoublePFTau20Old
+259	passhltHpsDoublePFTauTightOld
+246	passhltHpsDoublePFTauAgainstMuonTightOld
+23	passhltMatchedVBFTwoTight
+23	passhltMatchedVBFOneTight
+23	passOldVBFHLT
+
+New VBF HLT Filter Counts
+3127	passhltL1VBFDiJetIsoTau
+1152	passhltHpsDoublePFTau20New
+609	passhltHpsDoublePFTauTightNew
+590	passhltHpsDoublePFTauAgainstMuonTightNew
+451	passhltHpsPFTau50Tight
+42	passhltMatchedVBFIsoTauTwoTight
+42	passNewVBFHLT
+
+root [4] MakeCutflowFromOuttree("selectionOuttreeVBFPartial.root", 0)
+ROOT_prompt_4:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("selectionOuttreeVBFPartial.root", 0)
+                       ^
+3070	nEvents
+
+Old VBF HLT Filter Counts
+1438	passhltL1VBFDiJetOR
+1232	passhltHpsDoublePFTau20Old
+987	passhltHpsDoublePFTauTightOld
+983	passhltHpsDoublePFTauAgainstMuonTightOld
+353	passhltMatchedVBFTwoTight
+353	passhltMatchedVBFOneTight
+353	passOldVBFHLT
+
+New VBF HLT Filter Counts
+1972	passhltL1VBFDiJetIsoTau
+1669	passhltHpsDoublePFTau20New
+1341	passhltHpsDoublePFTauTightNew
+1338	passhltHpsDoublePFTauAgainstMuonTightNew
+1169	passhltHpsPFTau50Tight
+628	passhltMatchedVBFIsoTauTwoTight
+628	passNewVBFHLT
+
+root [5] MakeCutflowFromOuttree("selectionOuttreeggHPartial.root", 0)
+ROOT_prompt_5:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("selectionOuttreeggHPartial.root", 0)
+                       ^
+395	nEvents
+
+Old VBF HLT Filter Counts
+66	passhltL1VBFDiJetOR
+58	passhltHpsDoublePFTau20Old
+46	passhltHpsDoublePFTauTightOld
+46	passhltHpsDoublePFTauAgainstMuonTightOld
+8	passhltMatchedVBFTwoTight
+8	passhltMatchedVBFOneTight
+8	passOldVBFHLT
+
+New VBF HLT Filter Counts
+139	passhltL1VBFDiJetIsoTau
+117	passhltHpsDoublePFTau20New
+92	passhltHpsDoublePFTauTightNew
+92	passhltHpsDoublePFTauAgainstMuonTightNew
+77	passhltHpsPFTau50Tight
+12	passhltMatchedVBFIsoTauTwoTight
+12	passNewVBFHLT
+
+root [6] MakeCutflowFromOuttree("outtreeFullEZB1SelectedRuns.root", 0)
+ROOT_prompt_6:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("outtreeFullEZB1SelectedRuns.root", 0)
+                       ^
+5.89473e+06	nEvents
+
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Old VBF HLT Filter Counts
+555	passhltL1VBFDiJetOR
+49	passhltHpsDoublePFTau20Old
+1	passhltHpsDoublePFTauTightOld
+1	passhltHpsDoublePFTauAgainstMuonTightOld
+0	passhltMatchedVBFTwoTight
+0	passhltMatchedVBFOneTight
+0	passOldVBFHLT
+
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+New VBF HLT Filter Counts
+461	passhltL1VBFDiJetIsoTau
+71	passhltHpsDoublePFTau20New
+4	passhltHpsDoublePFTauTightNew
+4	passhltHpsDoublePFTauAgainstMuonTightNew
+2	passhltHpsPFTau50Tight
+0	passhltMatchedVBFIsoTauTwoTight
+0	passNewVBFHLT
+
+root [7] MakeCutflowFromOuttree("outtreeFullEZB7SelectedRuns.root", 0)
+ROOT_prompt_7:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("outtreeFullEZB7SelectedRuns.root", 0)
+                       ^
+5.90186e+06	nEvents
+
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Old VBF HLT Filter Counts
+579	passhltL1VBFDiJetOR
+49	passhltHpsDoublePFTau20Old
+2	passhltHpsDoublePFTauTightOld
+2	passhltHpsDoublePFTauAgainstMuonTightOld
+0	passhltMatchedVBFTwoTight
+0	passhltMatchedVBFOneTight
+0	passOldVBFHLT
+
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+New VBF HLT Filter Counts
+527	passhltL1VBFDiJetIsoTau
+69	passhltHpsDoublePFTau20New
+0	passhltHpsDoublePFTauTightNew
+0	passhltHpsDoublePFTauAgainstMuonTightNew
+0	passhltHpsPFTau50Tight
+0	passhltMatchedVBFIsoTauTwoTight
+0	passNewVBFHLT
+
+root [8] MakeCutflowFromOuttree("outtreeFullEZB8SelectedRuns.root", 0)
+ROOT_prompt_8:1:24: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+MakeCutflowFromOuttree("outtreeFullEZB8SelectedRuns.root", 0)
+                       ^
+5.9002e+06	nEvents
+
+Old VBF HLT Filter Counts
+549	passhltL1VBFDiJetOR
+44	passhltHpsDoublePFTau20Old
+1	passhltHpsDoublePFTauTightOld
+1	passhltHpsDoublePFTauAgainstMuonTightOld
+1	passhltMatchedVBFTwoTight
+1	passhltMatchedVBFOneTight
+1	passOldVBFHLT
+
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+Warning in <TTreePlayer::DrawSelect>: The selected TTree subset is empty.
+New VBF HLT Filter Counts
+502	passhltL1VBFDiJetIsoTau
+61	passhltHpsDoublePFTau20New
+4	passhltHpsDoublePFTauTightNew
+4	passhltHpsDoublePFTauAgainstMuonTightNew
+2	passhltHpsPFTau50Tight
+0	passhltMatchedVBFIsoTauTwoTight
+0	passNewVBFHLT
+
+root [9] .q
+[ballmond@cmslpc171 python]$ exit
+logout
+Connection to cmslpc-sl7.fnal.gov closed.

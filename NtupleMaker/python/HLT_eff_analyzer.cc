@@ -38,59 +38,94 @@ int main(int argc, char** argv)	{
     outTree->Branch("runNumber", &runNumber);
     outTree->Branch("lumiBlock", &lumiBlock);
     outTree->Branch("eventNumberID", &eventNumberID);
-    // HLT variables and branches
-    float j1_pt, j1_eta, j1_phi, j1_energy; 
-    float j2_pt, j2_eta, j2_phi, j2_energy; 
-    float mjj;
-    float t1_pt, t1_eta, t1_phi, t1_energy;
-    float t2_pt, t2_eta, t2_phi, t2_energy;
-    outTree->Branch("j1_pt", &j1_pt);
-    outTree->Branch("j1_eta", &j1_eta);
-    outTree->Branch("j1_phi", &j1_phi);
-    outTree->Branch("j2_pt", &j2_pt);
-    outTree->Branch("j2_eta", &j2_eta);
-    outTree->Branch("j2_phi", &j2_phi);
-    outTree->Branch("mjj", &mjj);
-    outTree->Branch("t1_pt", &t1_pt);
-    outTree->Branch("t1_eta", &t1_eta);
-    outTree->Branch("t1_phi", &t1_phi);
-    outTree->Branch("t2_pt", &t2_pt);
-    outTree->Branch("t2_eta", &t2_eta);
-    outTree->Branch("t2_phi", &t2_phi);
-    // AOD variables and branches, A is for AOD
-    float j1_pt_A, j1_eta_A, j1_phi_A, j1_energy_A; 
-    float j2_pt_A, j2_eta_A, j2_phi_A, j2_energy_A; 
-    float mjj_A;
-    float t1_pt_A, t1_eta_A, t1_phi_A, t1_energy_A;
-    float t2_pt_A, t2_eta_A, t2_phi_A, t2_energy_A;
+    // Old VBF HLT variables and branches
+    float j1_ptOld, j1_etaOld, j1_phiOld, j1_energyOld; 
+    float j2_ptOld, j2_etaOld, j2_phiOld, j2_energyOld; 
+    float mjjOld;
+    float t1_ptOld, t1_etaOld, t1_phiOld, t1_energyOld;
+    float t2_ptOld, t2_etaOld, t2_phiOld, t2_energyOld;
+    outTree->Branch("j1_ptOld", &j1_ptOld);
+    outTree->Branch("j1_etaOld", &j1_etaOld);
+    outTree->Branch("j1_phiOld", &j1_phiOld);
+    outTree->Branch("j2_ptOld", &j2_ptOld);
+    outTree->Branch("j2_etaOld", &j2_etaOld);
+    outTree->Branch("j2_phiOld", &j2_phiOld);
+    outTree->Branch("mjjOld", &mjjOld);
+    outTree->Branch("t1_ptOld", &t1_ptOld);
+    outTree->Branch("t1_etaOld", &t1_etaOld);
+    outTree->Branch("t1_phiOld", &t1_phiOld);
+    outTree->Branch("t2_ptOld", &t2_ptOld);
+    outTree->Branch("t2_etaOld", &t2_etaOld);
+    outTree->Branch("t2_phiOld", &t2_phiOld);
+
+    // New VBF HLT variables and branches
+    float j1_ptNew, j1_etaNew, j1_phiNew, j1_energyNew; 
+    float j2_ptNew, j2_etaNew, j2_phiNew, j2_energyNew; 
+    float mjjNew;
+    float t1_ptNew, t1_etaNew, t1_phiNew, t1_energyNew;
+    float t2_ptNew, t2_etaNew, t2_phiNew, t2_energyNew;
+    outTree->Branch("j1_ptNew", &j1_ptNew);
+    outTree->Branch("j1_etaNew", &j1_etaNew);
+    outTree->Branch("j1_phiNew", &j1_phiNew);
+    outTree->Branch("j2_ptNew", &j2_ptNew);
+    outTree->Branch("j2_etaNew", &j2_etaNew);
+    outTree->Branch("j2_phiNew", &j2_phiNew);
+    outTree->Branch("mjjNew", &mjjNew);
+    outTree->Branch("t1_ptNew", &t1_ptNew);
+    outTree->Branch("t1_etaNew", &t1_etaNew);
+    outTree->Branch("t1_phiNew", &t1_phiNew);
+    outTree->Branch("t2_ptNew", &t2_ptNew);
+    outTree->Branch("t2_etaNew", &t2_etaNew);
+    outTree->Branch("t2_phiNew", &t2_phiNew);
+
+    // AOD variables and branches
+    float j1_ptAOD, j1_etaAOD, j1_phiAOD, j1_energyAOD; 
+    float j2_ptAOD, j2_etaAOD, j2_phiAOD, j2_energyAOD; 
+    float mjjAOD;
+    float t1_ptAOD, t1_etaAOD, t1_phiAOD, t1_energyAOD;
+    float t2_ptAOD, t2_etaAOD, t2_phiAOD, t2_energyAOD;
     int deepTauVSjet, deepTauVSmu, deepTauVSele, jetID;
-    outTree->Branch("j1_pt_A", &j1_pt_A);
-    outTree->Branch("j1_eta_A", &j1_eta_A);
-    outTree->Branch("j1_phi_A", &j1_phi_A);
-    outTree->Branch("j2_pt_A", &j2_pt_A);
-    outTree->Branch("j2_eta_A", &j2_eta_A);
-    outTree->Branch("j2_phi_A", &j2_phi_A);
-    outTree->Branch("mjj_A", &mjj_A);
-    outTree->Branch("t1_pt_A", &t1_pt_A);
-    outTree->Branch("t1_eta_A", &t1_eta_A);
-    outTree->Branch("t1_phi_A", &t1_phi_A);
-    outTree->Branch("t2_pt_A", &t2_pt_A);
-    outTree->Branch("t2_eta_A", &t2_eta_A);
-    outTree->Branch("t2_phi_A", &t2_phi_A);
+    outTree->Branch("j1_ptAOD", &j1_ptAOD);
+    outTree->Branch("j1_etaAOD", &j1_etaAOD);
+    outTree->Branch("j1_phiAOD", &j1_phiAOD);
+    outTree->Branch("j2_ptAOD", &j2_ptAOD);
+    outTree->Branch("j2_etaAOD", &j2_etaAOD);
+    outTree->Branch("j2_phiAOD", &j2_phiAOD);
+    outTree->Branch("mjjAOD", &mjjAOD);
+    outTree->Branch("t1_ptAOD", &t1_ptAOD);
+    outTree->Branch("t1_etaAOD", &t1_etaAOD);
+    outTree->Branch("t1_phiAOD", &t1_phiAOD);
+    outTree->Branch("t2_ptAOD", &t2_ptAOD);
+    outTree->Branch("t2_etaAOD", &t2_etaAOD);
+    outTree->Branch("t2_phiAOD", &t2_phiAOD);
     outTree->Branch("deepTauVSjet", &deepTauVSjet);
     outTree->Branch("deepTauVSmu", &deepTauVSmu);
     outTree->Branch("deepTauVSele", &deepTauVSele);
     outTree->Branch("jetID", &jetID);
+    // we don't have branches for energy
+
     // variables and branches for matching
-    float dRj1, dRj2, dRt1, dRt2;
-    int matchedTaus, matchedJets, matchedBoth;
-    outTree->Branch("dRj1", &dRj1);
-    outTree->Branch("dRj2", &dRj2);
-    outTree->Branch("dRt1", &dRt1);
-    outTree->Branch("dRt2", &dRt2);
-    outTree->Branch("matchedTaus", &matchedTaus);
-    outTree->Branch("matchedJets", &matchedJets);
-    outTree->Branch("matchedBoth", &matchedBoth);
+    float dRj1Old, dRj2Old, dRt1Old, dRt2Old;
+    int matchedTausOld, matchedJetsOld, matchedBothOld;
+    outTree->Branch("dRj1Old", &dRj1Old);
+    outTree->Branch("dRj2Old", &dRj2Old);
+    outTree->Branch("dRt1Old", &dRt1Old);
+    outTree->Branch("dRt2Old", &dRt2Old);
+    outTree->Branch("matchedTausOld", &matchedTausOld);
+    outTree->Branch("matchedJetsOld", &matchedJetsOld);
+    outTree->Branch("matchedBothOld", &matchedBothOld);
+
+    // variables and branches for matching
+    float dRj1New, dRj2New, dRt1New, dRt2New;
+    int matchedTausNew, matchedJetsNew, matchedBothNew;
+    outTree->Branch("dRj1New", &dRj1New);
+    outTree->Branch("dRj2New", &dRj2New);
+    outTree->Branch("dRt1New", &dRt1New);
+    outTree->Branch("dRt2New", &dRt2New);
+    outTree->Branch("matchedTausNew", &matchedTausNew);
+    outTree->Branch("matchedJetsNew", &matchedJetsNew);
+    outTree->Branch("matchedBothNew", &matchedBothNew);
+
     // path for old trigger
     int passhltL1VBFDiJetOR;
     int passhltHpsDoublePFTau20Old;
@@ -104,6 +139,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightOld", &passhltHpsDoublePFTauAgainstMuonTightOld);
     outTree->Branch("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
     outTree->Branch("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
+
     // path for new trigger
     int passhltL1VBFDiJetIsoTau;
     int passhltHpsDoublePFTau20New;
@@ -119,13 +155,15 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
 
     // final HLT decisions (decision found separately in NtupleMaker than filter path above)
-    int passOldVBFHLT;
-    int passNewVBFHLT;
+    int passOldVBFHLT, passOldVBFOff;
+    int passNewVBFHLT, passNewVBFOff;
     outTree->Branch("passOldVBFHLT", &passOldVBFHLT);
+    outTree->Branch("passOldVBFOff", &passOldVBFOff);
     outTree->Branch("passNewVBFHLT", &passNewVBFHLT);
+    outTree->Branch("passNewVBFOff", &passNewVBFOff);
 
     // variables without branches
-    int passDiTau32_Off, passDiTau35_Off, passOld_Off, passNew_Off;
+    int passDiTau32Off, passDiTau35Off;
     int passOldVBFL1Count = 0;
     int passOldVBFHLTCount = 0;
     int passNewVBFL1Count = 0;
@@ -143,7 +181,7 @@ int main(int argc, char** argv)	{
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
 
-        // fix HLT filter decisions // 
+        //-----------------fix HLT filter decisions from NtupleMaker-----------------------// 
 
         // fill Old VBF HLT filter flags after correcting NtupleMaker mistake
         passhltL1VBFDiJetOR = passhltHpsDoublePFTau20Old = passhltHpsDoublePFTauTightOld = 0;
@@ -157,6 +195,7 @@ int main(int argc, char** argv)	{
         if (passhltMatchedVBFTwoTight) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
 
         passOldVBFHLT = inTree->passOldTrigTight;
+
         passOldVBFL1Count += passhltL1VBFDiJetOR;
         passOldVBFHLTCount += passOldVBFHLT;
 
@@ -173,15 +212,16 @@ int main(int argc, char** argv)	{
         if (passhltHpsPFTau50Tight) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
 
         passNewVBFHLT = inTree->passNewTrigTight;
+
         passNewVBFL1Count += passhltL1VBFDiJetIsoTau;
         passNewVBFHLTCount += passNewVBFHLT;
 
 
-	//---------------------apply base selection and fill AOD objects------------------------------//
+	//---------------------apply AOD selection and fill AOD objects------------------------------//
 
 	int sizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int sizeAODJet = inTree->jetPt->size(); // number of jets in event
-	// check kinematics and ID of tau objects, store good taus
+	// check kinematics and ID of tau objects, store isolated taus w pt>=25 and eta<=2.1 taus
 	std::vector<TLorentzVector> isoTau25AODCands;	
 	for (int iTau = 0; iTau < sizeAODTau; ++iTau) {
             bool passTauID = false;
@@ -204,7 +244,7 @@ int main(int argc, char** argv)	{
         if (isoTau25AODCandsSize < 2) continue; // need two taus minimum
 
 
-	// take first two AOD taus that aren't overlapped
+	// use first two non-overlapped AOD taus
 	// isoTau25AODCands are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector AODTau1, AODTau2;
 	AODTau1.SetPtEtaPhiE(isoTau25AODCands.at(0).Pt(), 
@@ -220,7 +260,7 @@ int main(int argc, char** argv)	{
 	if (AODTau1.DeltaR(AODTau2) < 0.5) continue; 
 
 
-	// check kinematics and ID of jet objects, store good jets
+	// check kinematics and ID of jet objects, store jets w pt>=30 and eta<=4.7
 	std::vector<TLorentzVector> jet30Cands;
 	for (int iJet = 0; iJet < sizeAODJet; ++iJet){
 
@@ -243,6 +283,7 @@ int main(int argc, char** argv)	{
 	// check that we have at least two good jets
 	int jet30CandsSize = jet30Cands.size(); 
         if (jet30CandsSize < 2) continue;
+
 
 	// fill AOD jets with pair of jets that produced the largest mjj value
 	// from cout statements, AODJet1 was verified to be leading jet
@@ -277,6 +318,7 @@ int main(int argc, char** argv)	{
 
 
 	// Check AOD Objects Pass Offline Selection
+        passDiTau32Off = passDiTau35Off = passOldVBFOff = passNewVBFOff = 0;
 	double mj1j2 = (AODJet1 + AODJet2).M();
 
         double AODJet1Pt_ = AODJet1.Pt();	
@@ -285,74 +327,195 @@ int main(int argc, char** argv)	{
         double AODTau2Pt_ = AODTau2.Pt();
 
         //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
-        int offJetInc = 10;
+        int offJetInc = 10; // define offline as XX above/increase of L1 cuts
 	int offTau1Inc = 18;
         int offTau2Inc = 8;
         int offM2Inc = 50;
 
-        passDiTau32_Off = passDiTau35_Off = passOld_Off = passNew_Off = 0;
 
         if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && mj1j2 >= 600) {
-          if (AODTau1Pt_ >= (32+offTau1Inc) && AODTau2Pt_ >= (32+offTau2Inc) ) passDiTau32_Off = 1;
-          if (AODTau1Pt_ >= (35+offTau1Inc) && AODTau2Pt_ >= (35+offTau2Inc) ) passDiTau35_Off = 1;
+          if (AODTau1Pt_ >= (32+offTau1Inc) && AODTau2Pt_ >= (32+offTau2Inc) ) passDiTau32Off = 1;
+          if (AODTau1Pt_ >= (35+offTau1Inc) && AODTau2Pt_ >= (35+offTau2Inc) ) passDiTau35Off = 1;
         }
 
         // L1 DoubleJet_110_35_DoubleJet35_Mass_Min620
 	if (AODJet1Pt_ >= (110+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
-            AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOld_Off = 1;
+            AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOldVBFOff = 1;
         
         // L1 DoubleJet35_Mass_Min_450_IsoTau45_RmvOl
         if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
-            AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNew_Off = 1;
+            AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNewVBFOff = 1;
 
-/***	
-        // fill kine branches with matched AOD
-        if (passSel) {
-	    t1_pt_A = AODTau1.Pt();
-	    t1_eta_A = AODTau1.Eta();
-	    t1_phi_A = AODTau1.Phi();
-	    t1_energy_A = AODTau1.Energy();
-	    t2_pt_A = AODTau2.Pt();
-	    t2_eta_A = AODTau2.Eta();
-	    t2_phi_A = AODTau2.Phi();
-	    t2_energy_A = AODTau2.Energy();
+        //---------------------------match AOD and HLT------------------------------//
 
-	    j1_pt_A = AODJet1.Pt();
-	    j1_eta_A = AODJet1.Eta();
-	    j1_eta_A = AODJet1.Phi();
-	    j1_energy_A = AODJet1.Energy();
-	    j2_pt_A = AODJet2.Pt();
-	    j2_eta_A = AODJet2.Eta();
-	    j2_eta_A = AODJet2.Phi();
-	    j2_energy_A = AODJet2.Energy();
+        // matching for HLT objects from Old VBF path
+        TLorentzVector oldHLTJet1, oldHLTJet2, oldHLTTau1, oldHLTTau2;
+        matchedJetsOld = matchedTausOld = matchedBothOld = 0;
+        if (passOldVBFHLT && passOldVBFOff) { 
+          int jet40NumOld = inTree->hltMatchedVBFTwoTight_pt->size(); // number of jets w pt>=40 from HLT filter
+          int jet115NumOld = inTree->hltMatchedVBFOneTight_pt->size(); // number of jets w pt>=115 from HLT filter
+          int tau20NumOld = inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size(); // number of taus w pt>=20 from HLT filter
+          
+          if (jet40NumOld >= 2 && jet115NumOld >= 1 && tau20NumOld >= 2) {
+            std::vector<TLorentzVector> oldHLTJetCands, oldHLTTauCands;
+            oldHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFTwoTight", jet40NumOld);
+            oldHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTauAgainstMuonTight", tau20NumOld);
+            // when filling, an eta cut is imposed which can reduce the size of the container
 
-	    if (matchedJets) {
-		j1_pt = trigJet1.Pt();
-		j1_eta = trigJet1.Eta();
-		j1_phi = trigJet1.Phi();
-		j1_energy = trigJet1.Energy();	
-		j2_pt = trigJet2.Pt();
-		j2_eta = trigJet2.Eta();
-		j2_phi = trigJet2.Phi();
-		j2_energy = trigJet2.Energy();
-	    }
-	    if (matchedTaus) {
-		t1_pt = trigTau1.Pt();
-		t1_eta = trigTau1.Eta();
-		t1_phi = trigTau1.Phi();
-		t1_energy = trigTau1.Energy();
-		t2_pt = trigTau2.Pt();
-		t2_eta = trigTau2.Eta();
-		t2_phi = trigTau2.Phi();
-		t2_energy = trigTau2.Energy();
-	    }
-	} // end if statement to fill kinem variables
-***/
+            dRj1Old, dRj2Old, dRt1Old, dRt2Old = 999;
+            int overlappedOld = 0;
+            if (oldHLTJetCands.size() >= 2 && oldHLTTauCands.size() >= 2) {
+              std::tie(oldHLTJet1, oldHLTJet2) = matchTwoObjs(oldHLTJetCands, AODJet1, AODJet2);
+              dRj1Old = oldHLTJet1.DeltaR(AODJet1);
+              dRj2Old = oldHLTJet2.DeltaR(AODJet2);
+
+              mjjOld = (oldHLTJet1 + oldHLTJet2).M();
+
+              std::tie(oldHLTTau1, oldHLTTau2) = matchTwoObjs(oldHLTTauCands, AODTau1, AODTau2);
+              dRt1Old = oldHLTTau1.DeltaR(AODTau1);
+              dRt2Old = oldHLTTau2.DeltaR(AODTau2);
+
+              // check same type object overlap
+              if (oldHLTJet1.DeltaR(oldHLTJet2) < 0.5 || oldHLTTau1.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
+              // check different type object overlap
+              if (oldHLTJet1.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet1.DeltaR(oldHLTTau2) < 0.5 ||
+                  oldHLTJet2.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet2.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
+
+              if (!overlappedOld) {
+                if (dRj1Old < 0.5 && dRj2Old < 0.5) matchedJetsOld = 1;
+                if (dRt1Old < 0.5 && dRt2Old < 0.5) matchedTausOld = 1;
+                if (matchedJetsOld && matchedTausOld) matchedBothOld = 1;
+              }
+
+            } // end if for dR calculations
+
+          } // end if checking object size requirements
+
+        } // end if for passing HLT and offline
+
+        // matching for HLT objects from New VBF path
+        TLorentzVector newHLTJet1, newHLTJet2, newHLTTau1, newHLTTau2;
+        matchedJetsNew = matchedTausNew = matchedBothNew = 0;
+        if (passNewVBFHLT && passNewVBFOff) {
+          int jet40NumNew = inTree->hltMatchedVBFIsoTauTwoTight_pt->size(); // number of jets w pt>=40 from HLT filter
+          int tau20NumNew = inTree->hltHpsDoublePFTauAgainstMuonTight_pt->size(); // number of taus w pt>=20 from HLT filter
+          int tau45NumNew = inTree->hltHpsPFTau50Tight_pt->size(); // number of taus w pt>=45 from HLT filter
+          // name says 50, but pt cut is corrected by hand in HLT config file
+          
+          if (jet40NumNew >= 2 && tau20NumNew >= 2 && tau45NumNew >= 1) {
+            std::vector<TLorentzVector> newHLTJetCands, newHLTTauCands;
+            newHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoTight", jet40NumNew);
+            newHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTauAgainstMuonTight", tau20NumNew);
+            // when filling, an eta cut is imposed which can reduce the size of the container
+
+            dRj1New, dRj2New, dRt1New, dRt2New = 999;
+            int overlappedNew = 0;
+            if (newHLTJetCands.size() >= 2 && newHLTTauCands.size() >= 2) {
+              std::tie(newHLTJet1, newHLTJet2) = matchTwoObjs(newHLTJetCands, AODJet1, AODJet2);
+              dRj1New = newHLTJet1.DeltaR(AODJet1);
+              dRj2New = newHLTJet2.DeltaR(AODJet2);
+
+              mjjNew = (newHLTJet1 + newHLTJet2).M();
+
+              std::tie(newHLTTau1, newHLTTau2) = matchTwoObjs(newHLTTauCands, AODTau1, AODTau2);
+              dRt1New = newHLTTau1.DeltaR(AODTau1);
+              dRt2New = newHLTTau2.DeltaR(AODTau2);
+
+              // check same type object overlap
+              if (newHLTJet1.DeltaR(newHLTJet2) < 0.5 || newHLTTau1.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
+              // check different type object overlap
+              if (newHLTJet1.DeltaR(newHLTTau1) < 0.5 || newHLTJet1.DeltaR(newHLTTau2) < 0.5 ||
+                  newHLTJet2.DeltaR(newHLTTau1) < 0.5 || newHLTJet2.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
+
+              if (!overlappedNew) {
+                if (dRj1New < 0.5 && dRj2New < 0.5) matchedJetsNew = 1;
+                if (dRt1New < 0.5 && dRt2New < 0.5) matchedTausNew = 1;
+                if (matchedJetsNew && matchedTausNew) matchedBothNew = 1;
+              }
+
+            } // end if for dR calculations
+
+          } // end if checking object size requirements
+
+        } // end if for passing HLT and offline
+
+        // fill branches if any offline selection is passed for AOD
+        // fill branhces for Old or New HLT objects if they are matched to AOD
+
+        j1_ptAOD = j1_etaAOD = j1_phiAOD = -999;
+        j2_ptAOD = j2_etaAOD = j2_phiAOD = mjjAOD = -999;
+        t1_ptAOD = t1_etaAOD = t1_phiAOD = -999;
+        t2_ptAOD = t2_etaAOD = t2_phiAOD = -999;
+
+        j1_ptOld = j1_etaOld = j1_phiOld = -999;
+        j2_ptOld = j2_etaOld = j2_phiOld = mjjOld =-999;
+        t1_ptOld = t1_etaOld = t1_phiOld = -999;
+        t2_ptOld = t2_etaOld = t2_phiOld = -999;
+
+        j1_ptNew = j1_etaNew = j1_phiNew = -999;
+        j2_ptNew = j2_etaNew = j2_phiNew = mjjNew =-999;
+        t1_ptNew = t1_etaNew = t1_phiNew = -999;
+        t2_ptNew = t2_etaNew = t2_phiNew = -999;
+
+
+        if (passOldVBFOff || passNewVBFOff) {
+          // AOD Branches
+	  j1_ptAOD = AODJet1.Pt();
+	  j1_etaAOD = AODJet1.Eta();
+	  j1_phiAOD = AODJet1.Phi();
+	  j2_ptAOD = AODJet2.Pt();
+	  j2_etaAOD = AODJet2.Eta();
+	  j2_phiAOD = AODJet2.Phi();
+
+          mjjAOD = (AODJet1 + AODJet2).M();
+
+	  t1_ptAOD = AODTau1.Pt();
+	  t1_etaAOD = AODTau1.Eta();
+	  t1_phiAOD = AODTau1.Phi();
+	  t2_ptAOD = AODTau2.Pt();
+	  t2_etaAOD = AODTau2.Eta();
+	  t2_phiAOD = AODTau2.Phi();
+          
+          // Old VBF HLT Branches
+          j1_ptOld = oldHLTJet1.Pt();
+          j1_etaOld = oldHLTJet1.Eta();
+          j1_phiOld = oldHLTJet1.Phi();
+          j2_ptOld = oldHLTJet2.Pt();
+          j2_etaOld = oldHLTJet2.Eta();
+          j2_phiOld = oldHLTJet2.Phi();
+
+          mjjOld = (oldHLTJet1 + oldHLTJet2).M();
+
+          t1_ptOld = oldHLTTau1.Pt();
+          t1_etaOld = oldHLTTau1.Eta();
+          t1_phiOld = oldHLTTau1.Phi();
+          t2_ptOld = oldHLTTau2.Pt();
+          t2_etaOld = oldHLTTau2.Eta();
+          t2_phiOld = oldHLTTau2.Phi();
+	  
+          // New VBF HLT Branches
+          j1_ptNew = newHLTJet1.Pt();
+          j1_etaNew = newHLTJet1.Eta();
+          j1_phiNew = newHLTJet1.Phi();
+          j2_ptNew = newHLTJet2.Pt();
+          j2_etaNew = newHLTJet2.Eta();
+          j2_phiNew = newHLTJet2.Phi();
+
+          mjjNew = (newHLTJet1 + newHLTJet2).M();
+
+          t1_ptNew = newHLTTau1.Pt();
+          t1_etaNew = newHLTTau1.Eta();
+          t1_phiNew = newHLTTau1.Phi();
+          t2_ptNew = newHLTTau2.Pt();
+          t2_etaNew = newHLTTau2.Eta();
+          t2_phiNew = newHLTTau2.Phi();
+
+	} // end if statement to fill kinematic variables
+
         outTree->Fill();
-    }// end event loop
 
+    } // end event loop
 
-    std::cout << "Offline Numbers" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

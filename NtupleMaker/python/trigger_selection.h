@@ -16,7 +16,7 @@ int simpleMatching(std::vector<TLorentzVector> trigContainer, TLorentzVector AOD
     return bestObjIndex;
 }
 
-// output a tuple of TLorentzVectors that correspond to HLt objects matched to AOD objects
+// output a tuple of TLorentzVectors that correspond to HLT objects matched to AOD objects
 // using a given HLT object container and two given AOD objects
 // tuple is used instead of pair because the output was easier to manage
 std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVector> objCands, TLorentzVector aodObjOne, TLorentzVector aodObjTwo){
@@ -29,16 +29,17 @@ std::tuple<TLorentzVector, TLorentzVector> matchTwoObjs(std::vector<TLorentzVect
     double dRtempObjTwo = tempObjTwo.DeltaR(aodObjTwo);
     // if AODs match to the same object index, check which has a smaller dR
     // then remove that object and rematch
+    //std::cout << objCands.size() << objMatchIndexOne << objMatchIndexTwo << std::endl;
     if (objMatchIndexOne == objMatchIndexTwo){
 	std::vector<TLorentzVector> tempObjCands = objCands;
 	tempObjCands.erase(tempObjCands.begin() + objMatchIndexOne);
 	if (dRtempObjOne < dRtempObjTwo){
-	    objMatchIndexTwo = simpleMatching(tempObjCands, aodObjTwo);
-	    tempObjTwo = tempObjCands.at(objMatchIndexTwo);
+	      objMatchIndexTwo = simpleMatching(tempObjCands, aodObjTwo);
+	      tempObjTwo = tempObjCands.at(objMatchIndexTwo);
 	}
 	if (dRtempObjTwo < dRtempObjOne){
-	    objMatchIndexOne = simpleMatching(tempObjCands, aodObjOne);
-	    tempObjOne = tempObjCands.at(objMatchIndexOne);
+	      objMatchIndexOne = simpleMatching(tempObjCands, aodObjOne);
+	      tempObjOne = tempObjCands.at(objMatchIndexOne);
 	}
     }
 
@@ -267,6 +268,8 @@ int objInContainer(std::vector<TLorentzVector> L1ObjContainer, TLorentzVector Ob
 // fills a std::vector<TLorentzVector> container using input tree and a string identifying the branches to use
 // "optional" ptCut can be applied, set to zero if no cut is desired
 // looking into a better way to implement this (switch-case statement won't work with strings)
+// remove objNumber as an input by making it a variable of every branch via
+// objNumber = inTree->branchName_variable->size();
 std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string filterName, int objNumber, int ptCut = 0) {
     std::vector<float>* branchPt;
     std::vector<float>* branchEta;
@@ -275,13 +278,22 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 
     double etaCut = 0;
     if (filterName == "hltHpsDoublePFTauTight" || filterName == "tauL1Primitives" ||
-        filterName == "hltL1VBFDiJetIsoTau_taus" || filterName == "hltL1sDoubleTauBigOR") etaCut = 2.1;
+        filterName == "hltL1VBFDiJetIsoTau_taus" || filterName == "hltL1sDoubleTauBigOR" ||
+        filterName == "hltHpsDoublePFTauAgainstMuonTight") etaCut = 2.1;
 
     if (filterName == "hltMatchedVBFTwoTight" || filterName == "hltMatchedVBFIsoTauTwoTight" ||
         filterName == "jetL1Primitives" || filterName == "hltL1VBFDiJetIsoTau_jets" ||
         filterName == "hltL1VBFDiJetOR") etaCut = 4.7;
 
     bool found = false;
+
+    if (!found && filterName == "hltHpsDoublePFTauAgainstMuonTight") {
+        branchPt = inTree->hltHpsDoublePFTauAgainstMuonTight_pt;
+        branchEta = inTree->hltHpsDoublePFTauAgainstMuonTight_eta;
+        branchPhi = inTree->hltHpsDoublePFTauAgainstMuonTight_phi;
+        branchEnergy = inTree->hltHpsDoublePFTauAgainstMuonTight_energy;
+        found = true;
+    }
 
     if (!found && filterName == "hltHpsDoublePFTauTight") {
 	branchPt = inTree->hltHpsDoublePFTauTight_pt;

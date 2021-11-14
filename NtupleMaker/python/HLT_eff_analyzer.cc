@@ -111,8 +111,8 @@ int main(int argc, char** argv)	{
     outTree->Branch("dRj2Old", &dRj2Old);
     outTree->Branch("dRt1Old", &dRt1Old);
     outTree->Branch("dRt2Old", &dRt2Old);
-    outTree->Branch("matchedTausOld", &matchedTausOld);
     outTree->Branch("matchedJetsOld", &matchedJetsOld);
+    outTree->Branch("matchedTausOld", &matchedTausOld);
     outTree->Branch("matchedBothOld", &matchedBothOld);
 
     // variables and branches for matching
@@ -122,8 +122,8 @@ int main(int argc, char** argv)	{
     outTree->Branch("dRj2New", &dRj2New);
     outTree->Branch("dRt1New", &dRt1New);
     outTree->Branch("dRt2New", &dRt2New);
-    outTree->Branch("matchedTausNew", &matchedTausNew);
     outTree->Branch("matchedJetsNew", &matchedJetsNew);
+    outTree->Branch("matchedTausNew", &matchedTausNew);
     outTree->Branch("matchedBothNew", &matchedBothNew);
 
     // path for old trigger
@@ -155,12 +155,14 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
 
     // final HLT decisions (decision found separately in NtupleMaker than filter path above)
-    int passOldVBFHLT, passOldVBFOff;
-    int passNewVBFHLT, passNewVBFOff;
+    int passOldVBFHLT, passOldVBFOff, passOldVBFBoth;
+    int passNewVBFHLT, passNewVBFOff, passNewVBFBoth;
     outTree->Branch("passOldVBFHLT", &passOldVBFHLT);
     outTree->Branch("passOldVBFOff", &passOldVBFOff);
+    outTree->Branch("passOldVBFBoth", &passOldVBFBoth);
     outTree->Branch("passNewVBFHLT", &passNewVBFHLT);
     outTree->Branch("passNewVBFOff", &passNewVBFOff);
+    outTree->Branch("passNewVBFBoth", &passNewVBFBoth);
 
     // variables without branches
     int passDiTau32Off, passDiTau35Off;
@@ -219,6 +221,8 @@ int main(int argc, char** argv)	{
 
 	//---------------------apply AOD selection and fill AOD objects------------------------------//
 
+        int viable = 1;
+
 	int sizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int sizeAODJet = inTree->jetPt->size(); // number of jets in event
 	// check kinematics and ID of tau objects, store isolated taus w pt>=25 and eta<=2.1 taus
@@ -241,23 +245,25 @@ int main(int argc, char** argv)	{
             }
 	}
         int isoTau25AODCandsSize = isoTau25AODCands.size();
-        if (isoTau25AODCandsSize < 2) continue; // need two taus minimum
+        if (isoTau25AODCandsSize < 2) viable = 0; //continue; // need two taus minimum
 
 
 	// use first two non-overlapped AOD taus
 	// isoTau25AODCands are already ordered by pt (this was checked with simple cout statements)
 	TLorentzVector AODTau1, AODTau2;
-	AODTau1.SetPtEtaPhiE(isoTau25AODCands.at(0).Pt(), 
+	if (viable) {
+	  AODTau1.SetPtEtaPhiE(isoTau25AODCands.at(0).Pt(), 
                              isoTau25AODCands.at(0).Eta(), 
                              isoTau25AODCands.at(0).Phi(),
                              isoTau25AODCands.at(0).Energy());
-	for (std::vector<TLorentzVector>::const_iterator iTau = isoTau25AODCands.begin()+1; iTau != isoTau25AODCands.end(); ++iTau) {
+	  for (std::vector<TLorentzVector>::const_iterator iTau = isoTau25AODCands.begin()+1; iTau != isoTau25AODCands.end(); ++iTau) {
 	    AODTau2.SetPtEtaPhiE(iTau->Pt(), iTau->Eta(), iTau->Phi(), iTau->Energy());
 	    if (AODTau2.DeltaR(AODTau1) > 0.5) break; // if taus are not overlapped, leave the for-loop
-	}
-	// check that the tau didn't make it all the way through the loop without breaking
-	// I think this is unlikely but it's good to be redundant
-	if (AODTau1.DeltaR(AODTau2) < 0.5) continue; 
+	  }
+          // check that the tau didn't make it all the way through the loop without breaking
+          // I think this is unlikely but it's good to be redundant
+	  if (AODTau1.DeltaR(AODTau2) < 0.5) viable = 0; //continue; 
+        } // end viable if statement
 
 
 	// check kinematics and ID of jet objects, store jets w pt>=30 and eta<=4.7
@@ -282,13 +288,13 @@ int main(int argc, char** argv)	{
 	}
 	// check that we have at least two good jets
 	int jet30CandsSize = jet30Cands.size(); 
-        if (jet30CandsSize < 2) continue;
+        if (jet30CandsSize < 2) viable = 0; //continue;
 
 
 	// fill AOD jets with pair of jets that produced the largest mjj value
 	// from cout statements, AODJet1 was verified to be leading jet
 	TLorentzVector AODJet1, AODJet2;
-        std::tie(AODJet1, AODJet2) = highestMassPair(jet30Cands);
+        if (viable) std::tie(AODJet1, AODJet2) = highestMassPair(jet30Cands);
 
         // revisit for matching...about25% of all events have multiple possible jet pairs
         // and about 20% of those actually have more than one pair passing mjj
@@ -319,33 +325,34 @@ int main(int argc, char** argv)	{
 
 	// Check AOD Objects Pass Offline Selection
         passDiTau32Off = passDiTau35Off = passOldVBFOff = passNewVBFOff = 0;
-	double mj1j2 = (AODJet1 + AODJet2).M();
+        if (viable) {
+	  double mj1j2 = (AODJet1 + AODJet2).M();
 
-        double AODJet1Pt_ = AODJet1.Pt();	
-        double AODJet2Pt_ = AODJet2.Pt();	
-        double AODTau1Pt_ = AODTau1.Pt();
-        double AODTau2Pt_ = AODTau2.Pt();
+          double AODJet1Pt_ = AODJet1.Pt();	
+          double AODJet2Pt_ = AODJet2.Pt();	
+          double AODTau1Pt_ = AODTau1.Pt();
+          double AODTau2Pt_ = AODTau2.Pt();
 
-        //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
-        int offJetInc = 10; // define offline as XX above/increase of L1 cuts
-	int offTau1Inc = 18;
-        int offTau2Inc = 8;
-        int offM2Inc = 50;
+          //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
+          int offJetInc = 10; // define offline as XX above/increase of L1 cuts
+	  int offTau1Inc = 18;
+          int offTau2Inc = 8;
+          int offM2Inc = 50;
 
 
-        if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && mj1j2 >= 600) {
-          if (AODTau1Pt_ >= (32+offTau1Inc) && AODTau2Pt_ >= (32+offTau2Inc) ) passDiTau32Off = 1;
-          if (AODTau1Pt_ >= (35+offTau1Inc) && AODTau2Pt_ >= (35+offTau2Inc) ) passDiTau35Off = 1;
-        }
+          if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && mj1j2 >= 600) {
+            if (AODTau1Pt_ >= (32+offTau1Inc) && AODTau2Pt_ >= (32+offTau2Inc) ) passDiTau32Off = 1;
+            if (AODTau1Pt_ >= (35+offTau1Inc) && AODTau2Pt_ >= (35+offTau2Inc) ) passDiTau35Off = 1;
+          }
 
-        // L1 DoubleJet_110_35_DoubleJet35_Mass_Min620
-	if (AODJet1Pt_ >= (110+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
-            AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOldVBFOff = 1;
+          // L1 DoubleJet_110_35_DoubleJet35_Mass_Min620
+	  if (AODJet1Pt_ >= (110+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
+              AODTau1Pt_ >= 25 && AODTau2Pt_ >= 25 && mj1j2 >= 700) passOldVBFOff = 1;
         
-        // L1 DoubleJet35_Mass_Min_450_IsoTau45_RmvOl
-        if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
-            AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNewVBFOff = 1;
-
+          // L1 DoubleJet35_Mass_Min_450_IsoTau45_RmvOl
+          if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
+              AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNewVBFOff = 1;
+        } // end viable if statement
         //---------------------------match AOD and HLT------------------------------//
 
         // matching for HLT objects from Old VBF path
@@ -457,6 +464,9 @@ int main(int argc, char** argv)	{
         t1_ptNew = t1_etaNew = t1_phiNew = -999;
         t2_ptNew = t2_etaNew = t2_phiNew = -999;
 
+        passOldVBFBoth = passNewVBFBoth = 0;
+        passOldVBFBoth = (passOldVBFHLT && passOldVBFOff);
+        passNewVBFBoth = (passNewVBFHLT && passNewVBFOff);
 
         if (passOldVBFOff || passNewVBFOff) {
           // AOD Branches

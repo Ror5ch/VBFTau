@@ -10,7 +10,7 @@
 // .x MakeCutflowFromOuttree("filename.root")
 //
 
-void MakeCutflowFromOuttree(char* filename, int plotting){
+void MakeCutflowFromOuttree(char* filename, int plotting) {
 
     TFile *_file0 = TFile::Open(filename);
 
@@ -18,7 +18,7 @@ void MakeCutflowFromOuttree(char* filename, int plotting){
 
     double nEvents = tree->Draw("nEvents", "nEvents>0", "goff");
 
-    std:: cout << nEvents << '\t' << "nEvents" << '\n' << std::endl;
+    std::cout << nEvents << '\t' << "nEvents" << '\n' << std::endl;
 
     // Old VBF path and variables for cutflow
     double passhltL1VBFDiJetOR = tree->Draw("passhltL1VBFDiJetOR", "passhltL1VBFDiJetOR>0", "goff");

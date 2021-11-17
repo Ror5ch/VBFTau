@@ -48,12 +48,12 @@ NtupleMaker::~NtupleMaker(){
 void NtupleMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     //using namespace edm;
-    if(doGenParticles_){
-        jetResolution_   = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
-        jetResolutionSF_ = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
+    //if(doGenParticles_){
+        //jetResolution_   = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
+        //jetResolutionSF_ = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
         //AK8jetResolution_   = JME::JetResolution::get(es, "AK8PFchs_pt");
         //AK8jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK8PFchs");
-    }
+    //}
 
     if(fillingTriggers) fillTriggers(iEvent);
     if(fillingEventInfo) fillEventInfo(iEvent);

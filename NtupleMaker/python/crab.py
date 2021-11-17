@@ -59,8 +59,8 @@ if __name__ == '__main__':
     no = (yesno1=='n' or yesno2=='n' or yesno3=='n' or yesno4=='n' or yesno5=='n' or yesno6=='n' or yesno7=='n' or yesno8=='n' or yesno9=='n' or yesno10=='n')
     empty = (yesno1=='' or yesno2=='' or yesno3=='' or yesno4=='' or yesno5=='' or yesno6=='' or yesno7=='' or yesno8=='' or yesno9=='' or yesno10 =='')
     if (no or empty):
-	print("Well, go fix that!")
-	sys.exit()
+      print("Well, go fix that!")
+      sys.exit()
 
     print("Remember to check your branches/run selection code as soon as one job is finished!!!")
 

@@ -111,3 +111,19 @@ hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
 --l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml \
 --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/098/00000/B11474B6-7775-D54D-805E-5FFE0391D401.root \
 > hlt_forData_NewVBF.py
+
+# new hltGetConfiguration for new iteration of path (checking DeepTauID)
+hltGetConfiguration /users/ballmond/Copy_CMSSW_12_2_0_pre2_GRun_wDeepTauDiTaus/V1 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_DoubleTightDeepTauIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleTightDeepTauIsoPFTauHPS35_Trk1_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 5000 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hlt_DeepTauPrelimTesting.py

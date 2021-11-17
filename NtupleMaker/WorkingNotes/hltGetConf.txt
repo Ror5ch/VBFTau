@@ -113,7 +113,8 @@ hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
 > hlt_forData_NewVBF.py
 
 # new hltGetConfiguration for new iteration of path (checking DeepTauID)
-hltGetConfiguration /users/ballmond/Copy_CMSSW_12_2_0_pre2_GRun_wDeepTauDiTaus/V1 \
+#hltGetConfiguration /users/ballmond/Copy_CMSSW_12_2_0_pre2_GRun_wDeepTauDiTaus/V1 \
+hltGetConfiguration /users/ballmond/GRun_w_NewVBF_and_DeepTauDoubleTaus/V1 \
 --globaltag auto:phase1_2021_realistic \
 --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_DoubleTightDeepTauIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleTightDeepTauIsoPFTauHPS35_Trk1_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --mc \

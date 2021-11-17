@@ -18,7 +18,7 @@ public :
 
     int nEvents;
 
-    int passDitauTrig;
+    int passDiTauTrig;
     int passOldTrigTight;
     //std::vector<bool>* passOldTrigMedium = nullptr;
     //std::vector<bool>* passOldTrigLoose = nullptr;
@@ -237,7 +237,7 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("eventNumberID", &eventNumberID);
     fChain->SetBranchAddress("nEvents", &nEvents);
 
-    fChain->SetBranchAddress("passDitauTrig", &passDitauTrig);
+    fChain->SetBranchAddress("passDiTauTrig", &passDiTauTrig);
     fChain->SetBranchAddress("passOldTrigTight", &passOldTrigTight);
     //fChain->SetBranchAddress("passOldTrigMedium", &passOldTrigMedium);
     //fChain->SetBranchAddress("passOldTrigLoose", &passOldTrigLoose);

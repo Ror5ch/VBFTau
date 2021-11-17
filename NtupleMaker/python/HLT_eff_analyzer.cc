@@ -164,8 +164,16 @@ int main(int argc, char** argv)	{
     outTree->Branch("passNewVBFOff", &passNewVBFOff);
     outTree->Branch("passNewVBFBoth", &passNewVBFBoth);
 
+    int passDiTau32HLT, passDiTau32Off, passDiTau32Both;
+    int passDiTau35L1, passDiTau35HLT, passDiTau35Off, passDiTau35Both;
+    outTree->Branch("passDiTau32HLT", &passDiTau32HLT);
+    outTree->Branch("passDiTau32Off", &passDiTau32Off);
+    outTree->Branch("passDiTau32Both", &passDiTau32Both);
+    outTree->Branch("passDiTau35HLT", &passDiTau35HLT);
+    outTree->Branch("passDiTau35Off", &passDiTau35Off);
+    outTree->Branch("passDiTau35Both", &passDiTau35Both);
+
     // variables without branches
-    int passDiTau32Off, passDiTau35Off;
     int passOldVBFL1Count = 0;
     int passOldVBFHLTCount = 0;
     int passNewVBFL1Count = 0;
@@ -218,6 +226,17 @@ int main(int argc, char** argv)	{
         passNewVBFL1Count += passhltL1VBFDiJetIsoTau;
         passNewVBFHLTCount += passNewVBFHLT;
 
+        int DiTauL1Size = inTree->hltL1sDoubleTauBigOR_pt->size();
+        int L135TauCounter = 0;
+        for (int iL1Taus = 0; iL1Taus < DiTauL1Size; ++iL1Taus) {
+          if (inTree->hltL1sDoubleTauBigOR_pt->at(iL1Taus) >= 35) L135TauCounter += 1;
+        }
+        passDiTau35L1 = 0;
+        if (L135TauCounter >= 2) passDiTau35L1 = 1;
+        passDiTau32HLT = inTree->passDiTauTrig;
+        passDiTau35HLT = (passDiTau32HLT && passDiTau35L1);
+
+        //std::cout << DiTauL1Size << L135TauCounter << passDiTau35L1 << passDiTau32HLT << passDiTau35HLT << std::endl;
 
 	//---------------------apply AOD selection and fill AOD objects------------------------------//
 
@@ -353,6 +372,10 @@ int main(int argc, char** argv)	{
           if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
               AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= 25 && mj1j2 >= 500) passNewVBFOff = 1;
         } // end viable if statement
+
+        passDiTau32Both = passDiTau35Both = 0;
+        passDiTau32Both = (passDiTau32HLT && passDiTau32Off);
+        passDiTau35Both = (passDiTau35HLT && passDiTau35Off);
         //---------------------------match AOD and HLT------------------------------//
 
         // matching for HLT objects from Old VBF path

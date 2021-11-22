@@ -4,6 +4,8 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 
+#include "DataFormats/Common/interface/TriggerResults.h"
+
 using namespace std; // I think best practice is to include <vector> explicitly at the top of the file
 
 int passDiTauTrig;
@@ -23,6 +25,12 @@ vector<float>	hltL1sDoubleTauBigOR_pt;
 vector<float>	hltL1sDoubleTauBigOR_eta;
 vector<float>	hltL1sDoubleTauBigOR_phi;
 vector<float>	hltL1sDoubleTauBigOR_energy;
+//hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg
+int		passDiTau35HLTFinalFilter;
+vector<float>	diTau35HLTFinalFilter_pt;
+vector<float>	diTau35HLTFinalFilter_eta;
+vector<float>	diTau35HLTFinalFilter_phi;
+vector<float>	diTau35HLTFinalFilter_energy;
 //hltL1VBFDiJetOR
 int	passhltL1VBFDiJetOR;
 vector<float>	hltL1VBFDiJetOR_pt;
@@ -112,6 +120,14 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltL1sDoubleTauBigOR_phi", &hltL1sDoubleTauBigOR_phi);
     tree->Branch("hltL1sDoubleTauBigOR_energy", &hltL1sDoubleTauBigOR_energy);
 
+    // hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg
+    // don't need the cutflow, so I'm only storing the final filter which is used for HLT-AOD matching purposes
+    tree->Branch("passDiTau35HLTFinalFilter", &passDiTau35HLTFinalFilter);  
+    tree->Branch("diTau35HLTFinalFilter_pt", &diTau35HLTFinalFilter_pt);  
+    tree->Branch("diTau35HLTFinalFilter_eta", &diTau35HLTFinalFilter_eta);  
+    tree->Branch("diTau35HLTFinalFilter_phi", &diTau35HLTFinalFilter_phi);  
+    tree->Branch("diTau35HLTFinalFilter_energy", &diTau35HLTFinalFilter_energy);  
+
     tree->Branch("passhltL1VBFDiJetOR", &passhltL1VBFDiJetOR);
     tree->Branch("hltL1VBFDiJetOR_pt", &hltL1VBFDiJetOR_pt);
     tree->Branch("hltL1VBFDiJetOR_eta", &hltL1VBFDiJetOR_eta);
@@ -130,48 +146,43 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltL1VBFDiJetIsoTau_tauPhi", &hltL1VBFDiJetIsoTau_tauPhi);
     tree->Branch("hltL1VBFDiJetIsoTau_tauEnergy", &hltL1VBFDiJetIsoTau_tauEnergy);
 
+    //hltHpsDoublePFTau20
     tree->Branch("passhltHpsDoublePFTau20", &passhltHpsDoublePFTau20);
     tree->Branch("hltHpsDoublePFTau20_pt", &hltHpsDoublePFTau20_pt);
     tree->Branch("hltHpsDoublePFTau20_eta", &hltHpsDoublePFTau20_eta);
     tree->Branch("hltHpsDoublePFTau20_phi", &hltHpsDoublePFTau20_phi);
     tree->Branch("hltHpsDoublePFTau20_energy", &hltHpsDoublePFTau20_energy);
-
-    //hltHpsDoublePFTau working points
+    //hltHpsDoublePFTau20TrackTightChargedIso
     tree->Branch("passhltHpsDoublePFTauTight", &passhltHpsDoublePFTauTight);
     tree->Branch("hltHpsDoublePFTauTight_pt", &hltHpsDoublePFTauTight_pt);
     tree->Branch("hltHpsDoublePFTauTight_eta", &hltHpsDoublePFTauTight_eta);
     tree->Branch("hltHpsDoublePFTauTight_phi", &hltHpsDoublePFTauTight_phi);
     tree->Branch("hltHpsDoublePFTauTight_energy", &hltHpsDoublePFTauTight_energy);
-    //
-    //hltHpsDoublePFTauAgainstMuon working points
+    //hltHpsDoublePFTauAgainstMuon 
     tree->Branch("passhltHpsDoublePFTauAgainstMuonTight", &passhltHpsDoublePFTauAgainstMuonTight);
     tree->Branch("hltHpsDoublePFTauAgainstMuonTight_pt", &hltHpsDoublePFTauAgainstMuonTight_pt);
     tree->Branch("hltHpsDoublePFTauAgainstMuonTight_eta", &hltHpsDoublePFTauAgainstMuonTight_eta);
     tree->Branch("hltHpsDoublePFTauAgainstMuonTight_phi", &hltHpsDoublePFTauAgainstMuonTight_phi);
     tree->Branch("hltHpsDoublePFTauAgainstMuonTight_energy", &hltHpsDoublePFTauAgainstMuonTight_energy);
-    //
-    // hltMatchedVBFTwo working points
+    // hltMatchedVBFTwo 
     tree->Branch("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
     tree->Branch("hltMatchedVBFTwoTight_pt", &hltMatchedVBFTwoTight_pt);
     tree->Branch("hltMatchedVBFTwoTight_eta", &hltMatchedVBFTwoTight_eta);
     tree->Branch("hltMatchedVBFTwoTight_phi", &hltMatchedVBFTwoTight_phi);
     tree->Branch("hltMatchedVBFTwoTight_energy", &hltMatchedVBFTwoTight_energy);
-    //
-    //hltMatchedVBFOne working points
+    //hltMatchedVBFOne 
     tree->Branch("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
     tree->Branch("hltMatchedVBFOneTight_pt", &hltMatchedVBFOneTight_pt);
     tree->Branch("hltMatchedVBFOneTight_eta", &hltMatchedVBFOneTight_eta);
     tree->Branch("hltMatchedVBFOneTight_phi", &hltMatchedVBFOneTight_phi);
     tree->Branch("hltMatchedVBFOneTight_energy", &hltMatchedVBFOneTight_energy);
-    //
-    //hltHpsPFTau50 working points
+    //hltHpsPFTau50 
     tree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
     tree->Branch("hltHpsPFTau50Tight_pt", &hltHpsPFTau50Tight_pt);
     tree->Branch("hltHpsPFTau50Tight_eta", &hltHpsPFTau50Tight_eta);
     tree->Branch("hltHpsPFTau50Tight_phi", &hltHpsPFTau50Tight_phi);
     tree->Branch("hltHpsPFTau50Tight_energy", &hltHpsPFTau50Tight_energy);
-    //
-    // hltMatchedVBFIsoTauTwo working points
+    // hltMatchedVBFIsoTauTwo 
     tree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
     tree->Branch("hltMatchedVBFIsoTauTwoTight_pt", &hltMatchedVBFIsoTauTwoTight_pt);
     tree->Branch("hltMatchedVBFIsoTauTwoTight_eta", &hltMatchedVBFIsoTauTwoTight_eta);
@@ -186,24 +197,32 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     // clearing vectors and initializing flags at the start of every event 
     nEvents = 0;
 
-    passDiTauTrig = 0;
+    // pass trig as in pass final hlt decision
+    passDiTauTrig = 0; // DiTau35 HLT
+    passOldTrigTight = 0; // "Old" is Inclusive VBF HLT, the one we can compare to but didn't make ourselves
+    passNewTrigTight = 0; // "New" is VBF + 2 Tau HLT, adding VBF + 1 Tau HLT now
 
-    passOldTrigTight = 0;
-
-    passNewTrigTight = 0;
-
+    // DiTau 32 L1 branches (there's a big OR with multiple DiTaus, but 32 is the lowest)
     passhltL1sDoubleTauBigOR = 0;
     hltL1sDoubleTauBigOR_pt.clear();
     hltL1sDoubleTauBigOR_eta.clear();
     hltL1sDoubleTauBigOR_phi.clear();
     hltL1sDoubleTauBigOR_energy.clear();
 
+    passDiTau35HLTFinalFilter = 0;
+    diTau35HLTFinalFilter_pt.clear();
+    diTau35HLTFinalFilter_eta.clear();
+    diTau35HLTFinalFilter_phi.clear();
+    diTau35HLTFinalFilter_energy.clear();
+
+    // Inclusive VBF L1 branches
     passhltL1VBFDiJetOR = 0;
     hltL1VBFDiJetOR_pt.clear();
     hltL1VBFDiJetOR_eta.clear();
     hltL1VBFDiJetOR_phi.clear();
     hltL1VBFDiJetOR_energy.clear();
 
+    // Propose/New L1 branches
     passhltL1VBFDiJetIsoTau = 0;
     hltL1VBFDiJetIsoTau_nJets.clear();
     hltL1VBFDiJetIsoTau_jetPt.clear();
@@ -216,52 +235,49 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltL1VBFDiJetIsoTau_tauPhi.clear();
     hltL1VBFDiJetIsoTau_tauEnergy.clear();
 
+    // hltHpsDoubelPFTau20
     passhltHpsDoublePFTau20 = 0;
     hltHpsDoublePFTau20_pt.clear();
     hltHpsDoublePFTau20_eta.clear();
     hltHpsDoublePFTau20_phi.clear();
     hltHpsDoublePFTau20_energy.clear();
 
-    // hltHpsDoublePFTau working points
+    // hltHpsDoublePFTau20TrackTightChargedIso
     passhltHpsDoublePFTauTight = 0;
     hltHpsDoublePFTauTight_pt.clear();
     hltHpsDoublePFTauTight_eta.clear();
     hltHpsDoublePFTauTight_phi.clear();
     hltHpsDoublePFTauTight_energy.clear();
 
-    // hltHpsDoublePFTauAgainstMuon working points
+    // hltHpsDoublePFTauAgainstMuon 
     passhltHpsDoublePFTauAgainstMuonTight = 0;
     hltHpsDoublePFTauAgainstMuonTight_pt.clear();
     hltHpsDoublePFTauAgainstMuonTight_eta.clear();
     hltHpsDoublePFTauAgainstMuonTight_phi.clear();
     hltHpsDoublePFTauAgainstMuonTight_energy.clear();
 
-    //
-    // hltMatchedVBFTwo working points
+    // hltMatchedVBFTwo 
     passhltMatchedVBFTwoTight = 0;
     hltMatchedVBFTwoTight_pt.clear();
     hltMatchedVBFTwoTight_eta.clear();
     hltMatchedVBFTwoTight_phi.clear();
     hltMatchedVBFTwoTight_energy.clear();
 
-    // 
-    // hltMatchedVBFOne working points
+    // hltMatchedVBFOne 
     passhltMatchedVBFOneTight = 0;
     hltMatchedVBFOneTight_pt.clear();
     hltMatchedVBFOneTight_eta.clear();
     hltMatchedVBFOneTight_phi.clear();
     hltMatchedVBFOneTight_energy.clear();
 
-    //
-    // hltHpsPFTau50 working points
+    // hltHpsPFTau50 
     passhltHpsPFTau50Tight = 0;
     hltHpsPFTau50Tight_pt.clear();
     hltHpsPFTau50Tight_eta.clear();
     hltHpsPFTau50Tight_phi.clear();
     hltHpsPFTau50Tight_energy.clear();
 
-    //
-    // hltMatchedVBFIsoTauTwo working points
+    // hltMatchedVBFIsoTauTwo 
     passhltMatchedVBFIsoTauTwoTight = 0;
     hltMatchedVBFIsoTauTwoTight_pt.clear();
     hltMatchedVBFIsoTauTwoTight_eta.clear();
@@ -277,18 +293,20 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     const edm::TriggerNames triggerNames_ = iEvent.triggerNames(*triggerResults);
 
     // saving trigger results to respective branches
-    std::string pathNameDiTauTrig = "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1";
+    //std::string pathNameDiTauTrig = "HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1"; // previously used DiTau HLT
+    std::string pathNameDiTauTrig = "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1";
     passDiTauTrig = triggerResults->accept(triggerNames_.triggerIndex(pathNameDiTauTrig));
-    //std::cout << passDiTauTrig_ << "passDiTauTrig_" << std::endl;
+    // using DiTau35 HLT
 
-    // for the VBF triggers, there are two triggers with three working points each
+    // Inclusive VBF HLT
     std::string pathNameOldTrigTight = "HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1";
     passOldTrigTight = triggerResults->accept(triggerNames_.triggerIndex(pathNameOldTrigTight));
 
+    // VBF + 2 Tau HLT
     std::string pathNameNewTrigTight = "HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v1";
     passNewTrigTight = triggerResults->accept(triggerNames_.triggerIndex(pathNameNewTrigTight));
 
-    // filling branches with triggerObjs information, hltL1VBFDiJetIsoTau object info filled separately since it's a weird trigger
+    // filling branches with triggerObjs information, hltL1VBFDiJetIsoTau object info filled separately since it's a weird L1
 
     // getting trigger refs for hltL1VBFDiJetIsoTau filter's tau/jet splitting
     edm::Handle<trigger::TriggerEventWithRefs> triggerEventWithRefsHandle_;
@@ -328,34 +346,24 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
    	    hltL1VBFDiJetIsoTau_tauEnergy.push_back(tauCandRefVec[i]->energy());
 	}
     }
-
     //filling the rest, as well as passFilter branches
-
     const trigger::size_type nFilters(triggerEvent->sizeFilters());
-    std::string hltL1sDoubleTauBigOR_Tag = "hltL1sDoubleTauBigOR::MYHLT"; // ditau trigger
-    std::string hltL1VBFDiJetOR_Tag = "hltL1VBFDiJetOR::MYHLT";		  // old trigger
-    std::string hltL1VBFDiJetIsoTau_Tag = "hltL1VBFDiJetIsoTau::MYHLT";	  // new trigger
+    std::string hltL1sDoubleTauBigOR_Tag = "hltL1sDoubleTauBigOR::MYHLT"; // ditau L1
+    std::string hltL1VBFDiJetOR_Tag = "hltL1VBFDiJetOR::MYHLT";		  // inclusive L1
+    std::string hltL1VBFDiJetIsoTau_Tag = "hltL1VBFDiJetIsoTau::MYHLT";	  // proposed L1
+
     std::string hltHpsDoublePFTau20_Tag = "hltHpsDoublePFTau20::MYHLT";
-    // hltHpsDoublePFTau working points
     std::string hltHpsDoublePFTauTight_Tag = "hltHpsDoublePFTau20TrackTightChargedIso::MYHLT";
-    // 
-    // hltHpsDoublePFTauAgainstMuon working points
     std::string hltHpsDoublePFTauAgainstMuonTight_Tag = "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon::MYHLT";
-    //
-    // hltMatchedVBFTwo working points
     std::string hltMatchedVBFTwoTight_Tag = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
-    //
-    // hltMatchedVBFOne working points
     std::string hltMatchedVBFOneTight_Tag = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
-    //
-    //hltHpsPFTau50 working points, renamed from hltHpsDoubleTightIsoAgainstMuonMatch
     std::string hltHpsPFTau50Tight_Tag = "hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched::MYHLT";
-    //
-    // hltMatchedVBFIsoTauTwo working points
     std::string hltMatchedVBFIsoTauTwoTight_Tag = "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20::MYHLT";
 
+    std::string diTau35HLTFinalFilter_Tag = "hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg::MYHLT";
+
     // accepted filters per event
-    for(trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter){
+    for(trigger::size_type iFilter=0; iFilter!=nFilters; ++iFilter) {
 	std::string filterTag = triggerEvent->filterTag(iFilter).encode();
 	trigger::Keys objectKeys = triggerEvent->filterKeys(iFilter);
 
@@ -367,28 +375,26 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	if (filterTag == hltL1VBFDiJetOR_Tag && nObjKeys >= 2) passhltL1VBFDiJetOR = 1;
 	if (filterTag == hltL1VBFDiJetIsoTau_Tag && hltL1VBFDiJetIsoTau_tauPt.size() >= 1
 						 && hltL1VBFDiJetIsoTau_jetPt.size() >= 2) passhltL1VBFDiJetIsoTau = 1;
+
 	// hltHpsDoublePFTau20 filter to be replaced by hltHpsDoublePFTau filter
 	if (filterTag == hltHpsDoublePFTau20_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20 = 1; 
-	// hltHpsDoublePFTau working points
+	// hltHpsDoublePFTau20TrackTightChargedIso
 	if (filterTag == hltHpsDoublePFTauTight_Tag && nObjKeys >= 2) passhltHpsDoublePFTauTight = 1;
-	//	
-	// hltHpsDoublePFTauAgainstMuon working points 
+	// hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon
 	if (filterTag == hltHpsDoublePFTauAgainstMuonTight_Tag && nObjKeys >= 2) passhltHpsDoublePFTauAgainstMuonTight = 1;
-	//
-	// hltMatchedVBFTwo working points
+	// hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
 	if (filterTag == hltMatchedVBFTwoTight_Tag && nObjKeys >= 2) passhltMatchedVBFTwoTight = 1;
-	//
-	// hltMatchedVBFOne working points
+	// hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
 	if (filterTag == hltMatchedVBFOneTight_Tag && nObjKeys >= 1) passhltMatchedVBFOneTight = 1;
-	//
-	// hltHpsPFTau50 working points
+	// hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched
 	if (filterTag == hltHpsPFTau50Tight_Tag && nObjKeys >= 1) passhltHpsPFTau50Tight = 1;
-	//
-	// hltMatchedVBFIsoTauTwo working points
+	// hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20
 	if (filterTag == hltMatchedVBFIsoTauTwoTight_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoTight = 1;
+        // hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg
+        if (filterTag == diTau35HLTFinalFilter_Tag && nObjKeys >= 2) passDiTau35HLTFinalFilter = 1;
 
 // should change to only filling kinematic branches if the flag for passing the filter is set to true as well
-
+      
 	//loop over trigger objects and store their kinematics to the proper filter branches
 	for(trigger::size_type iKey=0; iKey < nObjKeys; ++iKey){
 	    trigger::size_type objKey = objectKeys.at(iKey);
@@ -398,77 +404,74 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	    phi_ = triggerObj.phi();
 	    energy_ = triggerObj.energy();
 	// fill ditau trig and old trig L1 branches (new trig L1 branches filled separately because it has two types of objects)
-	    if (filterTag == hltL1sDoubleTauBigOR_Tag && pt_>0){
+	    if (filterTag == hltL1sDoubleTauBigOR_Tag && passhltL1sDoubleTauBigOR && pt_>0) {
 		hltL1sDoubleTauBigOR_pt.push_back(pt_);
 		hltL1sDoubleTauBigOR_eta.push_back(eta_);
 		hltL1sDoubleTauBigOR_phi.push_back(phi_);
 		hltL1sDoubleTauBigOR_energy.push_back(energy_);
 	    }
-	    if (filterTag == hltL1VBFDiJetOR_Tag && pt_>0){
+	    if (filterTag == hltL1VBFDiJetOR_Tag && passhltL1VBFDiJetOR && pt_>0) {
 		hltL1VBFDiJetOR_pt.push_back(pt_);
 		hltL1VBFDiJetOR_eta.push_back(eta_);
 		hltL1VBFDiJetOR_phi.push_back(phi_);
 		hltL1VBFDiJetOR_energy.push_back(energy_);
 	    }
 	// fill hltHpsDoublePFTau20 branches if match
-	    if (filterTag == hltHpsDoublePFTau20_Tag && pt_>0){
+	    if (filterTag == hltHpsDoublePFTau20_Tag && passhltHpsDoublePFTau20 && pt_>0) {
 		hltHpsDoublePFTau20_pt.push_back(pt_);
 		hltHpsDoublePFTau20_eta.push_back(eta_);
 		hltHpsDoublePFTau20_phi.push_back(phi_);
 		hltHpsDoublePFTau20_energy.push_back(energy_);
 	    }
-	// hltHpsDoublePFTaIsoCharge working points
 	// fill hltHpsDoublePFTauTight branches if match
-	    if (filterTag == hltHpsDoublePFTauTight_Tag && pt_>0){
+	    if (filterTag == hltHpsDoublePFTauTight_Tag && passhltHpsDoublePFTauTight && pt_>0) {
 		hltHpsDoublePFTauTight_pt.push_back(pt_); 
 		hltHpsDoublePFTauTight_eta.push_back(eta_);
 		hltHpsDoublePFTauTight_phi.push_back(phi_);
 		hltHpsDoublePFTauTight_energy.push_back(energy_);
 	    }
-	////
-	// hltHpsDoublePFTauAgainstMuon working points
 	// fill hltHpsDoublePFTauAgainstMuonTight branches if match
-	    if (filterTag == hltHpsDoublePFTauAgainstMuonTight_Tag && pt_>0){
+	    if (filterTag == hltHpsDoublePFTauAgainstMuonTight_Tag && passhltHpsDoublePFTauAgainstMuonTight && pt_>0) {
 		hltHpsDoublePFTauAgainstMuonTight_pt.push_back(pt_); 
 		hltHpsDoublePFTauAgainstMuonTight_eta.push_back(eta_);
 		hltHpsDoublePFTauAgainstMuonTight_phi.push_back(phi_);
 		hltHpsDoublePFTauAgainstMuonTight_energy.push_back(energy_);
 	    }
-	////
-	// hltMatchedVBFTwo working points
 	// fill hltMatchedVBFTwoTight branches if match
-            if (filterTag == hltMatchedVBFTwoTight_Tag && pt_>0){
+            if (filterTag == hltMatchedVBFTwoTight_Tag && passhltMatchedVBFTwoTight && pt_>0) {
                 hltMatchedVBFTwoTight_pt.push_back(pt_);
                 hltMatchedVBFTwoTight_eta.push_back(eta_);
                 hltMatchedVBFTwoTight_phi.push_back(phi_);
 		hltMatchedVBFTwoTight_energy.push_back(energy_);
             }
-	////
-	// hltMatchedVBFOne working points
 	// fill hltMatchedVBFOneTight branches if match
-            if (filterTag == hltMatchedVBFOneTight_Tag && pt_>0){
+            if (filterTag == hltMatchedVBFOneTight_Tag && passhltMatchedVBFOneTight && pt_>0) {
                 hltMatchedVBFOneTight_pt.push_back(pt_);
                 hltMatchedVBFOneTight_eta.push_back(eta_);
                 hltMatchedVBFOneTight_phi.push_back(phi_);
 		hltMatchedVBFOneTight_energy.push_back(energy_);
             }
-	////
 	// fill hltHpsPFTau50Tight branches if match
-	    if (filterTag == hltHpsPFTau50Tight_Tag && pt_>0){
+	    if (filterTag == hltHpsPFTau50Tight_Tag && passhltHpsPFTau50Tight && pt_>0) {
 		hltHpsPFTau50Tight_pt.push_back(pt_);
 		hltHpsPFTau50Tight_eta.push_back(eta_);
 		hltHpsPFTau50Tight_phi.push_back(phi_);
 		hltHpsPFTau50Tight_energy.push_back(energy_);
 	    }
-	//
-	// hltMatchedVBFIsoTauTwo working points
 	// fill hltMatchedVBFIsoTauTwoTight branches if match
-	    if (filterTag == hltMatchedVBFIsoTauTwoTight_Tag && pt_>0){
+	    if (filterTag == hltMatchedVBFIsoTauTwoTight_Tag && passhltMatchedVBFIsoTauTwoTight && pt_>0) {
 		hltMatchedVBFIsoTauTwoTight_pt.push_back(pt_);
  		hltMatchedVBFIsoTauTwoTight_eta.push_back(eta_);
 		hltMatchedVBFIsoTauTwoTight_phi.push_back(phi_);
 		hltMatchedVBFIsoTauTwoTight_energy.push_back(energy_);
 	    }
+        // fill diTau35HLTFinalFilter branches if match
+            if (filterTag == diTau35HLTFinalFilter_Tag && passDiTau35HLTFinalFilter && pt_>0) {
+                diTau35HLTFinalFilter_pt.push_back(pt_);
+                diTau35HLTFinalFilter_eta.push_back(eta_);
+                diTau35HLTFinalFilter_phi.push_back(phi_);
+                diTau35HLTFinalFilter_energy.push_back(energy_);
+            }
 	} // end loop over trigger object keys
     } // end loop over nfilters
 } // end function

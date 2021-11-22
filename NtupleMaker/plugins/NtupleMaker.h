@@ -111,9 +111,6 @@ class NtupleMaker : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 	//-------------member data----------------//
 	TTree* tree_; 
 
-	//int runNumber;
-	//int lumiBlock;
-	//int eventNumberID;
 
 	bool fillingTriggers;
 	bool fillingL1;

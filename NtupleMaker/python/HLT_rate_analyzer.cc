@@ -6,6 +6,7 @@
 #include <string>
 #include <iomanip>
 #include <tuple>
+#include <set>
 
 #include "TH1F.h"
 #include "TTree.h"
@@ -17,7 +18,8 @@
 #include "trigger_selection.h"
 
 // example running on wisc server: ./trigger_selection.exe /hdfs/store/user/ballmond/merged_trigger_05092020/merged.root ./output.root new
-
+// temporary file location for rate studies
+// /uscms/home/ballmond/nobackup/test-dir/CMSSW_11_3_4_patch1/src/VBFTau/NtupleMaker/python/samples/fullEZB1SelectedRuns.root 1 thru 8
 
 int main(int argc, char** argv)	{
 
@@ -95,14 +97,26 @@ int main(int argc, char** argv)	{
 
 
     // variables without branches
+    int passDiTau32L1 = 0;
+    int passDiTau32L1Count = 0;
+    int passDiTau35L1 = 0;
+    int passDiTau35L1Count = 0;
     int passOldVBFL1Count = 0;
     int passOldVBFHLTCount = 0;
     int passNewVBFL1Count = 0;
     int passNewVBFHLTCount = 0;
 
+    int passORDiTau32InclusiveProposed = 0;
+    int passORDiTau35InclusiveProposed = 0;
+    int passORDiTau32Inclusive = 0;
+    int passORDiTau35Inclusive = 0;
+
+    std::set<std::pair<int,int>> uniqueLumiBlocks;
+    int eventsInRun = 0;
+    int rateRunNumber = -1;
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 10001; ++iEntry) {
+    //for (int iEntry = 0; iEntry < 200001; ++iEntry) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	//if (iEntry % 1000000 == 0) std::cout << std::to_string(iEntry) << std::endl;
@@ -111,6 +125,18 @@ int main(int argc, char** argv)	{
 	runNumber = inTree->runNumber;
 	lumiBlock = inTree->lumiBlock;
 	eventNumberID = inTree->eventNumberID;
+
+        // can choose from 321755,323725,323755,323790,323841,323940,323976,323978,
+        // 324021,324077,324201,324237,324245,324293,324315,324420,324747,324785,
+        // 324835,324897,324970,324980,324997,325022,325057,325097-325099
+        // in prinicple. Use 323755 for now since that's what we've used before
+        //
+        rateRunNumber = 323755;
+        if (runNumber != rateRunNumber) continue;
+        bool restrictLumi = true;
+        if (restrictLumi && (lumiBlock < 44 || lumiBlock >= 144)) continue;
+        uniqueLumiBlocks.insert(std::make_pair(runNumber,lumiBlock));
+        eventsInRun += 1;
 
         // fill Old VBF HLT filter flags after correcting NtupleMaker mistake
         passhltL1VBFDiJetOR = passhltHpsDoublePFTau20Old = passhltHpsDoublePFTauTightOld = 0;
@@ -143,16 +169,62 @@ int main(int argc, char** argv)	{
         passNewVBFL1Count += passhltL1VBFDiJetIsoTau;
         passNewVBFHLTCount += passNewVBFHLT;
 
+        passDiTau32L1 = passDiTau35L1 = 0;
+        passDiTau32L1 = inTree->passhltL1sDoubleTauBigOR;
+        int sizeL1DiTau32 = 0;
+        int sizeL1DiTau35 = 0;
+        if (passDiTau32L1) sizeL1DiTau32 = inTree->hltL1sDoubleTauBigOR_pt->size();
+        if (sizeL1DiTau32 >= 2) {
+          for (int iTau = 0; iTau < sizeL1DiTau32; ++iTau) {
+            if (inTree->hltL1sDoubleTauBigOR_pt->at(iTau) >= 35) sizeL1DiTau35 += 1;
+          }
+          if (sizeL1DiTau35 >= 2) passDiTau35L1 = 1; 
+        }
+
+        passDiTau32L1Count += passDiTau32L1;
+        passDiTau35L1Count += passDiTau35L1;
+
+        // inclusive VBF L1 = passhltL1VBFDiJetOR
+        // proposed/new VBF L1 = passhltL1VBFDiJetIsoTau
+        if (passDiTau32L1 || passhltL1VBFDiJetOR || passhltL1VBFDiJetIsoTau) passORDiTau32InclusiveProposed += 1;
+        if (passDiTau32L1 || passhltL1VBFDiJetOR) passORDiTau32Inclusive += 1;
+
+        if (passDiTau35L1 || passhltL1VBFDiJetOR || passhltL1VBFDiJetIsoTau) passORDiTau35InclusiveProposed += 1;
+        if (passDiTau35L1 || passhltL1VBFDiJetOR) passORDiTau35Inclusive += 1;
+
         outTree->Fill();
 
     }// end event loop
 
-    std::cout << "From " << inTree->GetEntries() << " events" << std::endl;
+    std::cout << "Total dataset has " << inTree->GetEntries() << " events" << std::endl;
+
+    std::cout << rateRunNumber << '\t' << "run number" << '\n'
+              << eventsInRun << '\t' << "events in run" << '\n'
+              << uniqueLumiBlocks.size() << '\t' << "number of unique lumi blocks" << '\n'
+              << std::endl;
+
+    std::cout << "from OMS, lumi at LS = 44 is 1.849E34 and drops by 4\% after 100 LS (at 143 it is 1.775E34)" << std::endl;
+    std::cout << "this makes the avg lumi = 1.812E34, which is what is used as the denominator lumi in the scaling" << std::endl;
+    float rateFactor = 2544 * 11255.6 * (2.0 / 1.812) * (1 / float(eventsInRun)); // using avg lumi from OMS, 2.0E34 is ~60PU
+    std::cout << rateFactor << '\t' << "rate factor" << std::endl;
+
     std::cout << 
-              "L1" << '\t' << "HLT" << '\n' << 
-              passOldVBFL1Count << '\t' << passOldVBFHLTCount << '\t' << "Old VBF" << '\n' <<
-              passNewVBFL1Count << '\t' << passNewVBFHLTCount << '\t' << "New VBF" << '\n' <<
+              "L1" << '\t' << "L1 Rate" << '\t' << "HLT" << '\n' << 
+              passDiTau32L1Count << '\t' << passDiTau32L1Count*rateFactor << '\t' << "DiTau 32" << '\n' <<
+              passDiTau35L1Count << '\t' << passDiTau35L1Count*rateFactor << '\t' << "DiTau 35" << '\n' <<
+              passOldVBFL1Count << '\t' << passOldVBFL1Count*rateFactor << '\t' << passOldVBFHLTCount << '\t' << "Old VBF" << '\n' <<
+              passNewVBFL1Count << '\t' << passNewVBFL1Count*rateFactor << '\t' << passNewVBFHLTCount << '\t' << "New VBF" << '\n' <<
     std::endl; 
+
+    int pureProposedFromDiTau32 = passORDiTau32InclusiveProposed - passORDiTau32Inclusive;
+    int pureProposedFromDiTau35 = passORDiTau35InclusiveProposed - passORDiTau35Inclusive;
+    std::cout << 
+              "3OR -" << '\t' << "2OR" << '\t' << "=" << '\t' << "pure New VBF L1" << '\t' << "-->" << '\t' << "Pure rate" << '\n' <<
+              passORDiTau32InclusiveProposed << '\t' << passORDiTau32Inclusive << '\t' << '\t' << pureProposedFromDiTau32 << '\t' << '\t' <<
+              pureProposedFromDiTau32*rateFactor << '\n' << 
+              passORDiTau35InclusiveProposed << '\t' << passORDiTau35Inclusive << '\t' << '\t' << pureProposedFromDiTau35 << '\t' << '\t' <<
+              pureProposedFromDiTau35*rateFactor << '\n' << 
+    std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

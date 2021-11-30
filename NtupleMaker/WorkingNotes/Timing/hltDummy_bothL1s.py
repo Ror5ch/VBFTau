@@ -7291,7 +7291,7 @@ process.hltOnlineBeamSpot = cms.EDProducer( "BeamSpotOnlineProducer",
 )
 process.hltL1Skim = cms.EDFilter( "HLTL1TSeed",
     saveTags = cms.bool( True ),
-    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp" ),
+    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp OR L1_DoubleIsoTau26er2p1_Jet55_RmOvlp" ),
     L1ObjectMapInputTag = cms.InputTag( "hltGtStage2ObjectMap" ),
     L1GlobalInputTag = cms.InputTag( "hltGtStage2Digis" ),
     L1MuonInputTag = cms.InputTag( 'hltGtStage2Digis','Muon' ),
@@ -7315,17 +7315,19 @@ process.HLTAnalyzerEndpath = cms.EndPath( process.hltGtStage2Digis + process.hlt
 process.HLT_Dummy_v1 = cms.Path( process.HLTBeginSequence + process.hltL1Skim + process.HLTEndSequence )
 
 
-process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_Dummy_v1, ))
+process.schedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_Dummy_v1, ))
+
 
 process.out = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring('drop *',
-         'keep FEDRawDataCollection_rawDataCollector_*MYHLT',
+         'keep FEDRawDataCollection_rawDataCollector_*_MYHLT',
                                           ),
-    SelectEvents = cms.untracked.PSet(  SelectEvents = cms.vstring( 'HLT_Dummy_v1' ) ),
+    #SelectEvents = cms.untracked.PSet(  SelectEvents = cms.vstring( 'HLT_Dummy_v1' ) ),
     fileName = cms.untracked.string("output_dummy.root")
 )
 process.o = cms.EndPath( process.out )
 
+process.schedule_().append(process.o)
 
 # source module (EDM inputs)
 process.source = cms.Source( "PoolSource",

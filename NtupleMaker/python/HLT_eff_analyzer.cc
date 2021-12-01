@@ -491,7 +491,7 @@ int main(int argc, char** argv)	{
         passOldVBFBoth = (passOldVBFHLT && passOldVBFOff);
         passNewVBFBoth = (passNewVBFHLT && passNewVBFOff);
 
-        if (passOldVBFOff || passNewVBFOff) {
+        if (passNewVBFBoth || passDiTau35Both) {
           // AOD Branches
 	  j1_ptAOD = AODJet1.Pt();
 	  j1_etaAOD = AODJet1.Eta();
@@ -510,6 +510,7 @@ int main(int argc, char** argv)	{
 	  t2_phiAOD = AODTau2.Phi();
           
           // Old VBF HLT Branches
+          if (passOldVBFOff && matchedBothOld) {
           j1_ptOld = oldHLTJet1.Pt();
           j1_etaOld = oldHLTJet1.Eta();
           j1_phiOld = oldHLTJet1.Phi();
@@ -525,8 +526,9 @@ int main(int argc, char** argv)	{
           t2_ptOld = oldHLTTau2.Pt();
           t2_etaOld = oldHLTTau2.Eta();
           t2_phiOld = oldHLTTau2.Phi();
-	  
+	  }
           // New VBF HLT Branches
+          if (passNewVBFOff && matchedBothNew) {
           j1_ptNew = newHLTJet1.Pt();
           j1_etaNew = newHLTJet1.Eta();
           j1_phiNew = newHLTJet1.Phi();
@@ -542,6 +544,7 @@ int main(int argc, char** argv)	{
           t2_ptNew = newHLTTau2.Pt();
           t2_etaNew = newHLTTau2.Eta();
           t2_phiNew = newHLTTau2.Phi();
+          }
 
 	} // end if statement to fill kinematic variables
 

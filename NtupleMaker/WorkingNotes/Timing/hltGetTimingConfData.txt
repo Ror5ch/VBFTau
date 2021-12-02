@@ -31,7 +31,7 @@ hltGetConfiguration /users/ballmond/DummyHLT/V1 \
 
 hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 \
 --globaltag auto:run3_hlt \
---path HLTriggerFirstPath, HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*, HLTriggerFinalPath, HLTAnalyzerEndpath \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --data \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
 --unprescale \
@@ -40,7 +40,7 @@ hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Tr
 --full \
 --offline \
 --max-events 100 \
+--l1-emulator uGT \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input 'file:temproot.root' \
---timing \
-> hltVBF2TauTiming.py
+> hltRemuVBF2TauTiming.py

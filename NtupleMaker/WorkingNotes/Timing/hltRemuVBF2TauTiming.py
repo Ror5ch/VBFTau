@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process VBFT --full --offline --max-events 100 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml --input file:temproot.root --timing
-=======
-# hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process VBFT --full --offline --max-events 100 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml --input file:temproot.root --timing
+# hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process VBFT --full --offline --max-events 100 --l1-emulator uGT --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml --input file:temproot.root
 
 # /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 (CMSSW_12_2_0_pre2)
 
@@ -7095,6 +7092,33 @@ process.trackerTopology = cms.ESProducer( "TrackerTopologyEP",
   appendToDataLabel = cms.string( "" )
 )
 
+process.FastTimerService = cms.Service( "FastTimerService",
+    printEventSummary = cms.untracked.bool( False ),
+    printRunSummary = cms.untracked.bool( True ),
+    printJobSummary = cms.untracked.bool( True ),
+    writeJSONSummary = cms.untracked.bool( False ),
+    jsonFileName = cms.untracked.string( "resources.json" ),
+    enableDQM = cms.untracked.bool( True ),
+    enableDQMbyModule = cms.untracked.bool( False ),
+    enableDQMbyPath = cms.untracked.bool( False ),
+    enableDQMbyLumiSection = cms.untracked.bool( True ),
+    enableDQMbyProcesses = cms.untracked.bool( True ),
+    enableDQMTransitions = cms.untracked.bool( False ),
+    dqmTimeRange = cms.untracked.double( 2000.0 ),
+    dqmTimeResolution = cms.untracked.double( 5.0 ),
+    dqmMemoryRange = cms.untracked.double( 1000000.0 ),
+    dqmMemoryResolution = cms.untracked.double( 5000.0 ),
+    dqmPathTimeRange = cms.untracked.double( 100.0 ),
+    dqmPathTimeResolution = cms.untracked.double( 0.5 ),
+    dqmPathMemoryRange = cms.untracked.double( 1000000.0 ),
+    dqmPathMemoryResolution = cms.untracked.double( 5000.0 ),
+    dqmModuleTimeRange = cms.untracked.double( 40.0 ),
+    dqmModuleTimeResolution = cms.untracked.double( 0.2 ),
+    dqmModuleMemoryRange = cms.untracked.double( 100000.0 ),
+    dqmModuleMemoryResolution = cms.untracked.double( 500.0 ),
+    dqmLumiSectionsRange = cms.untracked.uint32( 2500 ),
+    dqmPath = cms.untracked.string( "HLT/TimerService" ),
+)
 process.MessageLogger = cms.Service( "MessageLogger",
     suppressWarning = cms.untracked.vstring( 'hltOnlineBeamSpot',
       'hltCtf3HitL1SeededWithMaterialTracks',
@@ -14143,6 +14167,30 @@ process.hltTriggerSummaryAOD = cms.EDProducer( "TriggerSummaryProducerAOD",
 process.hltTriggerSummaryRAW = cms.EDProducer( "TriggerSummaryProducerRAW",
     processName = cms.string( "@" )
 )
+process.hltPreHLTAnalyzerEndpath = cms.EDFilter( "HLTPrescaler",
+    offset = cms.uint32( 0 ),
+    L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" )
+)
+process.hltL1TGlobalSummary = cms.EDAnalyzer( "L1TGlobalSummary",
+    AlgInputTag = cms.InputTag( "hltGtStage2Digis" ),
+    ExtInputTag = cms.InputTag( "hltGtStage2Digis" ),
+    MinBx = cms.int32( 0 ),
+    MaxBx = cms.int32( 0 ),
+    DumpTrigResults = cms.bool( False ),
+    DumpRecord = cms.bool( False ),
+    DumpTrigSummary = cms.bool( True ),
+    ReadPrescalesFromFile = cms.bool( False ),
+    psFileName = cms.string( "prescale_L1TGlobal.csv" ),
+    psColumn = cms.int32( 0 )
+)
+process.hltTrigReport = cms.EDAnalyzer( "HLTrigReport",
+    HLTriggerResults = cms.InputTag( 'TriggerResults','','@currentProcess' ),
+    reportBy = cms.untracked.string( "job" ),
+    resetBy = cms.untracked.string( "never" ),
+    serviceBy = cms.untracked.string( "never" ),
+    ReferencePath = cms.untracked.string( "HLTriggerFinalPath" ),
+    ReferenceRate = cms.untracked.double( 100.0 )
+)
 process.hltL1VBFDiJetIsoTau = cms.EDFilter( "HLTL1TSeed",
     saveTags = cms.bool( True ),
     L1SeedsLogicalExpression = cms.string( "L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp" ),
@@ -18556,60 +18604,31 @@ process.HLTHPSSingleTightChargedIsoAntiMuonPFTau20Sequence = cms.Sequence( proce
 process.HLTriggerFirstPath = cms.Path( process.hltGetConditions + process.hltGetRaw + process.hltPSetMap + process.hltBoolFalse )
 process.HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sDoubleTauBigOR + process.hltPreDoubleTightChargedIsoPFTauHPS35Trk1eta2p1Reg + process.HLTL2TauJetsL1TauSeededSequence + process.hltDoubleL2Tau26eta2p2 + process.HLTL2p5IsoTauL1TauSeededSequence + process.hltDoubleL2IsoTau26eta2p2 + process.HLTRegionalPFTauHPSSequence + process.HLTHPSDoublePFTauPt35Eta2p1Trk1Reg + process.HLTHPSTightChargedIsoPFTauSequenceReg + process.hltHpsSelectedPFTausTrackPt1TightChargedIsolationReg + process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationReg + process.hltHpsL1JetsHLTDoublePFTauTrackPt1TightChargedIsolationMatchReg + process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg + process.hltHpsDoublePFTau35TrackPt1TightChargedIsolationDz02Reg + process.HLTEndSequence )
 process.HLTriggerFinalPath = cms.Path( process.hltGtStage2Digis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW + process.hltBoolFalse )
+process.HLTAnalyzerEndpath = cms.EndPath( process.hltGtStage2Digis + process.hltPreHLTAnalyzerEndpath + process.hltL1TGlobalSummary + process.hltTrigReport )
 process.HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1 = cms.Path( process.HLTBeginSequence + process.hltL1VBFDiJetIsoTau + process.hltPreVBFTightChargedIsoPFTauHPS45PFTauHPS20Trk1eta2p1 + process.HLTL2TauJetsSequence + process.hltDoubleL2Tau20eta2p2 + process.HLTL2p5IsoTauSequence + process.hltDoubleL2IsoTau20eta2p2 + process.HLTGlobalPFTauHPSSequence + process.HLTHPSDoubleTightChargedIsoAntiMuonPFTau20Sequence + process.hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching + process.hltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched + process.HLTAK4PFJetsSequence + process.hltVBFIsoTauL1TLooseIDPFJetsMatching + process.hltMatchedVBFIsoTauTwoPFJetsDoubleTightChargedIsoPFTauHPS20OverlapRemoval + process.hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 + process.HLTEndSequence )
 process.HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1 = cms.Path( process.HLTBeginSequence + process.hltL1VBFDiJetIsoTau + process.hltPreVBFTightChargedIsoPFTauHPS45Trk1eta2p1 + process.HLTL2TauJetsSequence + process.hltSingleL2Tau20eta2p2 + process.HLTL2p5IsoTauSequence + process.hltSingleL2IsoTau20eta2p2 + process.HLTGlobalPFTauHPSSequence + process.HLTHPSSingleTightChargedIsoAntiMuonPFTau20Sequence + process.hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching + process.hltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched + process.HLTAK4PFJetsSequence + process.hltVBFIsoTauL1TLooseIDPFJetsMatching + process.hltMatchedVBFIsoTauTwoPFJetsSingleTightChargedIsoPFTauHPS20OverlapRemoval + process.hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromSingleTightChargedIsoPFTauHPS20 + process.HLTEndSequence )
 
 
-process.schedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1, process.HLTriggerFinalPath, process.HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1, ))
+process.schedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1, process.HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1, ))
 
 
 # source module (EDM inputs)
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:temproot.root',
+        'file:/afs/cern.ch/user/b/ballmond/public/TimingEZBSamples/EZB1L1Repack.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
     )
 )
 
-# instrument the menu with the modules and EndPath needed for timing studies
-
-# configure the FastTimerService
-process.load( "HLTrigger.Timer.FastTimerService_cfi" )
-# print a text summary at the end of the job
-process.FastTimerService.printEventSummary         = False
-process.FastTimerService.printRunSummary           = False
-process.FastTimerService.printJobSummary           = True
-
-# enable DQM plots
-process.FastTimerService.enableDQM                 = True
-
-# enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
-process.FastTimerService.enableDQMbyPath           = True
-
-# enable per-module DQM plots
-process.FastTimerService.enableDQMbyModule         = True
-
-# enable per-event DQM plots vs lumisection
-process.FastTimerService.enableDQMbyLumiSection    = True
-process.FastTimerService.dqmLumiSectionsRange      = 2500
-
-# set the time resolution of the DQM plots
-process.FastTimerService.dqmTimeRange              = 2000.
-process.FastTimerService.dqmTimeResolution         =   10.
-process.FastTimerService.dqmPathTimeRange          = 1000.
-process.FastTimerService.dqmPathTimeResolution     =    5.
-process.FastTimerService.dqmModuleTimeRange        =  200.
-process.FastTimerService.dqmModuleTimeResolution   =    1.
-
-# set the base DQM folder for the plots
-process.FastTimerService.dqmPath                   = 'HLT/TimerService'
-process.FastTimerService.enableDQMbyProcesses      = False
-
 # override the GlobalTag's L1T menu from an Xml file
 from HLTrigger.Configuration.CustomConfigs import L1XML
 process = L1XML(process,"L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml")
+
+# run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
+from HLTrigger.Configuration.CustomConfigs import L1REPACK
+process = L1REPACK(process,"uGT")
 
 # limit the number of events to be processed
 process.maxEvents = cms.untracked.PSet(
@@ -18657,7 +18676,7 @@ _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
 _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
 _customInfo['maxEvents' ]=  100
 _customInfo['globalTag' ]= "auto:run3_hlt"
-_customInfo['inputFile' ]=  ['file:temproot.root']
+_customInfo['inputFile' ]=  ['file:/afs/cern.ch/user/b/ballmond/public/TimingEZBSamples/EZB1L1Repack.root']
 _customInfo['realData'  ]=  True
 
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
@@ -18673,5 +18692,4 @@ modifyHLTforEras(process)
 #User-defined customization functions
 from HLTrigger.Configuration.customizeHLTforCMSSW import customiseFor2018Input
 process = customiseFor2018Input(process)
->>>>>>> d6dccd75ed95331c75143bfef5783f35dd290bfe
 

@@ -25,6 +25,8 @@ void MakeTurnOnPlots(char* filename, int key) {
     TH1::SetDefaultSumw2();
 
     TCanvas *c1 = new TCanvas("c1", "", 600, 400);
+    gStyle->SetOptStat(kFALSE);
+
     if (key == 0) {
       TH1F* h_t1TOnum = new TH1F("h_t1TOnum", "", 30, 0, 300);
       TH1F* h_t1TOdem = new TH1F("h_t1TOdem", "", 30, 0, 300);
@@ -37,6 +39,7 @@ void MakeTurnOnPlots(char* filename, int key) {
       h_t1TOratio->Divide(h_t1TOdem);
 
       h_t1TOratio->SetTitle("t1_pt Turn-On Plot");
+      h_t1TOratio->GetYaxis()->SetRange(0,1);
       h_t1TOratio->Draw("E");
 
       c1->Print("t1_pt_turnon.png", "png");

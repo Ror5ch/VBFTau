@@ -42,6 +42,6 @@ hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Tr
 --max-events 100 \
 --l1-emulator uGT \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
---input 'file:output_dummy_999.root' \
+--input 'file:output10Dummy.root' \
 --timing \
-> hltTestDummy999.py
+> hlt10DummyEDMCopy.py

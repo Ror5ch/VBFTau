@@ -385,14 +385,20 @@ int main(int argc, char** argv)	{
 	// only events with 2 jets and 2 taus are included in turn-on plots
 	passt1TO = passt2TO = passj1TO = passj2TO = passmjjTO = 0;
 
+        int t1Cut = 70;
+        int t2Cut = 55;
+        int j1Cut = 70;
+        int j2Cut = 70;
+        int mjjCut = 800;
+
         passDiTau32Off = passDiTau35Off = passOldVBFOff = passNewVBFOff = 0;
         if (viableTaus && viableJets) {
 
-          if (AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && mj1j2_ >= 600) passt1TO = 1;
-          if (AODTau1Pt_ >= 50 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && mj1j2_ >= 600) passt2TO = 1;
-          if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet2Pt_ >= 45 && mj1j2_ >= 600) passj1TO = 1;
-          if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && mj1j2_ >= 600) passj2TO = 1;
-          if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45) passmjjTO = 1;
+          if (AODTau2Pt_ >= t2Cut && AODJet1Pt_ >= j1Cut && AODJet2Pt_ >= j2Cut && mj1j2_ >= mjjCut) passt1TO = 1;
+          if (AODTau1Pt_ >= t1Cut && AODJet1Pt_ >= j1Cut && AODJet2Pt_ >= j2Cut && mj1j2_ >= mjjCut) passt2TO = 1;
+          if (AODTau1Pt_ >= t1Cut && AODTau2Pt_ >= t2Cut && AODJet2Pt_ >= j2Cut && mj1j2_ >= mjjCut) passj1TO = 1;
+          if (AODTau1Pt_ >= t1Cut && AODTau2Pt_ >= t2Cut && AODJet1Pt_ >= j1Cut && mj1j2_ >= mjjCut) passj2TO = 1;
+          if (AODTau1Pt_ >= t1Cut && AODTau2Pt_ >= t2Cut && AODJet1Pt_ >= j1Cut && AODJet2Pt_ >= j2Cut) passmjjTO = 1;
 
 
           //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());

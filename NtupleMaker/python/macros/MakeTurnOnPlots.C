@@ -28,9 +28,9 @@ void MakeTurnOnPlots(char* filename, int key) {
     gStyle->SetOptStat(kFALSE);
 
     if (key == 0) {
-      TH1F* h_t1TOnum = new TH1F("h_t1TOnum", "", 30, 0, 300);
-      TH1F* h_t1TOdem = new TH1F("h_t1TOdem", "", 30, 0, 300);
-      TH1F* h_t1TOratio = new TH1F("h_t1TOratio", "", 30, 0, 300);
+      TH1F* h_t1TOnum = new TH1F("h_t1TOnum", "", 15, 0, 150);
+      TH1F* h_t1TOdem = new TH1F("h_t1TOdem", "", 15, 0, 150);
+      TH1F* h_t1TOratio = new TH1F("h_t1TOratio", "", 15, 0, 150);
 
       tree->Draw("t1_ptAOD >> h_t1TOnum", "passt1TO>0 && matchedBothNew>0","goff");
       tree->Draw("t1_ptAOD >> h_t1TOdem", "passt1TO>0","goff");
@@ -46,9 +46,9 @@ void MakeTurnOnPlots(char* filename, int key) {
     }
 
     if (key == 1) {
-      TH1F* h_t2TOnum = new TH1F("h_t2TOnum", "", 30, 0, 150);
-      TH1F* h_t2TOdem = new TH1F("h_t2TOdem", "", 30, 0, 150);
-      TH1F* h_t2TOratio = new TH1F("h_t2TOratio", "", 30, 0, 150);
+      TH1F* h_t2TOnum = new TH1F("h_t2TOnum", "", 10, 0, 100);
+      TH1F* h_t2TOdem = new TH1F("h_t2TOdem", "", 10, 0, 100);
+      TH1F* h_t2TOratio = new TH1F("h_t2TOratio", "", 10, 0, 100);
 
       tree->Draw("t2_ptAOD >> h_t2TOnum", "passt2TO>0 && matchedBothNew>0", "goff");
       tree->Draw("t2_ptAOD >> h_t2TOdem", "passt2TO>0", "goff");
@@ -63,9 +63,9 @@ void MakeTurnOnPlots(char* filename, int key) {
     }
 
     if (key == 2) {
-      TH1F* h_j1TOnum = new TH1F("h_j1TOnum", "", 20, 0, 400);
-      TH1F* h_j1TOdem = new TH1F("h_j1TOdem", "", 20, 0, 400);
-      TH1F* h_j1TOratio = new TH1F("h_j1TOratio", "", 20, 0, 400);
+      TH1F* h_j1TOnum = new TH1F("h_j1TOnum", "", 10, 0, 300);
+      TH1F* h_j1TOdem = new TH1F("h_j1TOdem", "", 10, 0, 300);
+      TH1F* h_j1TOratio = new TH1F("h_j1TOratio", "", 10, 0, 300);
 
       tree->Draw("j1_ptAOD >> h_j1TOnum", "passj1TO>0 && matchedBothNew>0", "goff");
       tree->Draw("j1_ptAOD >> h_j1TOdem", "passj1TO>0", "goff");
@@ -80,9 +80,9 @@ void MakeTurnOnPlots(char* filename, int key) {
     }
 
     if (key == 3) {
-      TH1F* h_j2TOnum = new TH1F("h_j2TOnum", "", 15, 0, 150);
-      TH1F* h_j2TOdem = new TH1F("h_j2TOdem", "", 15, 0, 150);
-      TH1F* h_j2TOratio = new TH1F("h_j2TOratio", "", 15, 0, 150);
+      TH1F* h_j2TOnum = new TH1F("h_j2TOnum", "", 10, 20, 120);
+      TH1F* h_j2TOdem = new TH1F("h_j2TOdem", "", 10, 20, 120);
+      TH1F* h_j2TOratio = new TH1F("h_j2TOratio", "", 10, 20, 120);
 
       tree->Draw("j2_ptAOD >> h_j2TOnum", "passj2TO>0 && matchedBothNew>0", "goff");
       tree->Draw("j2_ptAOD >> h_j2TOdem", "passj2TO>0", "goff");
@@ -97,9 +97,9 @@ void MakeTurnOnPlots(char* filename, int key) {
     }
 
     if (key == 4) {
-      TH1F* h_mjjTOnum = new TH1F("h_mjjTOnum", "", 30, 0, 3000);
-      TH1F* h_mjjTOdem = new TH1F("h_mjjTOdem", "", 30, 0, 3000);
-      TH1F* h_mjjTOratio = new TH1F("h_mjjTOratio", "", 30, 0, 3000);
+      TH1F* h_mjjTOnum = new TH1F("h_mjjTOnum", "", 9, 400, 1500);
+      TH1F* h_mjjTOdem = new TH1F("h_mjjTOdem", "", 9, 400, 1500);
+      TH1F* h_mjjTOratio = new TH1F("h_mjjTOratio", "", 9, 400, 1500);
 
       tree->Draw("mjjAOD >> h_mjjTOnum", "passmjjTO>0 && matchedBothNew>0", "goff");
       tree->Draw("mjjAOD >> h_mjjTOdem", "passmjjTO>0", "goff");

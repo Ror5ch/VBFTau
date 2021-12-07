@@ -31,7 +31,7 @@ hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Tr
 --full \
 --offline \
 --max-events 100 \
---l1Xml /afs/cern.ch/user/b/ballmond/public/TimingEZBSamples/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/fullEZB1L1Repack_20211205.root' \
 --timing \
 > hltfullEZB1EDMCopy.py

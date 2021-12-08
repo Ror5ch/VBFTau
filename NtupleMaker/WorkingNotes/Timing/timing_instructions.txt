@@ -63,9 +63,3 @@ https://twiki.cern.ch/twiki/bin/view/CMS/TriggerStudiesTiming
 Also this twiki is helpful for previous general results:
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/HLTCpuTimingReports2021
 
-Let me know if you run into any trouble!
-
-More questions for Jaime:
-How many events are in your VBF sample?
-Are you using all LS available from the EZB samples in your rate calculation?
-

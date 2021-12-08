@@ -13,7 +13,7 @@ add an option for data=="None" like so
 if old_options.data == "None":
     nlumis = 4315
 
-I counted 4305 lumisections used in our samples with the tool edmLumisInFile.py
+I counted 4315 lumisections used in our samples with the tool edmLumisInFile.py
 (twiki:
 https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookEdmUtilities#edm_LumisInFiles_py)
 

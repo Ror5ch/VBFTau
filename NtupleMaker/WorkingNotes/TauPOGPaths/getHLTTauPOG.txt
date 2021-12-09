@@ -46,3 +46,16 @@ hltGetConfiguration /users/kandroso/Run3TauFull/V20 \
 --max-events 100 \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
 > hltTestTauPathMC.py
+
+hltGetConfiguration /users/ballmond/12_2_0_pre2_integratingTauPOGpaths/V2 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v*,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 100 \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltTausNewMenuMC.py

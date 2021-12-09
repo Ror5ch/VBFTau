@@ -1,6 +1,6 @@
 hltGetConfiguration /users/ballmond/DummyHLT/V1 \
 --globaltag auto:run3_hlt \
---path HLTriggerFirstPath,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_Dummy_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--path HLTriggerFirstPath,HLT_Dummy_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --data \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
 --unprescale \
@@ -12,7 +12,7 @@ hltGetConfiguration /users/ballmond/DummyHLT/V1 \
 --l1-emulator uGT \
 --l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input 'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/097/00000/011708A4-611E-A943-A3AC-AAC465AF89D6.root' \
-> hltDummy_bothL1s.py
+> hltDummy_AllUnprescaledL1s.py
 
 hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 \
 --globaltag auto:run3_hlt \

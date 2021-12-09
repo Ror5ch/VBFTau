@@ -1,4 +1,4 @@
-# hltGetConfiguration /users/ballmond/DummyHLT/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_Dummy_v1,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process MYHLT --full --offline --max-events 100 --l1-emulator uGT --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/097/00000/011708A4-611E-A943-A3AC-AAC465AF89D6.root
+# hltGetConfiguration /users/ballmond/DummyHLT/V1 --globaltag auto:run3_hlt --path HLTriggerFirstPath,HLT_Dummy_v1,HLTriggerFinalPath,HLTAnalyzerEndpath --data --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --unprescale --output none --process MYHLT --full --offline --max-events 100 --l1-emulator uGT --l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/097/00000/011708A4-611E-A943-A3AC-AAC465AF89D6.root
 
 # /users/ballmond/DummyHLT/V1 (CMSSW_12_2_0_pre2)
 
@@ -7291,7 +7291,44 @@ process.hltOnlineBeamSpot = cms.EDProducer( "BeamSpotOnlineProducer",
 )
 process.hltL1Skim = cms.EDFilter( "HLTL1TSeed",
     saveTags = cms.bool( True ),
-    L1SeedsLogicalExpression = cms.string( "L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp OR L1_DoubleIsoTau26er2p1_Jet55_RmOvlp" ),
+    L1SeedsLogicalExpression = cms.string("""L1_SingleMu22 OR L1_SingleMu25 OR L1_DoubleMu8_SQ OR L1_DoubleMu9_SQ OR L1_DoubleMu_15_5_SQ
+OR L1_DoubleMu_15_7 OR L1_DoubleMu_15_7_SQ OR L1_DoubleMu18er2p1 OR L1_DoubleMu0er1p5_SQ_OS_dR_Max1p4 OR L1_DoubleMu0er1p4_SQ_OS_dR_Max1p4
+OR L1_DoubleMu4_SQ_OS_dR_Max1p2 OR L1_DoubleMu4p5_SQ_OS_dR_Max1p2 OR L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7 
+OR L1_DoubleMu4p5er2p0_SQ_OS_Mass7to18 OR L1_TripleMu3_SQ OR L1_TripleMu_5_3_3 OR L1_TripleMu_5_3_3_SQ OR L1_TripleMu_5_5_3
+OR L1_TripleMu_5_3p5_2p5_DoubleMu_5_2p5_OS_Mass_5to17 OR L1_TripleMu_5_4_2p5_DoubleMu_5_2p5_OS_Mass_5to17 
+OR L1_TripleMu_5SQ_3SQ_0OQ_DoubleMu_5_3_SQ_OS_Mass_Max9 OR L1_TripleMu_5SQ_3SQ_0_DoubleMu_5_3_SQ_OS_Mass_Max9 OR L1_Mu7_EG20er2p5 
+OR L1_Mu7_EG23er2p5 OR L1_Mu20_EG10er2p5 OR L1_Mu7_LooseIsoEG20er2p5 OR L1_Mu7_LooseIsoEG23er2p5 OR L1_Mu6_DoubleEG12er2p5 
+OR L1_Mu6_DoubleEG15er2p5 OR L1_Mu6_DoubleEG17er2p5 OR L1_DoubleMu5_SQ_EG9er2p5 OR L1_DoubleMu3_OS_DoubleEG7p5Upsilon
+OR L1_DoubleMu5Upsilon_OS_DoubleEG3 OR L1_Mu3er1p5_Jet100er2p5_ETMHF40 OR L1_Mu3er1p5_Jet100er2p5_ETMHF50 OR L1_Mu6_HTT240er 
+OR L1_Mu6_HTT250er OR L1_Mu12er2p3_Jet40er2p3_dR_Max0p4_DoubleJet40er2p3_dEta_Max1p6 
+OR L1_Mu12er2p3_Jet40er2p1_dR_Max0p4_DoubleJet40er2p1_dEta_Max1p6 OR L1_DoubleMu0_dR_Max1p6_Jet90er2p5_dR_Max0p8 
+OR L1_DoubleMu3_dR_Max1p6_Jet90er2p5_dR_Max0p8 OR L1_DoubleMu3_SQ_ETMHF50_Jet60er2p5_OR_DoubleJet40er2p5 
+OR L1_DoubleMu3_SQ_ETMHF50_Jet60er2p5 OR L1_DoubleMu3_SQ_ETMHF60_Jet60er2p5 OR L1_DoubleMu3_SQ_HTT220er OR L1_DoubleMu3_SQ_HTT240er 
+OR L1_DoubleMu3_SQ_HTT260er OR L1_SingleEG36er2p5 OR L1_SingleEG38er2p5 OR L1_SingleEG40er2p5 OR L1_SingleEG42er2p5 
+OR L1_SingleEG45er2p5 OR L1_SingleEG60 OR L1_SingleLooseIsoEG28er2p5 OR L1_SingleLooseIsoEG28er2p1 OR L1_SingleLooseIsoEG30er2p5 
+OR L1_SingleIsoEG28er2p5 OR L1_SingleIsoEG28er2p1 OR L1_SingleIsoEG28er1p5 OR L1_SingleIsoEG30er2p5 OR L1_SingleIsoEG30er2p1 
+OR L1_SingleIsoEG32er2p5 OR L1_SingleIsoEG32er2p1 OR L1_SingleIsoEG34er2p5 OR L1_IsoEG32er2p5_Mt40 OR L1_IsoEG32er2p5_Mt44 
+OR L1_IsoEG32er2p5_Mt48 OR L1_DoubleEG_25_12_er2p5 OR L1_DoubleEG_25_14_er2p5 OR L1_DoubleEG_27_14_er2p5 OR L1_DoubleEG_LooseIso22_12_er2p5 
+OR L1_DoubleEG_LooseIso25_12_er2p5 OR L1_DoubleLooseIsoEG22er2p1 OR L1_DoubleLooseIsoEG24er2p1 OR L1_TripleEG_18_17_8_er2p5 
+OR L1_TripleEG_18_18_12_er2p5 OR L1_TripleEG16er2p5 OR L1_LooseIsoEG28er2p1_Jet34er2p5_dR_Min0p3 
+OR L1_LooseIsoEG30er2p1_Jet34er2p5_dR_Min0p3 OR L1_LooseIsoEG26er2p1_HTT100er OR L1_LooseIsoEG28er2p1_HTT100er 
+OR L1_LooseIsoEG30er2p1_HTT100er OR L1_DoubleEG8er2p5_HTT300er OR L1_DoubleEG8er2p5_HTT320er OR L1_DoubleEG8er2p5_HTT340er 
+OR L1_LooseIsoEG22er2p1_IsoTau26er2p1_dR_Min0p3 OR L1_LooseIsoEG24er2p1_IsoTau27er2p1_dR_Min0p3 OR L1_LooseIsoEG22er2p1_Tau70er2p1_dR_Min0p3 
+OR L1_SingleTau120er2p1 OR L1_SingleTau130er2p1 OR L1_DoubleTau70er2p1 OR L1_DoubleIsoTau32er2p1 OR L1_DoubleIsoTau34er2p1 
+OR L1_DoubleIsoTau36er2p1 OR L1_Mu18er2p1_Tau24er2p1 OR L1_Mu18er2p1_Tau26er2p1 OR L1_Mu22er2p1_IsoTau32er2p1 
+OR L1_Mu22er2p1_IsoTau34er2p1 OR L1_Mu22er2p1_IsoTau36er2p1 OR L1_Mu22er2p1_IsoTau40er2p1 OR L1_Mu22er2p1_Tau70er2p1 
+OR L1_IsoTau40er2p1_ETMHF90 OR L1_IsoTau40er2p1_ETMHF100 OR L1_IsoTau40er2p1_ETMHF110 OR L1_SingleJet180 OR L1_SingleJet200 
+OR L1_SingleJet180er2p5 OR L1_DoubleJet150er2p5 OR L1_DoubleJet112er2p3_dEta_Max1p6 OR L1_DoubleJet30er2p5_Mass_Min300_dEta_Max1p5 
+OR L1_DoubleJet30er2p5_Mass_Min330_dEta_Max1p5 OR L1_DoubleJet30er2p5_Mass_Min360_dEta_Max1p5 
+OR L1_DoubleJet_110_35_DoubleJet35_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620 
+OR L1_DoubleJet_120_45_DoubleJet45_Mass_Min620 OR L1_DoubleJet_115_40_DoubleJet40_Mass_Min620_Jet60TT28 
+OR L1_DoubleJet_120_45_DoubleJet45_Mass_Min620_Jet60TT28 OR L1_TripleJet_95_75_65_DoubleJet_75_65_er2p5 
+OR L1_TripleJet_100_80_70_DoubleJet_80_70_er2p5 OR L1_TripleJet_105_85_75_DoubleJet_85_75_er2p5 
+OR L1_QuadJet_95_75_65_20_DoubleJet_75_65_er2p5_Jet20_FWD3p0 OR L1_HTT320er_QuadJet_70_55_40_40_er2p4 
+OR L1_HTT320er_QuadJet_80_60_er2p1_45_40_er2p3 OR L1_HTT320er_QuadJet_80_60_er2p1_50_45_er2p3 OR L1_HTT360er OR L1_HTT400er 
+OR L1_HTT450er OR L1_ETT2000 OR L1_ETM150 OR L1_ETMHF100 OR L1_ETMHF110 OR L1_ETMHF120 OR L1_ETMHF130 OR L1_ETMHF140 OR L1_ETMHF150 
+OR L1_ETMHF100_HTT60er OR L1_ETMHF110_HTT60er OR L1_ETMHF120_HTT60er OR L1_ETMHF130_HTT60er
+OR L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp OR L1_DoubleIsoTau26er2p1_Jet55_RmOvlp""" ),
     L1ObjectMapInputTag = cms.InputTag( "hltGtStage2ObjectMap" ),
     L1GlobalInputTag = cms.InputTag( "hltGtStage2Digis" ),
     L1MuonInputTag = cms.InputTag( 'hltGtStage2Digis','Muon' ),
@@ -7317,17 +7354,17 @@ process.HLT_Dummy_v1 = cms.Path( process.HLTBeginSequence + process.hltL1Skim + 
 
 process.schedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLTriggerFinalPath, process.HLTAnalyzerEndpath, process.HLT_Dummy_v1, ))
 
-
 process.out = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring('drop *',
          'keep FEDRawDataCollection_rawDataCollector_*_MYHLT',
                                           ),
     SelectEvents = cms.untracked.PSet(  SelectEvents = cms.vstring( 'HLT_Dummy_v1' ) ),
-    fileName = cms.untracked.string("output_dummy.root")
+    fileName = cms.untracked.string("output_allUpsL1s.root")
 )
 process.o = cms.EndPath( process.out )
 
 process.schedule_().append(process.o)
+
 
 # source module (EDM inputs)
 process.source = cms.Source( "PoolSource",
@@ -7341,6 +7378,7 @@ process.source = cms.Source( "PoolSource",
 
 # override the GlobalTag's L1T menu from an Xml file
 from HLTrigger.Configuration.CustomConfigs import L1XML
+#process = L1XML(process,"/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml")
 process = L1XML(process,"L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml")
 
 # run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT

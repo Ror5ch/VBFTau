@@ -26,6 +26,22 @@ hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Tr
 --offline \
 --max-events 100 \
 --l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
---input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/fullEZB1L1Repack_20211205.root' \
+--input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/unprescaledL1sRun323755EZB1.root' \
 --timing \
-> hltfullEZB1EDMCopy.py
+> hltUpsL1sRun323755EZB1.py
+
+hltGetConfiguration /users/knam/test/CMSSW_12_2_0_pre2/V7 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process VBFT \
+--full \
+--offline \
+--max-events 100 \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/unprescaledL1sRun323755EZB1.root' \
+--timing \
+> hltDeepTauTimingUpsL1sRun323755EZB1.py

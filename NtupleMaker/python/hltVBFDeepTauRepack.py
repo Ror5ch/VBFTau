@@ -19758,11 +19758,11 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 # enable TrigReport, TimeReport and MultiThreading
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool( True ),
-    numberOfThreads = cms.untracked.uint32( 4 ),
-    numberOfStreams = cms.untracked.uint32( 0 ),
-)
+#process.options = cms.untracked.PSet(
+#    wantSummary = cms.untracked.bool( True ),
+#    numberOfThreads = cms.untracked.uint32( 4 ),
+#    numberOfStreams = cms.untracked.uint32( 0 ),
+#)
 
 # override the GlobalTag, connection string and pfnPrefix
 if 'GlobalTag' in process.__dict__:
@@ -19779,13 +19779,13 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.ThroughputService = cms.untracked.PSet()
 
 # load the DQMStore and DQMRootOutputModule
-process.load( "DQMServices.Core.DQMStore_cfi" )
+#process.load( "DQMServices.Core.DQMStore_cfi" )
 
-process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
-    fileName = cms.untracked.string("DQMIO.root")
-)
+#process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
+#    fileName = cms.untracked.string("DQMIO.root")
+#)
 
-process.DQMOutput = cms.EndPath( process.dqmOutput )
+#process.DQMOutput = cms.EndPath( process.dqmOutput )
 
 # add specific customizations
 _customInfo = {}

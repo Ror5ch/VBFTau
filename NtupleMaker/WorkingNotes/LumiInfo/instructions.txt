@@ -14,3 +14,5 @@ basically, between the input of run_lumi and output_compare_lumis, you can find 
 and then scale them from there
 
 Open question: how can I submit a crab job to only get the good lumis in the first place?
+
+user crab report -d /dir/to/finished/crab/job to generate lumi logs

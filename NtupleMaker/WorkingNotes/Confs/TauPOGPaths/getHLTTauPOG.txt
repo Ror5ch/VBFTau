@@ -1,0 +1,61 @@
+referencing these slides: 
+TSG: https://indico.cern.ch/event/1099590/contributions/4626737/attachments/2358562/4025564/HLT_Review.pdf
+TauPOG days after TSG: https://indico.cern.ch/event/1100484/contributions/4629728/attachments/2359613/4027586/HLT%40RUN3.pdf
+
+Their menu is based on CMSSW_12_2_0 GRun v6
+latest menu located here /users/kandroso/Run3TauFull/V20
+
+these customisations need to be added to the hlt menu
+from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
+process = customizeHLTforPatatrackTriplets(process)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTDoLocalPixelTask)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTRecoPixelTracksTask)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTRecopixelvertexingTask)
+
+the path we'd like to test/compare to are
+HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1
+HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v*
+
+maybe add these lines later?
+--l1-emulator uGT \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+
+hltGetConfiguration /users/kandroso/Run3TauFull/V20 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 100 \
+--input 'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/097/00000/011708A4-611E-A943-A3AC-AAC465AF89D6.root' \
+> hltTestTauPathData.py
+
+hltGetConfiguration /users/kandroso/Run3TauFull/V20 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 100 \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltTestTauPathMC.py
+
+hltGetConfiguration /users/ballmond/12_2_0_pre2_integratingTauPOGpaths/V2 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v*,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 100 \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltTausNewMenuMC.py

@@ -1,3 +1,6 @@
+# doesn't work when testing on lxplus
+# instructions from this twiki at the bottom
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3FAQ#Doing_lumi_mask_arithmetics
 from WMCore.DataStructs.LumiList import LumiList
 
 originalLumiList1 = LumiList(filename='normtag_PHYSICS.json')

@@ -25,10 +25,11 @@ config.JobType.inputFiles = ['L1Menu_Collisions2022_v0_1_1_modified_updated_Nov3
 config.Site.storageSite = 'T3_US_FNALLPC'
 
 #for i in range(1,9): 
-config.General.requestName = 'EZB1_HLToutput_UnprescaledL1Repack_AllRuns_retry4'
+config.General.requestName = 'EZB7_HLToutput_UnprescaledL1Repack_AllRuns'
 #config.Data.inputDataset = '/EphemeralZeroBias7/Run2018D-v1/RAW'
-config.Data.userInputFiles = ['/store/user/ballmond/repackedL1EZB/fullEZB1L1Repack.root']
-config.Data.outputPrimaryDataset = 'EZB1_HLToutput_UnprescaledL1Repack_AllRuns'
+#config.Data.userInputFiles = ['/store/user/ballmond/repackedL1EZB/fullEZB1L1Repack.root']
+config.Data.userInputFiles = ['/store/user/ballmond/EZBUpsL1sAllRunsMerged/EZB7UpsL1sAllRuns.root']
+config.Data.outputPrimaryDataset = 'EZB7_HLToutput_UnprescaledL1Repack_AllRuns'
     
     # newest ggH
 #config.Data.inputDataset = '/GluGluHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'

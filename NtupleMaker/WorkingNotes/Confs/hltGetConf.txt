@@ -72,20 +72,6 @@
 # "\" is a line continuation character and just makes this easier to read. If you run this command 
 # and then arrow up to it in terminal, all the options will be mushed together but it'll still run
 
-hltGetConfiguration /users/ballmond/Copy_CMSSW_11_3_GRun_wNewVBF/V1 \
---globaltag auto:phase1_2021_realistic \
---path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS50_PFTauHPS20_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
---mc \
---unprescale \
---output none \
---process MYHLT \
---full \
---offline \
---max-events 5000 \
---l1-emulator uGT \
---l1Xml L1Menu_Collisions2020_v0_1_8_fixed.xml \
---input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
-> hlt_NewVBF.py
 
 # input for data needs to be a good run number. You can find the run number in the output of an interactive cmsRun, and then
 # search that job number in OMS like this (https://cmsoms.cern.ch/cms/runs/report?cms_run=324097&cms_run_sequence=GLOBAL-RUN)
@@ -125,5 +111,4 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/Knam_copy/V3 \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
 > hltVBFDeepTauEff.py
-
 

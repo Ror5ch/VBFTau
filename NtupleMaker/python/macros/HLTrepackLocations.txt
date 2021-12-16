@@ -10,4 +10,4 @@ root://cmseos.fnal.gov//store/user/ballmond/EZB5_HLToutput_UnprescaledL1Repack_A
 
 root://cmseos.fnal.gov//store/user/ballmond/EZB6_HLToutput_UnprescaledL1Repack_AllRuns/crab_EZB6_HLToutput_UnprescaledL1Repack_AllRuns/211215_203619/0000/histoAOD_1.root
 
-
+root://cmseos.fnal.gov//store/user/ballmond/EZB7_HLToutput_UnprescaledL1Repack_AllRuns/crab_EZB7_HLToutput_UnprescaledL1Repack_AllRuns/211216_010813/0000/histoAOD_1.root

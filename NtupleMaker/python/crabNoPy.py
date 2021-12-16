@@ -6,7 +6,7 @@ config = config()
 config.General.workArea = 'test'
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'hltVBFDeepTauRepack.py'
+config.JobType.psetName = 'hltVBFDeepTauEff.py'
 
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
@@ -14,7 +14,7 @@ config.Data.unitsPerJob = 1
 config.Data.outLFNDirBase = '/store/user/ballmond'
 
 config.Data.ignoreLocality = True
-config.Site.whitelist = ['T1_US_FNAL', 'T3_US_FNALLPC']#'T2_FR_GRIF_LLR', 'T2_HU_Budapest', 'T3_US_FNALLPC']
+config.Site.whitelist = ['T1_US_FNAL', 'T2_FR_GRIF_LLR', 'T2_HU_Budapest', 'T3_US_FNALLPC'] #if submit user-data, exclude HU and GRIF
 config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
 config.JobType.inputFiles = ['L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml']
@@ -24,16 +24,15 @@ config.JobType.inputFiles = ['L1Menu_Collisions2022_v0_1_1_modified_updated_Nov3
 
 config.Site.storageSite = 'T3_US_FNALLPC'
 
-#for i in range(1,9): 
-config.General.requestName = 'EZB7_HLToutput_UnprescaledL1Repack_AllRuns'
+config.General.requestName = 'VBFPlusTwoDeepTauHLT_VBFM125SignalSample'
+
 #config.Data.inputDataset = '/EphemeralZeroBias7/Run2018D-v1/RAW'
-#config.Data.userInputFiles = ['/store/user/ballmond/repackedL1EZB/fullEZB1L1Repack.root']
-config.Data.userInputFiles = ['/store/user/ballmond/EZBUpsL1sAllRunsMerged/EZB7UpsL1sAllRuns.root']
-config.Data.outputPrimaryDataset = 'EZB7_HLToutput_UnprescaledL1Repack_AllRuns'
+#config.Data.userInputFiles = ['/store/user/ballmond/EZBUpsL1sAllRunsMerged/EZB7UpsL1sAllRuns.root']
+#config.Data.outputPrimaryDataset = 'EZB7_HLToutput_UnprescaledL1Repack_AllRuns'
     
     # newest ggH
 #config.Data.inputDataset = '/GluGluHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
 #config.Data.secondaryInputDataset = '/GluGluHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'
     # newest VBF
-#config.Data.inputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
-#config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'
+config.Data.inputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/MINIAODSIM'
+config.Data.secondaryInputDataset = '/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/GEN-SIM-DIGI-RAW'

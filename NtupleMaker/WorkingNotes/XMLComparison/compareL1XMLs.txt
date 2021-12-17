@@ -1,0 +1,121 @@
+// XML expression that I added TAU-ETA to by hand (also changed ORMDR from 0p2 to 0p5)
+  <algorithm>
+    <name>L1_DoubleJet35_Mass_Min450_IsoTau45_RmOvlp</name>
+    <expression>mass_inv_orm{JET35,JET35,TAU45[TAU-ETA_2p13,TAU-ISO_0xE]}[MASS_MIN_450,ORMDR_0p5]</expression>
+    <index>363</index>
+    <module_id>0</module_id>
+    <module_index>363</module_index>
+    <comment>L1 Menu (2018 v1): Seeds for Higgs PAG
+https://its.cern.ch/jira/browse/CMSLITDPG-521
+https://its.cern.ch/jira/browse/CMSLITDPG-499
+
+https://its.cern.ch/jira/browse/CMSLITDPG-121</comment>
+    <cut>
+      <name>TAU-ISO_0xE</name>
+      <object>TAU</object>
+      <type>ISO</type>
+      <minimum>+0.0000000000000000E+00</minimum>
+      <maximum>+0.0000000000000000E+00</maximum>
+      <data>1,2,3</data>
+    </cut>
+    <cut>
+      <name>TAU-ETA_2p13</name>
+      <object>TAU</object>
+      <type>ETA</type>
+      <minimum>-2.1315000000000000E+00</minimum>
+      <maximum>+2.1315000000000000E+00</maximum>
+      <data/>
+    </cut>
+    <cut>
+      <name>MASS_MIN_450</name>
+      <object/>
+      <type>MASS</type>
+      <minimum>+4.5000000000000000E+02</minimum>
+      <maximum>+1.5198200000000000E+05</maximum>
+      <data/>
+    </cut>
+    <cut>
+      <name>ORMDR_0p5</name>
+      <object/>
+      <type>ORMDR</type>
+      <minimum>+0.0000000000000000E+00</minimum>
+      <maximum>+5.0000000000000001E-01</maximum>
+      <data/>
+    </cut>
+    <object_requirement>
+      <name>TAU45</name>
+      <type>TAU</type>
+      <comparison_operator>.ge.</comparison_operator>
+      <threshold>+4.5000000000000000E+01</threshold>
+      <bx_offset>0</bx_offset>
+    </object_requirement>
+    <object_requirement>
+      <name>JET35</name>
+      <type>JET</type>
+      <comparison_operator>.ge.</comparison_operator>
+      <threshold>+3.5000000000000000E+01</threshold>
+      <bx_offset>0</bx_offset>
+    </object_requirement>
+  </algorithm>
+
+//L1 XML made with TME of the same seed with TAU-ETA cut and ORMDR change (i.e. not done by hand but using the TME)
+  <algorithm>
+    <name>L1_DoubleJet35_Mass_Min450_IsoTau45er2p1_RmOvlp</name>
+    <expression>mass_inv_orm{JET35,JET35,TAU45[TAU-ETA_2p13,TAU-ISO_0xE]}[MASS_MIN_450,ORMDR_0p5]</expression>
+    <index>24</index>
+    <module_id>0</module_id>
+    <module_index>24</module_index>
+    <comment>L1 Menu (2018 v1): Seeds for Higgs PAG
+https://its.cern.ch/jira/browse/CMSLITDPG-521
+https://its.cern.ch/jira/browse/CMSLITDPG-499
+
+https://its.cern.ch/jira/browse/CMSLITDPG-121</comment>
+    <cut>
+      <name>ORMDR_0p5</name>
+      <object/>
+      <type>ORMDR</type>
+      <minimum>+0.0000000000000000E+00</minimum>
+      <maximum>+5.0000000000000000E-01</maximum>
+      <data/>
+      <comment>Overlap removal of 0.5 or altered 2Jet + 1Tau L1</comment>
+    </cut>
+    <cut>
+      <name>TAU-ISO_0xE</name>
+      <object>TAU</object>
+      <type>ISO</type>
+      <minimum>+0.0000000000000000E+00</minimum>
+      <maximum>+0.0000000000000000E+00</maximum>
+      <data>1,2,3</data>
+    </cut>
+    <cut>
+      <name>TAU-ETA_2p13</name>
+      <object>TAU</object>
+      <type>ETA</type>
+      <minimum>-2.1315000000000000E+00</minimum>
+      <maximum>+2.1315000000000000E+00</maximum>
+      <data/>
+    </cut>
+    <cut>
+      <name>MASS_MIN_450</name>
+      <object/>
+      <type>MASS</type>
+      <minimum>+4.5000000000000000E+02</minimum>
+      <maximum>+1.5198200000000000E+05</maximum>
+      <data/>
+    </cut>
+    <object_requirement>
+      <name>TAU45</name>
+      <type>TAU</type>
+      <comparison_operator>.ge.</comparison_operator>
+      <threshold>+4.5000000000000000E+01</threshold>
+      <bx_offset>0</bx_offset>
+    </object_requirement>
+    <object_requirement>
+      <name>JET35</name>
+      <type>JET</type>
+      <comparison_operator>.ge.</comparison_operator>
+      <threshold>+3.5000000000000000E+01</threshold>
+      <bx_offset>0</bx_offset>
+    </object_requirement>
+  </algorithm>
+

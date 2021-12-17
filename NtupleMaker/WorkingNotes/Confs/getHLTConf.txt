@@ -77,8 +77,11 @@
 --input 'file:/data/user/ballmond/EZB1UpsL1RepackAllRuns.root' \
 # for timing, when you're ready to run your conf on vocms006, this is the command you'll use
 python3 run_benchmark.py --config hltTimingConf.py --data None --jobs 2 --threads 32
+# for testing timing, it's okay to use these locations instead
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/eos/user/b/ballmond/repackData/EZB1UpsL1RepackAllRuns.root' \
 
-hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV22_copy/V1 \
+hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --globaltag auto:run3_hlt \
 --data \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
@@ -93,9 +96,14 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV22_copy/V1 \
 --input 'file:/data/user/ballmond/EZB1UpsL1RepackAllRuns.root' \
 > hltFullMenuTimingDeepTau.py
 
-hltGetConfiguration /users/ballmond/VBFDeepTau/Knam_copy/V3 \
+# when testing HLT on MC, it's necessary to check our conf on GEN-SIM-DIGI-RAW and AOD files
+#GEN-SIM-DIGI-RAW test file
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+--input root://cms-xrd-global.cern.ch//store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/MINIAODSIM/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/27bd7637-5f76-4051-a38a-a5a0bfdf51b2.root \
+
+hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --globaltag auto:phase1_2021_realistic \
---path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --mc \
 --unprescale \
 --output none \

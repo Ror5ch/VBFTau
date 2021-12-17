@@ -564,7 +564,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     // saving trigger results to respective branches
     // DiTau35 HLT
-    std::string pathNameDiTauTrig = "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1";
+    std::string pathNameDiTauTrig = "HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1";
     passDiTau35HLT = triggerResults->accept(triggerNames_.triggerIndex(pathNameDiTauTrig));
 
     // DeepDiTau35 HLT

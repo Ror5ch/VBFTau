@@ -1,0 +1,53 @@
+# for timing, use these locations for xml and input dataset to avoid network effects in the measurement
+/data/user/ballmond/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml
+file:/data/user/ballmond/EZB1UpsL1RepackAllRuns.root
+# for timing, when you're ready to run your conf on vocms006, this is the command you'll use
+python3 run_benchmark.py --config hltTimingConf.py --data None --jobs 2 --threads 32
+
+hltGetConfiguration /users/ballmond/DummyHLT/V1 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_Dummy_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process MYHLT \
+--full \
+--offline \
+--max-events 100 \
+--l1-emulator uGT \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias1/RAW/v1/000/325/097/00000/011708A4-611E-A943-A3AC-AAC465AF89D6.root' \
+> hltDummy_AllUnprescaledL1s.py
+
+hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process VBFT \
+--full \
+--offline \
+--max-events 100 \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/unprescaledL1sRun323755EZB1.root' \
+--timing \
+> hltUpsL1sRun323755EZB1.py
+
+hltGetConfiguration /users/knam/test/CMSSW_12_2_0_pre2/V7 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process VBFT \
+--full \
+--offline \
+--max-events 100 \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/eos/user/b/ballmond/repackData/EZB1UpsL1RepackAllRuns.root' \
+--timing \
+> hltDeepTauTimingUpsL1sAllRunsEZB1.py

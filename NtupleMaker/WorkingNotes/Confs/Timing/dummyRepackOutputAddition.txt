@@ -1,0 +1,10 @@
+process.out = cms.OutputModule("PoolOutputModule",
+    outputCommands = cms.untracked.vstring('drop *',
+         'keep FEDRawDataCollection_rawDataCollector_*_MYHLT',
+                                          ),
+    SelectEvents = cms.untracked.PSet(  SelectEvents = cms.vstring( 'HLT_Dummy_v1' ) ),
+    fileName = cms.untracked.string("output_dummy.root")
+)
+process.o = cms.EndPath( process.out )
+
+process.schedule_().append(process.o)

@@ -1,0 +1,132 @@
+# Braden Allmond notes on making an hlt menu using hltGetConfiguration
+# hltGetConfiguration command at the bottom for mc of recent VBF sample
+
+####### this step isn't necessary but it's the repo you'd need for more advanced testing
+# add package with
+# git cms-addpkg HLTrigger/Configuration
+
+# Dependencies and Compilation
+# git cms-checkdeps -A -a
+# scram b -j 6
+# rehash
+#######
+
+# edmDumpEventContent test.root will show you every EDM format products and their classes inside test.root
+
+# hltGetConfiguration notes
+# first argument is the path in ConfDB that we'd like to make our config file from
+
+# --globaltag auto:phase1_2021_realistic \ finds a globaltag that works with our CMSSW release automatically for MC
+# for data you'd use --globaltag auto:run3_hlt \ instead
+
+# --path argument reruns only the lines we care about, so you can use it to run just ditau, old vbf, and new vbf paths of HLT
+# this is very necesary because HLT is heavy, so we should only rerun the parts we need
+# if --path isn't specified, the whole menu is downloaded to the config (useful for pure timing measurement)
+
+# --mc or --data tells hltGetConfiguration if the input you provide is mc or data 
+
+# --unprescale should unprescale your L1s (i've not verified this, but it's used in all the twikis i've seen)
+
+# --output none \ should reduce output to terminal (another option is "minimal" but i don't see a difference between the two...)
+
+# --process MYHLT \ any process you run/rerun gets this string attached to the end (so, anything in --path)
+
+# --full \ ?
+
+# --offline this is used as opposed to --online, which configures HLT differently for the different environment
+
+# --max-events 100 this lets you limit (or not limit) the number of events you use from a file when testing
+
+# we have to re-emulate L1 for our seed so we use --l1-emulator uGT \ and a custom l1XML file that we direct hltGetConfiguration to
+# with --l1Xml and the name of our modified file
+
+# --l1 and --l1Xml are different options. --l1 points to files hltGetConfiguration should already know exist, 
+# --l1Xml are typically user files
+
+# --input [file] specifies the input file to use in the config (this is the file that's accessed when you test your configuration
+# interactively with cmsRun hltConfig.py)
+
+# > hltConfig.py \ the last line of the command directs the config to a file that we'll then use cmsRun on 
+
+# additional notes for running on data
+
+# timing studies run on DATA so we use --data \ and --timing \ when making a conf for a timing study
+
+# an additional customisation is necessary for all Run3 data testing, which is anything >= CMSSW_11_3
+# so if you use --data in your command, add this --customise argument
+# --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+# updates something about pixel tracking changing btwn runs 2 and 3
+
+# "\" is a line continuation character and just makes this easier to read. If you run this command 
+# and then arrow up to it in terminal, all the options will be mushed together but it'll still run
+
+
+# input for data needs to be a good run number. You can find the run number in the output of an interactive cmsRun, and then
+# search that job number in OMS like this (https://cmsoms.cern.ch/cms/runs/report?cms_run=324097&cms_run_sequence=GLOBAL-RUN)
+# there's no data for the run shown (324097), which means it's a bad run. Instead, try https://cmsoms.cern.ch/cms/runs/report?cms_run=325098&cms_run_sequence=GLOBAL-RUN
+# There's clearly data here, and when you do an interactive cmsRun the output looks more normal (multiple L1s fired)
+# You can find input files corresponding to that run number using CMS DAS like this
+# file dataset=/EphemeralZeroBias1/Run2018D-v1/RAW run=325098
+# link to file: https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod%2Fglobal&input=file+dataset%3D%2FEphemeralZeroBias1%2FRun2018D-v1%2FRAW+run%3D325098
+# Thanks Kyungwook for showing me how!
+
+# area for updating/making new confs
+
+# for timing, use these locations for xml and input dataset to avoid network effects in the measurement
+--l1Xml /data/user/ballmond/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/data/user/ballmond/EZB1UpsL1RepackAllRuns.root' \
+# for timing, when you're ready to run your conf on vocms006, this is the command you'll use
+python3 run_benchmark.py --config hltTimingConf.py --data None --jobs 2 --threads 32
+
+hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV22_copy/V1 \
+--globaltag auto:run3_hlt \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process MYOTHERHLT \
+--full \
+--offline \
+--max-events 100 \
+--timing \
+--l1Xml /data/user/ballmond/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/data/user/ballmond/EZB1UpsL1RepackAllRuns.root' \
+> hltFullMenuTimingDeepTau.py
+
+hltGetConfiguration /users/ballmond/VBFDeepTau/Knam_copy/V3 \
+--globaltag auto:phase1_2021_realistic \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYOTHERHLT \
+--full \
+--offline \
+--max-events 100 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltVBFDeepTauEff.py
+
+# notes for DeepTau integration, referencing these slides
+TSG: https://indico.cern.ch/event/1099590/contributions/4626737/attachments/2358562/4025564/HLT_Review.pdf
+TauPOG days after TSG: https://indico.cern.ch/event/1100484/contributions/4629728/attachments/2359613/4027586/HLT%40RUN3.pdf
+
+Their menu is based on CMSSW_12_2_0 GRun v6
+latest menu located here /users/kandroso/Run3TauFull/V20
+
+# how to setup from scratch, including directories for DeepTau and L2NN to work
+cmsrel CMSSW_12_2_0_pre2
+cd CMSSW_12_2_0_pre2/src
+cmsenv
+git cms-addpkg HLTrigger/Configuration
+git cms-addpkg RecoTauTag/HLTProducers
+git cherry-pick 61a8f90
+scram b -j 8
+
+# if you have deep tau modules/L2NN modules, these customisations need to be added to the hlt menu
+from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
+process = customizeHLTforPatatrackTriplets(process)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTDoLocalPixelTask)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTRecoPixelTracksTask)
+process.HLTL2TauTagNNSequence._tasks.add(process.HLTRecopixelvertexingTask)

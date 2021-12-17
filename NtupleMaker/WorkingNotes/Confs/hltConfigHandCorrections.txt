@@ -20,22 +20,3 @@ process.hltL1VBFDiJetOR = cms.EDFilter( "HLTL1TSeed",
     L1MuonInputTag = cms.InputTag( 'hltGtStage2Digis','Muon' ),
     L1GlobalInputTag = cms.InputTag( "hltGtStage2Digis" )
 )
-
-# Second, change the pt cut off for leading taus in the HLT of the New VBF from 50 to 45
-# search for "hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched"
-# find the line that says "MinPt = cms.double(50.0)" and
-# change it from 50.0 to 45.0
-# what it should look like at the end is copied and pasted below
-
-process.hltHpsPFTau50TrackPt1TightChargedIsolationL1HLTMatched = cms.EDFilter( "HLT1PFTau",
-    saveTags = cms.bool( True ),
-    MaxMass = cms.double( -1.0 ),
-    MinN = cms.int32( 1 ),
-    MaxEta = cms.double( 2.1 ),
-    MinEta = cms.double( -1.0 ),
-    MinMass = cms.double( -1.0 ),
-    inputTag = cms.InputTag( "hltVBFIsoTauL1THpsPFTauTrackTightChargedIsoAgainstMuonMatching" ),
-    MinE = cms.double( -1.0 ),
-    triggerType = cms.int32( 84 ),
-    MinPt = cms.double( 45.0 )
-)

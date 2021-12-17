@@ -54,7 +54,7 @@ int main() {
   string line;
   string word;
   vector<float> row;
-  ifstream myfile ("test_lumi.csv");
+  ifstream myfile ("run_lumi.csv");
   int lineCount = 0;
   if (myfile.is_open()) {
     while ( getline (myfile, line) && lineCount < 10) {

@@ -1,0 +1,29 @@
+follow this twiki to setup brilcalc and then run a command like this to find out which LS are good for physics
+https://twiki.cern.ch/twiki/bin/view/CMS/BrilcalcQuickStart
+
+brilcalc lumi --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_PHYSICS.json -u /fb -i dummyAllLumi.json
+
+already stored the output of this command in output_compare_lumis.txt
+
+this twiki shows you how to get a csv of all LS, run numbers, and fills, using L1MenuTools (section 4.3.2)
+https://twiki.cern.ch/twiki/bin/view/CMS/HowToL1TriggerMenu
+related is this github
+https://github.com/cms-l1-dpg/L1MenuTools/tree/master/rate-estimation#lumi-section-information-table
+
+basically, between the input of run_lumi and output_compare_lumis, you can find the good LS and their lumi
+and then scale them from there
+
+user crab report -d /dir/to/finished/crab/job to generate lumi logs
+
+Open question: how can I submit a crab job to only get the good lumis in the first place?
+
+# some python code that I should make work some time, related to the open question above
+# doesn't work when testing on lxplus
+# instructions from this twiki at the bottom
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3FAQ#Doing_lumi_mask_arithmetics
+from WMCore.DataStructs.LumiList import LumiList
+
+originalLumiList1 = LumiList(filename='normtag_PHYSICS.json')
+originalLumiList2 = LumiList(filename='dummyAllLumi.json')
+newLumiList = originalLumiList1 & originalLumiList2
+newLumiList.writeJSON('my_new_lumi_mask.json')

@@ -24,7 +24,7 @@ config.JobType.inputFiles = ['L1Menu_Collisions2022_v0_1_1_modified_updated_Nov3
 
 config.Site.storageSite = 'T3_US_FNALLPC'
 
-config.General.requestName = 'VBFPlusTwoDeepTauHLT_VBFM125SignalSample'
+config.General.requestName = 'VBFPlusTwoDeepTauHLT_VBFM125SignalSample_updated'
 
 #config.Data.inputDataset = '/EphemeralZeroBias7/Run2018D-v1/RAW'
 #config.Data.userInputFiles = ['/store/user/ballmond/EZBUpsL1sAllRunsMerged/EZB7UpsL1sAllRuns.root']

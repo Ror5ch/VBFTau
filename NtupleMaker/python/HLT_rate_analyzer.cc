@@ -64,36 +64,36 @@ int main(int argc, char** argv)	{
     // path for old trigger
     int passhltL1VBFDiJetOR;
     int passhltHpsDoublePFTau20Old;
-    int passhltHpsDoublePFTauTightOld;
-    int passhltHpsDoublePFTauAgainstMuonTightOld;
-    int passhltMatchedVBFTwoTight;
-    int passhltMatchedVBFOneTight;
+    int passhltHpsDoublePFTau20TrackTightChargedIsoOld;
+    int passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld;
+    int passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
+    int passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
     outTree->Branch("passhltL1VBFDiJetOR", &passhltL1VBFDiJetOR);
     outTree->Branch("passhltHpsDoublePFTau20Old", &passhltHpsDoublePFTau20Old);
-    outTree->Branch("passhltHpsDoublePFTauTightOld", &passhltHpsDoublePFTauTightOld);
-    outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightOld", &passhltHpsDoublePFTauAgainstMuonTightOld);
-    outTree->Branch("passhltMatchedVBFTwoTight", &passhltMatchedVBFTwoTight);
-    outTree->Branch("passhltMatchedVBFOneTight", &passhltMatchedVBFOneTight);
+    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoOld", &passhltHpsDoublePFTau20TrackTightChargedIsoOld);
+    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld);
+    outTree->Branch("passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
+    outTree->Branch("passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
 
     // path for new trigger
     int passhltL1VBFDiJetIsoTau;
     int passhltHpsDoublePFTau20New;
-    int passhltHpsDoublePFTauTightNew;
-    int passhltHpsDoublePFTauAgainstMuonTightNew;
-    int passhltHpsPFTau50Tight;
-    int passhltMatchedVBFIsoTauTwoTight;
+    int passhltHpsDoublePFTau20TrackTightChargedIsoNew;
+    int passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew;
+    int passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched;
+    int passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
     outTree->Branch("passhltL1VBFDiJetIsoTau", &passhltL1VBFDiJetIsoTau);
     outTree->Branch("passhltHpsDoublePFTau20New", &passhltHpsDoublePFTau20New);
-    outTree->Branch("passhltHpsDoublePFTauTightNew", &passhltHpsDoublePFTauTightNew);
-    outTree->Branch("passhltHpsDoublePFTauAgainstMuonTightNew", &passhltHpsDoublePFTauAgainstMuonTightNew);
-    outTree->Branch("passhltHpsPFTau50Tight", &passhltHpsPFTau50Tight);
-    outTree->Branch("passhltMatchedVBFIsoTauTwoTight", &passhltMatchedVBFIsoTauTwoTight);
+    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoNew", &passhltHpsDoublePFTau20TrackTightChargedIsoNew);
+    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew);
+    outTree->Branch("passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched", &passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched);
+    outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
 
     // final HLT decisions (decision found separately in NtupleMaker than filter path above)
-    int passOldVBFHLT;
-    int passNewVBFHLT;
-    outTree->Branch("passOldVBFHLT", &passOldVBFHLT);
-    outTree->Branch("passNewVBFHLT", &passNewVBFHLT);
+    int passInclusiveVBFHLT;
+    int passVBFPlusTwoTauHLT;
+    outTree->Branch("passInclusiveVBFHLT", &passInclusiveVBFHLT);
+    outTree->Branch("passVBFPlusTwoTauHLT", &passVBFPlusTwoTauHLT);
 
 
     // variables without branches
@@ -101,10 +101,10 @@ int main(int argc, char** argv)	{
     int passDiTau32L1Count = 0;
     int passDiTau35L1 = 0;
     int passDiTau35L1Count = 0;
-    int passOldVBFL1Count = 0;
-    int passOldVBFHLTCount = 0;
-    int passNewVBFL1Count = 0;
-    int passNewVBFHLTCount = 0;
+    int passInclusiveVBFL1Count = 0;
+    int passInclusiveVBFHLTCount = 0;
+    int passVBFPlusTwoTauL1Count = 0;
+    int passVBFPlusTwoTauHLTCount = 0;
 
     int passORDiTau32InclusiveProposed = 0;
     int passORDiTau35InclusiveProposed = 0;
@@ -139,35 +139,35 @@ int main(int argc, char** argv)	{
         eventsInRun += 1;
 
         // fill Old VBF HLT filter flags after correcting NtupleMaker mistake
-        passhltL1VBFDiJetOR = passhltHpsDoublePFTau20Old = passhltHpsDoublePFTauTightOld = 0;
-        passhltHpsDoublePFTauAgainstMuonTightOld = passhltMatchedVBFTwoTight = passhltMatchedVBFOneTight = 0;
+        passhltL1VBFDiJetOR = passhltHpsDoublePFTau20Old = passhltHpsDoublePFTau20TrackTightChargedIsoOld = 0;
+        passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld = passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = 0;
 
         passhltL1VBFDiJetOR = inTree->passhltL1VBFDiJetOR;
         if (passhltL1VBFDiJetOR) passhltHpsDoublePFTau20Old = inTree->passhltHpsDoublePFTau20;
-        if (passhltHpsDoublePFTau20Old) passhltHpsDoublePFTauTightOld = inTree->passhltHpsDoublePFTauTight;
-        if (passhltHpsDoublePFTauTightOld) passhltHpsDoublePFTauAgainstMuonTightOld = inTree->passhltHpsDoublePFTauAgainstMuonTight;
-        if (passhltHpsDoublePFTauAgainstMuonTightOld) passhltMatchedVBFTwoTight = inTree->passhltMatchedVBFTwoTight;
-        if (passhltMatchedVBFTwoTight) passhltMatchedVBFOneTight = inTree->passhltMatchedVBFOneTight;
+        if (passhltHpsDoublePFTau20Old) passhltHpsDoublePFTau20TrackTightChargedIsoOld = inTree->passhltHpsDoublePFTau20TrackTightChargedIso;
+        if (passhltHpsDoublePFTau20TrackTightChargedIsoOld) passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld = inTree->passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon;
+        if (passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld) passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = inTree->passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
+        if (passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20) passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = inTree->passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
 
-        passOldVBFHLT = inTree->passOldTrigTight;
-        passOldVBFL1Count += passhltL1VBFDiJetOR;
-        passOldVBFHLTCount += passOldVBFHLT;
+        passInclusiveVBFHLT = inTree->passInclusiveVBFHLT;
+        passInclusiveVBFL1Count += passhltL1VBFDiJetOR;
+        passInclusiveVBFHLTCount += passInclusiveVBFHLT;
 
 
         // fill New VBF HLT filter flags after correcting NtupleMaker mistake
-        passhltL1VBFDiJetIsoTau = passhltHpsDoublePFTau20New = passhltHpsDoublePFTauTightNew = 0;
-        passhltHpsDoublePFTauAgainstMuonTightNew = passhltHpsPFTau50Tight = passhltMatchedVBFIsoTauTwoTight = 0;
+        passhltL1VBFDiJetIsoTau = passhltHpsDoublePFTau20New = passhltHpsDoublePFTau20TrackTightChargedIsoNew = 0;
+        passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew = passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched = passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = 0;
 
         passhltL1VBFDiJetIsoTau = inTree->passhltL1VBFDiJetIsoTau;
         if (passhltL1VBFDiJetIsoTau) passhltHpsDoublePFTau20New = inTree->passhltHpsDoublePFTau20;
-        if (passhltHpsDoublePFTau20New) passhltHpsDoublePFTauTightNew = inTree->passhltHpsDoublePFTauTight;
-        if (passhltHpsDoublePFTauTightNew) passhltHpsDoublePFTauAgainstMuonTightNew = inTree->passhltHpsDoublePFTauAgainstMuonTight;
-        if (passhltHpsDoublePFTauAgainstMuonTightNew) passhltHpsPFTau50Tight = inTree->passhltHpsPFTau50Tight;
-        if (passhltHpsPFTau50Tight) passhltMatchedVBFIsoTauTwoTight = inTree->passhltMatchedVBFIsoTauTwoTight;
+        if (passhltHpsDoublePFTau20New) passhltHpsDoublePFTau20TrackTightChargedIsoNew = inTree->passhltHpsDoublePFTau20TrackTightChargedIso;
+        if (passhltHpsDoublePFTau20TrackTightChargedIsoNew) passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew = inTree->passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon;
+        if (passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew) passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched = inTree->passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched;
+        if (passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
 
-        passNewVBFHLT = inTree->passNewTrigTight;
-        passNewVBFL1Count += passhltL1VBFDiJetIsoTau;
-        passNewVBFHLTCount += passNewVBFHLT;
+        passVBFPlusTwoTauHLT = inTree->passVBFPlusTwoTauHLT;
+        passVBFPlusTwoTauL1Count += passhltL1VBFDiJetIsoTau;
+        passVBFPlusTwoTauHLTCount += passVBFPlusTwoTauHLT;
 
         passDiTau32L1 = passDiTau35L1 = 0;
         passDiTau32L1 = inTree->passhltL1sDoubleTauBigOR;
@@ -212,8 +212,8 @@ int main(int argc, char** argv)	{
               "L1" << '\t' << "L1 Rate" << '\t' << "HLT" << '\n' << 
               passDiTau32L1Count << '\t' << passDiTau32L1Count*rateFactor << '\t' << "DiTau 32" << '\n' <<
               passDiTau35L1Count << '\t' << passDiTau35L1Count*rateFactor << '\t' << "DiTau 35" << '\n' <<
-              passOldVBFL1Count << '\t' << passOldVBFL1Count*rateFactor << '\t' << passOldVBFHLTCount << '\t' << "Old VBF" << '\n' <<
-              passNewVBFL1Count << '\t' << passNewVBFL1Count*rateFactor << '\t' << passNewVBFHLTCount << '\t' << "New VBF" << '\n' <<
+              passInclusiveVBFL1Count << '\t' << passInclusiveVBFL1Count*rateFactor << '\t' << passInclusiveVBFHLTCount << '\t' << "Old VBF" << '\n' <<
+              passVBFPlusTwoTauL1Count << '\t' << passVBFPlusTwoTauL1Count*rateFactor << '\t' << passVBFPlusTwoTauHLTCount << '\t' << "New VBF" << '\n' <<
     std::endl; 
 
     int pureProposedFromDiTau32 = passORDiTau32InclusiveProposed - passORDiTau32Inclusive;

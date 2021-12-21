@@ -1,0 +1,31 @@
+use xrdfsls and the directory of your completed files to make a txt document of their location
+
+xrdfsls /store/user/ballmond/EphemeralZeroBias5/crab_EZB5_UnprescaledL1Repack_AllRuns/211210_213025/0000 | grep '\.root' > EZB50000files.txt
+xrdfsls /store/user/ballmond/EphemeralZeroBias5/crab_EZB5_UnprescaledL1Repack_AllRuns/211210_213025/0001 | grep '\.root' > EZB50001files.txt
+
+next, split the larger text document into two smaller ones using one of these scripts
+
+. splitInputFileList.sh EZB50000files.txt > firstHalfEZB50000files.txt
+vi EZB50000files.txt
+d500d
+:wq
+mv EZB50000files.txt secondHalfEZB50000files.txt
+
+now use edmCopyPickMerge to add about 500 files together
+
+manually update the input file inside of getInputFiles.sh to the text file you're adding
+edmCopyPickMerge inputFiles=`. getInputFiles.sh` outputFile=part1EZB5.root
+
+do this two more times, and then add all 3 parts together
+
+edmCopyPickMerge inputFiles=file:part1EZB5.root,file:part2EZB5.root,file:part3EZB5.root outputFile=EZB5UpsL1sAllRuns.root
+
+save this to eos on cmslpc
+
+xrdcp ./EZB5UpsL1sAllRuns.root root://cmseos.fnal.gov//store/user/ballmond/EZBUpsL1sAllRunsMerged/
+
+now delete your files and repeat (it's necessary to delete them due to size constraints)
+
+rm *EZB5*
+
+look into increased quota or removing old files

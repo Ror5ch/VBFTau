@@ -1,0 +1,7 @@
+source /cvmfs/cms.cern.ch/cmsset_default.sh;
+source /cvmfs/cms.cern.ch/rucio/setup-py3.sh;
+voms-proxy-init -voms cms -rfc -valid 48:00;
+export RUCIO_ACCOUNT=`whoami`;
+rucio list-rules --account ballmond;
+rucio list-account-usage ballmond;
+rucio list-account-limits ballmond;

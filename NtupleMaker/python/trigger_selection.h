@@ -277,78 +277,31 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
     std::vector<float>* branchEnergy;
 
     double etaCut = 0;
-    if (filterName == "hltHpsDoublePFTauTight" || filterName == "tauL1Primitives" ||
-        filterName == "hltL1VBFDiJetIsoTau_taus" || filterName == "hltL1sDoubleTauBigOR" ||
-        filterName == "hltHpsDoublePFTauAgainstMuonTight") etaCut = 2.1;
+    if (filterName == "tauL1Primitives" ||
+        filterName == "hltL1sDoubleTauBigOR" ||
+        filterName == "hltL1VBFDiJetIsoTau_taus" ||
+        filterName == "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon" ||
+        filterName == "hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon" ||
+        filterName == "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched") {
+    etaCut = 2.1;}
 
-    if (filterName == "hltMatchedVBFTwoTight" || filterName == "hltMatchedVBFIsoTauTwoTight" ||
-        filterName == "jetL1Primitives" || filterName == "hltL1VBFDiJetIsoTau_jets" ||
-        filterName == "hltL1VBFDiJetOR") etaCut = 4.7;
+    if (filterName == "jetL1Primitives" ||
+        filterName == "hltL1VBFDiJetOR" ||
+        filterName == "hltL1VBFDiJetIsoTau_jets" ||
+        filterName == "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" || 
+        filterName == "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" || 
+        filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" ||
+        filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromSingleTightChargedIsoPFTauHPS20" ||
+        filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20") {
+    etaCut = 4.7;}
 
     bool found = false;
 
-    if (!found && filterName == "hltHpsDoublePFTauAgainstMuonTight") {
-        branchPt = inTree->hltHpsDoublePFTauAgainstMuonTight_pt;
-        branchEta = inTree->hltHpsDoublePFTauAgainstMuonTight_eta;
-        branchPhi = inTree->hltHpsDoublePFTauAgainstMuonTight_phi;
-        branchEnergy = inTree->hltHpsDoublePFTauAgainstMuonTight_energy;
-        found = true;
-    }
-
-    if (!found && filterName == "hltHpsDoublePFTauTight") {
-	branchPt = inTree->hltHpsDoublePFTauTight_pt;
-	branchEta = inTree->hltHpsDoublePFTauTight_eta;
-	branchPhi = inTree->hltHpsDoublePFTauTight_phi;
-	branchEnergy = inTree->hltHpsDoublePFTauTight_energy;
-	found = true;
-    }
-    if (!found && filterName == "hltMatchedVBFTwoTight") {
-	branchPt = inTree->hltMatchedVBFTwoTight_pt;
-	branchEta = inTree->hltMatchedVBFTwoTight_eta;
-	branchPhi = inTree->hltMatchedVBFTwoTight_phi;
-	branchEnergy = inTree->hltMatchedVBFTwoTight_energy;
-	found = true;
-    }
-    if (!found && filterName == "hltMatchedVBFIsoTauTwoTight") {
-	branchPt = inTree->hltMatchedVBFIsoTauTwoTight_pt;
-	branchEta = inTree->hltMatchedVBFIsoTauTwoTight_eta;
-	branchPhi = inTree->hltMatchedVBFIsoTauTwoTight_phi;
-	branchEnergy = inTree->hltMatchedVBFIsoTauTwoTight_energy;
-	found = true;
-    }
-    if (!found && filterName == "jetL1Primitives") {
-	branchPt = inTree->jetL1PrimitivesPt;
-	branchEta = inTree->jetL1PrimitivesEta;
-	branchPhi = inTree->jetL1PrimitivesPhi;
-	branchEnergy = inTree->jetL1PrimitivesEnergy;
-	found = true;
-    }
     if (!found && filterName == "tauL1Primitives") {
 	branchPt = inTree->tauL1PrimitivesPt;
 	branchEta = inTree->tauL1PrimitivesEta;
 	branchPhi = inTree->tauL1PrimitivesPhi;
 	branchEnergy = inTree->tauL1PrimitivesEnergy;
-	found = true;
-    }
-    if (!found && filterName == "hltL1VBFDiJetOR") {
-	branchPt = inTree->hltL1VBFDiJetOR_pt;
-	branchEta = inTree->hltL1VBFDiJetOR_eta;
-	branchPhi = inTree->hltL1VBFDiJetOR_phi;
-	branchEnergy = inTree->hltL1VBFDiJetOR_energy;
-	found = true;
-    }
-    if (!found && filterName == "hltL1VBFDiJetIsoTau_taus") {
-	branchPt = inTree->hltL1VBFDiJetIsoTau_tauPt;
-	branchEta = inTree->hltL1VBFDiJetIsoTau_tauEta;
-	branchPhi = inTree->hltL1VBFDiJetIsoTau_tauPhi;
-	branchEnergy = inTree->hltL1VBFDiJetIsoTau_tauEnergy;
-	found = true;
-    }
-    if (!found && filterName == "hltL1VBFDiJetIsoTau_jets") {
-	branchPt = inTree->hltL1VBFDiJetIsoTau_jetPt;
-	branchEta = inTree->hltL1VBFDiJetIsoTau_jetEta;
-	branchPhi = inTree->hltL1VBFDiJetIsoTau_jetPhi;
-	branchEnergy = inTree->hltL1VBFDiJetIsoTau_jetEnergy;
 	found = true;
     }
     if (!found && filterName == "hltL1sDoubleTauBigOR") {
@@ -358,6 +311,94 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 	branchEnergy = inTree->hltL1sDoubleTauBigOR_energy;
 	found = true;
     }
+    if (!found && filterName == "hltL1VBFDiJetIsoTau_taus") {
+	branchPt = inTree->hltL1VBFDiJetIsoTau_tauPt;
+	branchEta = inTree->hltL1VBFDiJetIsoTau_tauEta;
+	branchPhi = inTree->hltL1VBFDiJetIsoTau_tauPhi;
+	branchEnergy = inTree->hltL1VBFDiJetIsoTau_tauEnergy;
+	found = true;
+    }
+    if (!found && filterName == "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon") {
+        branchPt = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_pt;
+        branchEta = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_eta;
+        branchPhi = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_phi;
+        branchEnergy = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_energy;
+        found = true;
+    }
+    if (!found && filterName == "hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon") {
+        branchPt = inTree->hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon_pt;
+        branchEta = inTree->hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon_eta;
+        branchPhi = inTree->hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon_phi;
+        branchEnergy = inTree->hltHpsSinglePFTau20TrackTightChargedIsoAgainstMuon_energy;
+        found = true;
+    }
+    if (!found && filterName == "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched") {
+        branchPt = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_pt;
+        branchEta = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta;
+        branchPhi = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi;
+        branchEnergy = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy;
+        found = true;
+    }
+
+    // jets
+    if (!found && filterName == "jetL1Primitives") {
+	branchPt = inTree->jetL1PrimitivesPt;
+	branchEta = inTree->jetL1PrimitivesEta;
+	branchPhi = inTree->jetL1PrimitivesPhi;
+	branchEnergy = inTree->jetL1PrimitivesEnergy;
+	found = true;
+    }
+    if (!found && filterName == "hltL1VBFDiJetOR") {
+	branchPt = inTree->hltL1VBFDiJetOR_pt;
+	branchEta = inTree->hltL1VBFDiJetOR_eta;
+	branchPhi = inTree->hltL1VBFDiJetOR_phi;
+	branchEnergy = inTree->hltL1VBFDiJetOR_energy;
+	found = true;
+    }
+    if (!found && filterName == "hltL1VBFDiJetIsoTau_jets") {
+	branchPt = inTree->hltL1VBFDiJetIsoTau_jetPt;
+	branchEta = inTree->hltL1VBFDiJetIsoTau_jetEta;
+	branchPhi = inTree->hltL1VBFDiJetIsoTau_jetPhi;
+	branchEnergy = inTree->hltL1VBFDiJetIsoTau_jetEnergy;
+	found = true;
+    }
+
+    if (!found && filterName == "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20") {
+	branchPt = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt;
+	branchEta = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_eta;
+	branchPhi = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_phi;
+	branchEnergy = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_energy;
+	found = true;
+    }
+    if (!found && filterName == "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20") {
+        branchPt = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt;
+        branchEta = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_eta;
+        branchPhi = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_phi;
+        branchEnergy = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_energy;
+        found = true;
+    }
+    if (!found && filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20") {
+	branchPt = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt;
+	branchEta = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_eta;
+	branchPhi = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_phi;
+	branchEnergy = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_energy;
+	found = true;
+    }
+    if (!found && filterName == "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched") {
+        branchPt = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_pt;
+        branchEta = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta;
+        branchPhi = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi;
+        branchEnergy = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy;
+        found = true;
+    }
+    if (!found && filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20") {
+        branchPt = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt;
+        branchEta = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_eta;
+        branchPhi = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_phi;
+        branchEnergy = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_energy;
+        found = true;
+    }
+
 
     std::vector<TLorentzVector> objContainer;
     TLorentzVector tempObj;

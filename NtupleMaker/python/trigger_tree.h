@@ -19,6 +19,7 @@ public :
     int nEvents;
 
     int passDiTau35HLT;
+    int passDeepDiTau35HLT;
     int passInclusiveVBFHLT;
     int passVBFPlusTwoTauHLT;
     int passVBFPlusTwoDeepTauHLT;
@@ -230,6 +231,7 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("nEvents", &nEvents);
 
     fChain->SetBranchAddress("passDiTau35HLT", &passDiTau35HLT);
+    fChain->SetBranchAddress("passDeepDiTau35HLT", &passDeepDiTau35HLT);
     fChain->SetBranchAddress("passInclusiveVBFHLT", &passInclusiveVBFHLT);
     fChain->SetBranchAddress("passVBFPlusTwoTauHLT", &passVBFPlusTwoTauHLT);
     fChain->SetBranchAddress("passVBFPlusTwoDeepTauHLT", &passVBFPlusTwoDeepTauHLT);

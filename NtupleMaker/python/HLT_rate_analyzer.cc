@@ -15,7 +15,7 @@
 #include "TLorentzVector.h"
 
 #include "trigger_tree.h"
-#include "trigger_selection.h"
+#include "trigger_functions.h"
 
 // example running on wisc server: ./trigger_selection.exe /hdfs/store/user/ballmond/merged_trigger_05092020/merged.root ./output.root new
 // temporary file location for rate studies

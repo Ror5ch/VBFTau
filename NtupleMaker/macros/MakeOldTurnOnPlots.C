@@ -10,7 +10,7 @@
 // .x MakeCutflowFromOuttree("filename.root")
 //
 
-void MakeTurnOnPlots(char* filename, int key) {
+void MakeOldTurnOnPlots(char* filename, int key) {
 
     TFile *_file0 = TFile::Open(filename);
 

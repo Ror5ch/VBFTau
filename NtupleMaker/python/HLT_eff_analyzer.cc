@@ -163,8 +163,10 @@ int main(int argc, char** argv)	{
     int viableTaus, viableJets;
     outTree->Branch("viableTaus", &viableTaus);
     outTree->Branch("viableJets", &viableJets); 
-    int viableTwofer;
-    outTree->Branch("viableTwofer", &viableTwofer);
+    int matchedL1Jets;
+    int matchedL1Tau;
+    outTree->Branch("matchedL1Jets", &matchedL1Jets);
+    outTree->Branch("matchedL1Tau", &matchedL1Tau);
 
     // variables without branches
     int passInclusiveVBFL1Count = 0;
@@ -279,6 +281,8 @@ int main(int argc, char** argv)	{
 
         viableTaus = 1;
         viableJets = 1;
+        matchedL1Jets = 1;
+        matchedL1Tau = 1;
 
 	int sizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int sizeAODJet = inTree->jetPt->size(); // number of jets in event
@@ -308,6 +312,7 @@ int main(int argc, char** argv)	{
 	// use first two non-overlapped AOD taus
 	// isoTau25AODCands are already ordered by pT
 	TLorentzVector AODTau1, AODTau2;
+
 	if (viableTaus) {
 
 	  AODTau1.SetPtEtaPhiE(isoTauCands.at(0).Pt(), 
@@ -323,6 +328,86 @@ int main(int argc, char** argv)	{
           // I think this is unlikely but it's good to be redundant
 	  if (AODTau1.DeltaR(AODTau2) < 0.5) viableTaus = 0;
         } // end viable if statement
+
+
+        // check if it is possible to match to L1 Taus
+        std::vector<TLorentzVector> L1TauCands;
+        int L1TauCandsSize;
+        std::vector<std::pair<int,int>> matchedL1AODTaus;
+        int L1TausSize = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
+        //std::cout << "-----------------------" << std::endl;
+        if (L1TausSize >= 1 && isoTauCandsSize >= 1) {
+          L1TauCands = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau_taus", L1TausSize);
+          L1TauCandsSize = L1TauCands.size();
+          //std::cout << "sizes: " << isoTauCandsSize << '\t' << L1TausSize << '\t' << L1TauCandsSize << std::endl;
+          if (L1TauCandsSize >= 1) {
+            for (int iL1Tau = 0; iL1Tau < L1TauCandsSize; ++iL1Tau) {
+              for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
+                float dRtaus_ = isoTauCands.at(iAODTau).DeltaR(L1TauCands.at(iL1Tau));
+                //std::cout << iL1Tau << '\t' << iAODTau << '\t' << dRtaus_ << std::endl;
+                if (dRtaus_ <= 0.5) {
+                  matchedL1AODTaus.push_back(std::make_pair(iL1Tau, iAODTau));
+                }
+              }
+            }
+          }
+        }
+        //std::cout << matchedL1AODTaus.size() << std::endl;
+
+        int matchedL1AODTausSize = matchedL1AODTaus.size();
+        if (matchedL1AODTausSize < 1) matchedL1Tau = 0;
+
+        if (matchedL1AODTausSize == 1) {
+          //manually set AODTau1
+          AODTau1 = isoTauCands.at(matchedL1AODTaus.at(0).second);
+          for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
+            if (AODTau1.DeltaR(isoTauCands.at(iAODTau)) > 0.5) {
+              AODTau2 = isoTauCands.at(iAODTau);
+            }
+          }
+          // what happens to AODTau2?
+          //if (AODTau1.Pt() < AODTau2.Pt()) {
+            //std::cout << isoTauCandsSize << '\t' << L1TauCandsSize << '\t' << "viable? " << viableTaus << std::endl;
+            //std::cout << AODTau1.Pt() << '\t' << AODTau2.Pt() << std::endl;
+            //std::cout << L1TauCands.at(matchedL1AODTaus.at(0).first).Pt() << std::endl;
+          //}
+        }
+        if (matchedL1AODTausSize >= 2) {
+          // make container of all matched taus
+          std::vector<TLorentzVector> matchedAODTaus;
+          for (int iMatchedTau = 0; iMatchedTau < matchedL1AODTausSize; ++iMatchedTau) {
+            matchedAODTaus.push_back(isoTauCands.at(matchedL1AODTaus.at(iMatchedTau).second));
+          }
+          int matchedAODTausSize = matchedAODTaus.size();
+          // pick the two L1AOD matched taus with the highest sum of pt
+          int AODTau1Index = -1;
+          int AODTau2Index = -1;
+          float highestPtSum = -1;
+          float comparePtSum = -1;
+          //std::cout << "------------newround" << std::endl;
+          for (int iAODTau = 0; iAODTau < matchedAODTausSize; ++iAODTau) {
+            for (int jAODTau = iAODTau+1; jAODTau < matchedAODTausSize; ++jAODTau) {
+              if (matchedAODTaus.at(iAODTau).DeltaR(matchedAODTaus.at(jAODTau)) > 0.5) {
+                comparePtSum = (matchedAODTaus.at(iAODTau).Pt() + matchedAODTaus.at(jAODTau).Pt());
+                //std::cout << comparePtSum << std::endl;
+                if (comparePtSum > highestPtSum) { highestPtSum = comparePtSum; AODTau1Index = iAODTau; AODTau2Index = jAODTau;}
+              }  
+            }
+          }
+          if (AODTau1Index != -1 && AODTau2Index != -1) {
+            if (matchedAODTaus.at(AODTau1Index).Pt() > matchedAODTaus.at(AODTau2Index).Pt()) {
+              AODTau1 = matchedAODTaus.at(AODTau1Index);
+              AODTau2 = matchedAODTaus.at(AODTau2Index);
+            }
+            if (matchedAODTaus.at(AODTau1Index).Pt() < matchedAODTaus.at(AODTau2Index).Pt()) {
+              AODTau1 = matchedAODTaus.at(AODTau2Index);
+              AODTau2 = matchedAODTaus.at(AODTau1Index);
+            }
+          }
+          //std::cout << highestPtSum << '\t' << AODTau1Index << '\t' << AODTau2Index << std::endl;
+          //std::cout << AODTau1.Pt() << '\t' << AODTau2.Pt() << std::endl;
+        }
+        if (AODTau1.DeltaR(AODTau2) < 0.5) viableTaus = 0;
 
 
 	// check kinematics and ID of jet objects, store jets w pt>=30 and eta<=4.7
@@ -348,6 +433,8 @@ int main(int argc, char** argv)	{
 	// check that we have at least two good jets
 	int jetCandsSize = jetCands.size(); 
         if (jetCandsSize < 2) viableJets = 0;
+	TLorentzVector AODJet1, AODJet2;
+        if (viableJets) std::tie(AODJet1, AODJet2) = highestMassPair(jetCands);
 
         // revisit for matching...about25% of all events have multiple possible jet pairs
         // and about 20% of those actually have more than one pair passing mjj
@@ -375,8 +462,6 @@ int main(int argc, char** argv)	{
           //  std::cout << "twofer!" << std::endl;
           //}
         }
-        viableTwofer = 0;
-        if (viableJets && tempCounter>=2 && viableTaus) viableTwofer = 1;
         */
 
         // match AOD jets to L1 then select them
@@ -387,15 +472,11 @@ int main(int argc, char** argv)	{
         if (L1JetsSize >= 2 && jetCandsSize >= 2) {
           L1JetCands = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau_jets", L1JetsSize);
           int L1JetCandsSize = L1JetCands.size();
-          //std::cout << L1JetCandsSize << std::endl;
           if (L1JetCandsSize >= 2) {
-            //match AODs...
-            std::cout << "---------------------------" << std::endl;
             for (int iL1Jet = 0; iL1Jet < L1JetCandsSize; ++iL1Jet) {
               for (int iAODJet = 0; iAODJet < jetCandsSize; ++iAODJet) {
-                float tempDR = jetCands.at(iAODJet).DeltaR(L1JetCands.at(iL1Jet));
-                if (tempDR <= 0.5) {
-                  std::cout << iL1Jet << '\t' << iAODJet << '\t' << tempDR << std::endl;
+                float dRjets_ = jetCands.at(iAODJet).DeltaR(L1JetCands.at(iL1Jet));
+                if (dRjets_ <= 0.5) {
                   matchedL1AODJets.push_back(std::make_pair(iL1Jet, iAODJet));
                 }
               }
@@ -403,13 +484,7 @@ int main(int argc, char** argv)	{
           }
         }
         int matchedL1AODJetsSize = matchedL1AODJets.size();
-        if (matchedL1AODJetsSize < 2 ) viableJets = 0;
-
-
-	// fill AOD jets with pair of jets that produced the largest mjj value
-	// from cout statements, AODJet1 was verified to be leading jet
-	TLorentzVector AODJet1, AODJet2;
-        //if (viableJets) std::tie(AODJet1, AODJet2) = highestMassPair(jetCands);
+        if (matchedL1AODJetsSize < 2 ) matchedL1Jets = 0;
 
         // if there's only 2 jets to match, manually set the correct jets to AODJet1 and AODJet2
         if (matchedL1AODJetsSize == 2) {
@@ -421,13 +496,31 @@ int main(int argc, char** argv)	{
             AODJet1 = jetCands.at(matchedL1AODJets.at(1).second);
             AODJet2 = jetCands.at(matchedL1AODJets.at(0).second);
           }
-          //std::cout << AODJet1.Pt() << '\t' << AODJet2.Pt() << std::endl;
         }
 
         if (matchedL1AODJetsSize >= 3) {
           //find highest mjj pair
+          //make list of AOD jets matched to L1 jets
+          std::vector<TLorentzVector> matchedAODJets;
+          for (int iMatchedJet = 0; iMatchedJet < matchedL1AODJetsSize; ++iMatchedJet) {
+            matchedAODJets.push_back(jetCands.at(matchedL1AODJets.at(iMatchedJet).second));
+          }
+          std::tie(AODJet1, AODJet2) = highestMassPair(matchedAODJets);
+          int AODJet1Index = -1;
+          int AODJet2Index = -1;
+          std::tie(AODJet1Index, AODJet2Index) = highestMassPairNew(matchedAODJets);
+          if (AODJet1Index != -1 and AODJet2Index != -1) {
+            if (matchedAODJets.at(AODJet1Index).Pt() > matchedAODJets.at(AODJet2Index).Pt()) {
+              AODJet1 = matchedAODJets.at(AODJet1Index);
+              AODJet2 = matchedAODJets.at(AODJet2Index);
+            }
+            if (matchedAODJets.at(AODJet1Index).Pt() < matchedAODJets.at(AODJet2Index).Pt()) {
+              AODJet1 = matchedAODJets.at(AODJet2Index);
+              AODJet2 = matchedAODJets.at(AODJet1Index);
+            }
+          }
         }
-        //std::cout << "-============================" << std::endl;
+        if (AODJet1.DeltaR(AODJet2) < 0.5) viableJets = 0;
 
         // is it possible to instead have no turn on selections made here and make them in our plotting macro instead?
  

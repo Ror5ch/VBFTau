@@ -60,7 +60,7 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 	    if (jJet >= iJet) continue;
 	    // if TLorentz objects aren't overlapped, store their positions as a pair
 	    if (jetContainer.at(iJet).DeltaR(jetContainer.at(jJet)) > 0.5) {
-		jetPairs.push_back(std::make_pair(jJet, iJet));
+		jetPairs.push_back(std::make_pair(std::min(iJet, jJet), std::max(iJet, jJet)));
 		tempMjj = (jetContainer.at(iJet) + jetContainer.at(jJet)).M();
 		mjjCandCounter += 1;
 		if (tempMjj_ < tempMjj) { tempMjj_ = tempMjj;	highestMjjCandIndex = mjjCandCounter;}
@@ -79,6 +79,33 @@ std::tuple<TLorentzVector, TLorentzVector> highestMassPair(std::vector<TLorentzV
 	outJetTwo = jetContainer.at(jetPairs.at(highestMjjCandIndex).second);
     }
     return std::make_tuple(outJetOne, outJetTwo);
+}
+
+std::tuple<int, int> highestMassPairNew(std::vector<TLorentzVector> jetContainer) {
+  int highestMjjPairIndex = -1;
+  int mjjCandCounter = -1;
+  float compareMjj = -1;
+  float highestMjj = -1;
+  std::vector<std::pair<int,int>> jetPairs;
+  int jetContainerSize = jetContainer.size();
+  //std::cout << "start debug---------------------" << std::endl;
+  //std::cout << jetContainerSize << std::endl;
+  for (int iJet = 0; iJet < jetContainerSize; ++iJet) {
+    for (int jJet = iJet + 1; jJet < jetContainerSize; ++jJet) {
+      //std::cout << iJet << '\t' << jJet << std::endl;
+      //std::cout << jetContainer.at(iJet).DeltaR(jetContainer.at(jJet)) << std::endl;
+      if (jetContainer.at(iJet).DeltaR(jetContainer.at(jJet)) > 0.5) {
+        jetPairs.push_back(std::make_pair(std::min(iJet,jJet),std::max(iJet,jJet)));
+        compareMjj = (jetContainer.at(iJet) + jetContainer.at(jJet)).M();
+        //std::cout << compareMjj << std::endl;
+        mjjCandCounter += 1;
+        if (compareMjj > highestMjj) { highestMjj = compareMjj; highestMjjPairIndex = mjjCandCounter; }
+      }
+    }
+  }
+  //std::cout << highestMjjPairIndex << std::endl;
+  if (highestMjjPairIndex != -1)  return std::make_tuple(jetPairs.at(highestMjjPairIndex).first, jetPairs.at(highestMjjPairIndex).second);
+  else { return std::make_tuple(-1, -1); }
 }
 
 float highestMassOfPair(std::vector<TLorentzVector> jetsRmvOlTaus, std::vector<TLorentzVector> taus) {

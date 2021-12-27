@@ -1,0 +1,65 @@
+Timing must be done on the vocms006 machine. Start by doing
+
+cmsrel CMSSW_12_2_0_pre2
+cd src
+cmsenv
+
+then download the timing repo
+git clone ssh://git@gitlab.cern.ch:7999/cms-tsg/steam/timing.git --recursive
+
+cd into timing and on line 433 of run_benchmark.py,
+add an option for data=="None" like so
+
+if old_options.data == "None":
+    nlumis = 4315
+
+I counted 4315 lumisections used in our samples with the tool edmLumisInFile.py
+(twiki:
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookEdmUtilities#edm_LumisInFiles_py)
+
+Next, make an hlt config using a command similar to this one
+(I think you only need to change the "path" line and the first line, the location of the confDB menu
+used)
+hltGetConfiguration /users/ballmond/CMSSW_12_2_0_pre2_GRun_VBF2Tau_and_1Tau_45Triggers/V1 \
+--globaltag auto:run3_hlt \
+--path HLTriggerFirstPath,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--data \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--unprescale \
+--output none \
+--process VBFT \
+--full \
+--offline \
+--max-events 100 \
+--l1Xml /afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/timing/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/afs/cern.ch/user/b/ballmond/public/CMSSW_12_2_0_pre2/src/TimingEZBSample/fullEZB1L1Repack_20211205.root' \
+--timing \
+> hltfullEZB1EDMCopy.py
+
+The L1 and input data are in a public directory, 
+so you shouldn't need to change those lines.
+
+test the config interactively to check for any errors,
+also look and see if any events pass your modules/filters.
+
+Once everything is good to go, do
+ssh vocms006
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+voms-proxy-init -voms cms -rfc -valid 48:00
+cd public/CMSSW_12_2_0_pre2/src/timing
+cmsenv
+
+before running the timing measurement, use the top command
+to make sure no one else is using vocms006 to run a measurement already.
+
+Copy your hlt config to the timing directory and run the measurement with this command
+python3 run_benchmark.py --config hltConfig.py --data None --jobs 2 --threads
+32
+
+An output directory will be automatically generated. Reference this twiki 
+for more info about timing/how to interpret the output:
+https://twiki.cern.ch/twiki/bin/view/CMS/TriggerStudiesTiming
+
+Also this twiki is helpful for previous general results:
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/HLTCpuTimingReports2021
+

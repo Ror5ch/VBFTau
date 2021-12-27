@@ -9,4 +9,4 @@ while read line
     else
       echo -n ",$line"
     fi
-done < EZB1FourRunsL1UpsFiles.txt
+done < EZB3FourRunsFiles.txt

@@ -19,13 +19,14 @@ config.JobType.maxJobRuntimeMin = 2000
 config.JobType.maxMemoryMB = 4000
 config.JobType.inputFiles = ['L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml']
 
-config.Data.runRange = '324237,324970,324980,325022'
+config.Data.runRange = '325022'
+#config.Data.runRange = '324237,324970,324980,325022'
 #config.Data.runRange = '321755,323725,323755,323790,323841,323940,323976,323978,324021,324077,324201,324237,324245,324293,324315,324420,324747,324785,324835,324897,324970,324980,324997,325022,325057,325097-325099'
 #config.Data.runRange = '323755'
 
 config.Site.storageSite = 'T3_US_FNALLPC'
 
-config.General.requestName = 'EZB8_FourRuns_dummyHLT'
+config.General.requestName = 'EZB8_Run325022_dummyHLT'
 
 config.Data.inputDataset = '/EphemeralZeroBias8/Run2018D-v1/RAW'
 #config.Data.userInputFiles = ['/store/user/ballmond/EZBUpsL1sAllRunsMerged/EZB7UpsL1sAllRuns.root']

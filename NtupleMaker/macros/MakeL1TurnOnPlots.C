@@ -122,9 +122,9 @@ void MakeL1TurnOnPlots(char* filename, int key) {
     }
 
     if (key == 4) {
-      TH1F* h_mjjTOnum = new TH1F("h_mjjTOnum", "", 20, 0, 4000); // mjjTOnum is mjj_pt Turn-On Numerator
-      TH1F* h_mjjTOdem = new TH1F("h_mjjTOdem", "", 20, 0, 4000);
-      TH1F* h_mjjTOratio = new TH1F("h_mjjTOratio", "", 20, 0, 4000);
+      TH1F* h_mjjTOnum = new TH1F("h_mjjTOnum", "", 30, 0, 3000); // mjjTOnum is mjj_pt Turn-On Numerator
+      TH1F* h_mjjTOdem = new TH1F("h_mjjTOdem", "", 30, 0, 3000);
+      TH1F* h_mjjTOratio = new TH1F("h_mjjTOratio", "", 30, 0, 3000);
 
       tree->Draw("mjjAOD >> h_mjjTOnum", viable && missMjj && matchL1, "goff");
       tree->Draw("mjjAOD >> h_mjjTOdem", viable && missMjj, "goff");

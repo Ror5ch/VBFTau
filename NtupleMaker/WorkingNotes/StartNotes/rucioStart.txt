@@ -1,0 +1,11 @@
+echo "note rucio is to be used on cmslpc";
+source /cvmfs/cms.cern.ch/cmsset_default.sh;
+source /cvmfs/cms.cern.ch/rucio/setup-py3.sh;
+voms-proxy-init -voms cms -rfc -valid 48:00;
+export RUCIO_ACCOUNT=`whoami`;
+rucio list-rules --account ballmond;
+rucio list-account-usage ballmond;
+rucio list-account-limits ballmond;
+echo "more rucio stuff";
+echo "rucio rule-info 823ca9f16d9144a59230dec2dedf7aab";
+echo "rucio list-rules user.crab_tape_recall:/TapeRecall/210419_181255.knam_crab_VBFHToTauTau_MINIAODSIM/USER";

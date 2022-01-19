@@ -1,8 +1,0 @@
-check cmssw releases available for your $SCRAM_ARCH
-scram list
-check all available cmssw releases (more useful version of above command)
-scram list -a
-change SCRAM_ARCH with
-export SCRAM_ARCH=<new_arch>
-set up the cmssw release
-cmsrel <release_name>

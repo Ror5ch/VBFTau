@@ -1,0 +1,26 @@
+vnc to confDB must be done from lxplus
+
+vncserver -localhost -nolisten tcp -geometry 1880x970 :2
+
+2 is usually good, but sometimes you'll need to use 3 or 4 if 2 is taken.
+
+Now open a new terminal from your laptop/desktop (i.e. not on lxplus) and do
+
+ssh -fN -Y -L 5902:localhost:5902 ${USER}@lxplus${lxplusServerNumber}.cern.ch;
+
+The "2" in 5902 is meant to match the number of the previous command (2 in this example).
+You must include the lxplus server number you're ssh'ing to (it's in the handle of your lxplus session).
+From local, do the following. Password for vnc was setup in a previous step from instructions online.
+
+xvnc4viewer localhost:2
+
+A screen should open. On that screen, open a terminal and
+if it's your first time, you need to clone the repo, otherwise just cd and clean/start the GUI.
+
+git clone git@github.com:cms-sw/hlt-confdb.git;
+cd hlt-confdb;
+ant clean && ./start;
+
+kill the server on lxplus when you're finished with it
+
+vncserver -kill :2;

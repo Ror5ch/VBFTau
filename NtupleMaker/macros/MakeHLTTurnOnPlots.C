@@ -10,7 +10,7 @@
 // .x MakeCutflowFromOuttree("filename.root")
 //
 
-void MakeL1TurnOnPlots(char* filename, int key) {
+void MakeHLTTurnOnPlots(char* filename, int key) {
 
     TFile *_file0 = TFile::Open(filename);
 
@@ -36,8 +36,8 @@ void MakeL1TurnOnPlots(char* filename, int key) {
     // 50, 25, --, --, 600 // key = 5
 
     TCut viable = "viableTaus>0 && viableJets>0";
-    TCut passL1 = "passhltL1VBFDiJetIsoTau>0";
-    TCut matchL1 = "passhltL1VBFDiJetIsoTau>0 && matchedL1Jets>0 && matchedL1Tau>0"; 
+    TCut passHLT = "passVBFPlusTwoDeepTauHLT>0";
+    TCut matchHLT = "passVBFPlusTwoDeepTauHLT>0 && matchedL1Jets>0 && matchedL1Tau>0"; 
     TCut fullOffline = "t1_ptAOD>=50 && t2_ptAOD>=25 && j1_ptAOD>=45 && j2_ptAOD>=45 && mjjAOD>=600";
 
     TCut misst1pt = "t1_ptAOD>= 0 && t2_ptAOD>=25 && j1_ptAOD>=45 && j2_ptAOD>=45 && mjjAOD>=600";
@@ -55,7 +55,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       TH1F* h_t1TOdem = new TH1F("h_t1TOdem", "", NBINS, edges);
       TH1F* h_t1TOratio = new TH1F("h_t1TOratio", "", NBINS, edges);
 
-      tree->Draw("t1_ptAOD >> h_t1TOnum", viable && misst1pt && matchL1, "goff");
+      tree->Draw("t1_ptAOD >> h_t1TOnum", viable && misst1pt && matchHLT, "goff");
       tree->Draw("t1_ptAOD >> h_t1TOdem", viable && misst1pt, "goff");
 
       h_t1TOratio = (TH1F*)h_t1TOnum->Clone();
@@ -65,17 +65,17 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_t1TOratio->Draw("E");
       h_t1TOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("t1_pt_L1_turnon.png", "png");
+      c1->Print("t1_pt_HLT_turnon.png", "png");
     }
    
     if (key == 1) {
       const Int_t NBINS = 8;
-      Double_t edges[NBINS + 1] = {0.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 100.0, 200.0};
+      Double_t edges[NBINS + 1] = {0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 150.0};
       TH1F* h_t2TOnum = new TH1F("h_t2TOnum", "", NBINS, edges); // t2TOnum is t2_pt Turn-On Numerator
       TH1F* h_t2TOdem = new TH1F("h_t2TOdem", "", NBINS, edges);
       TH1F* h_t2TOratio = new TH1F("h_t2TOratio", "", NBINS, edges);
 
-      tree->Draw("t2_ptAOD >> h_t2TOnum", viable && misst2pt && matchL1, "goff");
+      tree->Draw("t2_ptAOD >> h_t2TOnum", viable && misst2pt && matchHLT, "goff");
       tree->Draw("t2_ptAOD >> h_t2TOdem", viable && misst2pt, "goff");
 
       h_t2TOratio = (TH1F*)h_t2TOnum->Clone();
@@ -85,7 +85,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_t2TOratio->Draw("E");
       h_t2TOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("t2_pt_L1_turnon.png", "png");
+      c1->Print("t2_pt_HLT_turnon.png", "png");
     }
 
     if (key == 2) {
@@ -95,7 +95,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       TH1F* h_j1TOdem = new TH1F("h_j1TOdem", "", NBINS, edges);
       TH1F* h_j1TOratio = new TH1F("h_j1TOratio", "", NBINS, edges);
 
-      tree->Draw("j1_ptAOD >> h_j1TOnum", viable && missj1pt && matchL1, "goff");
+      tree->Draw("j1_ptAOD >> h_j1TOnum", viable && missj1pt && matchHLT, "goff");
       tree->Draw("j1_ptAOD >> h_j1TOdem", viable && missj1pt, "goff");
 
       h_j1TOratio = (TH1F*)h_j1TOnum->Clone();
@@ -105,7 +105,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_j1TOratio->Draw("E");
       h_j1TOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("j1_pt_L1_turnon.png", "png");
+      c1->Print("j1_pt_HLT_turnon.png", "png");
     }
 
     if (key == 3) {
@@ -115,7 +115,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       TH1F* h_j2TOdem = new TH1F("h_j2TOdem", "", NBINS, edges);
       TH1F* h_j2TOratio = new TH1F("h_j2TOratio", "", NBINS, edges);
 
-      tree->Draw("j2_ptAOD >> h_j2TOnum", viable && missj2pt && matchL1, "goff");
+      tree->Draw("j2_ptAOD >> h_j2TOnum", viable && missj2pt && matchHLT, "goff");
       tree->Draw("j2_ptAOD >> h_j2TOdem", viable && missj2pt, "goff");
 
       h_j2TOratio = (TH1F*)h_j2TOnum->Clone();
@@ -125,7 +125,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_j2TOratio->Draw("E");
       h_j2TOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("j2_pt_L1_turnon.png", "png");
+      c1->Print("j2_pt_HLT_turnon.png", "png");
     }
 
     if (key == 4) {
@@ -135,7 +135,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       TH1F* h_mjjTOdem = new TH1F("h_mjjTOdem", "", NBINS, edges);
       TH1F* h_mjjTOratio = new TH1F("h_mjjTOratio", "", NBINS, edges);
 
-      tree->Draw("mjjAOD >> h_mjjTOnum", viable && missMjj && matchL1, "goff");
+      tree->Draw("mjjAOD >> h_mjjTOnum", viable && missMjj && matchHLT, "goff");
       tree->Draw("mjjAOD >> h_mjjTOdem", viable && missMjj, "goff");
 
       h_mjjTOratio = (TH1F*)h_mjjTOnum->Clone();
@@ -145,7 +145,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_mjjTOratio->Draw("E");
       h_mjjTOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("mjj_L1_turnon.png", "png");
+      c1->Print("mjj_HLT_turnon.png", "png");
     }
 
     if (key == 5) {
@@ -155,7 +155,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       TH1F* h_j1TOdem = new TH1F("h_j1TOdem", "", NBINS, edges);
       TH1F* h_j1TOratio = new TH1F("h_j1TOratio", "", NBINS, edges);
 
-      tree->Draw("j1_ptAOD >> h_j1TOnum", viable && missjets && matchL1, "goff");
+      tree->Draw("j1_ptAOD >> h_j1TOnum", viable && missjets && matchHLT, "goff");
       tree->Draw("j1_ptAOD >> h_j1TOdem", viable && missjets, "goff");
 
       h_j1TOratio = (TH1F*)h_j1TOnum->Clone();
@@ -165,7 +165,7 @@ void MakeL1TurnOnPlots(char* filename, int key) {
       h_j1TOratio->Draw("E");
       h_j1TOratio->GetYaxis()->SetRangeUser(0.,1.1);
 
-      c1->Print("odd_L1_turnon.png", "png");
+      c1->Print("odd_HLT_turnon.png", "png");
     }
 
 

@@ -138,20 +138,29 @@ int main(int argc, char** argv)	{
     outTree->Branch("passVBFPlusTwoDeepTauBoth", &passVBFPlusTwoDeepTauBoth);
 
     int passDiTau32L1, passDiTau32L1DiTau35HLT, passDiTau32Off, passDiTau32Both;
+    int passDiTau34L1, passDiTau34L1DiTau35HLT, passDiTau34Off, passDiTau34Both;
     int passDiTau35L1, passDiTau35L1DiTau35HLT, passDiTau35Off, passDiTau35Both;
     outTree->Branch("passDiTau32L1DiTau35HLT", &passDiTau32L1DiTau35HLT);
     outTree->Branch("passDiTau32Off", &passDiTau32Off);
     outTree->Branch("passDiTau32Both", &passDiTau32Both);
+    outTree->Branch("passDiTau34L1DiTau35HLT", &passDiTau34L1DiTau35HLT);
+    outTree->Branch("passDiTau34Off", &passDiTau34Off);
+    outTree->Branch("passDiTau34Both", &passDiTau34Both);
     outTree->Branch("passDiTau35L1DiTau35HLT", &passDiTau35L1DiTau35HLT);
     outTree->Branch("passDiTau35Off", &passDiTau35Off);
     outTree->Branch("passDiTau35Both", &passDiTau35Both);
-    int passDiTau32L1Count = 0;
-    int passDiTau35L1Count = 0;
 
     int passDiTau32L1DeepDiTau35HLT;
+    int passDiTau34L1DeepDiTau35HLT;
     int passDiTau35L1DeepDiTau35HLT;
     outTree->Branch("passDiTau32L1DeepDiTau35HLT", &passDiTau32L1DeepDiTau35HLT);
+    outTree->Branch("passDiTau34L1DeepDiTau35HLT", &passDiTau34L1DeepDiTau35HLT);
     outTree->Branch("passDiTau35L1DeepDiTau35HLT", &passDiTau35L1DeepDiTau35HLT);
+
+    int passDeepDiTau34Both;
+    int passDeepDiTau35Both;
+    outTree->Branch("passDeepDiTau34Both", &passDeepDiTau34Both);
+    outTree->Branch("passDeepDiTau35Both", &passDeepDiTau35Both);
 
     int viableTaus, viableJets;
     outTree->Branch("viableTaus", &viableTaus);
@@ -160,13 +169,12 @@ int main(int argc, char** argv)	{
     int matchedL1Tau;
     outTree->Branch("matchedL1Jets", &matchedL1Jets);
     outTree->Branch("matchedL1Tau", &matchedL1Tau);
+    int matchedHLTJets;
+    int matchedHLTTaus;
+    outTree->Branch("matchedHLTJets", &matchedHLTJets);
+    outTree->Branch("matchedHLTTaus", &matchedHLTTaus);
 
     // variables without branches
-    int passInclusiveVBFL1Count = 0;
-    int passInclusiveVBFHLTCount = 0;
-    int passVBFPlusTwoTauL1Count = 0;
-    int passVBFPlusTwoTauHLTCount = 0;
-    int passVBFPlusTwoDeepTauHLTCount = 0;
 
     float AODJet1Pt_ = 0;
     float AODJet2Pt_ = 0;
@@ -174,9 +182,17 @@ int main(int argc, char** argv)	{
     float AODTau2Pt_ = 0;
     float mj1j2_ = 0;
 
+    int twoTausCount = 0;
+    int twoGoodTausCount = 0;
+    int twoGoodViableTausCount = 0;
+    int twoGoodViableMatchedTausCount = 0;
+
+    int noPass = 0;
+    int noPassZeroTau = 0;
+
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
-    //for (int iEntry = 0; iEntry < 10001; ++iEntry) {
+    //for (int iEntry = 0; iEntry < 100001; ++iEntry) {
     for (int iEntry = 0; iEntry < inTree->GetEntries(); ++iEntry) {
 	inTree->GetEntry(iEntry);
 	if (iEntry % 100000 == 0) std::cout << std::to_string(iEntry) << std::endl;
@@ -205,8 +221,6 @@ int main(int argc, char** argv)	{
 
         passInclusiveVBFHLT = inTree->passInclusiveVBFHLT;
 
-        passInclusiveVBFL1Count += passhltL1VBFDiJetOR;
-        passInclusiveVBFHLTCount += passInclusiveVBFHLT;
 
 
         // fill VBF Plus Two Tau HLT module flags 
@@ -226,8 +240,6 @@ int main(int argc, char** argv)	{
 
         passVBFPlusTwoTauHLT = inTree->passVBFPlusTwoTauHLT;
 
-        passVBFPlusTwoTauL1Count += passhltL1VBFDiJetIsoTau;
-        passVBFPlusTwoTauHLTCount += passVBFPlusTwoTauHLT;
 
         // fill VBF Plus Two Deep Tau HLT module flags
         passhltL2VBFIsoTauNNFilter = 0;
@@ -242,31 +254,36 @@ int main(int argc, char** argv)	{
 
         passVBFPlusTwoDeepTauHLT = inTree->passVBFPlusTwoDeepTauHLT;
 
-        passVBFPlusTwoDeepTauHLTCount += passVBFPlusTwoDeepTauHLT;
 
-        // fill DiTau decisions. 32 L1 and "simulated" 35 L1 TODO: look at 34
-
-        passDiTau32L1 = passDiTau35L1 = 0;
+        passDiTau32L1 = passDiTau34L1 = passDiTau35L1 = 0;
         passDiTau32L1 = inTree->passhltL1sDoubleTauBigOR;
         int sizeL1DiTau32 = 0;
+        int sizeL1DiTau34 = 0;
         int sizeL1DiTau35 = 0;
         if (passDiTau32L1) sizeL1DiTau32 = inTree->hltL1sDoubleTauBigOR_pt->size();
         if (sizeL1DiTau32 >= 2) {
           for (int iL1Tau = 0; iL1Tau < sizeL1DiTau32; ++iL1Tau) {
+            if (inTree->hltL1sDoubleTauBigOR_pt->at(iL1Tau) >= 34) sizeL1DiTau34 += 1;
             if (inTree->hltL1sDoubleTauBigOR_pt->at(iL1Tau) >= 35) sizeL1DiTau35 += 1;
           }
+          if (sizeL1DiTau34 >= 2) passDiTau34L1 = 1;
           if (sizeL1DiTau35 >= 2) passDiTau35L1 = 1;
         }
 
         passDiTau32L1DiTau35HLT = 0;
-        passDiTau32L1Count += passDiTau32L1;
-        passDiTau32L1DiTau35HLT = inTree->passDiTau35HLT;
+        passDiTau32L1DiTau35HLT = inTree->passDiTau35HLT; // L1 32 is lowest in the L1 Tau seeds, so if HLT is passed then 32 Tau L1 must pass too
+        passDiTau34L1DiTau35HLT = 0;
+        passDiTau34L1DiTau35HLT = (passDiTau34L1 && inTree->passDiTau35HLT);
         passDiTau35L1DiTau35HLT = 0;
-        passDiTau35L1Count += passDiTau35L1;
         passDiTau35L1DiTau35HLT = (passDiTau35L1 && inTree->passDiTau35HLT);
 
+        passDiTau32L1DeepDiTau35HLT = 0;
         passDiTau32L1DeepDiTau35HLT = inTree->passDeepDiTau35HLT;
+        passDiTau34L1DeepDiTau35HLT = 0;
+        passDiTau34L1DeepDiTau35HLT = (passDiTau34L1 && inTree->passDeepDiTau35HLT);
+        passDiTau35L1DeepDiTau35HLT = 0;
         passDiTau35L1DeepDiTau35HLT = (passDiTau35L1 && inTree->passDeepDiTau35HLT);
+
 
 
         // above is all that needs to run for rate
@@ -276,10 +293,13 @@ int main(int argc, char** argv)	{
         viableJets = 1;
         matchedL1Tau = 1;
         matchedL1Jets = 1;
+        matchedHLTTaus = 1;
+        matchedHLTJets = 1;
 
 	int sizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int sizeAODJet = inTree->jetPt->size(); // number of jets in event
 	// check kinematics and ID of tau objects, store isolated taus w pt>=25 and eta<=2.1 taus
+	if (sizeAODTau >= 2 && passVBFPlusTwoDeepTauHLT) twoTausCount += 1;
 	std::vector<TLorentzVector> isoTauCands;	
 	for (int iTau = 0; iTau < sizeAODTau; ++iTau) {
           bool passTauID = false;
@@ -300,7 +320,7 @@ int main(int argc, char** argv)	{
 	}
         int isoTauCandsSize = isoTauCands.size();
         if (isoTauCandsSize < 2) viableTaus = 0; // need two taus minimum
-
+        if (isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodTausCount += 1;
 
 	// use first two non-overlapped AOD taus
 	// isoTauAODCands are already ordered by pT
@@ -320,75 +340,101 @@ int main(int argc, char** argv)	{
           // I think this is unlikely but it's good to be redundant
 	  if (AODTau1.DeltaR(AODTau2) < 0.5) viableTaus = 0;
         } // end viable if statement
+        if (viableTaus && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableTausCount += 1;
 
 
-        // check if it is possible to match to L1 Taus
-        // save pairs or L1 and AOD Tau indices is dR <= 0.5
-        std::vector<TLorentzVector> L1TauCands;
-        int L1TauCandsSize;
-        std::vector<std::pair<int,int>> matchedL1AODTaus;
-        int L1TausSize = inTree->hltL1VBFDiJetIsoTau_tauPt->size();
-        if (L1TausSize >= 1 && isoTauCandsSize >= 1) {
-          L1TauCands = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau_taus", L1TausSize);
-          L1TauCandsSize = L1TauCands.size();
-          if (L1TauCandsSize >= 1) {
-            for (int iL1Tau = 0; iL1Tau < L1TauCandsSize; ++iL1Tau) {
+        // difference between 20 and 45 filters is 20 doesn't have L1HLT matching, 45 does
+
+        std::vector<TLorentzVector> HLTTauCandsFrom20Filter;
+        std::vector<std::pair<int,int>> matchedHLTAODTausFrom20Filter;
+        int HLTTausFrom20FilterSize = inTree->hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_pt->size();
+        if (HLTTausFrom20FilterSize >= 2 && isoTauCandsSize >= 2) {
+          HLTTauCandsFrom20Filter = hltFillWithCands(inTree, "hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch", HLTTausFrom20FilterSize);
+          int HLTTauCandsFrom20FilterSize = HLTTauCandsFrom20Filter.size();
+          if (HLTTauCandsFrom20FilterSize >= 2) {
+            for (int iHLTTauFrom20Filter = 0; iHLTTauFrom20Filter < HLTTauCandsFrom20FilterSize; ++iHLTTauFrom20Filter) {
               for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
-                float dRtaus_ = isoTauCands.at(iAODTau).DeltaR(L1TauCands.at(iL1Tau));
+                float dRtaus_ = isoTauCands.at(iAODTau).DeltaR(HLTTauCandsFrom20Filter.at(iHLTTauFrom20Filter));
                 if (dRtaus_ <= 0.5) {
-                  matchedL1AODTaus.push_back(std::make_pair(iL1Tau, iAODTau));
+                  matchedHLTAODTausFrom20Filter.push_back(std::make_pair(iHLTTauFrom20Filter, iAODTau));
                 }
               }
             }
           }
         }
+        int matchedHLTAODTausFrom20FilterSize = matchedHLTAODTausFrom20Filter.size();
+        if (matchedHLTAODTausFrom20FilterSize < 1) matchedHLTTaus = 0; 
 
-        int matchedL1AODTausSize = matchedL1AODTaus.size();
-        if (matchedL1AODTausSize < 1) matchedL1Tau = 0;
-
-        std::vector<TLorentzVector> HLTTauCands;
-        int HLTTauCandsSize;
-        std::vector<std::pair<int,int>> matchedHLTAODTaus;
-        int HLTTausSize = inTree->hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_pt->size();
-
-        //hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched
-
-        if (matchedL1AODTausSize == 1) {
-          // if only one L1AOD matched Tau, make it AODTau1 and pick first non-overlapped AODTau as AODTau2
-          AODTau1 = isoTauCands.at(matchedL1AODTaus.at(0).second);
-          for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
-            if (AODTau1.DeltaR(isoTauCands.at(iAODTau)) > 0.5) {
-              AODTau2 = isoTauCands.at(iAODTau);
+        std::vector<TLorentzVector> HLTTauCandsFrom45Filter;
+        std::vector<std::pair<int,int>> matchedHLTAODTausFrom45Filter;
+        int HLTTausFrom45FilterSize = inTree->hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_pt->size();
+        if (HLTTausFrom45FilterSize >= 1 && isoTauCandsSize >= 2) {
+          HLTTauCandsFrom45Filter = hltFillWithCands(inTree, "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched", HLTTausFrom45FilterSize);
+          int HLTTauCandsFrom45FilterSize = HLTTauCandsFrom45Filter.size();
+          if (HLTTauCandsFrom45FilterSize >= 1) {
+            for (int iHLTTauFrom45Filter = 0; iHLTTauFrom45Filter < HLTTauCandsFrom45FilterSize; ++iHLTTauFrom45Filter) {
+              for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
+                float dRtaus_ = isoTauCands.at(iAODTau).DeltaR(HLTTauCandsFrom45Filter.at(iHLTTauFrom45Filter));
+                if (dRtaus_ <= 0.5) {
+                  matchedHLTAODTausFrom45Filter.push_back(std::make_pair(iHLTTauFrom45Filter, iAODTau));
+                }
+              }
             }
           }
         }
+        int matchedHLTAODTausFrom45FilterSize = matchedHLTAODTausFrom45Filter.size();
+        if (matchedHLTAODTausFrom45FilterSize < 1) matchedHLTTaus = 0;
 
-        if (matchedL1AODTausSize >= 2) {
-          // if two or more matched Taus, make container of all matched taus
-          std::vector<TLorentzVector> matchedAODTaus;
-          for (int iMatchedTau = 0; iMatchedTau < matchedL1AODTausSize; ++iMatchedTau) {
-            matchedAODTaus.push_back(isoTauCands.at(matchedL1AODTaus.at(iMatchedTau).second));
+        // about 30 events total have 3 or 4 matched taus
+        // what's odd is there are many more 4 tau events than 3 tau events?
+
+        if (matchedHLTAODTausFrom45FilterSize == 1) {
+          AODTau1 = isoTauCands.at(matchedHLTAODTausFrom45Filter.at(0).second);
+          std::vector<TLorentzVector> matchedAODTausFrom20Filter;
+          for (int iMatchedTau = 0; iMatchedTau < matchedHLTAODTausFrom20FilterSize; ++iMatchedTau) {
+            matchedAODTausFrom20Filter.push_back(isoTauCands.at(matchedHLTAODTausFrom20Filter.at(iMatchedTau).second));
           }
-          int matchedAODTausSize = matchedAODTaus.size();
-          // pick the two L1AOD matched taus with the highest sum of pt
+          int matchedAODTausFrom20FilterSize = matchedAODTausFrom20Filter.size();
+          int AODTau2Index = -1;
+          float highestPtSum = -1;
+          float comparePtSum = -1;
+          for (int iAODTauFrom20Filter = 0; iAODTauFrom20Filter < matchedAODTausFrom20FilterSize; ++iAODTauFrom20Filter) {
+            if (AODTau1.DeltaR(matchedAODTausFrom20Filter.at(iAODTauFrom20Filter)) > 0.5) {
+              comparePtSum = (AODTau1.Pt() + matchedAODTausFrom20Filter.at(iAODTauFrom20Filter).Pt());
+              if (comparePtSum > highestPtSum) { highestPtSum = comparePtSum; AODTau2Index = iAODTauFrom20Filter;}
+            }
+          }
+          if (AODTau2Index != -1) AODTau2 = matchedAODTausFrom20Filter.at(AODTau2Index);
+          if (AODTau2Index == -1) matchedHLTTaus = 0; 
+        }
+
+        if (matchedHLTAODTausFrom45FilterSize >= 2) {
+          std::vector<TLorentzVector> matchedAODTausFrom45Filter;
+          for (int iMatchedTau = 0; iMatchedTau < matchedHLTAODTausFrom45FilterSize; ++iMatchedTau) {
+            matchedAODTausFrom45Filter.push_back(isoTauCands.at(matchedHLTAODTausFrom45Filter.at(iMatchedTau).second));
+          }
+          int matchedAODTausFrom45FilterSize = matchedAODTausFrom45Filter.size();
           int AODTau1Index = -1;
           int AODTau2Index = -1;
           float highestPtSum = -1;
           float comparePtSum = -1;
-          for (int iAODTau = 0; iAODTau < matchedAODTausSize; ++iAODTau) {
-            for (int jAODTau = iAODTau+1; jAODTau < matchedAODTausSize; ++jAODTau) {
-              if (matchedAODTaus.at(iAODTau).DeltaR(matchedAODTaus.at(jAODTau)) > 0.5) {
-                comparePtSum = (matchedAODTaus.at(iAODTau).Pt() + matchedAODTaus.at(jAODTau).Pt());
+          for (int iAODTau = 0; iAODTau < matchedAODTausFrom45FilterSize; ++iAODTau) {
+            for (int jAODTau = iAODTau+1; jAODTau < matchedAODTausFrom45FilterSize; ++jAODTau) {
+              if (matchedAODTausFrom45Filter.at(iAODTau).DeltaR(matchedAODTausFrom45Filter.at(jAODTau)) > 0.5) {
+                comparePtSum = (matchedAODTausFrom45Filter.at(iAODTau).Pt() + matchedAODTausFrom45Filter.at(jAODTau).Pt());
                 if (comparePtSum > highestPtSum) { highestPtSum = comparePtSum; AODTau1Index = iAODTau; AODTau2Index = jAODTau;}
-              }  
+              }
             }
           }
           if (AODTau1Index != -1 && AODTau2Index != -1) {
-            AODTau1 = matchedAODTaus.at(AODTau1Index); 
-            AODTau2 = matchedAODTaus.at(AODTau2Index);
+            AODTau1 = matchedAODTausFrom45Filter.at(AODTau1Index);
+            AODTau2 = matchedAODTausFrom45Filter.at(AODTau2Index);
           }
+          if (AODTau1Index == -1 || AODTau2Index == -1) matchedHLTTaus = 0;
         }
-        if (AODTau1.DeltaR(AODTau2) < 0.5) viableTaus = 0;
+
+
+        if (AODTau1.DeltaR(AODTau2) < 0.5 || AODTau1.Pt() == 0 || AODTau2.Pt() == 0) viableTaus = 0;
 
         if (viableTaus) {
           AODTau1Pt_ = AODTau1.Pt();
@@ -402,8 +448,8 @@ int main(int argc, char** argv)	{
             AODTau1Pt_ = AODTau1.Pt();
             AODTau2Pt_ = AODTau2.Pt();
           }
+          if (AODTau1Pt_ != 0 && AODTau2Pt_ != 0 && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableMatchedTausCount += 1;
         }       
-
 
 	// check kinematics and ID of jet objects, store jets w pt>=30 and eta<=4.7
 	std::vector<TLorentzVector> jetCands;
@@ -431,40 +477,35 @@ int main(int argc, char** argv)	{
 	TLorentzVector AODJet1, AODJet2;
         if (viableJets) std::tie(AODJet1, AODJet2) = highestMassPair(jetCands);
 
-        // match AOD jets to L1 then select them
-        // first fill L1 cands
-        // save L1 and AOD index pairs if dR <= 0.5
-        std::vector<TLorentzVector> L1JetCands;
-        std::vector<std::pair<int,int>> matchedL1AODJets; 
-        int L1JetsSize = inTree->hltL1VBFDiJetIsoTau_jetPt->size();
-        if (L1JetsSize >= 2 && jetCandsSize >= 2) {
-          L1JetCands = hltFillWithCands(inTree, "hltL1VBFDiJetIsoTau_jets", L1JetsSize);
-          int L1JetCandsSize = L1JetCands.size();
-          if (L1JetCandsSize >= 2) {
-            for (int iL1Jet = 0; iL1Jet < L1JetCandsSize; ++iL1Jet) {
+        std::vector<TLorentzVector> HLTJetCands;
+        std::vector<std::pair<int,int>> matchedHLTAODJets;
+        int HLTJetsSize = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt->size();
+        if (HLTJetsSize >= 2 && jetCandsSize >= 2) {
+          HLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20", HLTJetsSize);
+          int HLTJetCandsSize = HLTJetCands.size();
+          if (HLTJetCandsSize >= 2) {
+            for (int iHLTJet = 0; iHLTJet < HLTJetCandsSize; ++iHLTJet) {
               for (int iAODJet = 0; iAODJet < jetCandsSize; ++iAODJet) {
-                float dRjets_ = jetCands.at(iAODJet).DeltaR(L1JetCands.at(iL1Jet));
+                float dRjets_ = jetCands.at(iAODJet).DeltaR(HLTJetCands.at(iHLTJet));
                 if (dRjets_ <= 0.5) {
-                  matchedL1AODJets.push_back(std::make_pair(iL1Jet, iAODJet));
+                  matchedHLTAODJets.push_back(std::make_pair(iHLTJet, iAODJet));
                 }
               }
             }
           }
         }
-        int matchedL1AODJetsSize = matchedL1AODJets.size();
-        if (matchedL1AODJetsSize < 2 ) matchedL1Jets = 0;
+        int matchedHLTAODJetsSize = matchedHLTAODJets.size();
+        if (matchedHLTAODJetsSize < 2) matchedHLTJets = 0;
 
-        // if there's only 2 jets to match, just set them. They'll be ordered later
-        if (matchedL1AODJetsSize == 2) {
-          AODJet1 = jetCands.at(matchedL1AODJets.at(0).second);
-          AODJet2 = jetCands.at(matchedL1AODJets.at(1).second);
+        if (matchedHLTAODJetsSize == 2) {
+          AODJet1 = jetCands.at(matchedHLTAODJets.at(0).second);
+          AODJet2 = jetCands.at(matchedHLTAODJets.at(1).second);
         }
-
-        if (matchedL1AODJetsSize >= 3) {
-          // make list of AOD jets matched to L1 jets
-          std::vector<TLorentzVector> matchedAODJets;
-          for (int iMatchedJet = 0; iMatchedJet < matchedL1AODJetsSize; ++iMatchedJet) {
-            matchedAODJets.push_back(jetCands.at(matchedL1AODJets.at(iMatchedJet).second));
+        
+        std::vector<TLorentzVector> matchedAODJets;
+        if (matchedHLTAODJetsSize >= 3) {
+          for (int iMatchedJet = 0; iMatchedJet < matchedHLTAODJetsSize; ++iMatchedJet) {
+            matchedAODJets.push_back(jetCands.at(matchedHLTAODJets.at(iMatchedJet).second));
           }
           // find highest mjj pair
           int AODJet1Index = -1;
@@ -474,8 +515,11 @@ int main(int argc, char** argv)	{
             AODJet1 = matchedAODJets.at(AODJet1Index);
             AODJet2 = matchedAODJets.at(AODJet2Index);
           }
+          if (AODJet1Index == -1 || AODJet2Index == -1) matchedHLTJets = 0;
         }
-        if (AODJet1.DeltaR(AODJet2) < 0.5) viableJets = 0;
+
+        if (AODJet1.DeltaR(AODJet2) < 0.5 || AODJet1.Pt() == 0 || AODJet2.Pt() == 0) viableJets = 0;
+        if (AODJet1.DeltaR(AODTau1) < 0.5 || AODJet1.DeltaR(AODTau2) < 0.5 || AODJet2.DeltaR(AODTau1) < 0.5 || AODJet2.DeltaR(AODTau2) < 0.5) { viableJets = 0; viableTaus = 0;}
 
         if (viableJets) {
           AODJet1Pt_ = AODJet1.Pt();
@@ -493,12 +537,8 @@ int main(int argc, char** argv)	{
         }
 
 	// Check AOD Objects Pass Offline Selection
-        passDiTau32Off = passDiTau35Off = passInclusiveVBFOff = passVBFPlusTwoTauOff = 0;
+        passDiTau32Off = passDiTau34Off = passDiTau35Off = passInclusiveVBFOff = passVBFPlusTwoTauOff = 0;
         if (viableTaus && viableJets) {
-
-          //if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && mj1j2_ < 200) {
-          //  std::cout << mj1j2_ << '\t' << AODJet1Pt_ << '\t' << AODJet2Pt_ << '\t' << AODTau1Pt_ << '\t' << AODTau2Pt_ << std::endl;
-          //}
 
           //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
           int offJetInc = 10; // define offline as XX increase of L1 cuts
@@ -509,6 +549,7 @@ int main(int argc, char** argv)	{
 
           if (AODJet1Pt_ >= 30 && AODJet2Pt_ >= 30 && mj1j2_ >= 600) {
             if (AODTau1Pt_ >= (32+offTau1Inc) && AODTau2Pt_ >= (32+offTau2Inc) ) passDiTau32Off = 1;
+            if (AODTau1Pt_ >= (34+offTau1Inc) && AODTau2Pt_ >= (34+offTau2Inc) ) passDiTau34Off = 1;
             if (AODTau1Pt_ >= (35+offTau1Inc) && AODTau2Pt_ >= (35+offTau2Inc) ) passDiTau35Off = 1;
           }
 
@@ -519,12 +560,19 @@ int main(int argc, char** argv)	{
           // L1 DoubleJet35_Mass_Min_450_IsoTau45er2p1_RmvOl
           if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
               AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= (20+offTau2Inc) && mj1j2_ >= 600) passVBFPlusTwoTauOff = 1;
+          //if (AODJet1Pt_ >= 60 && AODJet2Pt_ >= 60 && AODTau1Pt_ >= 60 && AODTau2Pt_ >= 35 && mj1j2_ >= 700) passVBFPlusTwoTauOff = 1;    
+          //if (AODJet1Pt_ >= 100 && AODJet2Pt_ >= 100 && AODTau1Pt_ >= 60 && AODTau2Pt_ >= 35 && mj1j2_ >= 600) passVBFPlusTwoTauOff = 1;    
 
         } // end viable if statement
 
-        passDiTau32Both = passDiTau35Both = 0;
+        passDiTau32Both = passDiTau34Both = passDiTau35Both = 0;
         passDiTau32Both = (passDiTau32L1DiTau35HLT && passDiTau32Off); // this is the "normal" 35 HLT
+        passDiTau34Both = (passDiTau34L1DiTau35HLT && passDiTau34Off); // new proposal, last I heard...
         passDiTau35Both = (passDiTau35L1DiTau35HLT && passDiTau35Off); // this is essentially proposed by CIEMAT
+
+        passDeepDiTau34Both = passDeepDiTau35Both = 0;
+        passDeepDiTau34Both = (passDiTau34L1DeepDiTau35HLT && passDiTau34Off);
+        passDeepDiTau35Both = (passDiTau35L1DeepDiTau35HLT && passDiTau35Off);
 
         //---------------------------match AOD and HLT------------------------------//
         // matching for HLT objects from Inclusive VBF path
@@ -621,9 +669,22 @@ int main(int argc, char** argv)	{
         t1_ptAOD = t1_etaAOD = t1_phiAOD = -999;
         t2_ptAOD = t2_etaAOD = t2_phiAOD = -999;
 
-        passInclusiveVBFBoth = passVBFPlusTwoTauBoth = 0;
-        passInclusiveVBFBoth = (passInclusiveVBFHLT && passInclusiveVBFOff);
-        passVBFPlusTwoTauBoth = (passVBFPlusTwoTauHLT && passVBFPlusTwoTauOff);
+        passInclusiveVBFBoth = passVBFPlusTwoTauBoth = passVBFPlusTwoDeepTauBoth = 0;
+        passInclusiveVBFBoth = (matchedBothOld && passInclusiveVBFHLT && passInclusiveVBFOff);
+        passVBFPlusTwoTauBoth = (matchedBothNew && passVBFPlusTwoTauHLT && passVBFPlusTwoTauOff);
+        passVBFPlusTwoDeepTauBoth = (matchedHLTTaus && matchedHLTJets && passVBFPlusTwoDeepTauHLT && passVBFPlusTwoTauOff);
+
+        if (passVBFPlusTwoDeepTauHLT && !passVBFPlusTwoDeepTauBoth) {
+          /*std::cout << "-------------------" << std::endl;
+          std::cout << AODTau1.Pt() << '\t' << "T1 pT" << '\n'
+                    << AODTau2.Pt() << '\t' << "T2 pT" << '\n'
+                    << AODJet1.Pt() << '\t' << "J1 pT" << '\n'
+                    << AODJet2.Pt() << '\t' << "J2 pT" << '\n'
+                    << (AODJet1 + AODJet2).M() << '\t' << "mjj" << 
+                    std::endl;*/
+          noPass += 1;
+          if (AODTau1.Pt() == 0 && AODTau2.Pt() == 0) noPassZeroTau += 1;
+        }
 
         if (viableTaus && viableJets) {
           // AOD Branches
@@ -649,6 +710,12 @@ int main(int argc, char** argv)	{
 
     } // end event loop
 
+    std::cout << twoTausCount << '\t' << "two Taus" << std::endl;
+    std::cout << twoGoodTausCount << '\t' << "two Good Taus" << std::endl;
+    std::cout << twoGoodViableTausCount << '\t' << "two GoodViable Taus" << std::endl;
+    std::cout << twoGoodViableMatchedTausCount << '\t' << "two GoodViableMatched Taus" << std::endl;
+    std::cout << noPass << '\t' << "noPass" << std::endl;
+    std::cout << noPassZeroTau << '\t' << "noPassZeroTau" << std::endl;
 
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");

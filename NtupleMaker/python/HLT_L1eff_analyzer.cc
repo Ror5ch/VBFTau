@@ -346,13 +346,6 @@ int main(int argc, char** argv)	{
         int matchedL1AODTausSize = matchedL1AODTaus.size();
         if (matchedL1AODTausSize < 1) matchedL1Tau = 0;
 
-        std::vector<TLorentzVector> HLTTauCands;
-        int HLTTauCandsSize;
-        std::vector<std::pair<int,int>> matchedHLTAODTaus;
-        int HLTTausSize = inTree->hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_pt->size();
-
-        //hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched
-
         if (matchedL1AODTausSize == 1) {
           // if only one L1AOD matched Tau, make it AODTau1 and pick first non-overlapped AODTau as AODTau2
           AODTau1 = isoTauCands.at(matchedL1AODTaus.at(0).second);
@@ -496,9 +489,9 @@ int main(int argc, char** argv)	{
         passDiTau32Off = passDiTau35Off = passInclusiveVBFOff = passVBFPlusTwoTauOff = 0;
         if (viableTaus && viableJets) {
 
-          //if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && mj1j2_ < 200) {
-          //  std::cout << mj1j2_ << '\t' << AODJet1Pt_ << '\t' << AODJet2Pt_ << '\t' << AODTau1Pt_ << '\t' << AODTau2Pt_ << std::endl;
-          //}
+          if (AODTau1Pt_ >= 50 && AODTau2Pt_ >= 25 && AODJet1Pt_ >= 45 && AODJet2Pt_ >= 45 && mj1j2_ < 200) {
+            std::cout << mj1j2_ << '\t' << AODJet1Pt_ << '\t' << AODJet2Pt_ << '\t' << AODTau1Pt_ << '\t' << AODTau2Pt_ << std::endl;
+          }
 
           //int dEtajj = abs(AODJet1.Eta() - AODJet2.Eta());
           int offJetInc = 10; // define offline as XX increase of L1 cuts

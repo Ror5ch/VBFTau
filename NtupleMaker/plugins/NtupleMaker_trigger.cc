@@ -232,6 +232,18 @@ vector<float> hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPF
 vector<float> hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_phi;
 vector<float> hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_energy;
 
+// added for inefficiency study in DeepTau HLT
+int passhltRealDijetFilter;
+vector<float> hltRealDijetFilter_pt;
+vector<float> hltRealDijetFilter_eta;
+vector<float> hltRealDijetFilter_phi;
+vector<float> hltRealDijetFilter_energy;
+
+int passhltVBFLooseIDPFDummyFilter;
+vector<float> hltVBFLooseIDPFDummyFilter_pt;
+vector<float> hltVBFLooseIDPFDummyFilter_eta;
+vector<float> hltVBFLooseIDPFDummyFilter_phi;
+vector<float> hltVBFLooseIDPFDummyFilter_energy;
 
 void NtupleMaker::branchesTriggers(TTree* tree){
 
@@ -375,6 +387,18 @@ void NtupleMaker::branchesTriggers(TTree* tree){
     tree->Branch("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta);
     tree->Branch("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi);
     tree->Branch("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy);
+
+    tree->Branch("passhltRealDijetFilter", &passhltRealDijetFilter);
+    tree->Branch("hltRealDijetFilter_pt", &hltRealDijetFilter_pt);
+    tree->Branch("hltRealDijetFilter_eta", &hltRealDijetFilter_eta);
+    tree->Branch("hltRealDijetFilter_phi", &hltRealDijetFilter_phi);
+    tree->Branch("hltRealDijetFilter_energy", &hltRealDijetFilter_energy);
+
+    tree->Branch("passhltVBFLooseIDPFDummyFilter", &passhltVBFLooseIDPFDummyFilter);
+    tree->Branch("hltVBFLooseIDPFDummyFilter_pt", &hltVBFLooseIDPFDummyFilter_pt);
+    tree->Branch("hltVBFLooseIDPFDummyFilter_eta", &hltVBFLooseIDPFDummyFilter_eta);
+    tree->Branch("hltVBFLooseIDPFDummyFilter_phi", &hltVBFLooseIDPFDummyFilter_phi);
+    tree->Branch("hltVBFLooseIDPFDummyFilter_energy", &hltVBFLooseIDPFDummyFilter_energy);
 
     tree->Branch("passhltVBFIsoTauL1TLooseIDPFJetsMatching", &passhltVBFIsoTauL1TLooseIDPFJetsMatching);
     tree->Branch("hltVBFIsoTauL1TLooseIDPFJetsMatching_pt", &hltVBFIsoTauL1TLooseIDPFJetsMatching_pt);
@@ -536,6 +560,18 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi.clear();
     hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy.clear();
 
+    passhltRealDijetFilter = 0;
+    hltRealDijetFilter_pt.clear();
+    hltRealDijetFilter_eta.clear();
+    hltRealDijetFilter_phi.clear();
+    hltRealDijetFilter_energy.clear();
+
+    passhltVBFLooseIDPFDummyFilter = 0;
+    hltVBFLooseIDPFDummyFilter_pt.clear();
+    hltVBFLooseIDPFDummyFilter_eta.clear();
+    hltVBFLooseIDPFDummyFilter_phi.clear();
+    hltVBFLooseIDPFDummyFilter_energy.clear();
+
     passhltVBFIsoTauL1TLooseIDPFJetsMatching = 0;
     hltVBFIsoTauL1TLooseIDPFJetsMatching_pt.clear();
     hltVBFIsoTauL1TLooseIDPFJetsMatching_eta.clear();
@@ -650,6 +686,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
     std::string hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_Tag = "hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch::MYOTHERHLT";
     std::string hltHpsL1VBFJetsAndIsoTauHLTDoublePFTauMediumDitauWPDeepTauMatch_Tag = "hltHpsL1VBFJetsAndIsoTauHLTDoublePFTauMediumDitauWPDeepTauMatch::MYOTHERHLT";
     std::string hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_Tag = "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched::MYOTHERHLT";
+    std::string hltRealDijetFilter_Tag = "hltRealDijetFilter::MYOTHERHLT";
+    std::string hltVBFLooseIDPFDummyFilter_Tag = "hltVBFLooseIDPFDummyFilter::MYOTHERHLT";
     std::string hltVBFIsoTauL1TLooseIDPFJetsMatching_Tag = "hltVBFIsoTauL1TLooseIDPFJetsMatching::MYOTHERHLT";
     std::string hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval_Tag = "hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval::MYOTHERHLT";
     std::string hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_Tag = "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20::MYOTHERHLT";
@@ -685,6 +723,8 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
         if (filterTag == hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch = 1;
         if (filterTag == hltHpsL1VBFJetsAndIsoTauHLTDoublePFTauMediumDitauWPDeepTauMatch_Tag && nObjKeys >= 2) passhltHpsL1VBFJetsAndIsoTauHLTDoublePFTauMediumDitauWPDeepTauMatch = 1;
         if (filterTag == hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_Tag && nObjKeys >= 1) passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched = 1;
+        if (filterTag == hltRealDijetFilter_Tag && nObjKeys >= 2) passhltRealDijetFilter = 1;
+        if (filterTag == hltVBFLooseIDPFDummyFilter_Tag && nObjKeys >= 2) passhltVBFLooseIDPFDummyFilter = 1;
         if (filterTag == hltVBFIsoTauL1TLooseIDPFJetsMatching_Tag && nObjKeys >= 2) passhltVBFIsoTauL1TLooseIDPFJetsMatching = 1;
         if (filterTag == hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval = 1;
         if (filterTag == hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20 = 1;
@@ -857,6 +897,22 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
                hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta.push_back(eta_);
                hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi.push_back(phi_);
                hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy.push_back(energy_);
+            }
+        // fill hltRealDijetFilter if match
+            if (filterTag == hltRealDijetFilter_Tag
+                 && passhltRealDijetFilter && pt_>0) {
+               hltRealDijetFilter_pt.push_back(pt_);
+               hltRealDijetFilter_eta.push_back(eta_);
+               hltRealDijetFilter_phi.push_back(phi_);
+               hltRealDijetFilter_energy.push_back(energy_);
+            }
+        // fill hltVBFLooseIDPFDummyFilter if match
+            if (filterTag == hltVBFLooseIDPFDummyFilter_Tag
+                 && passhltVBFLooseIDPFDummyFilter && pt_>0) {
+               hltVBFLooseIDPFDummyFilter_pt.push_back(pt_);
+               hltVBFLooseIDPFDummyFilter_eta.push_back(eta_);
+               hltVBFLooseIDPFDummyFilter_phi.push_back(phi_);
+               hltVBFLooseIDPFDummyFilter_energy.push_back(energy_);
             }
         // fill hltVBFIsoTauL1TLooseIDPFJetsMatching if match
             if (filterTag == hltVBFIsoTauL1TLooseIDPFJetsMatching_Tag

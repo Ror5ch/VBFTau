@@ -101,7 +101,7 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
 --input root://cms-xrd-global.cern.ch//store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/MINIAODSIM/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/27bd7637-5f76-4051-a38a-a5a0bfdf51b2.root \
 
-hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
+hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy_modJetFilterV3_Unlocked/V2 \
 --globaltag auto:phase1_2021_realistic \
 --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --mc \
@@ -114,7 +114,7 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --l1-emulator uGT \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
-> hltVBFDeepTauEff_NoFileOutput.py
+> hltVBFDeepTauEff_ModJetFilter.py
 
 # notes for DeepTau integration, referencing these slides
 TSG: https://indico.cern.ch/event/1099590/contributions/4626737/attachments/2358562/4025564/HLT_Review.pdf

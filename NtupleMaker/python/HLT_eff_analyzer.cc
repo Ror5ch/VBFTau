@@ -456,7 +456,7 @@ int main(int argc, char** argv)	{
 	for (int iJet = 0; iJet < sizeAODJet; ++iJet){
 
           bool passJetID = false;
-          if (inTree->jetID->at(iJet) >= 6) passJetID = true; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
+          if (inTree->jetID->at(iJet) >= 2) passJetID = true; // jetID is 2 if it passes loose, and 6 if it passes loose and tight
 
           if (passJetID && fabs(inTree->jetEta->at(iJet) <= 4.7)) { //&& inTree->jetPt->at(iJet) >= 30 
             TLorentzVector jetCand;

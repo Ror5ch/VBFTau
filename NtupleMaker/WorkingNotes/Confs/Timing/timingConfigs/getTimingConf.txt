@@ -53,7 +53,13 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --input 'file:/data/user/ballmond/EZB1to8MergedRun325022UpsL1s.root' \
 > hltTimingDeepTau.py
 
+--l1Xml /data/user/ballmond/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/data/user/ballmond/EZB1to8MergedRun325022UpsL1s.root' \
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input 'file:/eos/user/b/ballmond/repackData/EZB1to8MergedRun325022UpsL1s.root' \
 hltGetConfiguration /users/kandroso/Run3TauFull/V23 \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V16 \
+hltGetConfiguration /dev/CMSSW_12_2_0/GRun/V6 \
 --globaltag auto:run3_hlt \
 --data \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
@@ -62,7 +68,7 @@ hltGetConfiguration /users/kandroso/Run3TauFull/V23 \
 --full \
 --offline \
 --max-events 100 \
---timing \
 --l1Xml /data/user/ballmond/L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input 'file:/data/user/ballmond/EZB1to8MergedRun325022UpsL1s.root' \
-> hltFullMenu_TauPOGV23.py
+--timing \
+> hltGRun_12_2_0_pre2_CustomL1.py

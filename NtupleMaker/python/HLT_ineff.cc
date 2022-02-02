@@ -354,11 +354,26 @@ int main(int argc, char** argv)	{
         // difference between 20 and 45 filters is 20 doesn't have L1HLT matching, 45 does
 
         std::vector<TLorentzVector> HLTTauCandsFrom20Filter;
+        int HLTTauCandsFrom20FilterSize = 0;
         std::vector<std::pair<int,int>> matchedHLTAODTausFrom20Filter;
         int HLTTausFrom20FilterSize = inTree->hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_pt->size();
         if (HLTTausFrom20FilterSize >= 2 && isoTauCandsSize >= 2) {
           HLTTauCandsFrom20Filter = hltFillWithCands(inTree, "hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch", HLTTausFrom20FilterSize);
-          int HLTTauCandsFrom20FilterSize = HLTTauCandsFrom20Filter.size();
+          HLTTauCandsFrom20FilterSize = HLTTauCandsFrom20Filter.size();
+/*
+          if (passhltVBFLooseIDPFDummyFilter) {
+            std::cout << "NEW EVENT " << iEntry << " " << eventNumberID << std::endl;
+            std::cout << "Taus " << std::endl;
+            for (int iPrintTau = 0; iPrintTau < HLTTauCandsFrom20FilterSize; ++iPrintTau) {
+              std::cout << iPrintTau << std::endl;
+              std::cout << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Pt() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Eta() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Phi() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Energy() << '\t'
+                      << std::endl;
+            }
+          }
+*/
           if (HLTTauCandsFrom20FilterSize >= 2) {
             for (int iHLTTauFrom20Filter = 0; iHLTTauFrom20Filter < HLTTauCandsFrom20FilterSize; ++iHLTTauFrom20Filter) {
               for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
@@ -379,6 +394,17 @@ int main(int argc, char** argv)	{
         if (HLTTausFrom45FilterSize >= 1 && isoTauCandsSize >= 2) {
           HLTTauCandsFrom45Filter = hltFillWithCands(inTree, "hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched", HLTTausFrom45FilterSize);
           int HLTTauCandsFrom45FilterSize = HLTTauCandsFrom45Filter.size();
+          /*
+          std::cout << "45 Taus ---------------" << std::endl;
+          for (int iPrintTau = 0; iPrintTau < HLTTauCandsFrom45FilterSize; ++iPrintTau) {
+            std::cout << iPrintTau << std::endl;
+            std::cout << std::setw(8) << HLTTauCandsFrom45Filter.at(iPrintTau).Pt() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom45Filter.at(iPrintTau).Eta() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom45Filter.at(iPrintTau).Phi() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom45Filter.at(iPrintTau).Energy() << '\t'
+                      << std::endl;
+          }
+          */
           if (HLTTauCandsFrom45FilterSize >= 1) {
             for (int iHLTTauFrom45Filter = 0; iHLTTauFrom45Filter < HLTTauCandsFrom45FilterSize; ++iHLTTauFrom45Filter) {
               for (int iAODTau = 0; iAODTau < isoTauCandsSize; ++iAODTau) {
@@ -392,6 +418,8 @@ int main(int argc, char** argv)	{
         }
         int matchedHLTAODTausFrom45FilterSize = matchedHLTAODTausFrom45Filter.size();
         if (matchedHLTAODTausFrom45FilterSize < 1) matchedHLTTaus = 0;
+
+
 
         // about 30 events total have 3 or 4 matched taus
         // what's odd is there are many more 4 tau events than 3 tau events?
@@ -485,12 +513,14 @@ int main(int argc, char** argv)	{
 	TLorentzVector AODJet1, AODJet2;
         if (viableJets) std::tie(AODJet1, AODJet2) = highestMassPair(jetCands);
 
+
         std::vector<TLorentzVector> HLTJetCands;
+        int HLTJetCandsSize = 0;
         std::vector<std::pair<int,int>> matchedHLTAODJets;
         int HLTJetsSize = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt->size();
         if (HLTJetsSize >= 2 && jetCandsSize >= 2) {
           HLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20", HLTJetsSize);
-          int HLTJetCandsSize = HLTJetCands.size();
+          HLTJetCandsSize = HLTJetCands.size();
           if (HLTJetCandsSize >= 2) {
             for (int iHLTJet = 0; iHLTJet < HLTJetCandsSize; ++iHLTJet) {
               for (int iAODJet = 0; iAODJet < jetCandsSize; ++iAODJet) {
@@ -544,6 +574,7 @@ int main(int argc, char** argv)	{
           mj1j2_ = (AODJet1 + AODJet2).M();
         }
 
+
 	// Check AOD Objects Pass Offline Selection
         passDiTau32Off = passDiTau34Off = passDiTau35Off = passInclusiveVBFOff = passVBFPlusTwoTauOff = 0;
         if (viableTaus && viableJets) {
@@ -567,9 +598,8 @@ int main(int argc, char** argv)	{
         
           // L1 DoubleJet35_Mass_Min_450_IsoTau45er2p1_RmvOl
           //if (AODJet1Pt_ >= (35+offJetInc) && AODJet2Pt_ >= (35+offJetInc) && \
-          //    AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= (20+offTau2Inc) && mj1j2_ >= 600) passVBFPlusTwoTauOff = 1;
-          //if (AODJet1Pt_ >= 60 && AODJet2Pt_ >= 60 && AODTau1Pt_ >= 60 && AODTau2Pt_ >= 35 && mj1j2_ >= 700) passVBFPlusTwoTauOff = 1;    
-          if (AODJet1Pt_ >= 100 && AODJet2Pt_ >= 100 && AODTau1Pt_ >= 60 && AODTau2Pt_ >= 35 && mj1j2_ >= 600) passVBFPlusTwoTauOff = 1;    
+              AODTau1Pt_ >= (45+offTau1Inc) && AODTau2Pt_ >= (20+offTau2Inc) && mj1j2_ >= 600) passVBFPlusTwoTauOff = 1;
+          if (AODJet1Pt_ >= 100 && AODJet2Pt_ >= 100 && AODTau1Pt_ >= 80 && AODTau2Pt_ >= 55 && mj1j2_ >= 800) passVBFPlusTwoTauOff = 1;    
 
         } // end viable if statement
 
@@ -582,92 +612,122 @@ int main(int argc, char** argv)	{
         passDeepDiTau34Both = (passDiTau34L1DeepDiTau35HLT && passDiTau34Off);
         passDeepDiTau35Both = (passDiTau35L1DeepDiTau35HLT && passDiTau35Off);
 
+        //---------------------------studying inefficiency from cross cleaning at HLT------------------//
+
+        std::vector<TLorentzVector> jetsFromRealDijetFilter;
+        int jetsFromRealDijetFilterSize = inTree->hltRealDijetFilter_pt->size();
+        if (jetsFromRealDijetFilterSize >= 2 && jetCandsSize >= 2) {
+          jetsFromRealDijetFilter = hltFillWithCands(inTree, "hltRealDijetFilter", jetsFromRealDijetFilterSize);
+          jetsFromRealDijetFilterSize = jetsFromRealDijetFilter.size();
+        }
+
+        std::vector<TLorentzVector> jetsFromLooseIDPFDummyFilter;
+        int jetsFromLooseIDPFDummyFilterSize = inTree->hltVBFLooseIDPFDummyFilter_pt->size();
+        if (jetsFromLooseIDPFDummyFilterSize >= 2 && jetCandsSize >= 2) {
+          jetsFromLooseIDPFDummyFilter = hltFillWithCands(inTree, "hltVBFLooseIDPFDummyFilter", jetsFromLooseIDPFDummyFilterSize);
+          jetsFromLooseIDPFDummyFilterSize = jetsFromLooseIDPFDummyFilter.size();
+        }
+        // used to be 3 HLTTau Cands and 4 jetsFromFilter
+        bool blockON = true;
+        if (blockON && HLTTauCandsFrom20FilterSize >= 2 && isoTauCandsSize >= 2 && \
+            jetsFromRealDijetFilterSize >= 2 && jetCandsSize >=2 && \
+            passhltRealDijetFilter && !passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20 && \
+            passVBFPlusTwoTauOff && passhltVBFLooseIDPFDummyFilter) {
+          //std::cout << passhltRealDijetFilter << std::endl;
+          //std::cout << passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20 << std::endl;
+          std::cout << "NEW EVENT " << iEntry << " " << eventNumberID << std::endl;
+          std::cout << "Taus " << std::endl;
+          for (int iPrintTau = 0; iPrintTau < HLTTauCandsFrom20FilterSize; ++iPrintTau) {
+            std::cout << iPrintTau << std::endl;
+            std::cout << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Pt() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Eta() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Phi() << '\t'
+                      << std::setw(8) << HLTTauCandsFrom20Filter.at(iPrintTau).Energy() << '\t'
+                      << std::endl;
+          }
+          std::vector<TLorentzVector> reducedJets;
+          TLorentzVector tempFilterJet;
+          for (int iFilterJet = 0; iFilterJet < jetsFromRealDijetFilterSize; ++iFilterJet) {
+            tempFilterJet = jetsFromRealDijetFilter.at(iFilterJet);
+            if (iFilterJet == 0) reducedJets.push_back(tempFilterJet);
+            else {
+              int overlappedJet = 0;
+              for (int iReducedJet = 0; iReducedJet < reducedJets.size(); ++iReducedJet) {
+                double reducedJetsDR = reducedJets.at(iReducedJet).DeltaR(tempFilterJet);
+                if ( reducedJetsDR <= 0.5) overlappedJet = 1;
+              }
+              if (!overlappedJet) reducedJets.push_back(tempFilterJet);
+            }
+          }
+          int reducedJetsSize = reducedJets.size();
+
+
+          //std::cout << jetsFromRealDijetFilterSize << '\t' << reducedJetsSize << std::endl;
+          std::cout << "Jets" << std::endl;
+          for (int iPrintJet = 0; iPrintJet < reducedJetsSize; ++iPrintJet) {
+            std::cout << iPrintJet << std::endl;
+            std::cout << std::setw(8) << reducedJets.at(iPrintJet).Pt() << '\t'
+                      << std::setw(8) << reducedJets.at(iPrintJet).Eta() << '\t'
+                      << std::setw(8) << reducedJets.at(iPrintJet).Phi() << '\t'
+                      << std::setw(8) << reducedJets.at(iPrintJet).Energy() << '\t'
+                      << std::endl;
+          }
+
+          std::cout << "Mjj Pairs >= 500 from Filter Jets" << std::endl;
+          for (int iJet = 0; iJet < reducedJetsSize; ++iJet) {
+            for (int jJet = iJet; jJet < reducedJetsSize; ++jJet) {
+             double tempMjjFilter_ = (reducedJets.at(iJet) + reducedJets.at(jJet)).M(); 
+             if (tempMjjFilter_ >= 500) std::cout << iJet << '\t' << jJet << '\t' << tempMjjFilter_ << std::endl;
+            }
+          }
+
+          int tempHLTTauCandsFrom20FilterSize = HLTTauCandsFrom20FilterSize;
+          for (int iHLTTau = 0; iHLTTau < HLTTauCandsFrom20FilterSize; ++iHLTTau) {
+            for (int iHLTJet = 0; iHLTJet < reducedJetsSize; ++iHLTJet) {
+              //std::cout << "Tau: " << iHLTTau << '\t' << "Jet: " << iHLTJet << std::endl;
+              double removeDR = reducedJets.at(iHLTJet).DeltaR(HLTTauCandsFrom20Filter.at(iHLTTau));
+              if (removeDR <= 0.5) {
+                //std::cout << removeDR << std::endl;
+                tempHLTTauCandsFrom20FilterSize -= 1;
+              }
+            }
+          }
+          //std::cout << HLTTauCandsFrom20FilterSize << '\t' << tempHLTTauCandsFrom20FilterSize << std::endl;
+
+          std::cout << "AOD Obj Info" << std::endl;
+          std::cout << "Taus" << std::endl;
+          coutAODobjs(AODTau1, AODTau2);
+          std::cout << "Jets" << std::endl;
+          coutAODobjs(AODJet1, AODJet2);
+          std::cout << "mjj: " << (AODJet1 + AODJet2).M() << std::endl;
+          std::cout << std::endl;
+
+          if (jetsFromLooseIDPFDummyFilterSize >= 2) {
+            std::cout << "Check Jets with Loose ID Dummy Filter" << std::endl;
+            for (int iPrintJet = 0; iPrintJet < jetsFromLooseIDPFDummyFilterSize; ++iPrintJet) {
+              std::cout << iPrintJet << std::endl;
+              std::cout << std::setw(8) << jetsFromLooseIDPFDummyFilter.at(iPrintJet).Pt() << '\t'
+                      << std::setw(8) << jetsFromLooseIDPFDummyFilter.at(iPrintJet).Eta() << '\t'
+                      << std::setw(8) << jetsFromLooseIDPFDummyFilter.at(iPrintJet).Phi() << '\t'
+                      << std::setw(8) << jetsFromLooseIDPFDummyFilter.at(iPrintJet).Energy() << '\t'
+                      << std::endl;
+            }
+          }
+
+          std::cout << "Double check final CC flag" << std::endl;
+          std::cout << "HLTJetCandsSize from CC filter: " << HLTJetCandsSize << std::endl;
+          std::cout << "Double check matching jets flag is zero (matching is based on CC filter): " << matchedHLTJets << std::endl;
+          //std::cout << AODJet1.Pt() << '\t' << AODJet2.Pt() << '\t' << AODTau1.Pt() << '\t' << AODTau2.Pt() << std::endl;
+        }
+
         //---------------------------match AOD and HLT------------------------------//
         // matching for HLT objects from Inclusive VBF path
         TLorentzVector oldHLTJet1, oldHLTJet2, oldHLTTau1, oldHLTTau2;
         matchedJetsOld = matchedTausOld = matchedBothOld = 0;
-        if (passInclusiveVBFHLT && passInclusiveVBFOff) { 
-          int jet40NumOld = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=40 from HLT filter
-          int jet115NumOld = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=115 from HLT filter
-          int tau20NumOld = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_pt->size(); // number of taus w pt>=20 from HLT filter
-          
-          if (jet40NumOld >= 2 && jet115NumOld >= 1 && tau20NumOld >= 2) {
-            std::vector<TLorentzVector> oldHLTJetCands, oldHLTTauCands;
-            oldHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", jet40NumOld);
-            oldHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon", tau20NumOld);
-            // when filling, an eta cut is imposed which can reduce the size of the container
-
-            dRj1Old, dRj2Old, dRt1Old, dRt2Old = 999;
-            int overlappedOld = 0;
-            if (oldHLTJetCands.size() >= 2 && oldHLTTauCands.size() >= 2) {
-              std::tie(oldHLTJet1, oldHLTJet2) = matchTwoObjs(oldHLTJetCands, AODJet1, AODJet2);
-              dRj1Old = oldHLTJet1.DeltaR(AODJet1);
-              dRj2Old = oldHLTJet2.DeltaR(AODJet2);
-
-              std::tie(oldHLTTau1, oldHLTTau2) = matchTwoObjs(oldHLTTauCands, AODTau1, AODTau2);
-              dRt1Old = oldHLTTau1.DeltaR(AODTau1);
-              dRt2Old = oldHLTTau2.DeltaR(AODTau2);
-
-              // check same type object overlap
-              if (oldHLTJet1.DeltaR(oldHLTJet2) < 0.5 || oldHLTTau1.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
-              // check different type object overlap
-              if (oldHLTJet1.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet1.DeltaR(oldHLTTau2) < 0.5 ||
-                  oldHLTJet2.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet2.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
-
-              if (!overlappedOld) {
-                if (dRj1Old < 0.5 && dRj2Old < 0.5) matchedJetsOld = 1;
-                if (dRt1Old < 0.5 && dRt2Old < 0.5) matchedTausOld = 1;
-                if (matchedJetsOld && matchedTausOld) matchedBothOld = 1;
-              }
-
-            } // end if for dR calculations
-
-          } // end if checking object size requirements
-
-        } // end if for passing HLT and offline
 
         // matching for HLT objects from New VBF path
         TLorentzVector newHLTJet1, newHLTJet2, newHLTTau1, newHLTTau2;
         matchedJetsNew = matchedTausNew = matchedBothNew = 0;
-        if (passVBFPlusTwoTauHLT && passVBFPlusTwoTauOff) {
-          int jet40NumNew = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=40 from HLT filter
-          int tau20NumNew = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_pt->size(); // number of taus w pt>=20 from HLT filter
-          int tau45NumNew = inTree->hltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched_pt->size(); // number of taus w pt>=45 from HLT filter
-          
-          if (jet40NumNew >= 2 && tau20NumNew >= 2 && tau45NumNew >= 1) {
-            std::vector<TLorentzVector> newHLTJetCands, newHLTTauCands;
-            newHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", jet40NumNew);
-            newHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon", tau20NumNew);
-            // when filling, an eta cut is imposed which can reduce the size of the container
-
-            dRj1New, dRj2New, dRt1New, dRt2New = 999;
-            int overlappedNew = 0;
-            if (newHLTJetCands.size() >= 2 && newHLTTauCands.size() >= 2) {
-              std::tie(newHLTJet1, newHLTJet2) = matchTwoObjs(newHLTJetCands, AODJet1, AODJet2);
-              dRj1New = newHLTJet1.DeltaR(AODJet1);
-              dRj2New = newHLTJet2.DeltaR(AODJet2);
-
-              std::tie(newHLTTau1, newHLTTau2) = matchTwoObjs(newHLTTauCands, AODTau1, AODTau2);
-              dRt1New = newHLTTau1.DeltaR(AODTau1);
-              dRt2New = newHLTTau2.DeltaR(AODTau2);
-
-              // check same type object overlap
-              if (newHLTJet1.DeltaR(newHLTJet2) < 0.5 || newHLTTau1.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
-              // check different type object overlap
-              if (newHLTJet1.DeltaR(newHLTTau1) < 0.5 || newHLTJet1.DeltaR(newHLTTau2) < 0.5 ||
-                  newHLTJet2.DeltaR(newHLTTau1) < 0.5 || newHLTJet2.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
-
-              if (!overlappedNew) {
-                if (dRj1New < 0.5 && dRj2New < 0.5) matchedJetsNew = 1;
-                if (dRt1New < 0.5 && dRt2New < 0.5) matchedTausNew = 1;
-                if (matchedJetsNew && matchedTausNew) matchedBothNew = 1;
-              }
-
-            } // end if for dR calculations
-
-          } // end if checking object size requirements
-
-        } // end if for passing HLT and offline
 
         // fill branches if any offline selection is passed for AOD
         // fill branches for Old or New HLT objects if they are matched to AOD
@@ -718,13 +778,14 @@ int main(int argc, char** argv)	{
 
     } // end event loop
 
+/*
     std::cout << twoTausCount << '\t' << "two Taus" << std::endl;
     std::cout << twoGoodTausCount << '\t' << "two Good Taus" << std::endl;
     std::cout << twoGoodViableTausCount << '\t' << "two GoodViable Taus" << std::endl;
     std::cout << twoGoodViableMatchedTausCount << '\t' << "two GoodViableMatched Taus" << std::endl;
     std::cout << noPass << '\t' << "noPass" << std::endl;
     std::cout << noPassZeroTau << '\t' << "noPassZeroTau" << std::endl;
-
+*/
     std::string outputFileName = outName;
     TFile *fOut = TFile::Open(outputFileName.c_str(),"RECREATE");
     fOut->cd();

@@ -145,6 +145,19 @@ public :
     std::vector<float>* hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi = nullptr;
     std::vector<float>* hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy = nullptr;
 
+    int passhltRealDijetFilter;
+    std::vector<float>* hltRealDijetFilter_pt = nullptr;
+    std::vector<float>* hltRealDijetFilter_eta = nullptr;
+    std::vector<float>* hltRealDijetFilter_phi = nullptr;
+    std::vector<float>* hltRealDijetFilter_energy = nullptr;
+
+    int passhltVBFLooseIDPFDummyFilter;
+    std::vector<float>* hltVBFLooseIDPFDummyFilter_pt = nullptr;
+    std::vector<float>* hltVBFLooseIDPFDummyFilter_eta = nullptr;
+    std::vector<float>* hltVBFLooseIDPFDummyFilter_phi = nullptr;
+    std::vector<float>* hltVBFLooseIDPFDummyFilter_energy = nullptr;
+
+
     int passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20;
     std::vector<float>* hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt = nullptr;
     std::vector<float>* hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_eta = nullptr;
@@ -354,6 +367,18 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_eta);
     fChain->SetBranchAddress("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_phi);
     fChain->SetBranchAddress("hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy", &hltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_energy);
+
+    fChain->SetBranchAddress("passhltRealDijetFilter", &passhltRealDijetFilter);
+    fChain->SetBranchAddress("hltRealDijetFilter_pt", &hltRealDijetFilter_pt);
+    fChain->SetBranchAddress("hltRealDijetFilter_eta", &hltRealDijetFilter_eta);
+    fChain->SetBranchAddress("hltRealDijetFilter_phi", &hltRealDijetFilter_phi);
+    fChain->SetBranchAddress("hltRealDijetFilter_energy", &hltRealDijetFilter_energy);
+
+    fChain->SetBranchAddress("passhltVBFLooseIDPFDummyFilter", &passhltVBFLooseIDPFDummyFilter);
+    fChain->SetBranchAddress("hltVBFLooseIDPFDummyFilter_pt", &hltVBFLooseIDPFDummyFilter_pt);
+    fChain->SetBranchAddress("hltVBFLooseIDPFDummyFilter_eta", &hltVBFLooseIDPFDummyFilter_eta);
+    fChain->SetBranchAddress("hltVBFLooseIDPFDummyFilter_phi", &hltVBFLooseIDPFDummyFilter_phi);
+    fChain->SetBranchAddress("hltVBFLooseIDPFDummyFilter_energy", &hltVBFLooseIDPFDummyFilter_energy);
 
     fChain->SetBranchAddress("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20);
     fChain->SetBranchAddress("hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt", &hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_pt);

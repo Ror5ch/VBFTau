@@ -316,6 +316,8 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
     if (filterName == "jetL1Primitives" ||
         filterName == "hltL1VBFDiJetOR" ||
         filterName == "hltL1VBFDiJetIsoTau_jets" ||
+        filterName == "hltRealDijetFilter" ||
+        filterName == "hltVBFLooseIDPFDummyFilter" ||
         filterName == "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" || 
         filterName == "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" || 
         filterName == "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20" ||
@@ -397,7 +399,20 @@ std::vector<TLorentzVector> hltFillWithCands(trigger_tree* inTree, std::string f
 	branchEnergy = inTree->hltL1VBFDiJetIsoTau_jetEnergy;
 	found = true;
     }
-
+    if (!found && filterName == "hltRealDijetFilter") {
+        branchPt = inTree->hltRealDijetFilter_pt;
+        branchEta = inTree->hltRealDijetFilter_eta;
+        branchPhi = inTree->hltRealDijetFilter_phi;
+        branchEnergy = inTree->hltRealDijetFilter_energy;
+        found = true;
+    }
+    if (!found && filterName == "hltVBFLooseIDPFDummyFilter") {
+        branchPt = inTree->hltVBFLooseIDPFDummyFilter_pt;
+        branchEta = inTree->hltVBFLooseIDPFDummyFilter_eta;
+        branchPhi = inTree->hltVBFLooseIDPFDummyFilter_phi;
+        branchEnergy = inTree->hltVBFLooseIDPFDummyFilter_energy;
+        found = true;
+    }
     if (!found && filterName == "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20") {
 	branchPt = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt;
 	branchEta = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_eta;

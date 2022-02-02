@@ -8,34 +8,37 @@ void PrintDeepTauModuleCounts(char* filename) {
   double nnFilter = tree->Draw("nEvents", "passhltL2VBFIsoTauNNFilter>0 && passVBFPlusTwoTauOff>0", "goff");
   double doubleDeep20TausFilter = tree->Draw("nEvents", "passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch>0 && passVBFPlusTwoTauOff>0", "goff");
   double singleDeep45TauL1HLTMatchingFilter = tree->Draw("nEvents", "passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched>0 && passVBFPlusTwoTauOff>0", "goff");
+  double jetKinemFilter = tree->Draw("nEvents", "passhltRealDijetFilter>0 && passVBFPlusTwoTauOff>0", "goff");
+  double jetIDFilter = tree->Draw("nEvents", "passhltVBFLooseIDPFDummyFilter>0 && passVBFPlusTwoTauOff>0", "goff");
   double twoMatchedJetsFilter = tree->Draw("nEvents", "passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20>0 && passVBFPlusTwoTauOff>0", "goff");
 
   double hltVBFTwoDeepTauDecision = tree->Draw("nEvents", "passVBFPlusTwoDeepTauHLT>0 && passVBFPlusTwoTauOff>0","goff");
   double passSelectionOnly = tree->Draw("nEvents", "passVBFPlusTwoTauOff>0", "goff");
   double passSelectionToo = tree->Draw("nEvents", "passVBFPlusTwoDeepTauBoth>0", "goff");
 
-  std::cout << hltL1Filter << '\n'
-            << nnFilter << '\n'
-            << doubleDeep20TausFilter << '\n'
-            << singleDeep45TauL1HLTMatchingFilter << '\n'
-            << twoMatchedJetsFilter << '\n'
-            << hltVBFTwoDeepTauDecision << '\n'
-            << passSelectionToo << '\n'
-            << '\n'
-            << std::endl;
+  double variableHolder[] = {hltL1Filter, nnFilter, doubleDeep20TausFilter, singleDeep45TauL1HLTMatchingFilter, jetKinemFilter, jetIDFilter, twoMatchedJetsFilter, hltVBFTwoDeepTauDecision, passSelectionToo}; //i've gotta learn pyRoot
 
-  double variableHolder[] = {hltL1Filter, nnFilter, doubleDeep20TausFilter, singleDeep45TauL1HLTMatchingFilter, twoMatchedJetsFilter, hltVBFTwoDeepTauDecision, passSelectionToo}; //i've gotta learn pyRoot
+  const char *names[9] = {"L1", "L2NN", "2Deep20Taus", "1Deep45Tau", "jetKinem.", "jetID", "jetCC", "passHLT", "passMatching"};
 
-  const char *names[7] = {"L1", "L2NN", "2Deep20Taus", "1Deep45Tau", "2Jets35", "passHLT", "passMatching"};
-
-  TH1F* cutflowDeepTau = new TH1F("cutflowDeepTau", "", 7, 0.0, 7.0);
+  TH1F* cutflowDeepTau = new TH1F("cutflowDeepTau", "", 9, 0.0, 9.0);
 
   std::cout << passSelectionOnly << '\t' << "pass selection only" << std::endl;
-  double fraction[7];
+  double fraction[9];
   size_t n = sizeof(fraction) / sizeof(double);
+  std::cout << std::left << std::setw(10) << "Count" \
+            << std::setw(10) << "Abs. Eff." \
+            << std::setw(10) << "Rel. Eff." \
+            << std::setw(10) << "Filter" << std::endl;
   for (int i = 0; i < n; ++i) {
     fraction[i] = variableHolder[i]/passSelectionOnly;
-    std::cout << fraction[i] << '\t' << "fraction passing filter " << names[i] << std::endl;
+    if (i == 0) std::cout << std::left << std::setw(10) << variableHolder[i] \
+             << std::setw(10) << fraction[i] \
+             << std::setw(10) << "-------" \
+             << std::setw(10) << names[i] << std::endl;
+    else std::cout << std::left << std::setw(10) << variableHolder[i] \
+      << std::setw(10) << fraction[i] \
+      << std::setw(10) << variableHolder[i]/variableHolder[i-1] \
+      << std::setw(10) << names[i] << std::endl;
     cutflowDeepTau->Fill(names[i], variableHolder[i]/passSelectionOnly);
   }
 

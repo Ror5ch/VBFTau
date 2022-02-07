@@ -613,7 +613,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     // VBF Plus Two Tau HLT
     std::string pathNameVBFPlusTwoTau = "HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1";
-    passVBFPlusTwoTauHLT = triggerResults->accept(triggerNames_.triggerIndex(pathNameVBFPlusTwoTau));
+    //passVBFPlusTwoTauHLT = triggerResults->accept(triggerNames_.triggerIndex(pathNameVBFPlusTwoTau));
 
     // VBF Plus Two Deep Tau HLT
     std::string pathNameVBFPlusTwoDeepTau = "HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1";
@@ -621,7 +621,10 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 
     // VBF Plus One Tau HLT
     std::string pathNameVBFPlusOneTau = "HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1";
-    passVBFPlusOneTauHLT = triggerResults->accept(triggerNames_.triggerIndex(pathNameVBFPlusOneTau));
+    //passVBFPlusOneTauHLT = triggerResults->accept(triggerNames_.triggerIndex(pathNameVBFPlusOneTau));
+
+    // use in path variable of conf
+    // HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1
 
     // filling branches with triggerObjs information, hltL1VBFDiJetIsoTau object info filled separately since it's a weird L1
 
@@ -709,6 +712,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 						 && hltL1VBFDiJetIsoTau_jetPt.size() >= 2) passhltL1VBFDiJetIsoTau = 1;
 
         // Inclusive/VBFPlusTwoTau Modules
+        /*
 	if (filterTag == hltHpsDoublePFTau20_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20 = 1; 
 	if (filterTag == hltHpsDoublePFTau20TrackTightChargedIso_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20TrackTightChargedIso = 1;
 	if (filterTag == hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_Tag && nObjKeys >= 2) passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon = 1;
@@ -716,6 +720,7 @@ void NtupleMaker::fillTriggers(const edm::Event& iEvent){
 	if (filterTag == hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_Tag && nObjKeys >= 1) passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = 1;
 	if (filterTag == hltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched_Tag && nObjKeys >= 1) passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched = 1;
 	if (filterTag == hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_Tag && nObjKeys >= 2) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20 = 1;
+        */
 
         // VBFPlusTwoDeepTau Modules
         if (filterTag == hltL2VBFIsoTauNNFilter_Tag && nObjKeys >= 1) passhltL2VBFIsoTauNNFilter = 1;

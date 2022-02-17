@@ -1,0 +1,18 @@
+change overlap removal module to this
+
+process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval = cms.EDProducer( "PFJetsTauCorrelationCondition",
+    PFJetSrc = cms.InputTag( 'hltVBFIsoTauL1TLooseIDPFJetsMatching','TwoJets' ),
+    TauSrc = cms.InputTag( "hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch" ),
+    extraTauPtCut = cms.double( 45 ),
+    mjjMin = cms.double( 500 ),
+    Min_dR = cms.double( 0.5 )
+)
+
+change mathcing module to this
+
+process.hltVBFIsoTauL1TLooseIDPFJetsMatching = cms.EDProducer( "L1TPFJetsSimpleMatching",
+    L1JetTrigger = cms.InputTag( "hltL1VBFDiJetIsoTau" ),
+    JetSrc = cms.InputTag( "hltAK4PFJetsLooseIDCorrected" ),
+    ptMin = cms.double( 40.0 ),
+    matchingR = cms.double( 0.5 )
+)

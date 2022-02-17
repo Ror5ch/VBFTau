@@ -25,6 +25,11 @@ public :
     int passVBFPlusTwoDeepTauHLT;
     int passVBFPlusOneTauHLT;
 
+    int passVBF2DT;
+    int passVBF2DTTempLoose;
+    int passVBF2DTNoL2NN;
+    int passVBF2DTTempLooseNoL2NN;
+
 
     // DiTau HLT initial and final branches
     int passhltL1sDoubleTauBigOR;
@@ -249,6 +254,11 @@ void trigger_tree::Init(TTree *tree)
     fChain->SetBranchAddress("passVBFPlusTwoTauHLT", &passVBFPlusTwoTauHLT);
     fChain->SetBranchAddress("passVBFPlusTwoDeepTauHLT", &passVBFPlusTwoDeepTauHLT);
     fChain->SetBranchAddress("passVBFPlusOneTauHLT", &passVBFPlusOneTauHLT);
+
+    fChain->SetBranchAddress("passVBF2DT", &passVBF2DT);
+    fChain->SetBranchAddress("passVBF2DTTempLoose", &passVBF2DTTempLoose);
+    fChain->SetBranchAddress("passVBF2DTNoL2NN", &passVBF2DTNoL2NN);
+    fChain->SetBranchAddress("passVBF2DTTempLooseNoL2NN", &passVBF2DTTempLooseNoL2NN);
 
     // DiTau HLT initial and final branches
     fChain->SetBranchAddress("passhltL1sDoubleTauBigOR", &passhltL1sDoubleTauBigOR);

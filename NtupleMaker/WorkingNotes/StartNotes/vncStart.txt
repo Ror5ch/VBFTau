@@ -17,9 +17,10 @@ xvnc4viewer localhost:2
 A screen should open. On that screen, open a terminal and
 if it's your first time, you need to clone the repo, otherwise just cd and clean/start the GUI.
 
-git clone git@github.com:cms-sw/hlt-confdb.git;
-cd hlt-confdb;
-ant clean && ./start;
+git clone https://github.com/cms-sw/hlt-confdb.git
+cd hlt-confdb
+ant clean
+./start
 
 kill the server on lxplus when you're finished with it
 

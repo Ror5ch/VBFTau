@@ -1,5 +1,4 @@
 # Braden Allmond notes on making an hlt menu using hltGetConfiguration
-# hltGetConfiguration command at the bottom for mc of recent VBF sample
 
 ####### this step isn't necessary but it's the repo you'd need for more advanced testing
 # add package with
@@ -81,6 +80,8 @@ python3 run_benchmark.py --config hltTimingConf.py --data None --jobs 2 --thread
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input 'file:/eos/user/b/ballmond/repackData/EZB1UpsL1RepackAllRuns.root' \
 
+# timing example
+
 hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --globaltag auto:run3_hlt \
 --data \
@@ -101,11 +102,8 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy/V2 \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
 --input root://cms-xrd-global.cern.ch//store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/MINIAODSIM/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/27bd7637-5f76-4051-a38a-a5a0bfdf51b2.root \
 
-hltGetConfiguration /users/ballmond/VBFDeepTau/DeepTauV23_copy_modJetFilterV3_Unlocked/V11 \
---path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v*,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v*,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+# mc example
 
---path HLTriggerFirstPath,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
-hltGetConfiguration /users/ballmond/VBFDeepTau/DevV10_ResyncWithDeepTau/V2 \
 hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
 --globaltag auto:phase1_2021_realistic \
 --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
@@ -115,11 +113,13 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
 --process MYOTHERHLT \
 --full \
 --offline \
---max-events 2000 \
+--max-events 1000 \
 --l1-emulator uGT \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
---input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias2/RAW/v1/000/320/497/00000/128A5822-CA93-E811-9F04-FA163ECFF8BE.root \
-> hltRateTestData.py
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltMCExample.py
+
+# data example
 
 hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
 --globaltag auto:run3_hlt \
@@ -131,10 +131,54 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
 --process MYOTHERHLT \
 --full \
 --offline \
---max-events 2000 \
+--max-events 1000 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias2/RAW/v1/000/320/497/00000/128A5822-CA93-E811-9F04-FA163ECFF8BE.root \
-> hltRateTestData_NoReEmulation.py
+> hltDataExample.py
 
+# getting the conf like STEAM, still running into errors with crab
+
+hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
+--setup /dev/CMSSW_12_3_0/GRun \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--full \
+--offline \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--no-output \
+--data \
+--process MYOTHERHLT \
+--type GRun \
+--prescale 2.0e34+ZB+HLTPhysics \
+--globaltag auto:run3_hlt_GRun \
+--max-events 500 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input root://cms-xrd-global.cern.ch//store/data/Run2018D/EphemeralZeroBias2/RAW/v1/000/320/497/00000/128A5822-CA93-E811-9F04-FA163ECFF8BE.root \
+> hltSTEAMConf.py
+
+###############################################
+###############################################
+###### area for testing/making new menu #######
+###############################################
+###############################################
+hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
+--globaltag 121X_mcRun3_2021_realistic_v18 \
+--path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--mc \
+--unprescale \
+--output none \
+--process MYOTHERHLT \
+--full \
+--offline \
+--max-events 2000 \
+--l1-emulator uGT \
+--l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
+--input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
+> hltTest.py
+
+###############################################
+###############################################
 # notes for DeepTau integration, referencing these slides
 TSG: https://indico.cern.ch/event/1099590/contributions/4626737/attachments/2358562/4025564/HLT_Review.pdf
 TauPOG days after TSG: https://indico.cern.ch/event/1100484/contributions/4629728/attachments/2359613/4027586/HLT%40RUN3.pdf

@@ -1,29 +1,28 @@
-void PrintDeepTauModuleCounts(char* filename) {
+void CutflowDeepTauNoL2NN(char* filename) {
 
   TFile *_file0 = TFile::Open(filename);
 
   TTree* tree = (TTree*)_file0->Get("outTree");
 
   double hltL1Filter = tree->Draw("nEvents", "passhltL1VBFDiJetIsoTau>0 && passVBFPlusTwoTauOff>0", "goff");
-  double nnFilter = tree->Draw("nEvents", "passhltL2VBFIsoTauNNFilter>0 && passVBFPlusTwoTauOff>0", "goff");
-  double doubleDeep20TausFilter = tree->Draw("nEvents", "passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch>0 && passVBFPlusTwoTauOff>0", "goff");
-  double singleDeep45TauL1HLTMatchingFilter = tree->Draw("nEvents", "passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched>0 && passVBFPlusTwoTauOff>0", "goff");
-  double jetKinemFilter = tree->Draw("nEvents", "passhltRealDijetFilter>0 && passVBFPlusTwoTauOff>0", "goff");
-  double jetIDFilter = tree->Draw("nEvents", "passhltVBFLooseIDPFDummyFilter>0 && passVBFPlusTwoTauOff>0", "goff");
-  double twoMatchedJetsFilter = tree->Draw("nEvents", "passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20>0 && passVBFPlusTwoTauOff>0", "goff");
+  double doubleDeep20TausFilter = tree->Draw("nEvents", "passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN>0 && passVBFPlusTwoTauOff>0", "goff");
+  double singleDeep45TauL1HLTMatchingFilter = tree->Draw("nEvents", "passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_VBF2DTNoL2NN>0 && passVBFPlusTwoTauOff>0", "goff");
+  double jetKinemFilter = tree->Draw("nEvents", "passhltRealDijetFilter_VBF2DTNoL2NN>0 && passVBFPlusTwoTauOff>0", "goff");
+  double jetIDFilter = tree->Draw("nEvents", "passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN>0 && passVBFPlusTwoTauOff>0", "goff");
+  double twoMatchedJetsFilter = tree->Draw("nEvents", "passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN>0 && passVBFPlusTwoTauOff>0", "goff");
 
-  double hltVBFTwoDeepTauDecision = tree->Draw("nEvents", "passVBFPlusTwoDeepTauHLT>0 && passVBFPlusTwoTauOff>0","goff");
+  double hltVBFTwoDeepTauDecision = tree->Draw("nEvents", "passVBF2DTNoL2NNHLT>0 && passVBFPlusTwoTauOff>0","goff");
   double passSelectionOnly = tree->Draw("nEvents", "passVBFPlusTwoTauOff>0", "goff");
-  double passSelectionToo = tree->Draw("nEvents", "passVBFPlusTwoDeepTauBoth>0", "goff");
+  double passSelectionToo = tree->Draw("nEvents", "passVBF2DTNoL2NNBoth>0", "goff");
 
-  double variableHolder[] = {hltL1Filter, nnFilter, doubleDeep20TausFilter, singleDeep45TauL1HLTMatchingFilter, jetKinemFilter, jetIDFilter, twoMatchedJetsFilter, hltVBFTwoDeepTauDecision, passSelectionToo}; //i've gotta learn pyRoot
+  double variableHolder[] = {hltL1Filter, doubleDeep20TausFilter, singleDeep45TauL1HLTMatchingFilter, jetKinemFilter, jetIDFilter, twoMatchedJetsFilter, hltVBFTwoDeepTauDecision, passSelectionToo}; //i've gotta learn pyRoot
 
-  const char *names[9] = {"L1", "L2NN", "2Deep20Taus", "1Deep45Tau", "jetKinem.", "jetID", "jetCC", "passHLT", "passMatching"};
+  const char *names[8] = {"L1", "2Deep20Taus", "1Deep45Tau", "jetKinem.", "jetID", "jetCC", "passHLT", "passMatching"};
 
-  TH1F* cutflowDeepTau = new TH1F("cutflowDeepTau", "", 9, 0.0, 9.0);
+  TH1F* cutflowDeepTau = new TH1F("cutflowDeepTau", "", 8, 0.0, 8.0);
 
   std::cout << passSelectionOnly << '\t' << "pass selection only" << std::endl;
-  double fraction[9];
+  double fraction[8];
   size_t n = sizeof(fraction) / sizeof(double);
   std::cout << std::left << std::setw(10) << "Count" \
             << std::setw(10) << "Abs. Eff." \

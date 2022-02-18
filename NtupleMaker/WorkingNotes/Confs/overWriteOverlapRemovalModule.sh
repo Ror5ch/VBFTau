@@ -14,3 +14,30 @@ process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemoval = c
 \n    mjjMin = cms.double( 500 ),\
 \n    Min_dR = cms.double( 0.5 )\
 \n)" $FILE;
+
+sed -i "/process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemovalNoL2NN = cms./,/^)/c\
+process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsDeepTauIsoPF25TauOverlapRemovalNoL2NN = cms.EDProducer( \"PFJetsTauCorrelationCondition\",\
+\n    PFJetSrc = cms.InputTag( 'hltVBFIsoTauL1TLooseIDPFJetsMatching','TwoJets' ),\
+\n    TauSrc = cms.InputTag( \"hltHpsDoublePFTau20MediumDitauWPDeepTauNoMatchNoL2NN\" ),\
+\n    extraTauPtCut = cms.double( 45 ),\
+\n    mjjMin = cms.double( 500 ),\
+\n    Min_dR = cms.double( 0.5 )\
+\n)" $FILE;
+
+sed -i "/process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsTempLooseDeepTauIsoPF25TauOverlapRemoval = cms./,/^)/c\
+process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsTempLooseDeepTauIsoPF25TauOverlapRemoval = cms.EDProducer( \"PFJetsTauCorrelationCondition\",\
+\n    PFJetSrc = cms.InputTag( 'hltVBFIsoTauL1TLooseIDPFJetsMatching','TwoJets' ),\
+\n    TauSrc = cms.InputTag( \"hltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch\" ),\
+\n    extraTauPtCut = cms.double( 45 ),\
+\n    mjjMin = cms.double( 500 ),\
+\n    Min_dR = cms.double( 0.5 )\
+\n)" $FILE;
+
+sed -i "/process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsTempLooseDeepTauIsoPF25TauOverlapRemovalNoL2NN = cms./,/^)/c\
+process.hltMatchedVBFIsoTauTwoPFJetsDoubleHpsTempLooseDeepTauIsoPF25TauOverlapRemovalNoL2NN = cms.EDProducer( \"PFJetsTauCorrelationCondition\",\
+\n    PFJetSrc = cms.InputTag( 'hltVBFIsoTauL1TLooseIDPFJetsMatching','TwoJets' ),\
+\n    TauSrc = cms.InputTag( \"hltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatchNoL2NN\" ),\
+\n    extraTauPtCut = cms.double( 45 ),\
+\n    mjjMin = cms.double( 500 ),\
+\n    Min_dR = cms.double( 0.5 )\
+\n)" $FILE;

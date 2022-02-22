@@ -162,7 +162,7 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V7 \
 ###### area for testing/making new menu #######
 ###############################################
 ###############################################
-hltGetConfiguration /users/ballmond/VBFDeepTau/DevGRunV33/V2 \
+hltGetConfiguration /users/ballmond/VBFDeepTau/DevV24/V8 \
 --globaltag auto:phase1_2021_realistic \
 --path HLTriggerFirstPath,HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_v1,HLT_DoubleMediumDeepTauIsoPFTauHPS35_L2NN_eta2p1_v1,HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLT_VBF_TightChargedIsoPFTauHPS45_Trk1_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_v1,HLT_DoublePFJets40_Mass500_MediumDeepTau45_MediumDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_NoL2NN_v1,HLT_DoublePFJets40_Mass500_TempLooseDeepTau45_TempLooseDeepTau20_eta2p1_v1,HLT_VBF_DeepTau_ModifiedTightChargedIsoPFTauHPS45_PFTauHPS20_Trk1_eta2p1_v1,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --mc \
@@ -175,7 +175,7 @@ hltGetConfiguration /users/ballmond/VBFDeepTau/DevGRunV33/V2 \
 --l1-emulator uGT \
 --l1Xml L1Menu_Collisions2022_v0_1_1_modified_updated_Nov30.xml \
 --input root://cms-xrd-global.cern.ch///store/mc/Run3Winter21DRMiniAOD/VBFHToTauTau_M125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v1/270000/005b56c1-0107-46b3-9740-1c6efc559295.root \
-> hltTestSeparteModules.py
+> hltpre4Test.py
 
 ###############################################
 ###############################################

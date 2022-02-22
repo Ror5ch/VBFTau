@@ -67,6 +67,7 @@ int main(int argc, char** argv)	{
     // variables and branches for matching
     float dRj1Old, dRj2Old, dRt1Old, dRt2Old;
     int matchedTausOld, matchedJetsOld, matchedBothOld;
+/*
     outTree->Branch("dRj1Old", &dRj1Old);
     outTree->Branch("dRj2Old", &dRj2Old);
     outTree->Branch("dRt1Old", &dRt1Old);
@@ -74,10 +75,12 @@ int main(int argc, char** argv)	{
     outTree->Branch("matchedJetsOld", &matchedJetsOld);
     outTree->Branch("matchedTausOld", &matchedTausOld);
     outTree->Branch("matchedBothOld", &matchedBothOld);
+*/
 
     // variables and branches for matching
     float dRj1New, dRj2New, dRt1New, dRt2New;
     int matchedTausNew, matchedJetsNew, matchedBothNew;
+/*
     outTree->Branch("dRj1New", &dRj1New);
     outTree->Branch("dRj2New", &dRj2New);
     outTree->Branch("dRt1New", &dRt1New);
@@ -85,6 +88,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("matchedJetsNew", &matchedJetsNew);
     outTree->Branch("matchedTausNew", &matchedTausNew);
     outTree->Branch("matchedBothNew", &matchedBothNew);
+*/
 
     // path for Inclusive VBF HLT
     int passhltL1VBFDiJetOR;
@@ -93,12 +97,12 @@ int main(int argc, char** argv)	{
     int passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld;
     int passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
     int passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
-    outTree->Branch("passhltL1VBFDiJetOR", &passhltL1VBFDiJetOR);
-    outTree->Branch("passhltHpsDoublePFTau20Old", &passhltHpsDoublePFTau20Old);
-    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoOld", &passhltHpsDoublePFTau20TrackTightChargedIsoOld);
-    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld);
-    outTree->Branch("passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
-    outTree->Branch("passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
+    //outTree->Branch("passhltL1VBFDiJetOR", &passhltL1VBFDiJetOR);
+    //outTree->Branch("passhltHpsDoublePFTau20Old", &passhltHpsDoublePFTau20Old);
+    //outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoOld", &passhltHpsDoublePFTau20TrackTightChargedIsoOld);
+    //outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonOld);
+    //outTree->Branch("passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
+    //outTree->Branch("passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
 
     // path for VBF Plus Two Tau HLT
     int passhltL1VBFDiJetIsoTau;
@@ -108,11 +112,12 @@ int main(int argc, char** argv)	{
     int passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched;
     int passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20;
     outTree->Branch("passhltL1VBFDiJetIsoTau", &passhltL1VBFDiJetIsoTau);
-    outTree->Branch("passhltHpsDoublePFTau20New", &passhltHpsDoublePFTau20New);
-    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoNew", &passhltHpsDoublePFTau20TrackTightChargedIsoNew);
-    outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew);
-    outTree->Branch("passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched", &passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched);
-    outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
+
+    //outTree->Branch("passhltHpsDoublePFTau20New", &passhltHpsDoublePFTau20New);
+    //outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoNew", &passhltHpsDoublePFTau20TrackTightChargedIsoNew);
+    //outTree->Branch("passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew", &passhltHpsDoublePFTau20TrackTightChargedIsoAgainstMuonNew);
+    //outTree->Branch("passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched", &passhltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched);
+    //outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20);
 
     // path for VBF Plus Two Deep Tau HLT
     int passhltL2VBFIsoTauNNFilter;
@@ -128,19 +133,19 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltVBFLooseIDPFDummyFilter", &passhltVBFLooseIDPFDummyFilter);
     outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20);
 
-    //int passhltL2VBFIsoTauNNFilter_VBF2DTTempLoose;
+    //
     int passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLoose;
     int passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLoose;
     int passhltRealDijetFilter_VBF2DTTempLoose;
     int passhltVBFLooseIDPFDummyFilter_VBF2DTTempLoose;
     int passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLoose;
-    //outTree->Branch("passhltL2VBFIsoTauNNFilter_VBF2DTTempLoose", &passhltL2VBFIsoTauNNFilter_VBF2DTTempLoose);
     outTree->Branch("passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLoose", &passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLoose);
     outTree->Branch("passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLoose", &passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLoose);
     outTree->Branch("passhltRealDijetFilter_VBF2DTTempLoose", &passhltRealDijetFilter_VBF2DTTempLoose);
     outTree->Branch("passhltVBFLooseIDPFDummyFilter_VBF2DTTempLoose", &passhltVBFLooseIDPFDummyFilter_VBF2DTTempLoose);
     outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLoose", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLoose);
 
+    //
     int passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN;
     int passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_VBF2DTNoL2NN;
     int passhltRealDijetFilter_VBF2DTNoL2NN;
@@ -152,6 +157,7 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN", &passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN);
     outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN);
 
+    //
     int passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN;
     int passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLooseNoL2NN;
     int passhltRealDijetFilter_VBF2DTTempLooseNoL2NN;
@@ -164,28 +170,36 @@ int main(int argc, char** argv)	{
     outTree->Branch("passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLooseNoL2NN", &passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLooseNoL2NN);
 
 
-
     // final HLT decisions (decision found separately in NtupleMaker than filter path above)
     int passInclusiveVBFHLT, passInclusiveVBFOff, passInclusiveVBFBoth;
     int passVBFPlusTwoTauHLT, passVBFPlusTwoTauOff, passVBFPlusTwoTauBoth;
+
     int passVBFPlusTwoDeepTauHLT, passVBFPlusTwoDeepTauBoth;
     int passVBF2DTTempLooseHLT, passVBF2DTTempLooseBoth;
     int passVBF2DTNoL2NNHLT, passVBF2DTNoL2NNBoth;
     int passVBF2DTTempLooseNoL2NNHLT, passVBF2DTTempLooseNoL2NNBoth;
+
     outTree->Branch("passInclusiveVBFHLT", &passInclusiveVBFHLT);
     outTree->Branch("passInclusiveVBFOff", &passInclusiveVBFOff);
     outTree->Branch("passInclusiveVBFBoth", &passInclusiveVBFBoth);
+
     outTree->Branch("passVBFPlusTwoTauHLT", &passVBFPlusTwoTauHLT);
     outTree->Branch("passVBFPlusTwoTauOff", &passVBFPlusTwoTauOff);
     outTree->Branch("passVBFPlusTwoTauBoth", &passVBFPlusTwoTauBoth);
+
     outTree->Branch("passVBFPlusTwoDeepTauHLT", &passVBFPlusTwoDeepTauHLT);
     outTree->Branch("passVBFPlusTwoDeepTauBoth", &passVBFPlusTwoDeepTauBoth);
+
     outTree->Branch("passVBF2DTTempLooseHLT", &passVBF2DTTempLooseHLT);
     outTree->Branch("passVBF2DTTempLooseBoth", &passVBF2DTTempLooseBoth);
+
     outTree->Branch("passVBF2DTNoL2NNHLT", &passVBF2DTNoL2NNHLT);
     outTree->Branch("passVBF2DTNoL2NNBoth", &passVBF2DTNoL2NNBoth);
+
     outTree->Branch("passVBF2DTTempLooseNoL2NNHLT", &passVBF2DTTempLooseNoL2NNHLT);
     outTree->Branch("passVBF2DTTempLooseNoL2NNBoth", &passVBF2DTTempLooseNoL2NNBoth);
+
+    //
 
     int passDiTau32L1, passDiTau32L1DiTau35HLT, passDiTau32Off, passDiTau32Both;
     int passDiTau34L1, passDiTau34L1DiTau35HLT, passDiTau34Off, passDiTau34Both;
@@ -215,14 +229,17 @@ int main(int argc, char** argv)	{
     int viableTaus, viableJets;
     outTree->Branch("viableTaus", &viableTaus);
     outTree->Branch("viableJets", &viableJets); 
+
     int matchedL1Jets;
     int matchedL1Tau;
     outTree->Branch("matchedL1Jets", &matchedL1Jets);
     outTree->Branch("matchedL1Tau", &matchedL1Tau);
+
     int matchedHLTJets;
     int matchedHLTTaus;
     outTree->Branch("matchedHLTJets", &matchedHLTJets);
     outTree->Branch("matchedHLTTaus", &matchedHLTTaus);
+
     int matchedHLTJets_TempLoose;
     int matchedHLTTaus_TempLoose;
     outTree->Branch("matchedHLTJets_TempLoose", &matchedHLTJets_TempLoose);
@@ -235,14 +252,6 @@ int main(int argc, char** argv)	{
     float AODTau1Pt_ = 0;
     float AODTau2Pt_ = 0;
     float mj1j2_ = 0;
-
-    int twoTausCount = 0;
-    int twoGoodTausCount = 0;
-    int twoGoodViableTausCount = 0;
-    int twoGoodViableMatchedTausCount = 0;
-
-    int noPass = 0;
-    int noPassZeroTau = 0;
 
     // Event Loop
     // for-loop of fewer events is useful to test code without heavy I/O to terminal from cout statements
@@ -326,7 +335,7 @@ int main(int argc, char** argv)	{
         if (passhltRealDijetFilter_VBF2DTTempLoose) passhltVBFLooseIDPFDummyFilter_VBF2DTTempLoose = inTree->passhltVBFLooseIDPFDummyFilter;
         if (passhltVBFLooseIDPFDummyFilter_VBF2DTTempLoose) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLoose = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20;
 
-        passVBF2DTTempLooseHLT = inTree->passVBF2DTTempLoose;
+        passVBF2DTTempLooseHLT = inTree->passVBF2DTTempLooseHLT;
 
         // fill VBF Plus Two Deep Tau NoL2NN HLT module flags (go back and make these module flags...)
         passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN = 0;
@@ -335,13 +344,13 @@ int main(int argc, char** argv)	{
         passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN = 0;
         passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN = 0;
 
-        if (passhltL1VBFDiJetIsoTau) passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN = inTree->passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch;
-        if (passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN) passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_VBF2DTNoL2NN = inTree->passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched;
+        if (passhltL1VBFDiJetIsoTau) passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN = inTree->passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatchNoL2NN;
+        if (passhltHpsDoublePFTau20MediumDitauWPDeepTauNoMatch_VBF2DTNoL2NN) passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_VBF2DTNoL2NN = inTree->passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatchedNoL2NN;
         if (passhltHpsSinglePFTau45MediumDitauWPDeepTauL1HLTMatched_VBF2DTNoL2NN) passhltRealDijetFilter_VBF2DTNoL2NN = inTree->passhltRealDijetFilter;
         if (passhltRealDijetFilter_VBF2DTNoL2NN) passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN = inTree->passhltVBFLooseIDPFDummyFilter;
-        if (passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20;
+        if (passhltVBFLooseIDPFDummyFilter_VBF2DTNoL2NN) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20_VBF2DTNoL2NN = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsDeepTauIsoPFTauHPS20NoL2NN;
 
-        passVBF2DTNoL2NNHLT = inTree->passVBF2DTNoL2NN;
+        passVBF2DTNoL2NNHLT = inTree->passVBF2DTNoL2NNHLT;
 
         // fill VBF Plus Two Deep Tau Temp Loose NoL2NN HLT module flags (go back and make these module flags...)
         passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN = 0;
@@ -350,13 +359,13 @@ int main(int argc, char** argv)	{
         passhltVBFLooseIDPFDummyFilter_VBF2DTTempLooseNoL2NN = 0;
         passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLooseNoL2NN = 0;
 
-        if (passhltL1VBFDiJetIsoTau) passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN = inTree->passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch;
-        if (passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN) passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLooseNoL2NN = inTree->passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched;
+        if (passhltL1VBFDiJetIsoTau) passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN = inTree->passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatchNoL2NN;
+        if (passhltHpsDoublePFTau20TempLooseDitauWPDeepTauNoMatch_VBF2DTTempLooseNoL2NN) passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLooseNoL2NN = inTree->passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatchedNoL2NN;
         if (passhltHpsSinglePFTau45TempLooseDitauWPDeepTauL1HLTMatched_VBF2DTTempLooseNoL2NN) passhltRealDijetFilter_VBF2DTTempLooseNoL2NN = inTree->passhltRealDijetFilter;
         if (passhltRealDijetFilter_VBF2DTTempLooseNoL2NN) passhltVBFLooseIDPFDummyFilter_VBF2DTTempLooseNoL2NN = inTree->passhltVBFLooseIDPFDummyFilter;
-        if (passhltVBFLooseIDPFDummyFilter_VBF2DTTempLooseNoL2NN) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLooseNoL2NN = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20;
+        if (passhltVBFLooseIDPFDummyFilter_VBF2DTTempLooseNoL2NN) passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20_VBF2DTTempLooseNoL2NN = inTree->passhltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleHpsTempLooseDeepTauIsoPFTauHPS20NoL2NN;
 
-        passVBF2DTTempLooseNoL2NNHLT = inTree->passVBF2DTTempLooseNoL2NN;
+        passVBF2DTTempLooseNoL2NNHLT = inTree->passVBF2DTTempLooseNoL2NNHLT;
 
 
         passDiTau32L1 = passDiTau34L1 = passDiTau35L1 = 0;
@@ -403,7 +412,7 @@ int main(int argc, char** argv)	{
 	int sizeAODTau = inTree->tauPt->size(); // number of taus in event
 	int sizeAODJet = inTree->jetPt->size(); // number of jets in event
 	// check kinematics and ID of tau objects, store isolated taus w pt>=25 and eta<=2.1 taus
-	if (sizeAODTau >= 2 && passVBFPlusTwoDeepTauHLT) twoTausCount += 1;
+	//if (sizeAODTau >= 2 && passVBFPlusTwoDeepTauHLT) twoTausCount += 1;
 	std::vector<TLorentzVector> isoTauCands;	
 	for (int iTau = 0; iTau < sizeAODTau; ++iTau) {
           bool passTauID = false;
@@ -424,7 +433,7 @@ int main(int argc, char** argv)	{
 	}
         int isoTauCandsSize = isoTauCands.size();
         if (isoTauCandsSize < 2) viableTaus = 0; // need two taus minimum
-        if (isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodTausCount += 1;
+        //if (isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodTausCount += 1;
 
 	// use first two non-overlapped AOD taus
 	// isoTauAODCands are already ordered by pT
@@ -444,7 +453,7 @@ int main(int argc, char** argv)	{
           // I think this is unlikely but it's good to be redundant
 	  if (AODTau1.DeltaR(AODTau2) < 0.5) viableTaus = 0;
         } // end viable if statement
-        if (viableTaus && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableTausCount += 1;
+        // if (viableTaus && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableTausCount += 1;
 
 
         // difference between 20 and 45 filters is 20 doesn't have L1HLT matching, 45 does
@@ -552,7 +561,7 @@ int main(int argc, char** argv)	{
             AODTau1Pt_ = AODTau1.Pt();
             AODTau2Pt_ = AODTau2.Pt();
           }
-          if (AODTau1Pt_ != 0 && AODTau2Pt_ != 0 && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableMatchedTausCount += 1;
+          //if (AODTau1Pt_ != 0 && AODTau2Pt_ != 0 && isoTauCandsSize >= 2 && passVBFPlusTwoDeepTauHLT) twoGoodViableMatchedTausCount += 1;
         }       
 
 	// check kinematics and ID of jet objects, store jets w pt>=30 and eta<=4.7
@@ -679,93 +688,6 @@ int main(int argc, char** argv)	{
         passDeepDiTau35Both = (passDiTau35L1DeepDiTau35HLT && passDiTau35Off);
 
         //---------------------------match AOD and HLT------------------------------//
-        /*
-        // matching for HLT objects from Inclusive VBF path
-        TLorentzVector oldHLTJet1, oldHLTJet2, oldHLTTau1, oldHLTTau2;
-        matchedJetsOld = matchedTausOld = matchedBothOld = 0;
-        if (passInclusiveVBFHLT && passInclusiveVBFOff) { 
-          int jet40NumOld = inTree->hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=40 from HLT filter
-          int jet115NumOld = inTree->hltMatchedVBFOnePFJet2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=115 from HLT filter
-          int tau20NumOld = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_pt->size(); // number of taus w pt>=20 from HLT filter
-          
-          if (jet40NumOld >= 2 && jet115NumOld >= 1 && tau20NumOld >= 2) {
-            std::vector<TLorentzVector> oldHLTJetCands, oldHLTTauCands;
-            oldHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", jet40NumOld);
-            oldHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon", tau20NumOld);
-            // when filling, an eta cut is imposed which can reduce the size of the container
-
-            dRj1Old, dRj2Old, dRt1Old, dRt2Old = 999;
-            int overlappedOld = 0;
-            if (oldHLTJetCands.size() >= 2 && oldHLTTauCands.size() >= 2) {
-              std::tie(oldHLTJet1, oldHLTJet2) = matchTwoObjs(oldHLTJetCands, AODJet1, AODJet2);
-              dRj1Old = oldHLTJet1.DeltaR(AODJet1);
-              dRj2Old = oldHLTJet2.DeltaR(AODJet2);
-
-              std::tie(oldHLTTau1, oldHLTTau2) = matchTwoObjs(oldHLTTauCands, AODTau1, AODTau2);
-              dRt1Old = oldHLTTau1.DeltaR(AODTau1);
-              dRt2Old = oldHLTTau2.DeltaR(AODTau2);
-
-              // check same type object overlap
-              if (oldHLTJet1.DeltaR(oldHLTJet2) < 0.5 || oldHLTTau1.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
-              // check different type object overlap
-              if (oldHLTJet1.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet1.DeltaR(oldHLTTau2) < 0.5 ||
-                  oldHLTJet2.DeltaR(oldHLTTau1) < 0.5 || oldHLTJet2.DeltaR(oldHLTTau2) < 0.5) overlappedOld = 1;
-
-              if (!overlappedOld) {
-                if (dRj1Old < 0.5 && dRj2Old < 0.5) matchedJetsOld = 1;
-                if (dRt1Old < 0.5 && dRt2Old < 0.5) matchedTausOld = 1;
-                if (matchedJetsOld && matchedTausOld) matchedBothOld = 1;
-              }
-
-            } // end if for dR calculations
-
-          } // end if checking object size requirements
-
-        } // end if for passing HLT and offline
-
-        // matching for HLT objects from New VBF path
-        TLorentzVector newHLTJet1, newHLTJet2, newHLTTau1, newHLTTau2;
-        matchedJetsNew = matchedTausNew = matchedBothNew = 0;
-        if (passVBFPlusTwoTauHLT && passVBFPlusTwoTauOff) {
-          int jet40NumNew = inTree->hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20_pt->size(); // number of jets w pt>=40 from HLT filter
-          int tau20NumNew = inTree->hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon_pt->size(); // number of taus w pt>=20 from HLT filter
-          int tau45NumNew = inTree->hltHpsPFTau45TrackPt1TightChargedIsolationL1HLTMatched_pt->size(); // number of taus w pt>=45 from HLT filter
-          
-          if (jet40NumNew >= 2 && tau20NumNew >= 2 && tau45NumNew >= 1) {
-            std::vector<TLorentzVector> newHLTJetCands, newHLTTauCands;
-            newHLTJetCands = hltFillWithCands(inTree, "hltMatchedVBFIsoTauTwoPFJets2CrossCleanedFromDoubleTightChargedIsoPFTauHPS20", jet40NumNew);
-            newHLTTauCands = hltFillWithCands(inTree, "hltHpsDoublePFTau20TrackTightChargedIsoAgainstMuon", tau20NumNew);
-            // when filling, an eta cut is imposed which can reduce the size of the container
-
-            dRj1New, dRj2New, dRt1New, dRt2New = 999;
-            int overlappedNew = 0;
-            if (newHLTJetCands.size() >= 2 && newHLTTauCands.size() >= 2) {
-              std::tie(newHLTJet1, newHLTJet2) = matchTwoObjs(newHLTJetCands, AODJet1, AODJet2);
-              dRj1New = newHLTJet1.DeltaR(AODJet1);
-              dRj2New = newHLTJet2.DeltaR(AODJet2);
-
-              std::tie(newHLTTau1, newHLTTau2) = matchTwoObjs(newHLTTauCands, AODTau1, AODTau2);
-              dRt1New = newHLTTau1.DeltaR(AODTau1);
-              dRt2New = newHLTTau2.DeltaR(AODTau2);
-
-              // check same type object overlap
-              if (newHLTJet1.DeltaR(newHLTJet2) < 0.5 || newHLTTau1.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
-              // check different type object overlap
-              if (newHLTJet1.DeltaR(newHLTTau1) < 0.5 || newHLTJet1.DeltaR(newHLTTau2) < 0.5 ||
-                  newHLTJet2.DeltaR(newHLTTau1) < 0.5 || newHLTJet2.DeltaR(newHLTTau2) < 0.5) overlappedNew = 1;
-
-              if (!overlappedNew) {
-                if (dRj1New < 0.5 && dRj2New < 0.5) matchedJetsNew = 1;
-                if (dRt1New < 0.5 && dRt2New < 0.5) matchedTausNew = 1;
-                if (matchedJetsNew && matchedTausNew) matchedBothNew = 1;
-              }
-
-            } // end if for dR calculations
-
-          } // end if checking object size requirements
-
-        } // end if for passing HLT and offline
-        */
 
         // fill branches if any offline selection is passed for AOD
         // fill branches for Old or New HLT objects if they are matched to AOD
